@@ -1,0 +1,8 @@
+aiofiles
+bcrypt
+fastapi
+jinja2
+mysql-connector-python
+passlib
+sqlalchemy
+uvicorn
