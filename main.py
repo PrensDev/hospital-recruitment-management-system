@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from database import engine
 
 # Import Routers
-from routers.api import test_apiRoute, auth_apiRoute
+from routers.api import test_apiRoute, auth_apiRoute, deptHead_apiRoute
 from routers.web import home_webRoute, deptHead_webRoute, hireMng_webRoute, recruiter_webRoute
 
 # Import Models
@@ -21,7 +21,8 @@ models.Base.metadata.create_all(engine)
 
 # API Routers
 app.include_router(test_apiRoute.router)
-# app.include_router(auth_apiRoute.router)
+app.include_router(auth_apiRoute.router)
+app.include_router(deptHead_apiRoute.router)
 
 
 # Mount static folder

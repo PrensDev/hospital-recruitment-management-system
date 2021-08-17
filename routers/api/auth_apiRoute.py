@@ -1,80 +1,40 @@
 # Import Packages
+from jwt_token import generate_token
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database import get_db
-import schemas, models
+from hashing import Hash
 
+import schemas, models
 
 # Router Instance
 router = APIRouter(
-    prefix = "/api/blogs",
-    tags = ["Blogs"]
+    prefix = "/api/auth",
+    tags = ["Authentication API"]
 )
 
 
-# NO_BLOG_RESPONSE = {"msg": "Blog not found"}
-
-
-# # Create Blog
-# @router.post('', status_code = 201)
-# def create_blog(req: schemas.Blog, db: Session = Depends(get_db)):
-#     new_blog = models.Blog(title = req.title, content = req.content, user_id = req.user_id)
-#     db.add(new_blog)
-#     db.commit()
-#     db.refresh(new_blog)
-#     return {
-#         "data": new_blog,
-#         "msg": "A new blog has been added"
-#     }
-
-
-# # Get All Blogs
-# @router.get('', status_code = 200)
-# def get_all_blogs(db: Session = Depends(get_db)):
-#     all_blogs = db.query(models.Blog).all()
-#     return {
-#         "data": all_blogs,
-#         "msg": "All blogs has been retrieved"
-#     }
-
-
-# # Get One Blog
-# @router.get('/{id}', status_code = 200)
-# def get_one_blog(id, db: Session = Depends(get_db)):
-#     blog = db.query(models.Blog).filter(models.Blog.blog_id == id)
-#     if not blog.first():
-#         raise HTTPException(status_code = 404, detail = NO_BLOG_RESPONSE)
-#     else:
-#         return {
-#             "data": blog.first(),
-#             "msg": "A blog has been identified"
-#         }
-
-
-# # Update Blog
-# @router.put('/{id}', status_code = 202)
-# def update_blog(id, req: schemas.Blog, db: Session = Depends(get_db)):
-#     blog = db.query(models.Blog).filter(models.Blog.blog_id == id)
-#     if not blog.first():
-#         raise HTTPException(status_code = 404, detail = NO_BLOG_RESPONSE)
-#     else:
-#         blog.update({
-#             "title": req.title,
-#             "content": req.content,
-#             "user_id": req.user_id
-#         })
-#         db.commit()
-#         return {"msg": "A blog has been updated"}
-
-
-# # Delete Blog
-# @router.delete('/{id}', status_code = 204)
-# def delete_blog(id, db: Session = Depends(get_db)):
-#     blog = db.query(models.Blog).filter(models.Blog.blog_id == id)
-#     if not blog.first():
-#         raise HTTPException(status_code = 404, detail = NO_BLOG_RESPONSE)
-#     else:
-#         blog.delete(synchronize_session = False)
-#         db.commit()
-#         return {"msg": "A blog has been deleted"}
+# Login
+@router.post("/login")
+def login(req: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    try:
+        user = db.query(models.User).filter(models.User.email == req.username).first()
+        if user:
+            matched = Hash.verify(req.password, user.password)
+            if matched:
+                token_data = {
+                    "user_id": user.user_id,
+                    "user_type": user.user_type
+                }
+                return {
+                    "access_token": generate_token(data = token_data),
+                    "token_type": "Bearer"
+                }
+            else:
+                return {"msg": "Invalid password"}
+        else:
+            return {"msg": "User does not exist"}
+    except Exception as e:
+        print(e)

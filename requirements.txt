@@ -1,8 +1,11 @@
 aiofiles
 bcrypt
+cryptography
 fastapi
 jinja2
 mysql-connector-python
 passlib
+python-jose
+python-multipart
 sqlalchemy
 uvicorn

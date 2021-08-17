@@ -2,8 +2,8 @@
 from database import Base
 from sqlalchemy import text
 from sqlalchemy.sql.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import Integer, String, DateTime
-from sqlalchemy.orm import relation, relationship
+from sqlalchemy.sql.sqltypes import String, DateTime
+from sqlalchemy.orm import relationship
 
 
 # User Model
@@ -12,7 +12,7 @@ class User(Base):
 
     # User Columns
     user_id = Column(
-        Integer, 
+        String(36), 
         primary_key = True, 
         default = text('UUID()'),
     )
@@ -52,15 +52,15 @@ class User(Base):
     )
     created_at = Column(
         DateTime,
-        nullable = False,
         default = text('NOW()')
     )
     updated_at = Column(
-        DateTime, 
-        nullable = False,
+        DateTime,
+        default = text('NOW()'),
         onupdate = text('NOW()')
     )
 
+    # Relationships
     position = relationship("Position", back_populates = "roled_by_following")
 
 
@@ -73,6 +73,11 @@ class Position(Base):
         String(36),
         primary_key = True,
         default = text('UUID()'),
+    )
+    department_id = Column(
+        String(36),
+        ForeignKey("departments.department_id"),
+        nullable = False
     )
     name = Column(
         String(255),
@@ -88,6 +93,7 @@ class Position(Base):
     )
     updated_at = Column(
         DateTime,
+        default = text('NOW()'),
         onupdate = text('NOW()')
     )
 
@@ -120,6 +126,7 @@ class Department(Base):
     )
     updated_at = Column(
         DateTime,
+        default = text('NOW()'),
         onupdate = text('NOW()')
     )
 
