@@ -34,3 +34,6 @@ const validateForm = (selector = "", validationOptions = {
         }) 
     }
 }
+
+/** Generate Form Data */
+const generateFormData = (selector) => { return new FormData($(selector)[0]) }

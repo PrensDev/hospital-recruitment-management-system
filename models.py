@@ -1,8 +1,9 @@
 # Import Packages
+from sqlalchemy.sql.expression import null
 from database import Base
 from sqlalchemy import text
 from sqlalchemy.sql.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import String, DateTime
+from sqlalchemy.sql.sqltypes import Date, String, Integer, DateTime, Float, Text
 from sqlalchemy.orm import relationship
 
 
@@ -61,7 +62,20 @@ class User(Base):
     )
 
     # Relationships
-    position = relationship("Position", back_populates = "roled_by_following")
+    position = relationship(
+        "Position", 
+        back_populates = "roled_by_following",
+    )
+    manpower_requests = relationship(
+        "Requisitions", 
+        back_populates = "manpower_request_by",
+        foreign_keys = "requisitions.requisition_id"
+    )
+    reviewed_manpower_requests = relationship(
+        "Requisitions",
+        back_populates = "manpower_request_reviewed_by",
+        foreign_keys = "requisitions.requisition_id"
+    )
 
 
 # Positions Model
@@ -135,12 +149,86 @@ class Department(Base):
 
 
 # Requisition Model
-# class Requisition(Base):
-#     __tablename__ = "requisitions"
+class Requisition(Base):
+    __tablename__ = "requisitions"
 
-#     # Requisition Columns
-#     requisition_id = Column(
-#         String(36),
-#         primary_key = True,
-#         default = text('UUID()')
-#     )
+    # Requisition Columns
+    requisition_id = Column(
+        String(36),
+        primary_key = True,
+        default = text('UUID()')
+    )
+    requested_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = False
+    )
+    position_id = Column(
+        String(36),
+        ForeignKey("positions.position_id"),
+        nullable = False
+    )
+    employment_type = Column(
+        String(255),
+        nullable = False
+    )
+    request_nature = Column(
+        String(255),
+        nullable = False
+    )
+    staffs_needed = Column(
+        Integer,
+        nullable = False
+    )
+    min_monthly_salary = Column(
+        Float,
+        nullable = True
+    )
+    max_monthly_salary = Column(
+        Float,
+        nullable = True
+    )
+    content = Column(
+        Text,
+        nullable = False
+    )
+    request_status = Column(
+        String(255),
+        nullable = False
+    )
+    deadline = Column(
+        DateTime,
+        nullable = False
+    )
+    reviewed_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = True
+    )
+    reviewed_at = Column(
+        DateTime,
+        nullable = True
+    )
+    completed_at = Column(
+        DateTime,
+        nullable = True
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()')
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationships
+    manpower_request_by = relationship(
+        "User",
+        back_populates = "manpower_requests"
+    )
+    manpower_request_reviewed_by = relationship(
+        "User",
+        back_populates = "reviewed_manpower_requests"
+    )

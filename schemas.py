@@ -44,6 +44,22 @@ class UserInfo(BaseModel):
     class Config():
         orm_mode = True
 
+
+# Token Data
 class TokenData(BaseModel):
     user_id: str
     user_type: str
+
+
+# ManPowerRequest Schema
+class ManPowerRequest(BaseModel):
+    requested_by: str
+    position_id: str
+    employment_type: str
+    request_nature: str
+    staffs_needed: int
+    min_monthly_salary: float
+    max_monthly_salary: float
+    content: str
+    request_status: str
+    deadline: str

@@ -1,7 +1,6 @@
 # Import Packages
 from jwt_token import generate_token
 from fastapi import APIRouter, Depends
-from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database import get_db
@@ -29,12 +28,26 @@ def login(req: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_
                     "user_type": user.user_type
                 }
                 return {
-                    "access_token": generate_token(data = token_data),
-                    "token_type": "Bearer"
+                    "data": {
+                        "user_id": user.user_id,
+                        "user_type": user.user_type
+                    },
+                    "token": {
+                        "access_token": generate_token(data = token_data),
+                        "token_type": "Bearer"
+                    },
+                    "login_status": "Success",
+                    "message": "Successfully logged in"
                 }
             else:
-                return {"msg": "Invalid password"}
+                return {
+                    "login_status": "Failed",
+                    "message": "Invalid password"
+                }
         else:
-            return {"msg": "User does not exist"}
+            return {
+                "login_status": "Failed",
+                "message": "User does not exist"
+            }
     except Exception as e:
         print(e)
