@@ -3,9 +3,9 @@
     
     <!-- Sidebar user (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
+        <!-- <div class="image">
         <img src="../../dist/img/user2-160x160.jpg" class="img-circle border" alt="User Image">
-        </div>
+        </div> -->
         <div class="info mr-1">
         <a href="#" class="d-block text-truncate">Hiring Manager</a>
         </div>
@@ -35,86 +35,20 @@
             </a>
         </li>
 
-        <li class="nav-header">SINGLE LEVEL</li>
+        <li class="nav-header">RECRUITMENT</li>
         <li class="nav-item">
-            <a href="../../iframe.html" class="nav-link">
-            <i class="nav-icon fas fa-user-tie"></i>
-            <p>Link 1</p>
+            <a href="../../iframe.html" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
+            <i class="nav-icon fas fa-people-carry"></i>
+            <p>Manpower Requests</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="https://adminlte.io/docs/3.1/" class="nav-link">
+            <a href="https://adminlte.io/docs/3.1/" class="nav-link{% if active_navlink == "Applicants" %} active{% endif %}">
             <i class="nav-icon fas fa-user-tie"></i>
             <p>
-                Link 2
+                Applicants
                 <span class="right badge badge-primary">99+</span>
             </p>
-            </a>
-        </li>
-
-        <li class="nav-header">MULTI LEVEL</li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-            <i class="fas fa-circle nav-icon"></i>
-            <p>Level 1</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-circle"></i>
-            <p>
-                Level 1
-                <i class="right fas fa-angle-left"></i>
-            </p>
-            </a>
-            <ul class="nav nav-treeview">
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Level 2</p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>
-                    Level 2
-                    <i class="right fas fa-angle-left"></i>
-                </p>
-                </a>
-                <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                    <i class="far fa-dot-circle nav-icon"></i>
-                    <p>Level 3</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                    <i class="far fa-dot-circle nav-icon"></i>
-                    <p>Level 3</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                    <i class="far fa-dot-circle nav-icon"></i>
-                    <p>Level 3</p>
-                    </a>
-                </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Level 2</p>
-                </a>
-            </li>
-            </ul>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-            <i class="fas fa-circle nav-icon"></i>
-            <p>Level 1</p>
             </a>
         </li>
         </ul>

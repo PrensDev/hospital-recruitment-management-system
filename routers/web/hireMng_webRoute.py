@@ -28,3 +28,21 @@ async def dashboard(req: Request):
         "page_title": "Dashboard",
         "active_navlink": "Dashboard"
     })
+
+# Manpower Requests
+@router.get("/manpower-requests", response_class=HTMLResponse)
+async def dashboard(req: Request):
+    return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
+        "request": req,
+        "page_title": "Manpower Requests",
+        "active_navlink": "Manpower Requests"
+    })
+
+# Applicants
+@router.get("/applicants", response_class=HTMLResponse)
+async def dashboard(req: Request):
+    return templates.TemplateResponse(TEMPLATES_PATH + "applicants.html", {
+        "request": req,
+        "page_title": "Applicants",
+        "active_navlink": "Applicants"
+    })
