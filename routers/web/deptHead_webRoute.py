@@ -38,6 +38,15 @@ async def dashboard(req: Request):
         "active_navlink": "Manpower Requests"
     })
 
+# Add Manpower Request
+@router.get("/add-manpower-request", response_class=HTMLResponse)
+async def dashboard(req: Request):
+    return templates.TemplateResponse(TEMPLATES_PATH + "add_manpower_request.html", {
+        "request": req,
+        "page_title": "Add Manpower Request",
+        "active_navlink": "Manpower Requests"
+    })
+
 # Hired Applicants
 @router.get("/hired-applicants", response_class=HTMLResponse)
 async def dashboard(req: Request):

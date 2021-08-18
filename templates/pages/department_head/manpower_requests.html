@@ -108,8 +108,21 @@
             <div class="card card-primary card-outline">
 
                 <!-- Card Header -->
-                <div class="card-header">
-                    <h3 class="card-title">Lists of Manpower Requests</h3>
+                <div class=" p-3 d-flex justify-content-between">
+                    <div>
+                        <h3 class="card-title">Lists of Manpower Requests</h3>
+                    </div>
+                    <div>
+                        <button 
+                            type="button" 
+                            class="btn btn-sm btn-primary"
+                            data-toggle="modal"
+                            data-target="#addManPowerRequestModal"
+                        >
+                            <i class="fas fa-plus"></i>
+                            <span>Add Manpower Request</span>
+                        </button>
+                    </div>
                 </div>
                 <!-- /.card-header -->
 
@@ -134,7 +147,7 @@
                                         Replacement
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge badge-success px-3">Approved</span>
+                                        <span class="badge badge-success px-2">Approved</span>
                                     </td>
                                     <td class="project-actions text-center">
                                         <div 
