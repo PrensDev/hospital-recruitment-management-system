@@ -29,110 +29,126 @@
 
     <!-- SELECT2 EXAMPLE -->
     <section class="content p-3">
-        <div class="card card-primary">
-            <div class="card-header">
-                <h3 class="card-title">Add Manpower Request</h3>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <div class="form-row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Position</label>
-                            <select class="form-control select2" style="width: 100%;">
-                                <option selected="selected">Assistant Manager</option>
-                                <option>Secretary</option>
-                                <option>Regular Employee</option>
-                                <option>Project Manager</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Nature of Request</label>
-                            <select class="form-control select2" style="width: 100%;">
-                                <option selected="selected">New/Addition</option>
-                                <option>Replacement</option>
-                            </select>
-                        </div>
-                    </div>
+        <form id="addManPowerRequestForm">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Add Manpower Request</h3>
                 </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Position<span class="text-danger"> *</span></label>
+                                <select
+                                    name="position" 
+                                    id="selectPosition"
+                                    class="form-control select2" 
+                                    style="width: 100%;" 
+                                >
+                                    <option selected="selected">Assistant Manager</option>
+                                    <option>Secretary</option>
+                                    <option>Regular Employee</option>
+                                    <option>Project Manager</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nature of Request<span class="text-danger"> *</span></label>
+                                <select 
+                                    name="natureOfRequest" 
+                                    id="selectNatureOfRequest"
+                                    class="form-control select2" 
+                                    style="width: 100%;"
+                                >
+                                    <option selected="selected">New/Addition</option>
+                                    <option>Replacement</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="form-row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="minSalary">Minimum Salary</label>
-                            <input 
-                                type="text" 
-                                name="minSalary" 
-                                id="minSalary" 
-                                class="form-control" 
-                                placeholder="Type minimum salary here"
-                            >
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="minSalary">Minimum Salary<span class="text-danger"> *</span></label>
+                                <input 
+                                    type="text" 
+                                    name="minSalary" 
+                                    id="minSalary" 
+                                    class="form-control" 
+                                    placeholder="Type minimum salary here"
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="maxSalary">Maximun Salary<span class="text-danger"> *</span></label>
+                                <input 
+                                    type="text" 
+                                    name="maxSalary" 
+                                    id="maxSalary" 
+                                    class="form-control" 
+                                    placeholder="Type maximum salary here"
+                                >
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="maxSalary">Maximun Salary</label>
-                            <input 
-                                type="text" 
-                                name="maxSalary" 
-                                id="maxSalary" 
-                                class="form-control" 
-                                placeholder="Type maximum salary here"
-                            >
-                        </div>
-                    </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="jobDescription">Job Description</label>
-                            <textarea
-                                name="jobDescription" 
-                                id="jobDescription" 
-                                class="form-control" 
-                                placeholder="Enter job description here..."
-                            ></textarea>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="jobDescription">Job Description<span class="text-danger"> *</span></label>
+                                <textarea
+                                    name="jobDescription" 
+                                    id="jobDescription" 
+                                    class="form-control h-50" 
+                                    placeholder="Enter job description here..."
+                                ></textarea>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="qualifications">Qualifications</label>
-                            <textarea
-                                name="qualifications" 
-                                id="qualifications" 
-                                class="form-control" 
-                                placeholder="Enter qualifications here..."
-                            ></textarea>
+                    
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="qualifications">Qualifications<span class="text-danger"> *</span></label>
+                                <textarea
+                                    name="qualifications" 
+                                    id="qualifications" 
+                                    class="form-control height: 50%" 
+                                    placeholder="Enter qualifications here..."
+                                ></textarea>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="inputFile">File input</label>
-                    <div class="input-group">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="inputFile" id="inputFile">
-                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                    <div class="form-group">
+                        <label for="inputFile">File input</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="inputFile" id="inputFile">
+                                <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                            </div>
+                            <div class="input-group-append">
+                                <span class="input-group-text">Upload</span>
+                            </div>
                         </div>
-                        <div class="input-group-append">
-                            <span class="input-group-text">Upload</span>
                         </div>
+                </div>
+                <div class="card-footer">
+                    <div class="float-right">
+                        <button type="button" class="btn btn-default">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
-                    </div>
-            </div>
-            <div class="card-footer">
-                <div class="float-right">
-                    <button type="button" class="btn btn-default">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>
-        </div>
         <!-- /.card -->
+        </form>
     </section>
     {% endblock %}
+
+{% block page_scripts %}
+    <script src="{{url_for('static', path='/dist/js/pages/department_head/add_manpower_request.js')}}"></script>
+{% endblock %}
