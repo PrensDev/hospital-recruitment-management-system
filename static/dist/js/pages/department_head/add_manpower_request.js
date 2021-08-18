@@ -6,6 +6,15 @@ validateForm('#addManPowerRequestForm',{
         natureOfRequest: {
             required: true
         },
+        noOfStaffsNeeded: {
+            required: true
+        },
+        deadline: {
+            required: true
+        },
+        employmentType: {
+            required: true
+        },
         minSalary: {
             required: true
         },
@@ -25,6 +34,15 @@ validateForm('#addManPowerRequestForm',{
         },
         natureOfRequest: {
             required: 'Nature of request is required'
+        },
+        noOfStaffsNeeded: {
+            required: 'No. of vacany is required'
+        },
+        deadline: {
+            required: 'Deadline is required'
+        },
+        employmentType: {
+            required: 'Employment type is required'
         },
         minSalary: {
             required: 'Minimum salary is required'
