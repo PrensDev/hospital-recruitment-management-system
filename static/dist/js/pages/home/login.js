@@ -43,15 +43,26 @@ loginAJAX = () => {
                     "showDuration": "3000"
                 }
                 toastr.warning(result.message)
-            } else if(result.login_status === "Success") {
-                console.log(result)
-                
-                const user_type = result.data.user_type;
+            } else {
+                access_token = result.access_token;
 
-                if(user_type === "Department Head") location.assign(`${ BASE_URL_WEB }d`)
-                if(user_type === "Hiring Manager")  location.assign(`${ BASE_URL_WEB }h`)
-                if(user_type === "Recruiter")       location.assign(`${ BASE_URL_WEB }r`)
+                localStorage.setItem("access_token", access_token);
+
+                toastr.options = {
+                    "preventDuplicates": true,
+                    "positionClass": "toast-top-center",
+                    "showDuration": "3000"
+                }
+                toastr.success("Log in was successful!")
             }
         },
-    }).fail(() => console.log("There was a problem in logging in"));
+    }).fail(() => {
+        toastr.options = {
+            "preventDuplicates": true,
+            "positionClass": "toast-top-center",
+            "showDuration": "3000"
+        }
+        toastr.danger("There was a problem in logging in. Please try again later")
+
+    });
 }

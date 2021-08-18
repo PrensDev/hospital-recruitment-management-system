@@ -13,7 +13,7 @@ class User(Base):
 
     # User Columns
     user_id = Column(
-        String(36), 
+        String(36),
         primary_key = True, 
         default = text('UUID()'),
     )
@@ -67,14 +67,14 @@ class User(Base):
         back_populates = "roled_by_following",
     )
     manpower_requests = relationship(
-        "Requisitions", 
+        "Requisition", 
         back_populates = "manpower_request_by",
-        foreign_keys = "requisitions.requisition_id"
+        foreign_keys = "Requisition.requested_by"
     )
     reviewed_manpower_requests = relationship(
-        "Requisitions",
+        "Requisition",
         back_populates = "manpower_request_reviewed_by",
-        foreign_keys = "requisitions.requisition_id"
+        foreign_keys = "Requisition.reviewed_by"
     )
 
 
@@ -226,9 +226,11 @@ class Requisition(Base):
     # Relationships
     manpower_request_by = relationship(
         "User",
-        back_populates = "manpower_requests"
+        back_populates = "manpower_requests",
+        foreign_keys = "Requisition.requested_by"
     )
     manpower_request_reviewed_by = relationship(
         "User",
-        back_populates = "reviewed_manpower_requests"
+        back_populates = "reviewed_manpower_requests",
+        foreign_keys = "Requisition.reviewed_by"
     )

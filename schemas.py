@@ -1,5 +1,6 @@
 # Import Package
-from typing import List
+from datetime import datetime
+from typing import List, Optional
 from pydantic import BaseModel
 
 
@@ -13,6 +14,11 @@ class Department(BaseModel):
 class Position(BaseModel):
     name: str
     description: str
+
+# Show Position Schema
+class ShowPosition(Position):
+    class Config():
+        orm_mode = True
 
 
 # User Schema
@@ -52,7 +58,7 @@ class TokenData(BaseModel):
 
 
 # ManPowerRequest Schema
-class ManPowerRequest(BaseModel):
+class CreateManpowerRequest(BaseModel):
     requested_by: str
     position_id: str
     employment_type: str
@@ -62,4 +68,17 @@ class ManPowerRequest(BaseModel):
     max_monthly_salary: float
     content: str
     request_status: str
-    deadline: str
+    deadline: datetime
+
+
+# Show Department Positions Schema
+class ShowDepartmentPosition(BaseModel):
+    department_id: str
+    name: str
+    description: str
+    created_at: datetime
+    updated_at: Optional[datetime]
+    department_positions: List
+
+    class Config():
+        orm_mode = True

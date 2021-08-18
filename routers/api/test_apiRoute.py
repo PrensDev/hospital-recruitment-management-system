@@ -41,8 +41,10 @@ def create_department(req: schemas.Department, db: Session = Depends(get_db)):
 # Get all departments
 @router.get("/departments")
 def get_all_departments(db: Session = Depends(get_db)):
-    return db.query(models.Department).all()
-
+    try:
+        return db.query(models.Department).all()
+    except Exception as e:
+        print(e)
 
 # Get one departments
 @router.get("/departments/{department_id}")
@@ -72,6 +74,14 @@ def create_position(department_id, req: schemas.Position, db: Session = Depends(
         }
     except Exception as e:
         return {"error": e}
+
+# Get All Department Position
+@router.get("/departments/{department_id}/positions", response_model = schemas.ShowDepartmentPosition)
+def get_all_department_positions(department_id: str, db: Session = Depends(get_db)):
+    try:
+        return db.query(models.Department).filter(models.Department.department_id == department_id).first()
+    except Exception as e:
+        print(e)
 
 # Get All Positions
 @router.get("/positions")

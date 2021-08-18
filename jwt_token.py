@@ -24,12 +24,12 @@ def generate_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 # Verify Token
 def verify_token(token: str):
+    credentials_exception = HTTPException(
+        status_code = 401,
+        detail = "Invalid credentials",
+        headers = {"WWW-Authenticate": "Bearer"}
+    )
     try:
-        credentials_exception = HTTPException(
-            status_code = 401,
-            detail = "Unauthorized",
-            headers = {"WWW-Authenticate": "Bearer"}
-        )
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("user_id")
         user_type: str = payload.get("user_type")

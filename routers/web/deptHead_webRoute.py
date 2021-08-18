@@ -1,7 +1,10 @@
 # Import Packages
-from fastapi import APIRouter, Request
+from typing import Optional
+from fastapi import APIRouter, Request, Cookie, Depends, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+# from sessions import verifier, cookie, delete_session
+
 
 # Router
 router = APIRouter(
@@ -19,6 +22,23 @@ TEMPLATES_PATH = "/pages/department_head/"
 # ===========================================================
 # WEB ROUTES
 # ===========================================================
+
+# Test
+# @router.get("/test-web", response_class=HTMLResponse, dependencies=[Depends(cookie)])
+# async def test_web(req: Request, session_data: SessionData=Depends(verifier)):
+#     print(session_data)
+#     return templates.TemplateResponse(TEMPLATES_PATH + "test.html", {
+#         "request": req,
+#         "session_data": session_data
+#     })
+@router.get("/test-web", response_class=HTMLResponse)
+async def test_web(req: Request):
+    return templates.TemplateResponse(TEMPLATES_PATH + "test.html", {
+        "request": req,
+        "user_type": req.cookies.get('user_type'),
+        "access_token": req.cookies.get('access_token')
+    })
+
 
 # Department Head Dashboard
 @router.get("", response_class=HTMLResponse)
