@@ -1,5 +1,6 @@
 # Import Packages
-from fastapi import APIRouter, Depends
+from typing import List
+from fastapi import APIRouter, Depends, Response
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
@@ -24,16 +25,24 @@ AUTHORIZED_USER = "Department Head"
 
 # User Information
 @router.get("/info", response_model = schemas.UserInfo)
-def get_user_info(db: Session = Depends(get_db), active_user: schemas.User = Depends(get_user)):
+def get_user_info(db: Session = Depends(get_db), user_data: schemas.User = Depends(get_user)):
     try:
-        # check_priviledge(user_data, AUTHORIZED_USER)
-        user_info = db.query(User_model).filter(User_model.user_id == active_user.user_id)
+        check_priviledge(user_data, AUTHORIZED_USER)
+        user_info = db.query(User_model).filter(User_model.user_id == user_data.user_id)
         if not user_info.first():
             return "User does not exist"
         else:
             return user_info.first()
     except Exception as e:
         print(e)
+
+
+# ====================================================================
+# REQUISITIONS/MANPOWER REQUESTS
+# ====================================================================
+
+# Requisition/Manpower Request Not Found Response
+REQUISITION_NOT_FOUND_RESPONSE = {"message": "Manpower request was not found"}
 
 
 # Create Manpower Request
@@ -67,15 +76,14 @@ def create_manpower_request(
 
 
 # Get All Manpower Request
-@router.get("/requisitions/{user_id}")
+@router.get("/requisitions", response_model = List[schemas.ShowManpowerRequest])
 def get_all_requisitions(
-    user_id: str,
     db: Session = Depends(get_db), 
-    # user_data: schemas.User = Depends(get_user)
+    user_data: schemas.User = Depends(get_user)
 ):
     try:
-        # check_priviledge(user_data, AUTHORIZED_USER)
-        return db.query(models.Requisition).filter(models.Requisition.requested_by == user_id).all()
+        check_priviledge(user_data, AUTHORIZED_USER)
+        return db.query(models.Requisition).filter(models.Requisition.requested_by == user_data.user_id).all()
     except Exception as e:
         print(e)
 
@@ -89,6 +97,29 @@ def get_one_requisition(
 ):
     try:
         # check_priviledge(user_data, AUTHORIZED_USER)
-        return db.query(models.Requisition).filter(models.Requisition.requisition_id == requisition_id).first()
+        requisition = db.query(models.Requisition).filter(models.Requisition.requisition_id == requisition_id).first()
+        if not requisition:
+            return REQUISITION_NOT_FOUND_RESPONSE
+        else:
+            return requisition
+    except Exception as e:
+        print(e)
+
+
+# Update Manpower Request
+@router.put("/requisitions/{requisition_id}", status_code = 202)
+def update_requisition(
+    requisition_id: str,
+    req: schemas.CreateManpowerRequest,
+    db: Session = Depends(get_db)
+):
+    try:
+        requisition = db.query(models.Requisition),filter(models.Requisition.requisition_id == requisition_id)
+        if not requisition.first():
+            raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
+        else:
+            requisition.update(req)
+            db.commit()
+            return {"message": "A requisition has been updated"}
     except Exception as e:
         print(e)

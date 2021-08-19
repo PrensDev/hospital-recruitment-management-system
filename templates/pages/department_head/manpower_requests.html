@@ -75,8 +75,25 @@
 
                     <p>Total Onboarding Employees</p>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-clipboard"></i>
+                <!-- /.card-header -->
+
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="manpowerRequestDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Position Title</th>
+                                    <th>Staffs Needed</th>
+                                    <th>Nature of Request</th>
+                                    <th>Status</th>
+                                    <th>Date Requested</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
                 <a href="#" class="small-box-footer">
                     More info <i class="fas fa-arrow-circle-right"></i>
@@ -194,9 +211,9 @@
 {% endblock %}
 
 {% block modals %}
-        {% include "pages/department_head/modals/manpower_requests_modal.html" %}
+    {% include "pages/department_head/modals/manpower_requests_modal.html" %}
 {% endblock %}
 
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/admin/dashboard.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/pages/department_head/manpower_requests.js')}}"></script>
 {% endblock %}

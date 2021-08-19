@@ -1,12 +1,13 @@
 # Import Packages
-from fastapi.exceptions import HTTPException
+from fastapi import Cookie, HTTPException
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
 import schemas
 
+
 # Constants
-SECRET_KEY = "09wfjhb30wfbjwfb2w0wef30ekjhwefhj3kt0afowwehffdfgdfg049"
+SECRET_KEY = "e8b1be77208bc8a2ebcb7e5b7067baa7dc90449d5a2f4ded268e159cf43d1227c86b513c7d3112308da7861c0827c7f8d2c0951c6517f48969583826ca7f3c51"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 12400
 
@@ -42,3 +43,16 @@ def verify_token(token: str):
             )
     except JWTError:
         raise credentials_exception
+
+
+# Get Token
+def get_token(access_token: str = Cookie('access_token')):
+    try:
+        user = jwt.decode(access_token, SECRET_KEY)
+        if user:
+            return user
+        else:
+            raise HTTPException(status_code = 401, detail = "Invalid token")
+    except JWTError:
+        raise HTTPException(status_code = 401, detail = "Please login first")
+        

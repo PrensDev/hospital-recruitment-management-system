@@ -36,10 +36,46 @@ def get_user_info(db: Session = Depends(get_db), active_user: schemas.User = Dep
         print(e)
 
 
+# ====================================================================
+# REQUISITIONS/MANPOWER REQUESTS
+# ====================================================================
+
+
+# Requisition Not Found Response
+REQUISITION_NOT_FOUND_RESPONSE = {"message": "Requisition not found"}
+
+
 # Get All Requisitions
 @router.get("/requisitions")
 def get_all_requisitions(db: Session = Depends(get_db)):
     try:
         return db.query(models.Requisition).all()
+    except Exception as e:
+        print(e)
+
+
+# Get One Requisition
+@router.get("/requisitions/{requisition_id}")
+def get_one_requisition(requisition_id: str, db: Session = Depends(get_db)):
+    try:
+        return db.query(models.Requisition).filter(models.Requisition.requisition_id == requisition_id).first()
+    except Exception as e:
+        print(e)
+
+
+# Update Requisition
+@router.put("/requisition/{requisition_id}")
+def uodate_requisition(requisition_id: str, db: Session = Depends(get_db)):
+    try:
+        requisition = db.query(models.Requisition).filter(models.Requisition.requisition_id == requisition_id)
+        if not requisition.first():
+            raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE)
+        else:
+            requisition.update({})
+            db.commit()
+            return {
+                "data": requisition,
+                "message": "A man power request has been updated"
+            }
     except Exception as e:
         print(e)

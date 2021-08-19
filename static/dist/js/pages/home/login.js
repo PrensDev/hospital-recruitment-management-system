@@ -44,16 +44,16 @@ loginAJAX = () => {
                 }
                 toastr.warning(result.message)
             } else {
-                access_token = result.access_token;
-
-                localStorage.setItem("access_token", access_token);
+                localStorage.setItem("access_token", result.access_token);
 
                 toastr.options = {
                     "preventDuplicates": true,
                     "positionClass": "toast-top-center",
                     "showDuration": "3000"
                 }
-                toastr.success("Log in was successful!")
+                toastr.success("Wow! Log in was successful!");
+
+                location.assign(`${ BASE_URL_WEB }redirect`);
             }
         },
     }).fail(() => {
@@ -63,6 +63,5 @@ loginAJAX = () => {
             "showDuration": "3000"
         }
         toastr.danger("There was a problem in logging in. Please try again later")
-
     });
 }

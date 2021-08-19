@@ -3,24 +3,7 @@
 {% block body %}
 <div class="container-fluid">
 
-    <h1>Cookies from Backend</h1>
     <table class="table">
-        <tr>
-            <th>User Type</th>
-            <td>{{ user_type }}</td>
-        </tr>
-        <tr>
-            <th>Access Token</th>
-            <td>{{ access_token }}</td>
-        </tr>
-    </table>
-
-    <h1>Cookies from Frontend</h1>
-    <table class="table">
-        <tr>
-            <th>User Type</th>
-            <td id="userTypeCookie"></td>
-        </tr>
         <tr>
             <th>Access Token</th>
             <td id="accessTokenCookie"></td>
@@ -30,17 +13,14 @@
     {% include 'layouts/_scripts.html' %}
 
     <script>
-        $('#userTypeCookie').html($.cookie.get('user_type'));
-        $('#accessTokenCookie').html($.cookie.get('access_token'));
-
-        // $.ajax({
-        //     url: `${ D_API_ROUTE }info`,
-        //     type: 'GET',
-        //     headers: AJAX_HEADERS,
-        //     success: result => {
-                
-        //     }
-        // }).fail(() => alert('There was an error in getting user info'))
+        $.ajax({
+            url: `${ D_API_ROUTE }info`,
+            type: 'GET',
+            headers: AJAX_HEADERS,
+            success: result => {
+                console.log(result)
+            }
+        }).fail(() => alert('There was an error in getting user info'))
     </script>
 
 </div>

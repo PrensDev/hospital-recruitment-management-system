@@ -31,8 +31,8 @@ def login(res: Response, req: OAuth2PasswordRequestForm = Depends(), db: Session
                 }
                 access_token = generate_token(data = token_data)
                 res.set_cookie(
-                    key = "user_id",
-                    value = user_id,
+                    key = "access_token",
+                    value = access_token,
                     httponly = True
                 )
                 res.set_cookie(
@@ -40,14 +40,9 @@ def login(res: Response, req: OAuth2PasswordRequestForm = Depends(), db: Session
                     value = user_type,
                     httponly = True
                 )
-                res.set_cookie(
-                    key = "access_token",
-                    value = access_token,
-                    httponly = True
-                )
                 return {
                     "access_token": access_token,
-                    "token_type": "Bearer"
+                    "token_type": "bearer"
                 }
             else:
                 return {
@@ -59,5 +54,16 @@ def login(res: Response, req: OAuth2PasswordRequestForm = Depends(), db: Session
                 "login_status": "Failed",
                 "message": "User does not exist"
             }
+    except Exception as e:
+        print(e)
+
+
+# Logout
+@router.get("/logout")
+def logout(res: Response):
+    try:
+        res.delete_cookie("access_token")
+        res.delete_cookie("user_type")
+        return {"message": "Cookies has been removed"}
     except Exception as e:
         print(e)

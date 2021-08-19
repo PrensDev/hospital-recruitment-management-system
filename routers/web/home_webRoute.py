@@ -1,7 +1,10 @@
 # Import Packages
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
+from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from jwt_token import get_token
+import schemas
 
 
 # Router
@@ -15,7 +18,25 @@ templates = Jinja2Templates(directory = "templates")
 # Index
 @router.get("/login", response_class=HTMLResponse, tags = ["Login"])
 async def index(req: Request):
-    return templates.TemplateResponse("pages/auth/login.html", {
-        "request": req,
-        "page_title": "Login"
-    })
+    try:
+        access_token_cookie = req.cookies.get('access_token')
+        if not access_token_cookie:
+            return templates.TemplateResponse("pages/auth/login.html", {
+                "request": req,
+                "page_title": "Login"
+            })
+        else:
+            return RedirectResponse("/redirect")
+    except Exception as e:
+        print(e)
+
+
+# User Redirect
+@router.get("/redirect")
+async def redirect(user_data: dict = Depends(get_token)):
+    if(user_data["user_type"] == "Department Head"):
+        return RedirectResponse("/d")
+    if(user_data["user_type"] == "Hiring Manager"):
+        return RedirectResponse("/h")
+    if(user_data["user_type"] == "Recruiter"):
+        return RedirectResponse("/r")

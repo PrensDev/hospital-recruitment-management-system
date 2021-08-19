@@ -112,8 +112,18 @@ class Position(Base):
     )
 
     # Relationships
-    roled_by_following = relationship("User", back_populates = "position")
-    department = relationship("Department", back_populates = "department_positions")
+    roled_by_following = relationship(
+        "User", 
+        back_populates = "position"
+    )
+    department = relationship(
+        "Department", 
+        back_populates = "department_positions"
+    )
+    vacancy_requests = relationship(
+        "Requisition",
+        back_populates = "vacant_position"
+    )
 
 
 # Department Model
@@ -233,4 +243,8 @@ class Requisition(Base):
         "User",
         back_populates = "reviewed_manpower_requests",
         foreign_keys = "Requisition.reviewed_by"
+    )
+    vacant_position = relationship(
+        "Position",
+        back_populates = "vacancy_requests"
     )

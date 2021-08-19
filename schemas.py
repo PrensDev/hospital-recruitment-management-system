@@ -2,6 +2,7 @@
 from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
+from sqlalchemy.sql.expression import update
 
 
 # Department Schema
@@ -69,6 +70,28 @@ class CreateManpowerRequest(BaseModel):
     content: str
     request_status: str
     deadline: datetime
+
+# Show Manpower Request
+class ShowManpowerRequest(BaseModel):
+    requisition_id: str
+    # manpower_request_by: List
+    # vacant_position: List[ShowPosition]
+    employment_type: str
+    request_nature: str
+    staffs_needed: int
+    min_monthly_salary: float
+    max_monthly_salary: float
+    content: str
+    request_status: str
+    deadline: Optional[datetime]
+    mapower_request_reviewed_by: Optional[List]
+    reviewed_at: Optional[datetime]
+    completed_at: Optional[datetime]
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
 
 
 # Show Department Positions Schema
