@@ -36,7 +36,7 @@ validateForm('#addManPowerRequestForm',{
             required: 'Nature of request is required'
         },
         noOfStaffsNeeded: {
-            required: 'No. of vacany is required'
+            required: 'No. of staffs needed is required'
         },
         deadline: {
             required: 'Deadline is required'

@@ -1,3 +1,4 @@
+
 <!-- Extra Large Modal -->
 <div class="modal fade" id="viewManPowerRequest">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
@@ -160,17 +161,45 @@
                                 <span class="font-weight-bold">Status:</span>
                             </td>
                             <td id="#">
-                                <p class="badge badge-success px-3">Approved</p>
+                                <p class="badge badge-warning px-3">Reviewed</p>
                             </td>
                         </tr>
                     </table>
                 </div>
 
             </div>
+
+            <!-- Reject or Approve -->
+            
+            <label class="mt-5">Select decision for manpower request:</label>
+            <div class="form-group d-flex">
+                <div class="custom-control custom-radio m-1">
+                    <input class="custom-control-input custom-control-input-danger" type="radio" id="customRadio2" name="customRadio" value="Rejected">
+                    <label for="customRadio2" class="custom-control-label font-weight-normal">Reject</label>
+                </div>
+                <div class="custom-control custom-radio m-1">
+                    <input class="custom-control-input" type="radio" id="customRadio1" name="customRadio" value="Approved">
+                    <label for="customRadio1" class="custom-control-label font-weight-normal">Approve</label>
+                </div>
+            </div>
+
+            <!-- Textarea for Reason of Rejecting Request -->
+            <div class="mt-5" id="reasonField" style="display:none">
+                <div class="form-group">
+                    <label for="reason">Reason for rejecting request:<span class="text-danger"> *</span></label>
+                    <textarea 
+                        type="text" 
+                        name="reason" 
+                        id="reason" 
+                        class="form-control" 
+                        placeholder="Type reason for rejecting request here"
+                    ></textarea>
+                </div>
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-info">Edit</button>
+            <button type="submit" class="btn btn-success">Submit</button>
         </div>
     </div>
     <!-- /.modal-content -->
@@ -178,3 +207,6 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+
+
