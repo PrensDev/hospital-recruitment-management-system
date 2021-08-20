@@ -49,11 +49,12 @@ REQUISITION_NOT_FOUND_RESPONSE = {"message": "Manpower request was not found"}
 @router.post("/requisitions", status_code = 201)
 def create_manpower_request(
     req: schemas.CreateManpowerRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user_data: schemas.User = Depends(get_user)
 ):
     try:
         new_requisition = models.Requisition(
-            requested_by = req.requested_by,
+            requested_by = user_data.user_id,
             position_id = req.position_id,
             employment_type = req.employment_type,
             request_nature = req.request_nature,
@@ -89,7 +90,7 @@ def get_all_requisitions(
 
 
 # Get One Manpower Request
-@router.get("/requisitions/{requisition_id}")
+@router.get("/requisitions/{requisition_id}", response_model = schemas.ShowManpowerRequest)
 def get_one_requisition(
     requisition_id: str,
     db: Session = Depends(get_db), 

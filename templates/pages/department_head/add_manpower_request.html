@@ -27,31 +27,31 @@
         </div><!-- /.container-fluid -->
     </section>
 
-    <!-- SELECT2 EXAMPLE -->
-    <section class="content p-3">
-        <form id="addManPowerRequestForm">
-            <div class="card card-primary">
+    <section class="content px-3">
+        <form id="addManpowerRequestForm">
+            <div class="card card-primary card-outline">
+
                 <div class="card-header">
                     <h3 class="card-title">Add Manpower Request</h3>
                 </div>
-                <!-- /.card-header -->
+                
                 <div class="card-body">
-                    <div class="row">
+                    <div class="form-row">
 
-                        <!-- Position title -->
+                        <!-- Vacant Position title -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Position<span class="text-danger"> *</span></label>
+                                <label>Vacant Position <span class="text-danger">*</span></label>
                                 <select
-                                    name="position" 
-                                    id="selectPosition"
+                                    name="vacantPosition" 
+                                    id="vacantPositionForAdd"
                                     class="form-control select2" 
-                                    style="width: 100%;" 
                                 >
-                                    <option selected="selected">Assistant Manager</option>
-                                    <option>Secretary</option>
-                                    <option>Regular Employee</option>
-                                    <option>Project Manager</option>
+                                    <option></option>
+                                    <option value="1">Assistant Manager</option>
+                                    <option value="1">Secretary</option>
+                                    <option value="1">Regular Employee</option>
+                                    <option value="1">Project Manager</option>
                                 </select>
                             </div>
                         </div>
@@ -61,19 +61,16 @@
                             <div class="form-group">
                                 <label>Nature of Request<span class="text-danger"> *</span></label>
                                 <select 
-                                    name="natureOfRequest" 
-                                    id="selectNatureOfRequest"
+                                    name="requestNature" 
+                                    id="requestNatureForAdd"
                                     class="form-control select2" 
-                                    style="width: 100%;"
                                 >
-                                    <option selected="selected">New/Addition</option>
-                                    <option>Replacement</option>
+                                    <option></option>
+                                    <option value="New/Addition">New/Addition</option>
+                                    <option value="Replacement">Replacement</option>
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-row">
 
                         <!-- No. of Vacancy -->
                         <div class="col-md-6">
@@ -102,23 +99,21 @@
                                 >
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-row">
 
                         <!-- Employment Type -->
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Employment Type<span class="text-danger"> *</span></label>
+                                <label>Employment Type <span class="text-danger">*</span></label>
                                 <select 
                                     name="employmentType" 
-                                    id="selectEmploymentType"
+                                    id="employmentTypeForAdd"
                                     class="form-control select2" 
-                                    style="width: 100%;"
                                 >
-                                    <option selected="selected">Full Time</option>
-                                    <option>Part Time</option>
-                                    <option>Temporary</option>
+                                    <option></option>
+                                    <option value="Full Time">Full Time</option>
+                                    <option value="Part Time">Part Time</option>
+                                    <option value="Intern/OJT">Intern/OJT</option>
+                                    <option value="Contract">Contract</option>
                                 </select>
                             </div>
                         </div>
@@ -152,47 +147,35 @@
                         </div>
                     </div>
 
+                    <!-- Request Description -->
                     <div class="form-row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="jobDescription">Job Description<span class="text-danger"> *</span></label>
+                                <label for="requestDescription">Request Description<span class="text-danger"> *</span></label>
                                 <textarea
-                                    name="jobDescription" 
-                                    id="jobDescription" 
-                                    class="form-control h-50" 
+                                    name="requestDescription" 
+                                    id="requestDescriptionForAdd" 
+                                    class="form-control"
                                     placeholder="Enter job description here..."
-                                ></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="qualifications">Qualifications<span class="text-danger"> *</span></label>
-                                <textarea
-                                    name="qualifications" 
-                                    id="qualifications" 
-                                    class="form-control height: 50%" 
-                                    placeholder="Enter qualifications here..."
                                 ></textarea>
                             </div>
                         </div>
                     </div>
 
                 </div>
+
                 <div class="card-footer">
                     <div class="float-right">
-                        <button type="button" class="btn btn-default">Cancel</button>
+                        <button type="button" class="btn btn-default" onclick="history.back()">Cancel</button>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
             </div>
-        <!-- /.card -->
         </form>
     </section>
     
 {% endblock %}
+
 
 {% block page_scripts %}
     <script src="{{url_for('static', path='/dist/js/pages/department_head/manpower_requests.js')}}"></script>

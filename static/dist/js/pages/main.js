@@ -4,6 +4,18 @@
  * =====================================================
  * */
 
+
+/** If Selector Exist */
+const ifSelectorExist = (selector = "", handler = () => {}, isRequired = true) => {
+    if($(selector).length) handler() 
+    else if(isRequired) console.error(`Selector ${ selector } does not exist.`)
+}
+
+
+/** Is Empty Or Null */
+const isEmptyOrNull = (value) => { return $.trim(value) === "" || value == null }
+
+
 /** Initialize DataTable */
 const initDataTable = (selector = "", dtOptions = {
     debugMode: false,
@@ -19,13 +31,14 @@ const initDataTable = (selector = "", dtOptions = {
     
     if(dtOptions.debugMode) ajaxObj.success = result => console.log(result)
 
-    if($(selector).length) $(selector).DataTable({
+    ifSelectorExist(selector, () => $(selector).DataTable({
         ajax: ajaxObj,
         columns: dtOptions.columns,
         responsive: true,
         sort: dtOptions.sort
-    }) 
+    }))
 })
+
 
 /** Validate Form */
 const validateForm = (selector = "", validationOptions = {
@@ -33,7 +46,7 @@ const validateForm = (selector = "", validationOptions = {
     messages: {},
     submitHandler: () => {}
 }) => {
-    if($(selector).length) {
+    ifSelectorExist(selector, () => {
         $(selector).validate({
             rules: validationOptions.rules,
             messages: validationOptions.messages,
@@ -49,16 +62,19 @@ const validateForm = (selector = "", validationOptions = {
                 $(element).removeClass('is-invalid');
             },
             submitHandler: validationOptions.submitHandler
-        }) 
-    }
+        });
+    }, false);
 }
+
 
 /** Generate Form Data */
 const generateFormData = (selector) => { return new FormData($(selector)[0]) }
 
+
 /** Humanize DateTime */
 const fromNow = (datetime) => { return moment(datetime).fromNow() }
 const toNow = (datetime) => { return moment(datetime).fromNow() }
+
 
 /** Format DateTime */
 const formatDateTime = (datetime, format = "Full DateTime") => {
@@ -76,9 +92,46 @@ const formatDateTime = (datetime, format = "Full DateTime") => {
     return moment(datetime).format(realFormat)
 }
 
+
 /** Show/Hide Modal */
-const showModal = (selector) => $(selector).length ? $(selector).modal('show') : console.error(`Selector "${ selector }" does not exist`);
-const hideModal = (selector) => $(selector).length ? $(selector).modal('hide') : console.error(`Selector "${ selector }" does not exist`);
+const showModal = (selector) => ifSelectorExist(selector, () => $(selector).modal('show'));
+const hideModal = (selector) => ifSelectorExist(selector, () => $(selector).modal('hide'));
+
+
+/** Set Content */
+const setContent = (selector, value) => ifSelectorExist(selector, () => $(selector).html(value))
+
+
+/** Format Name */
+const formatName = (format = "", fullName = {
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    suffixName: ""
+}) => {
+    const isEmpty = (namePart) => { return namePart === "" || namePart == null }
+
+    const toMiddleInitial = (middleName) => { return `${ middleName.charAt(0) }.`}
+
+    var F = $.trim(fullName.firstName);
+    var M = $.trim(fullName.middleName);
+    var L = $.trim(fullName.lastName);
+    var S = $.trim(fullName.suffixName);
+    
+    if(format === "L, F M., S") {
+        if(isEmpty(M) && isEmpty(S)) {
+            return `${ L }, ${ F }`
+        } else if(isEmpty(S)) {
+            return `${ L }, ${ F } ${ toMiddleInitial(M) }`
+        } else {
+            return `${ L }, ${ F } ${ toMiddleInitial(M) }, ${ S }`
+        }
+    } else {
+        console.error(`Format "${ format }" for name is invalid`)
+        return ""
+    }
+}
+
 
 /** GET AJAX */
 const GET_ajax = (url, options = {
