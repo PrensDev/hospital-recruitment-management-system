@@ -11,13 +11,21 @@ class Department(BaseModel):
     description: str
 
 
+# Show Department Schema
+class ShowDepartment(Department):
+    class Config():
+        orm_mode = True
+
+
 # Position Schema
 class Position(BaseModel):
     name: str
     description: str
 
+
 # Show Position Schema
 class ShowPosition(Position):
+    department: ShowDepartment
     class Config():
         orm_mode = True
 
@@ -47,6 +55,7 @@ class UserInfo(BaseModel):
     last_name: str
     suffix_name: str
     email: str
+    position: ShowPosition
 
     class Config():
         orm_mode = True
@@ -71,11 +80,12 @@ class CreateManpowerRequest(BaseModel):
     request_status: str
     deadline: datetime
 
+
 # Show Manpower Request
 class ShowManpowerRequest(BaseModel):
     requisition_id: str
-    # manpower_request_by: List
-    # vacant_position: List[ShowPosition]
+    manpower_request_by: UserInfo
+    vacant_position: ShowPosition
     employment_type: str
     request_nature: str
     staffs_needed: int
@@ -84,7 +94,7 @@ class ShowManpowerRequest(BaseModel):
     content: str
     request_status: str
     deadline: Optional[datetime]
-    mapower_request_reviewed_by: Optional[List]
+    manpower_request_reviewed_by: Optional[UserInfo]
     reviewed_at: Optional[datetime]
     completed_at: Optional[datetime]
     created_at: datetime

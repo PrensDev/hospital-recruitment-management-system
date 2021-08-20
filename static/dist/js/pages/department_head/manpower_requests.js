@@ -66,19 +66,9 @@ validateForm('#addManPowerRequestForm',{
 
 /** ManPower Requests DataTable */
 initDataTable('#manpowerRequestDT', {
-    ajax: {
-        url: `${ D_API_ROUTE }requisitions`,
-        headers: AJAX_HEADERS,
-        dataSrc: ""
-        // success: result => console.log(result)
-    },
+    url: `${ D_API_ROUTE }requisitions`,
     columns: [
-        { 
-            data: null,
-            render: data => {
-                return "Nurse"
-            }
-        },
+        { data: "vacant_position.name" },
         { 
             data: null,
             render: data => {
@@ -97,9 +87,7 @@ initDataTable('#manpowerRequestDT', {
                 if(requestStatus === "Rejected")    bagdeTheme = "danger";
                 if(requestStatus === "Completed")   bagdeTheme = "blue";
 
-                return `
-                    <div class="badge badge-${ bagdeTheme } p-2 w-100">${ requestStatus }</div>
-                `
+                return `<div class="badge badge-${ bagdeTheme } p-2 w-100">${ requestStatus }</div>`
             }
         },
         {
@@ -114,46 +102,46 @@ initDataTable('#manpowerRequestDT', {
         },
         { 
             data: null,
-            class: "text-center",
             render: data => {
                 requisitionID = data.requisition_id
                 return `
-                    <div 
-                        class="btn btn-primary btn-sm"
-                        onclick="viewManpowerRequest('${ requisitionID }')"
-                    >
-                        <i class="fas fa-folder mr-1"></i>
-                        <span>View</span>
-                    </div>
-                    <div 
-                        class="btn btn-info btn-sm"
-                        data-toggle="modal"
-                        data-target="#"
-                    >
-                        <i class="fas fa-pencil-alt mr-1"></i>
-                        <span>Edit</span>
-                    </div>
-                    
-                    <div 
-                        class="btn btn-danger btn-sm"
-                        data-toggle="modal"
-                        data-target="#"
-                    >
-                        <i class="fas fa-trash mr-1"></i>
-                        <span>Delete</span>
+                    <div class="text-center">
+                        <div 
+                            class="btn btn-primary btn-sm"
+                            onclick="viewManpowerRequest('${ requisitionID }')"
+                        >
+                            <i class="fas fa-folder mr-1"></i>
+                            <span>View</span>
+                        </div>
+                        <div 
+                            class="btn btn-info btn-sm"
+                            data-toggle="modal"
+                            data-target="#"
+                        >
+                            <i class="fas fa-pencil-alt mr-1"></i>
+                            <span>Edit</span>
+                        </div>
+                        
+                        <div 
+                            class="btn btn-danger btn-sm"
+                            data-toggle="modal"
+                            data-target="#"
+                        >
+                            <i class="fas fa-trash mr-1"></i>
+                            <span>Delete</span>
+                        </div>
                     </div>
                 `
             }
         }
     ],
-    responsive: true,
-    sort: false
 })
 
 /** View Manpower Request */
 const viewManpowerRequest = (requisitionID) => {
     GET_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
+            console.log(result);
             showModal('#viewManPowerRequestModal');
         },
         error: () => toastr.danger('There was an error while getting requisition details')

@@ -5,7 +5,27 @@
  * */
 
 /** Initialize DataTable */
-const initDataTable = (selector = "", dtOptions = {}) => $(() => { if($(selector).length) $(selector).DataTable(dtOptions) })
+const initDataTable = (selector = "", dtOptions = {
+    debugMode: false,
+    url: "",
+    columns: [],
+    sort: true
+}) => $(() => { 
+    var ajaxObj = {
+        url: dtOptions.url,
+        headers: AJAX_HEADERS,
+        dataSrc: ""
+    }
+    
+    if(dtOptions.debugMode) ajaxObj.success = result => console.log(result)
+
+    if($(selector).length) $(selector).DataTable({
+        ajax: ajaxObj,
+        columns: dtOptions.columns,
+        responsive: true,
+        sort: dtOptions.sort
+    }) 
+})
 
 /** Validate Form */
 const validateForm = (selector = "", validationOptions = {
