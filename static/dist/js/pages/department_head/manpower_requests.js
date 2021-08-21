@@ -88,7 +88,7 @@ const submitManpowerRequest = () => {
     const deadline = formData.get("deadline");
 
     const data = {
-        position_id: "b9610b90-ff07-11eb-9644-d8c497916dda",
+        position_id: "651aba26-0285-11ec-ac77-049226169d64",
         employment_type: formData.get("employmentType"),
         request_nature: formData.get("requestNature"),
         staffs_needed: parseInt(formData.get("staffsNeeded")),

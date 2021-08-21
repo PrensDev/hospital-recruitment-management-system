@@ -27,9 +27,163 @@
         </div><!-- /.container-fluid -->
     </section>
 
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+
+            <!-- Info Boxes -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small card -->
+                    <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>150</h3>
+    
+                        <p>Total Manpower Requests</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-people-carry"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">
+                        More info <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small card -->
+                    <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>53<sup style="font-size: 20px">%</sup></h3>
+    
+                        <p>Total Job Posts</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">
+                        More info <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small card -->
+                    <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>65</h3>
+    
+                        <p>Total Applicants</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">
+                        More info <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small card -->
+                    <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>65</h3>
+    
+                        <p>Total Completed Requests</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">
+                        More info <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- / Info Boxes -->
+
+            <!-- Card -->
+            <div class="card card-primary card-outline">
+
+                <!-- Card Header -->
+                <div class=" p-3 d-flex justify-content-between">
+                    <div>
+                        <h3 class="card-title">Lists of Manpower Requests</h3>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="manpowerRequestDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Position Title</th>
+                                    <th>Staffs Needed</th>
+                                    <th>Nature of Request</th>
+                                    <th>Status</th>
+                                    <th>Deadline</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Assistant Manager
+                                    </td>
+                                    <td>
+                                        1 staff
+                                    </td>
+                                    <td>
+                                        Replacement
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-success px-2">Approved</span>
+                                    </td>
+                                    <td>
+                                        September 20, 2021; 7:00 AM
+                                    </td>
+                                    <td class="project-actions text-center">
+                                        <div 
+                                            class="btn btn-primary btn-sm"
+                                            data-toggle="modal"
+                                            data-target="#viewManPowerRequest"
+                                        >
+                                            <i class="fas fa-folder mr-1"></i>
+                                            <span>View</span>
+                                        </div>
+                                        
+                                        <div 
+                                            class="btn btn-danger btn-sm"
+                                            data-toggle="modal"
+                                            data-target="#"
+                                        >
+                                            <i class="fas fa-trash mr-1"></i>
+                                            <span>Delete</span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.card -->
+            
+        </div>
+    </section>
+    <!-- /. content -->
 {% endblock %}
 
-
-{% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/admin/dashboard.js')}}"></script>
+{% block modals %}
+        {% include "pages/recruiter/modals/manpower_requests_modal.html" %}
+        {% block page_scripts %}
+            <script src="{{url_for('static', path='/dist/js/pages/recruiter/manpower_requests.js')}}"></script>
+        {% endblock %}
 {% endblock %}
