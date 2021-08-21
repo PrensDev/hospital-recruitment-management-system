@@ -1,4 +1,5 @@
 # Import Packages
+from typing import List
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
@@ -46,9 +47,13 @@ REQUISITION_NOT_FOUND_RESPONSE = {"message": "Requisition not found"}
 
 
 # Get All Requisitions
-@router.get("/requisitions")
-def get_all_requisitions(db: Session = Depends(get_db)):
+@router.get("/requisitions", response_model = List[schemas.ShowManpowerRequest])
+def get_all_requisitions(
+    db: Session = Depends(get_db),
+    user_data: schemas.User = Depends(get_user)
+):
     try:
+        check_priviledge(user_data, AUTHORIZED_USER)
         return db.query(models.Requisition).all()
     except Exception as e:
         print(e)

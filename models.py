@@ -184,6 +184,7 @@ class Requisition(Base):
     )
     request_nature = Column(
         String(255),
+        default = "For Review",
         nullable = False
     )
     staffs_needed = Column(
@@ -208,7 +209,7 @@ class Requisition(Base):
     )
     deadline = Column(
         DateTime,
-        nullable = False
+        nullable = True
     )
     reviewed_by = Column(
         String(36),

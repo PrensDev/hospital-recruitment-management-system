@@ -1,11 +1,9 @@
 # Import Packages
-from jwt_token import get_token
-from oauth2 import get_user
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from routers.web import errPages_templates as errTemplate
-from oauth2 import get_user
+from jwt_token import get_token
 import schemas
 
 # Router
@@ -58,12 +56,15 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
 
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
-async def dashboard(req: Request):
-    return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
-        "request": req,
-        "page_title": "Manpower Requests",
-        "active_navlink": "Manpower Requests"
-    })
+async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
+            "request": req,
+            "page_title": "Manpower Requests",
+            "active_navlink": "Manpower Requests"
+        })
+    else:
+        return errTemplate.page_not_found(req)
 
 
 # Add Manpower Request

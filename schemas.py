@@ -73,11 +73,10 @@ class CreateManpowerRequest(BaseModel):
     employment_type: str
     request_nature: str
     staffs_needed: int
-    min_monthly_salary: float
-    max_monthly_salary: float
+    min_monthly_salary: Optional[float]
+    max_monthly_salary: Optional[float]
     content: str
-    request_status: str
-    deadline: datetime
+    deadline: Optional[datetime]
 
 
 # Show Manpower Request
@@ -88,8 +87,8 @@ class ShowManpowerRequest(BaseModel):
     employment_type: str
     request_nature: str
     staffs_needed: int
-    min_monthly_salary: float
-    max_monthly_salary: float
+    min_monthly_salary: Optional[float]
+    max_monthly_salary: Optional[float]
     content: str
     request_status: str
     deadline: Optional[datetime]

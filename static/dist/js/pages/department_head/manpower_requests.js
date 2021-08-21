@@ -38,7 +38,7 @@ $('#requestDescriptionForAdd').summernote({
 
 
 /** Validate Add Manpower Request Form */
-validateForm('#addManpowerRequestForm',{
+validateForm('#addManpowerRequestForm', {
     rules: {
         vacantPosition: {
             required: true,
@@ -46,22 +46,11 @@ validateForm('#addManpowerRequestForm',{
         requestNature: {
             required: true
         },
-        noOfStaffsNeeded: {
+        staffsNeeded: {
             min: 1,
-            required: true
-        },
-        deadline: {
             required: true
         },
         employmentType: {
-            required: true
-        },
-        minSalary: {
-            min: 1,
-            required: true
-        },
-        maxSalary: {
-            min: 1,
             required: true
         },
         requestDescription: {
@@ -75,23 +64,12 @@ validateForm('#addManpowerRequestForm',{
         requestNature: {
             required: 'Nature of request is required'
         },
-        noOfStaffsNeeded: {
+        staffsNeeded: {
             min: 'The number of staffs must at least 1',
             required: 'No. of vacany is required'
         },
-        deadline: {
-            required: 'Deadline is required'
-        },
         employmentType: {
             required: 'Employment type is required'
-        },
-        minSalary: {
-            min: 'Salary must have a real value',
-            required: 'Minimum salary is required'
-        },
-        maxSalary: {
-            min: 'Salary must have a real value',
-            required: 'Maximum salary is required'
         },
         requestDescription: {
             required: 'Job description is required'
@@ -103,11 +81,29 @@ validateForm('#addManpowerRequestForm',{
 
 /** Submit Manpower Request */
 const submitManpowerRequest = () => {
-    const formData = generateFormData('#addManpowerRequestForm')
+    const formData = generateFormData('#addManpowerRequestForm');
+    
+    const minMonthlySalary = formData.get("minSalary");
+    const maxMonthlySalary = formData.get("maxSalary");
+    const deadline = formData.get("deadline");
 
     const data = {
-        
+        position_id: "b9610b90-ff07-11eb-9644-d8c497916dda",
+        employment_type: formData.get("employmentType"),
+        request_nature: formData.get("requestNature"),
+        staffs_needed: parseInt(formData.get("staffsNeeded")),
+        min_monthly_salary: nullOrReturnValue(minMonthlySalary, parseFloat(minMonthlySalary)),
+        max_monthly_salary: nullOrReturnValue(maxMonthlySalary, parseFloat(maxMonthlySalary)),
+        content: formData.get("requestDescription"),
+        deadline: nullOrReturnValue(deadline, formatDateTime(deadline))
     }
+
+    POST_ajax(`${ D_API_ROUTE }requisitions`, data, {
+        success: result => {
+            console.log(result)
+        },
+        error: () => toastr.error("There was an error in creating manpower request")
+    })
 }
 
 
@@ -252,7 +248,10 @@ const viewManpowerRequest = (requisitionID) => {
             setContent('#requestedPosition', result.vacant_position.name);
             
             // Set No. of Staffs Needed
-            setContent('#noOfStaffsNeeded', result.staffs_needed);
+            setContent('#noOfStaffsNeeded', () => {
+                const staffsNeeded = result.staffs_needed;
+                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`
+            });
 
             // Set Employment Type
             setContent('#employmentType', result.employment_type);
@@ -267,7 +266,7 @@ const viewManpowerRequest = (requisitionID) => {
             setContent('#suggestedSalary', () => {
                 const minMonthlySalary = result.min_monthly_salary;
                 const maxMonthlySalary = result.max_monthly_salary;
-                const hasNoSalaryRange = isEmptyOrNull(minMonthlySalary) && maxMonthlySalary(maxMonthlySalary);
+                const hasNoSalaryRange = isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary);
                 return hasNoSalaryRange ? 'Unset' : `P ${ minMonthlySalary } - P ${ maxMonthlySalary }/mon`;
             });
 

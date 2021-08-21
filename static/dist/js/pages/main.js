@@ -8,12 +8,16 @@
 /** If Selector Exist */
 const ifSelectorExist = (selector = "", handler = () => {}, isRequired = true) => {
     if($(selector).length) handler() 
-    else if(isRequired) console.error(`Selector ${ selector } does not exist.`)
+    else if(isRequired && IF_SELECTOR_EXIST_DEBUG_MODE) console.error(`Selector ${ selector } does not exist.`)
 }
 
 
 /** Is Empty Or Null */
 const isEmptyOrNull = (value) => { return $.trim(value) === "" || value == null }
+
+
+/** Null Or With Value */
+const nullOrReturnValue = (nullable, returnValue) => { return isEmptyOrNull(nullable) ? null : returnValue }
 
 
 /** Initialize DataTable */
@@ -77,19 +81,23 @@ const toNow = (datetime) => { return moment(datetime).fromNow() }
 
 
 /** Format DateTime */
-const formatDateTime = (datetime, format = "Full DateTime") => {
-    var realFormat;
-    if(format === "Full DateTime")
-        realFormat = "dddd, MMMM D, YYYY; hh:mm A"
-    else if(format === "DateTime")
-        realFormat = "MMMM D, YYYY; hh:mm A"
-    else if(format === "Date")
-        realFormat = "MMMM D, YYYY"
-    else if(format === "Time")
-        realFormat = "hh:mm A"
-    else
-        realFormat = format
-    return moment(datetime).format(realFormat)
+const formatDateTime = (datetime, format = "") => {
+    if(format === "")
+        return moment(datetime).format()
+    else {
+        var realFormat;
+        if(format === "Full DateTime")
+            realFormat = "dddd, MMMM D, YYYY; hh:mm A"
+        else if(format === "DateTime")
+            realFormat = "MMMM D, YYYY; hh:mm A"
+        else if(format === "Date")
+            realFormat = "MMMM D, YYYY"
+        else if(format === "Time")
+            realFormat = "hh:mm A"
+        else
+            realFormat = format
+        return moment(datetime).format(realFormat)
+    }
 }
 
 
@@ -134,7 +142,7 @@ const formatName = (format = "", fullName = {
 
 
 /** GET AJAX */
-const GET_ajax = (url, options = {
+const GET_ajax = (url = "", options = {
     success: () => {},
     error: () => {}
 }) => {
@@ -145,4 +153,21 @@ const GET_ajax = (url, options = {
         success: options.success,
         error: options.error
     });
+}
+
+/** POST AJAX */
+const POST_ajax = (url = "", data = {}, options = {
+    success: () => {},
+    error: () => {}
+}) => {
+    $.ajax({
+        url: url,
+        type: 'POST',
+        headers: AJAX_HEADERS,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data),
+        success: options.success,
+        error: options.error
+    })
 }

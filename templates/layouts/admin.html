@@ -2,7 +2,6 @@
 
 
 {% block body %}
-  
   <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed user-select-none">
     
     <!-- Site wrapper -->
@@ -50,14 +49,17 @@
     </div>
     <!-- ./wrapper -->
 
+
+    <!-- Modals -->
     {% block modals %}{% endblock %}
+    {% include "pages/auth/modals/logout_modal.html" %}
 
+
+    <!-- Scripts -->
     {% include "layouts/_scripts.html" %}
+    {% block scripts %}{% endblock %}
 
-    <!-- Page Script -->
-    {% block page_scripts %}{% endblock %}
+    <script src="{{url_for('static', path='/dist/js/pages/auth/logout.js')}}"></script>
 
   </body>
-
-
 {% endblock %}

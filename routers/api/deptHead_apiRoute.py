@@ -53,6 +53,7 @@ def create_manpower_request(
     user_data: schemas.User = Depends(get_user)
 ):
     try:
+        check_priviledge(user_data, AUTHORIZED_USER)
         new_requisition = models.Requisition(
             requested_by = user_data.user_id,
             position_id = req.position_id,
@@ -62,7 +63,7 @@ def create_manpower_request(
             min_monthly_salary = req.min_monthly_salary,
             max_monthly_salary = req.max_monthly_salary,
             content = req.content,
-            request_status = req.request_status,
+            request_status = "For Review",
             deadline = req.deadline
         )
         db.add(new_requisition)
@@ -94,10 +95,10 @@ def get_all_requisitions(
 def get_one_requisition(
     requisition_id: str,
     db: Session = Depends(get_db), 
-    # user_data: schemas.User = Depends(get_user)
+    user_data: schemas.User = Depends(get_user)
 ):
     try:
-        # check_priviledge(user_data, AUTHORIZED_USER)
+        check_priviledge(user_data, AUTHORIZED_USER)
         requisition = db.query(models.Requisition).filter(models.Requisition.requisition_id == requisition_id).first()
         if not requisition:
             return REQUISITION_NOT_FOUND_RESPONSE

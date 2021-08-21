@@ -17,7 +17,11 @@ router = APIRouter(
 
 # Login
 @router.post("/login")
-def login(res: Response, req: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login(
+    res: Response, 
+    req: OAuth2PasswordRequestForm = Depends(), 
+    db: Session = Depends(get_db)
+):
     try:
         user = db.query(models.User).filter(models.User.email == req.username).first()
         if user:
@@ -64,6 +68,9 @@ def logout(res: Response):
     try:
         res.delete_cookie("access_token")
         res.delete_cookie("user_type")
-        return {"message": "Cookies has been removed"}
+        return {
+            "logout_status": "Success",
+            "message": "Log out is successful"
+        }
     except Exception as e:
         print(e)
