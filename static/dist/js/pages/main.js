@@ -33,14 +33,24 @@ const initDataTable = (selector = "", dtOptions = {
         dataSrc: ""
     }
     
-    if(dtOptions.debugMode) ajaxObj.success = result => console.log(result)
-
-    ifSelectorExist(selector, () => $(selector).DataTable({
-        ajax: ajaxObj,
-        columns: dtOptions.columns,
-        responsive: true,
-        sort: dtOptions.sort
-    }))
+    ifSelectorExist(selector, () => {
+        if(dtOptions.debugMode) {
+            $(selector).DataTable({
+                ajax: {
+                    url: dtOptions.url,
+                    headers: AJAX_HEADERS,
+                    success: result => console.log(result)
+                }
+            });
+        } else {
+            $(selector).DataTable({
+                ajax: ajaxObj,
+                columns: dtOptions.columns,
+                responsive: true,
+                sort: dtOptions.sort
+            });
+        }
+    })
 })
 
 
@@ -117,22 +127,28 @@ const formatName = (format = "", fullName = {
     lastName: "",
     suffixName: ""
 }) => {
-    const isEmpty = (namePart) => { return namePart === "" || namePart == null }
-
     const toMiddleInitial = (middleName) => { return `${ middleName.charAt(0) }.`}
 
     var F = $.trim(fullName.firstName);
     var M = $.trim(fullName.middleName);
     var L = $.trim(fullName.lastName);
     var S = $.trim(fullName.suffixName);
-    
+
     if(format === "L, F M., S") {
-        if(isEmpty(M) && isEmpty(S)) {
+        if(isEmptyOrNull(M) && isEmptyOrNull(S)) {
             return `${ L }, ${ F }`
-        } else if(isEmpty(S)) {
+        } else if(isEmptyOrNull(S)) {
             return `${ L }, ${ F } ${ toMiddleInitial(M) }`
         } else {
             return `${ L }, ${ F } ${ toMiddleInitial(M) }, ${ S }`
+        }
+    } else if(format === "F M. L, S") {
+        if(isEmptyOrNull(M) && isEmptyOrNull(S)) {
+            return `${ F } ${ L }`;
+        } else if(isEmptyOrNull(S)) {
+            return `${ F } ${ toMiddleInitial(M) } ${ L }`;
+        } else {
+            return `${ F } ${ toMiddleInitial(M) } ${ L }, ${ S }`;
         }
     } else {
         console.error(`Format "${ format }" for name is invalid`)
@@ -154,6 +170,7 @@ const GET_ajax = (url = "", options = {
         error: options.error
     });
 }
+
 
 /** POST AJAX */
 const POST_ajax = (url = "", data = {}, options = {

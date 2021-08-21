@@ -1,137 +1,139 @@
-
-<!-- Extra Large Modal -->
-<div class="modal fade" id="viewManPowerRequest">
+<!-- View Manpower Request Modal -->
+<div class="modal fade" id="viewManpowerRequestModal">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title"><i class="fas fa-folder text-success mr-2"></i>View Manpower Request</h4>
-            <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true"><i class="fas fa-times"></i></span>
-            </button>
-        </div>
-        <div class="modal-body p-5">
-            <div class="table-responsive">
-                <table class="table table-bordered w-100" width="100%">
-                    <tr class="bg-light">
-                        <th colspan="3" class="text-center">MANPOWER REQUEST FORM</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="font-weight-bold">Requesting Department</div>
-                            <div class="mx-3">Juan Dela Cruz</div>
-                            <div class="mx-3 small text-secondary">Department of Cardiology</div>
-                        </td>
-                        <td>
-                            <div class="font-weight-bold">Date Requested</div>
-                            <div class="mx-3">
-                                <div>Sunday, September 1, 2021</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="font-weight-bold">Date Required</div>
-                            <div class="mx-3">
-                                <div>Sunday, September 1, 2021</div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="font-weight-bold">Position</div>
-                            <div class="mx-3">Medical Nurse III</div>
-                        </td>
-                        <td>
-                            <div class="font-weight-bold">Staffs Needed</div>
-                            <div class="mx-3">3 staffs</div>
-                        </td>
-                        <td>
-                            <div class="font-weight-bold">Employment Type</div>
-                            <div class="mx-3">Full Time</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="font-weight-bold">Nature of Request</div>
-                            <div class="mx-3">New/Addition</div>
-                        </td>
-                        <td colspan="2">
-                            <div class="font-weight-bold">Suggested Salary</div>
-                            <div class="mx-3">P 25,400 - P 45,500</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">
-                            <div class="font-weight-bold">Request Description</div>
-                            <div class="mx-3">
-                                <div class="my-3 text-justify">
-                                    <h3>Job Description</h3>
-                                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Neque laudantium dicta doloremque modi delectus rerum quidem commodi exercitationem officia soluta, odit fuga facere, minima provident aperiam iste. Distinctio natus optio voluptate beatae iusto nihil aliquam dicta, ducimus facilis quisquam reiciendis nam quibusdam culpa explicabo praesentium molestias perferendis provident consequatur consectetur quos pariatur rem officia facere.</p>
-                                    <h3>Qualifications</h3>
-                                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem mollitia, blanditiis nam deserunt necessitatibus eos maiores voluptatem minima! Maiores culpa dignissimos reprehenderit rem.</p>
-                                    <h3>Educational Attainment</h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum porro veritatis vero expedita quas, error, eius eveniet accusantium quam doloribus ipsam sunt distinctio ex quisquam tenetur earum molestiae voluptates, incidunt numquam tempore explicabo quis. Quis saepe, ratione reiciendis asperiores non recusandae autem!</p>
+        <form class="modal-content" id="updateManpowerRequestStatusForm">
+
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fas fa-folder text-success mr-2"></i>View Manpower Request</h4>
+                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </button>
+            </div>
+
+            <div class="modal-body p-5">
+                <div class="table-responsive">
+                    <table class="table table-bordered w-100" width="100%">
+                        <tr class="bg-light">
+                            <th colspan="3" class="text-center">MANPOWER REQUEST FORM</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="font-weight-bold">Requesting Department</div>
+                                <div class="mx-3" id="requestorName"></div>
+                                <div class="mx-3 small text-secondary" id="requestorDepartment"></div>
+                            </td>
+                            <td>
+                                <div class="font-weight-bold">Date Requested</div>
+                                <div class="mx-3">
+                                    <div id="dateRequested"></div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="bg-light">
-                        <th class="text-center" colspan="3">Approval</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="font-weight-bold">Approved By</div>
-                            <div class="mx-3">
-                                <div></div>
-                                <div class="small text-secondary"></div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="font-weight-bold">Approved At</div>
-                            <div class="mx-3"></div>
-                        </td>
-                        <td>
-                            <div class="font-weight-bold">Completed At</div>
-                            <div class="mx-3"></div>
-                        </td>
-                    </tr>
-                </table>
+                            </td>
+                            <td>
+                                <div class="font-weight-bold">Deadline</div>
+                                <div class="mx-3">
+                                    <div id="deadline"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="font-weight-bold">Position</div>
+                                <div class="mx-3" id="requestedPosition"></div>
+                            </td>
+                            <td>
+                                <div class="font-weight-bold">Staffs Needed</div>
+                                <div class="mx-3" id="noOfStaffsNeeded"></div>
+                            </td>
+                            <td>
+                                <div class="font-weight-bold">Employment Type</div>
+                                <div class="mx-3" id="employmentType"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="font-weight-bold">Nature of Request</div>
+                                <div class="mx-3" id="requestNature"></div>
+                            </td>
+                            <td colspan="2">
+                                <div class="font-weight-bold">Suggested Salary</div>
+                                <div class="mx-3" id="suggestedSalary"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div class="font-weight-bold">Request Description</div>
+                                <div class="mx-3">
+                                    <div class="my-3 text-justify" id="requestDescription"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="bg-light">
+                            <th class="text-center" colspan="3">Approval</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="font-weight-bold">Approved By</div>
+                                <div class="mx-3" id="approvedBy"></div>
+                            </td>
+                            <td>
+                                <div class="font-weight-bold">Approved At</div>
+                                <div class="mx-3" id="approvedAt"></div>
+                            </td>
+                            <td>
+                                <div class="font-weight-bold">Completed At</div>
+                                <div class="mx-3" id="completedAt"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Reject or Approve -->
+                <label class="mt-5">Select decision for manpower request:</label>
+                <div class="form-group d-flex">
+                    <div class="custom-control custom-radio m-1">
+                        <input 
+                            class="custom-control-input custom-control-input-danger" 
+                            type="radio" 
+                            id="rejectRequest" 
+                            name="requestStatus" 
+                            value="Rejected"
+                        >
+                        <label for="rejectRequest" class="custom-control-label font-weight-normal">Reject</label>
+                    </div>
+                    <div class="custom-control custom-radio m-1">
+                        <input 
+                            class="custom-control-input" 
+                            type="radio" 
+                            id="approveRequest" 
+                            name="requestStatus" 
+                            value="Approved"
+                        >
+                        <label for="approveRequest" class="custom-control-label font-weight-normal">Approve</label>
+                    </div>
+                </div>
+
+                <!-- Textarea for Reason of Rejecting Request -->
+                <div class="mt-5" id="reasonField" style="display:none">
+                    <div class="form-group">
+                        <label for="reason">Please include reason for rejecting request<span class="text-danger"> *</span></label>
+                        <textarea 
+                            type="text" 
+                            name="remarks" 
+                            id="remarks" 
+                            class="form-control"
+                            rows=5
+                            placeholder="Type reason for rejecting request here"
+                        ></textarea>
+                    </div>
+                </div>
             </div>
 
-            <!-- Reject or Approve -->
-            
-            <label class="mt-5">Select decision for manpower request:</label>
-            <div class="form-group d-flex">
-                <div class="custom-control custom-radio m-1">
-                    <input class="custom-control-input custom-control-input-danger" type="radio" id="customRadio2" name="customRadio" value="Rejected">
-                    <label for="customRadio2" class="custom-control-label font-weight-normal">Reject</label>
-                </div>
-                <div class="custom-control custom-radio m-1">
-                    <input class="custom-control-input" type="radio" id="customRadio1" name="customRadio" value="Approved">
-                    <label for="customRadio1" class="custom-control-label font-weight-normal">Approve</label>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success">Submit</button>
             </div>
-
-            <!-- Textarea for Reason of Rejecting Request -->
-            <div class="mt-5" id="reasonField" style="display:none">
-                <div class="form-group">
-                    <label for="reason">Reason for rejecting request:<span class="text-danger"> *</span></label>
-                    <textarea 
-                        type="text" 
-                        name="reason" 
-                        id="reason" 
-                        class="form-control" 
-                        placeholder="Type reason for rejecting request here"
-                    ></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-success">Submit</button>
-        </div>
+        </form>
     </div>
-    <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
 

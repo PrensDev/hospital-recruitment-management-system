@@ -16,7 +16,7 @@ def get_user(token: str = Depends(oauth2_scheme)):
 
 # Check Priviledge
 def check_priviledge(user_data, user_type: str):
-    if not user_data.user_type == user_type:
+    if user_data.user_type != user_type:
         raise HTTPException(
             status_code = 401,
             detail = "Unauthorized",

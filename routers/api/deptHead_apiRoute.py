@@ -1,6 +1,6 @@
 # Import Packages
 from typing import List
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
@@ -25,7 +25,10 @@ AUTHORIZED_USER = "Department Head"
 
 # User Information
 @router.get("/info", response_model = schemas.UserInfo)
-def get_user_info(db: Session = Depends(get_db), user_data: schemas.User = Depends(get_user)):
+def get_user_info(
+    db: Session = Depends(get_db), 
+    user_data: schemas.User = Depends(get_user)
+):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
         user_info = db.query(User_model).filter(User_model.user_id == user_data.user_id)

@@ -224,6 +224,10 @@ class Requisition(Base):
         DateTime,
         nullable = True
     )
+    remarks = Column(
+        Text,
+        nullable = True
+    )
     created_at = Column(
         DateTime,
         default = text('NOW()')

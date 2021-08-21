@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * ADD MANPOWER REQUEST
+ * SUBMIT MANPOWER REQUEST
  * ==============================================================================
  */
 
@@ -109,7 +109,7 @@ const submitManpowerRequest = () => {
 
 /**
  * ==============================================================================
- * GET ALL MANPOWER REQUESTS
+ * VIEW ALL MANPOWER REQUESTS
  * ==============================================================================
  */
 
@@ -210,7 +210,7 @@ initDataTable('#manpowerRequestDT', {
 
 /**
  * ==============================================================================
- * GET ONE MANPOWER REQUEST
+ * VIEW MANPOWER REQUEST DETAILS
  * ==============================================================================
  */
 
@@ -219,8 +219,6 @@ initDataTable('#manpowerRequestDT', {
 const viewManpowerRequest = (requisitionID) => {
     GET_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
-            console.log(result)
-            
             const requestedBy = result.manpower_request_by;
             
             // Set Requestor Name
@@ -305,7 +303,7 @@ const viewManpowerRequest = (requisitionID) => {
             });
 
             // Show View Manpower Request Modal
-            showModal('#viewManPowerRequestModal');
+            showModal('#viewManpowerRequestModal');
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });

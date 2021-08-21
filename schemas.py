@@ -95,6 +95,7 @@ class ShowManpowerRequest(BaseModel):
     manpower_request_reviewed_by: Optional[UserInfo]
     reviewed_at: Optional[datetime]
     completed_at: Optional[datetime]
+    remarks: Optional[str]
     created_at: datetime
     updated_at: Optional[datetime]
 
@@ -113,3 +114,10 @@ class ShowDepartmentPosition(BaseModel):
 
     class Config():
         orm_mode = True
+
+
+# Manpower Request Status
+class ManpowerRequestStatus(BaseModel):
+    request_status: str
+    remarks: Optional[str]
+    reviewed_at: datetime

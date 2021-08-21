@@ -25,10 +25,13 @@ AUTHORIZED_USER = "Hiring Manager"
 
 # User Information
 @router.get("/info", response_model = schemas.UserInfo)
-def get_user_info(db: Session = Depends(get_db), active_user: schemas.User = Depends(get_user)):
+def get_user_info(
+    db: Session = Depends(get_db), 
+    user_data: schemas.User = Depends(get_user)
+):
     try:
-        # check_priviledge(user_data, AUTHORIZED_USER)
-        user_info = db.query(User_model).filter(User_model.user_id == active_user.user_id)
+        check_priviledge(user_data, AUTHORIZED_USER)
+        user_info = db.query(models.User).filter(models.User.user_id == user_data.user_id)
         if not user_info.first():
             return "User does not exist"
         else:
@@ -60,27 +63,41 @@ def get_all_requisitions(
 
 
 # Get One Requisition
-@router.get("/requisitions/{requisition_id}")
-def get_one_requisition(requisition_id: str, db: Session = Depends(get_db)):
+@router.get("/requisitions/{requisition_id}", response_model = schemas.ShowManpowerRequest)
+def get_one_requisition(
+    requisition_id: str, 
+    db: Session = Depends(get_db),
+    user_data: schemas.User = Depends(get_user)
+
+):
     try:
+        check_priviledge(user_data, AUTHORIZED_USER)
         return db.query(models.Requisition).filter(models.Requisition.requisition_id == requisition_id).first()
     except Exception as e:
         print(e)
 
 
 # Update Requisition
-@router.put("/requisition/{requisition_id}")
-def uodate_requisition(requisition_id: str, db: Session = Depends(get_db)):
+@router.put("/requisitions/{requisition_id}")
+def update_requisition(
+    requisition_id: str, 
+    req: schemas.ManpowerRequestStatus,
+    db: Session = Depends(get_db),
+    user_data: schemas.User = Depends(get_user)
+):
     try:
+        check_priviledge(user_data, AUTHORIZED_USER)
         requisition = db.query(models.Requisition).filter(models.Requisition.requisition_id == requisition_id)
         if not requisition.first():
             raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE)
         else:
-            requisition.update({})
+            requisition.update({
+                "request_status": req.request_status,
+                "remarks": req.remarks,
+                "reviewed_by": user_data.user_id,
+                "reviewed_at": req.reviewed_at
+            })
             db.commit()
-            return {
-                "data": requisition,
-                "message": "A man power request has been updated"
-            }
+            return {"message": "A man power request has been updated"}
     except Exception as e:
         print(e)
