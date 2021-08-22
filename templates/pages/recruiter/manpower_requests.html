@@ -181,9 +181,12 @@
     <!-- /. content -->
 {% endblock %}
 
-{% block modals %}
-        {% include "pages/recruiter/modals/manpower_requests_modal.html" %}
-        {% block page_scripts %}
-            <script src="{{url_for('static', path='/dist/js/pages/recruiter/manpower_requests.js')}}"></script>
-        {% endblock %}
+
+{% block page_modals %}
+    {% include "pages/recruiter/modals/manpower_requests_modal.html" %}
+{% endblock %}
+
+
+{% block page_scripts %}
+    <script src="{{url_for('static', path='/dist/js/pages/recruiter/manpower_requests.js')}}"></script>
 {% endblock %}

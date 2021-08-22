@@ -9,7 +9,8 @@ import schemas, models
 
 
 # Models
-User_model = models.User
+User = models.User
+Requisition = models.Requisition
 
 
 # Router Instance
@@ -31,7 +32,7 @@ def get_user_info(
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        user_info = db.query(models.User).filter(models.User.user_id == user_data.user_id)
+        user_info = db.query(User).filter(User.user_id == user_data.user_id)
         if not user_info.first():
             return "User does not exist"
         else:
@@ -57,7 +58,7 @@ def get_all_requisitions(
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        return db.query(models.Requisition).all()
+        return db.query(Requisition).all()
     except Exception as e:
         print(e)
 
@@ -72,7 +73,11 @@ def get_one_requisition(
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        return db.query(models.Requisition).filter(models.Requisition.requisition_id == requisition_id).first()
+        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
+        if not requisition:
+            return REQUISITION_NOT_FOUND_RESPONSE
+        else:
+            return requisition
     except Exception as e:
         print(e)
 
@@ -87,7 +92,7 @@ def update_requisition(
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        requisition = db.query(models.Requisition).filter(models.Requisition.requisition_id == requisition_id)
+        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id)
         if not requisition.first():
             raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE)
         else:

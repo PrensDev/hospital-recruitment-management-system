@@ -9,3 +9,15 @@
 {% block sidebar %}
     {% include "pages/recruiter/components/sidebar.html" %}
 {% endblock %}
+
+
+{% block modals %}
+    {% block page_modals %}{% endblock %}
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="{{url_for('static', path='/dist/js/pages/recruiter/info.js')}}"></script>
+
+    {% block page_scripts %}{% endblock %}
+{% endblock %}

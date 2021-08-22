@@ -1,6 +1,5 @@
-
-<!-- Extra Large Modal -->
-<div class="modal fade" id="viewManPowerRequest">
+<!-- View Manpower Request Modal -->
+<div class="modal fade" id="viewManpowerRequestModal">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
         <div class="modal-header">
@@ -18,58 +17,51 @@
                     <tr>
                         <td>
                             <div class="font-weight-bold">Requesting Department</div>
-                            <div class="mx-3">Juan Dela Cruz</div>
-                            <div class="mx-3 small text-secondary">Department of Cardiology</div>
+                            <div class="mx-3" id="requestorName"></div>
+                            <div class="mx-3 small text-secondary" id="requestorDepartment"></div>
                         </td>
                         <td>
                             <div class="font-weight-bold">Date Requested</div>
                             <div class="mx-3">
-                                <div>Sunday, September 1, 2021</div>
+                                <div id="dateRequested"></div>
                             </div>
                         </td>
                         <td>
-                            <div class="font-weight-bold">Date Required</div>
+                            <div class="font-weight-bold">Deadline</div>
                             <div class="mx-3">
-                                <div>Sunday, September 1, 2021</div>
+                                <div id="deadline"></div>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <div class="font-weight-bold">Position</div>
-                            <div class="mx-3">Medical Nurse III</div>
+                            <div class="mx-3" id="requestedPosition"></div>
                         </td>
                         <td>
                             <div class="font-weight-bold">Staffs Needed</div>
-                            <div class="mx-3">3 staffs</div>
+                            <div class="mx-3" id="noOfStaffsNeeded"></div>
                         </td>
                         <td>
                             <div class="font-weight-bold">Employment Type</div>
-                            <div class="mx-3">Full Time</div>
+                            <div class="mx-3" id="employmentType"></div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <div class="font-weight-bold">Nature of Request</div>
-                            <div class="mx-3">New/Addition</div>
+                            <div class="mx-3" id="requestNature"></div>
                         </td>
                         <td colspan="2">
                             <div class="font-weight-bold">Suggested Salary</div>
-                            <div class="mx-3">P 25,400 - P 45,500</div>
+                            <div class="mx-3" id="suggestedSalary"></div>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="4">
                             <div class="font-weight-bold">Request Description</div>
                             <div class="mx-3">
-                                <div class="my-3 text-justify">
-                                    <h3>Job Description</h3>
-                                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Neque laudantium dicta doloremque modi delectus rerum quidem commodi exercitationem officia soluta, odit fuga facere, minima provident aperiam iste. Distinctio natus optio voluptate beatae iusto nihil aliquam dicta, ducimus facilis quisquam reiciendis nam quibusdam culpa explicabo praesentium molestias perferendis provident consequatur consectetur quos pariatur rem officia facere.</p>
-                                    <h3>Qualifications</h3>
-                                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem mollitia, blanditiis nam deserunt necessitatibus eos maiores voluptatem minima! Maiores culpa dignissimos reprehenderit rem.</p>
-                                    <h3>Educational Attainment</h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum porro veritatis vero expedita quas, error, eius eveniet accusantium quam doloribus ipsam sunt distinctio ex quisquam tenetur earum molestiae voluptates, incidunt numquam tempore explicabo quis. Quis saepe, ratione reiciendis asperiores non recusandae autem!</p>
-                                </div>
+                                <div class="my-3 text-justify" id="requestDescription"></div>
                             </div>
                         </td>
                     </tr>
@@ -79,27 +71,26 @@
                     <tr>
                         <td>
                             <div class="font-weight-bold">Approved By</div>
-                            <div class="mx-3">
-                                <div>Mary Jane Cruz</div>
-                                <div class="small text-secondary"></div>
-                            </div>
+                            <div class="mx-3" id="approvedBy"></div>
                         </td>
                         <td>
                             <div class="font-weight-bold">Approved At</div>
-                            <div class="mx-3">August 20, 2021; 05:58 PM</div>
+                            <div class="mx-3" id="approvedAt"></div>
                         </td>
                         <td>
                             <div class="font-weight-bold">Completed At</div>
-                            <div class="mx-3">No Status</div>
+                            <div class="mx-3" id="completedAt"></div>
                         </td>
                     </tr>
                 </table>
             </div>
-
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-success">Create Job Post</button>
+            <button type="submit" class="btn btn-info">
+                <span>Create Job Post</span>
+                <i class="fas fa-pen ml-1"></i>
+            </button>
         </div>
     </div>
     <!-- /.modal-content -->

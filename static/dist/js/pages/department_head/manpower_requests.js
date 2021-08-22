@@ -173,7 +173,42 @@ initDataTable('#manpowerRequestDT', {
         { 
             data: null,
             render: data => {
-                requisitionID = data.requisition_id
+                const requisitionID = data.requisition_id;
+                const requestStatus = data.request_status;
+
+                const editBtn = `
+                    <div 
+                        class="btn btn-info btn-sm"
+                        data-toggle="modal"
+                        data-target="#"
+                    >
+                        <i class="fas fa-pencil-alt mr-1"></i>
+                        <span>Edit</span>
+                    </div>
+                `;
+
+                const cancelBtn = `
+                    <div 
+                        class="btn btn-warning btn-sm"
+                        data-toggle="modal"
+                        data-target="#"
+                    >
+                        <i class="fas fa-times-circle mr-1"></i>
+                        <span>Cancel</span>
+                    </div>
+                `;
+
+                const deleteBtn = `
+                    <div 
+                        class="btn btn-danger btn-sm"
+                        data-toggle="modal"
+                        data-target="#"
+                    >
+                        <i class="fas fa-trash-alt mr-1"></i>
+                        <span>Delete</span>
+                    </div>
+                `;
+
                 return `
                     <div class="text-center">
                         <div 
@@ -183,23 +218,12 @@ initDataTable('#manpowerRequestDT', {
                             <i class="fas fa-list mr-1"></i>
                             <span>View</span>
                         </div>
-                        <div 
-                            class="btn btn-info btn-sm"
-                            data-toggle="modal"
-                            data-target="#"
-                        >
-                            <i class="fas fa-pencil-alt mr-1"></i>
-                            <span>Edit</span>
-                        </div>
+
+                        ${ requestStatus === "Approved" ? editBtn : "" }
                         
-                        <div 
-                            class="btn btn-danger btn-sm"
-                            data-toggle="modal"
-                            data-target="#"
-                        >
-                            <i class="fas fa-trash-alt mr-1"></i>
-                            <span>Delete</span>
-                        </div>
+                        ${ requestStatus === "For Review" ? cancelBtn : "" }
+
+                        ${ requestStatus === "Rejected" ? deleteBtn : "" }
                     </div>
                 `
             }

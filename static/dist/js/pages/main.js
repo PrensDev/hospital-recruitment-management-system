@@ -51,7 +51,15 @@ const initDataTable = (selector = "", dtOptions = {
             });
         }
     })
-})
+});
+
+
+/** Reload DataTable */
+const reloadDataTable = (selector) => ifSelectorExist(selector, () => $(selector).DataTable().ajax.reload());
+
+
+/** DataTable Badge */
+const dtBadge = (theme = "light", content) => { return `<div class="badge badge-${ theme } p-2 w-100">${ content }</div>` }
 
 
 /** Validate Form */
@@ -64,7 +72,7 @@ const validateForm = (selector = "", validationOptions = {
         $(selector).validate({
             rules: validationOptions.rules,
             messages: validationOptions.messages,
-            errorElement: 'span',
+            errorElement: 'div',
             errorPlacement: function (error, element) {
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
@@ -79,6 +87,10 @@ const validateForm = (selector = "", validationOptions = {
         });
     }, false);
 }
+
+
+/** Reset Form */
+const resetForm = (selector) => ifSelectorExist(selector, () => $(selector).trigger('reset'));
 
 
 /** Generate Form Data */
@@ -116,8 +128,22 @@ const showModal = (selector) => ifSelectorExist(selector, () => $(selector).moda
 const hideModal = (selector) => ifSelectorExist(selector, () => $(selector).modal('hide'));
 
 
+/** On modal was showned/hidden */
+const onHideModal = (selector, handler = () => {}) => { ifSelectorExist(selector, () => $(selector).on('hide.bs.modal', () => handler())) }
+const onShowModal = (selector, handler = () => {}) => { ifSelectorExist(selector, () => $(selector).on('show.bs.modal', () => handler())) }
+
+
 /** Set Content */
-const setContent = (selector, value) => ifSelectorExist(selector, () => $(selector).html(value))
+const setContent = (selector, content) => ifSelectorExist(selector, () => $(selector).html(content));
+
+
+/** Set Value */
+const setValue = (selector, value) => ifSelectorExist(selector, () => $(selector).val(value));
+
+
+/** Enable/Disable Element */
+const enableElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("disabled", false));
+const disableElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("disabled", true));
 
 
 /** Format Name */
@@ -186,5 +212,23 @@ const POST_ajax = (url = "", data = {}, options = {
         data: JSON.stringify(data),
         success: options.success,
         error: options.error
-    })
+    });
+}
+
+
+/** PUT AJAX */
+const PUT_ajax = (url = "", data = {}, options = {
+    success: () => {},
+    error: () => {}
+}) => {
+    $.ajax({
+        url: url,
+        type: "PUT",
+        headers: AJAX_HEADERS,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data),
+        success: options.success,
+        error: options.error
+    });
 }

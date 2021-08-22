@@ -32,15 +32,17 @@
 
         <li class="nav-header">CORE</li>
         <li class="nav-item">
-            <a href="#" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">
+            <a href="http://127.0.0.1:8000/h" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">
             <i class="nav-icon fas fa-chart-line"></i>
             <p>Dashboard</p>
             </a>
         </li>
 
+        <li><div class="dropdown-divider"></div></li>
+
         <li class="nav-header">RECRUITMENT</li>
         <li class="nav-item">
-            <a href="../../iframe.html" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
+            <a href="http://127.0.0.1:8000/h/manpower-requests" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
             <i class="nav-icon fas fa-people-carry"></i>
             <p>Manpower Requests</p>
             </a>
@@ -49,7 +51,7 @@
             <a href="https://adminlte.io/docs/3.1/" class="nav-link{% if active_navlink == "Applicants" %} active{% endif %}">
             <i class="nav-icon fas fa-user-tie"></i>
             <p>
-                Applicants
+                <span>Applicants</span>
                 <span class="right badge badge-primary">99+</span>
             </p>
             </a>
@@ -64,7 +66,7 @@
 
 <!-- Sidebar Custom -->
 <div class="sidebar-custom">
-    <a href="#" class="btn btn-link"><i class="fas fa-cogs"></i></a>
-    <a href="#" class="btn btn-secondary hide-on-collapse pos-right">Help</a>
+    <a href="#" class="btn btn-sm btn-light"><i class="fas fa-cogs"></i></a>
+    <a href="#" class="btn btn-sm btn-secondary hide-on-collapse pos-right">Help</a>
 </div>
 <!-- /.sidebar-custom -->

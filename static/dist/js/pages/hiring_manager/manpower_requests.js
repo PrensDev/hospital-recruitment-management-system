@@ -1,23 +1,5 @@
 /**
  * ==============================================================================
- * VIEW MANPOWER REQUEST DETAILS
- * ==============================================================================
- */
-
-
-/** If user select reject for manpower request */
-$('#customRadio2').on('change', ()=> {
-    if($("#customRadio2").val() == "Rejected") $("#reasonField").show()
-});
-
-/** If user select approve for manpower request */
-$('#customRadio1').on('change', ()=> {
-    if($("#customRadio1").val() == "Approved") $("#reasonField").hide()
-});
-
-
-/**
- * ==============================================================================
  * VIEW ALL MANPOWER REQUESTS
  * ==============================================================================
  */
@@ -60,12 +42,10 @@ initDataTable('#manpowerRequestDT', {
                 } else validStatus = false
 
                 return validStatus 
-                    ? `
-                        <div class="badge badge-${ bagdeTheme } p-2 w-100">
-                            <i class="fas fa-${ badgeIcon } mr-1"></i>
-                            <span>${ requestStatus }</span>
-                        </div>
-                    ` 
+                    ? dtBadge(bagdeTheme, `
+                        <i class="fas fa-${ badgeIcon } mr-1"></i>
+                        <span>${ requestStatus }</span>
+                    `)
                     : `<div class="badge badge-light p-2 w-100">Undefined</div>`
             }
         },
@@ -112,6 +92,9 @@ const viewManpowerRequest = (requisitionID) => {
     GET_ajax(`${ H_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
             const requestedBy = result.manpower_request_by;
+
+            // Set Requisition ID
+            setValue('#requisitionID', result.requisition_id)
             
             // Set Requestor Name
             setContent('#requestorName', formatName("L, F M., S", {
@@ -194,6 +177,57 @@ const viewManpowerRequest = (requisitionID) => {
                 return isEmptyOrNull(completedAt) ? "No status" : formatDateTime(completedAt, "Date")
             });
 
+            // Set Modal Footer and Other Fields
+            const requestStatus = result.request_status;
+            var modalFooterBtns;
+            
+            if(requestStatus === "For Review") {
+                modalFooterBtns = `
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button 
+                        type="submit" 
+                        class="btn btn-success" 
+                        id="submitBtn"
+                        disabled
+                    >
+                        <span>Submit</span>
+                        <i class="fas fa-check ml-1"></i>
+                    </button>
+                `;
+            } else if(requestStatus === "Approved") {
+                $('#approveRequest').prop('checked', true);
+                modalFooterBtns = `
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button 
+                        type="submit" 
+                        class="btn btn-info"
+                        id="updateBtn"
+                        disabled
+                    >
+                        <span>Update</span>
+                        <i class="fas fa-check ml-1"></i>
+                    </button>
+                `
+            } else if(requestStatus === "Rejected") {
+                $('#rejectRequest').prop('checked', true);
+                $('#remarksField').show();
+                setValue('#remarks', result.remarks);
+                modalFooterBtns = `
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button 
+                        type="submit" 
+                        class="btn btn-info"
+                        id="updateBtn"
+                        disabled
+                    >
+                        <span>Update</span>
+                        <i class="fas fa-check ml-1"></i>
+                    </button>
+                `
+            }
+            
+            setContent('#viewManpowerRequestModalFooter', modalFooterBtns);
+
             // Show View Manpower Request Modal
             showModal('#viewManpowerRequestModal');
         },
@@ -202,11 +236,29 @@ const viewManpowerRequest = (requisitionID) => {
 }
 
 
+/** Reset Update Request Status Form if its modal is going to be hide */
+onHideModal('#viewManpowerRequestModal', () => {
+    $('#remarksField').hide();
+    resetForm('#updateManpowerRequestStatusForm')
+});
+
 /**
  * ==============================================================================
  * UPDATE MANPOWER REQUEST STATUS
  * ==============================================================================
  */
+
+/** If user select reject for manpower request */
+$("#approveRequest, #rejectRequest").on('change', () => {
+    const requestStatus = $(`input[name="requestStatus"]:checked`).val();
+    if(requestStatus == "Approved") {
+        $("#remarksField").hide();
+    }
+    if(requestStatus == "Rejected") $("#remarksField").show();
+
+    ifSelectorExist('#updateBtn', () => enableElement('#updateBtn'));
+    ifSelectorExist('#submitBtn', () => enableElement('#submitBtn'));
+});
 
 
 /** Validate Manpower Request */
@@ -224,7 +276,7 @@ validateForm('#updateManpowerRequestStatusForm', {
             required: 'Please select an option'
         },
         remarks: {
-            required: 'please type your reason in rejecting this request'
+            required: 'Please type your reason in rejecting this request'
         }
     },
     submitHandler: () => updateManpowerRequestStatus()
@@ -235,10 +287,32 @@ validateForm('#updateManpowerRequestStatusForm', {
 const updateManpowerRequestStatus = () => {
     const formData = generateFormData('#updateManpowerRequestStatusForm');
 
+    const requestStatus = formData.get('requestStatus');
+    let remarks = formData.get('remarks');
+
+    remarks = requestStatus === "Approved" ? null : remarks;
+
     const data = {
-        request_status: formData.get('requestStatus'),
-        remarks: formData.get('remarks')
+        request_status: requestStatus,
+        remarks: remarks,
+        reviewed_at: moment().format()
     }
 
-    console.log(data);
+    const requisitionID = formData.get('requisitionID');
+
+    PUT_ajax(`${ H_API_ROUTE }requisitions/${ requisitionID }`, data, {
+        success: result => {
+            if(result) {
+                // Reload the DataTable
+                reloadDataTable('#manpowerRequestDT');
+
+                // Hide the modal
+                hideModal('#viewManpowerRequestModal');
+
+                // Show success alert
+                toastr.success('A manpower request is successfully updated');
+            }
+        },
+        error: () => toastr.error('There was a problem while updating a manpower request')
+    })
 }

@@ -1,4 +1,5 @@
 # Import Packages
+from typing import List
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
@@ -8,7 +9,8 @@ import schemas, models
 
 
 # Models
-User_model = models.User
+User = models.User
+Requisition = models.Requisition
 
 
 # Router Instance
@@ -24,13 +26,56 @@ AUTHORIZED_USER = "Recruiter"
 
 # User Information
 @router.get("/info", response_model = schemas.UserInfo)
-def get_user_info(db: Session = Depends(get_db), active_user: schemas.User = Depends(get_user)):
+def get_user_info(
+    db: Session = Depends(get_db), 
+    user_data: schemas.User = Depends(get_user)
+):
     try:
-        # check_priviledge(user_data, AUTHORIZED_USER)
-        user_info = db.query(User_model).filter(User_model.user_id == active_user.user_id)
+        check_priviledge(user_data, AUTHORIZED_USER)
+        user_info = db.query(User).filter(User.user_id == user_data.user_id)
         if not user_info.first():
             return "User does not exist"
         else:
             return user_info.first()
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# REQUISITIONS/MANPOWER REQUESTS
+# ====================================================================
+
+
+# Requisition Not Found Response
+REQUISITION_NOT_FOUND_RESPONSE = {"message": "Requisition not found"}
+
+
+# Get All Approved Requisitions
+@router.get("/requisitions", response_model = List[schemas.ShowManpowerRequest])
+def get_all_approved_requisitions(
+    db: Session = Depends(get_db), 
+    user_data: schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        return db.query(Requisition).filter(Requisition.request_status == "Approved").all()
+    except Exception as e:
+        print(e)
+
+
+# Get One Approved Requisition
+@router.get("/requisitions/{requisition_id}", response_model = schemas.ShowManpowerRequest)
+def get_one_approved_requisitions(
+    requisition_id,
+    db: Session = Depends(get_db), 
+    user_data: schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
+        if not requisition:
+            return REQUISITION_NOT_FOUND_RESPONSE
+        else:
+            return requisition
     except Exception as e:
         print(e)
