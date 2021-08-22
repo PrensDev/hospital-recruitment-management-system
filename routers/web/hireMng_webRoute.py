@@ -23,6 +23,7 @@ AUTHORIZED_USER = "Hiring Manager"
 # WEB ROUTES
 # ===========================================================
 
+
 # Department Head Dashboard
 @router.get("", response_class=HTMLResponse)
 async def dashboard(req: Request, user_data: dict = Depends(get_token)):
@@ -35,20 +36,28 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
     else:
         return errTemplate.page_not_found(req)
 
+
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
-async def dashboard(req: Request):
-    return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
-        "request": req,
-        "page_title": "Manpower Requests",
-        "active_navlink": "Manpower Requests"
-    })
+async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
+            "request": req,
+            "page_title": "Manpower Requests",
+            "active_navlink": "Manpower Requests"
+        })
+    else:
+        return errTemplate.page_not_found(req)
+
 
 # Applicants
 @router.get("/applicants", response_class=HTMLResponse)
-async def dashboard(req: Request):
-    return templates.TemplateResponse(TEMPLATES_PATH + "applicants.html", {
-        "request": req,
-        "page_title": "Applicants",
-        "active_navlink": "Applicants"
-    })
+async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        return templates.TemplateResponse(TEMPLATES_PATH + "applicants.html", {
+            "request": req,
+            "page_title": "Applicants",
+            "active_navlink": "Applicants"
+        })    
+    else:
+        return errTemplate.page_not_found(req)

@@ -3,8 +3,8 @@ from sqlalchemy.sql.expression import null
 from database import Base
 from sqlalchemy import text
 from sqlalchemy.sql.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import Date, String, Integer, DateTime, Float, Text
-from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import Date, String, Integer, DateTime, Float, Text, Boolean
+from sqlalchemy.orm import relation, relationship
 
 
 # User Model
@@ -75,6 +75,20 @@ class User(Base):
         "Requisition",
         back_populates = "manpower_request_reviewed_by",
         foreign_keys = "Requisition.reviewed_by"
+    )
+    job_posts = relationship(
+        "JobPost",
+        back_populates = "job_posted_by"
+    )
+    evaluated_applicants = relationship(
+        "Applicant",
+        back_populates = "evaluation_done_by",
+        foreign_keys = "Applicant.evaluated_by"
+    )
+    screened_applicants = relationship(
+        "Applicant",
+        back_populates = "screening_done_by",
+        foreign_keys = "Applicant.screened_by"
     )
 
 
@@ -252,4 +266,238 @@ class Requisition(Base):
     vacant_position = relationship(
         "Position",
         back_populates = "vacancy_requests"
+    )
+    job_post = relationship(
+        "JobPost",
+        back_populates = "manpower_request"
+    )
+
+
+# Job Post
+class JobPost(Base):
+    __tablename__ = "job_posts"
+
+    # Columns
+    job_post_id = Column(
+        String(36),
+        primary_key = True,
+        default = text('UUID()')
+    )
+    requisition_id = Column(
+        String(36),
+        ForeignKey("requisitions.requisition_id"),
+        nullable = False
+    )
+    salary_is_visible = Column(
+        Boolean,
+        nullable = False,
+        default = False
+    )
+    content = Column(
+        Text,
+        nullable = False
+    )
+    expiration_date = Column(
+        Date,
+        nullable = True
+    )
+    posted_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = False
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()')
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationships
+    manpower_request = relationship(
+        "Requisition",
+        back_populates = "job_post"
+    )
+    job_posted_by = relationship(
+        "User",
+        back_populates = "job_posts"
+    )
+    applicants = relationship(
+        "Applicant",
+        back_populates = "applied_job"
+    )
+
+
+# Applicants
+class Applicant(Base):
+    __tablename__ = "applicants"
+
+    # Columns
+    applicant_id = Column(
+        String(36),
+        primary_key = True,
+        default = text('UUID()')
+    )
+    job_post_id = Column(
+        String(36),
+        ForeignKey("job_posts.job_post_id")
+    )
+    first_name = Column(
+        String(255),
+        nullable = False
+    )
+    middle_name = Column(
+        String(255),
+        nullable = True
+    )
+    last_name = Column(
+        String(255),
+        nullable = False
+    )
+    suffix_name = Column(
+        String(255),
+        nullable = True
+    )
+    resume = Column(
+        String(255),
+        nullable = False
+    )
+    contact_number = Column(
+        String(255),
+        nullable = False
+    )
+    email = Column(
+        String(255),
+        nullable = False
+    )
+    status = Column(
+        String(255),
+        nullable = False,
+        default = "For evaluation"
+    )
+    evaluated_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = True
+    )
+    screened_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = True
+    )
+    remarks = Column(
+        Text,
+        nullable = True
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()')
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationships
+    applied_job = relationship(
+        "JobPost",
+        back_populates = "applicants"
+    )
+    interviewee_info = relationship(
+        "Interviewee",
+        back_populates = "interviewee_applicant"
+    )
+    evaluation_done_by = relationship(
+        "User",
+        back_populates = "evaluated_applicants",
+        foreign_keys = "Applicant.evaluated_by"
+    )
+    screening_done_by = relationship(
+        "User",
+        back_populates = "screened_applicants",
+        foreign_keys = "Applicant.screened_by"
+    )
+
+
+# Interviewee
+class Interviewee(Base):
+    __tablename__ = "interviewees"
+
+    # Columns
+    interviewee_id = Column(
+        String(36),
+        primary_key = True,
+        default = text('UUID()')
+    )
+    applicant_id = Column(
+        String(36),
+        ForeignKey("applicants.applicant_id"),
+        nullable = False
+    )
+    interview_schedule_id = Column(
+        String(36),
+        ForeignKey("interview_schedules.interview_schedule_id"),
+        nullable = True
+    )
+    is_interviewed = Column(
+        Boolean,
+        nullable = True
+    )
+    interviewed_at = Column(
+        DateTime,
+        nullable = True
+    )
+    remarks = Column(
+        Text,
+        nullable = True
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()')
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationhips
+    interviewee_applicant = relationship(
+        "Applicant",
+        back_populates = "interviewee_info"
+    )
+    interview_schedule = relationship(
+        "InterviewSchedule",
+        back_populates = "interviewee"
+    )
+
+
+# Interview Schedule
+class InterviewSchedule(Base):
+    __tablename__ = "interview_schedules"
+
+    # Columns
+    interview_schedule_id = Column(
+        String(36),
+        primary_key = True,
+        default = text('UUID()')
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()')
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationships
+    interviewee = relationship(
+        "Interviewee",
+        back_populates = "interview_schedule"
     )

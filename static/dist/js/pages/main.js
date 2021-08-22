@@ -4,6 +4,8 @@
  * =====================================================
  * */
 
+$(() => ifSelectorExist('#demo', () => $('#demo').html('')))
+
 
 /** If Selector Exist */
 const ifSelectorExist = (selector = "", handler = () => {}, isRequired = true) => {

@@ -35,7 +35,7 @@
 
         <li class="nav-header">CORE</li>
         <li class="nav-item">
-            <a href="#" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">
+            <a href="{{ D_WEB_ROUTE }}" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">
             <i class="nav-icon fas fa-chart-line"></i>
             <p>Dashboard</p>
             </a>
@@ -43,7 +43,7 @@
 
         <li class="nav-header">RECRUITMENT</li>
         <li class="nav-item">
-            <a href="http://127.0.0.1:8000/d/manpower-requests" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
+            <a href="{{ D_WEB_ROUTE }}manpower-requests" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
             <i class="nav-icon fas fa-people-carry"></i>
             <p>Manpower Requests</p>
             </a>
@@ -125,10 +125,8 @@
         </li>
         </ul>
     </nav>
-    <!-- /.sidebar-menu -->
 
 </div>
-<!-- /.sidebar -->
 
 
 <!-- Sidebar Custom -->
@@ -136,4 +134,3 @@
     <a href="#" class="btn btn-link"><i class="fas fa-cogs"></i></a>
     <a href="#" class="btn btn-secondary hide-on-collapse pos-right">Help</a>
 </div>
-<!-- /.sidebar-custom -->

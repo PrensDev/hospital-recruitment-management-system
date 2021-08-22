@@ -1,5 +1,7 @@
 # Import Packages
 from typing import List
+
+from sqlalchemy.sql.functions import user
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
@@ -9,8 +11,10 @@ import schemas, models
 
 
 # Models
-User = models.User
-Requisition = models.Requisition
+User            = models.User
+Requisition     = models.Requisition
+JobPost         = models.JobPost
+Applicant       = models.Applicant
 
 
 # Router Instance
@@ -77,5 +81,112 @@ def get_one_approved_requisitions(
             return REQUISITION_NOT_FOUND_RESPONSE
         else:
             return requisition
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# JOB POSTS
+# ====================================================================
+
+
+# Job Post Not Found Response
+JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
+
+
+# Get All Job Posts
+@router.get("/job-posts")
+def get_all_job_posts(
+    db: Session = Depends(get_db),
+    user_data: schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        return db.query(JobPost).filter(JobPost.posted_by == user_data.user_id).all()
+    except Exception as e:
+        print(e)
+
+
+# Get One Job Posts
+@router.get("/job-posts/${job_post_id}")
+def get_one_job_post(
+    job_post_id,
+    db: Session = Depends(get_db),
+    user_data: schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+        if not job_post:
+            return JOB_POST_NOT_FOUND_RESPONSE
+        else:
+            return job_post
+    except Exception as e:
+        print(e)
+
+
+# Post Vacant Job
+@router.post("/job-posts", status_code = 201)
+def post_vacant_job(
+    req: schemas.JobPost,
+    db: Session = Depends(get_db),
+    user_data: schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        new_job_post = models.JobPost(
+            requisition_id = req.requisition_id,
+            salary_is_visible = req.salary_is_visible,
+            content = req.content,
+            expiration_date = req.expiration_date,
+            posted_by = user_data.user_id
+        )
+        db.add(new_job_post)
+        db.commit()
+        db.refresh(new_job_post)
+        return {
+            "data": new_job_post,
+            "message": "A new job post is successfully added"
+        }
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# APPLICANTS
+# ====================================================================
+
+
+APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
+
+
+# Get All Applicants
+@router.get("/job-posts/${job_post_id}/applicants")
+def get_all_applicants(
+    job_post_id,
+    db: Session = Depends(get_db),
+    user_data: schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        return db.query(Applicant).filter(Applicant.job_post_id == job_post_id).all()
+    except Exception as e:
+        print(e)
+
+
+# Get One Applicant
+@router.get("/applicants/{applicant_id}")
+def get_one_applicant(
+    applicant_id,
+    db: Session = Depends(get_db),
+    user_data: schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id).first()
+        if not applicant:
+            return APPLICANT_NOT_FOUND_RESPONSE
+        else:
+            return applicant
     except Exception as e:
         print(e)

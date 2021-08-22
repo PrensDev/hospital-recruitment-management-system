@@ -1,6 +1,6 @@
 # Import Packages
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
@@ -9,7 +9,8 @@ import schemas, models
 
 
 # Models
-User_model = models.User
+User = models.User
+Position = models.User
 
 
 # Router Instance
@@ -31,7 +32,7 @@ def get_user_info(
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        user_info = db.query(User_model).filter(User_model.user_id == user_data.user_id)
+        user_info = db.query(User).filter(User.user_id == user_data.user_id)
         if not user_info.first():
             return "User does not exist"
         else:
@@ -116,9 +117,11 @@ def get_one_requisition(
 def update_requisition(
     requisition_id: str,
     req: schemas.CreateManpowerRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user_data: schemas.User = Depends(get_user)
 ):
     try:
+        check_priviledge(user_data, AUTHORIZED_USER)
         requisition = db.query(models.Requisition),filter(models.Requisition.requisition_id == requisition_id)
         if not requisition.first():
             raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
@@ -126,5 +129,24 @@ def update_requisition(
             requisition.update(req)
             db.commit()
             return {"message": "A requisition has been updated"}
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# REQUISITIONS/MANPOWER REQUESTS
+# ====================================================================
+
+
+# Department Positions
+@router.get("/department/positions")
+def department_positions(
+    db: Session = Depends(get_db),
+    user_data: schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        user_info = db.query(User).join(Position).all()
+        return user_info
     except Exception as e:
         print(e)

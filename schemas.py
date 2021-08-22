@@ -1,4 +1,5 @@
 # Import Package
+from database import Base
 from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
@@ -13,6 +14,8 @@ class Department(BaseModel):
 
 # Show Department Schema
 class ShowDepartment(Department):
+    department_id: str
+
     class Config():
         orm_mode = True
 
@@ -25,7 +28,9 @@ class Position(BaseModel):
 
 # Show Position Schema
 class ShowPosition(Position):
+    position_id: str
     department: ShowDepartment
+
     class Config():
         orm_mode = True
 
@@ -121,3 +126,11 @@ class ManpowerRequestStatus(BaseModel):
     request_status: str
     remarks: Optional[str]
     reviewed_at: datetime
+
+
+# Job Post Schema
+class JobPost(BaseModel):
+    requisition_id: str
+    salary_is_visible: bool
+    content: str
+    expiration_date: Optional[datetime]

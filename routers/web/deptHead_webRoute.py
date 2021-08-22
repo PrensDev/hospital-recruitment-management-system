@@ -24,13 +24,6 @@ AUTHORIZED_USER = "Department Head"
 # ===========================================================
 
 # Test
-# @router.get("/test-web", response_class=HTMLResponse, dependencies=[Depends(cookie)])
-# async def test_web(req: Request, session_data: SessionData=Depends(verifier)):
-#     print(session_data)
-#     return templates.TemplateResponse(TEMPLATES_PATH + "test.html", {
-#         "request": req,
-#         "session_data": session_data
-#     })
 @router.get("/test-web", response_class=HTMLResponse)
 async def test_web(req: Request, user_data: dict = Depends(get_token)):
     if user_data["user_type"] == AUTHORIZED_USER:
@@ -86,6 +79,7 @@ async def dashboard(req: Request):
         "active_navlink": "Hired Applicants"
     })
 
+
 # Onboarding Employees
 @router.get("/onboarding-employees", response_class=HTMLResponse)
 async def dashboard(req: Request):
@@ -94,6 +88,7 @@ async def dashboard(req: Request):
         "page_title": "Onboarding Employees",
         "active_navlink": "Onboarding Employees"
     })
+
 
 # General Tasks
 @router.get("/general-tasks", response_class=HTMLResponse)

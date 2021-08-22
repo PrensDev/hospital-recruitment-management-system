@@ -3,12 +3,14 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from routers.web import errPages_templates as errTemplate
 from jwt_token import get_token
-import schemas
 
 
 # Router
-router = APIRouter()
+router = APIRouter(
+    tags = ["Authentication Web Route"]
+)
 
 
 # Templates
@@ -16,7 +18,7 @@ templates = Jinja2Templates(directory = "templates")
 
 
 # Index
-@router.get("/login", response_class=HTMLResponse, tags = ["Login"])
+@router.get("/login", response_class=HTMLResponse)
 async def index(req: Request):
     try:
         access_token_cookie = req.cookies.get('access_token')
@@ -33,10 +35,12 @@ async def index(req: Request):
 
 # User Redirect
 @router.get("/redirect")
-async def redirect(user_data: dict = Depends(get_token)):
+async def redirect(req: Request, user_data: dict = Depends(get_token)):
     if(user_data["user_type"] == "Department Head"):
         return RedirectResponse("/d")
-    if(user_data["user_type"] == "Hiring Manager"):
+    elif(user_data["user_type"] == "Hiring Manager"):
         return RedirectResponse("/h")
-    if(user_data["user_type"] == "Recruiter"):
+    elif(user_data["user_type"] == "Recruiter"):
         return RedirectResponse("/r")
+    else:
+        return errTemplate.page_not_found(req)
