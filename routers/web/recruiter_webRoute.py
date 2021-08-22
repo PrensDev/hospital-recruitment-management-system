@@ -67,6 +67,14 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
     else:
         return errTemplate.page_not_found(req)
 
+# Create Job Post
+@router.get("/add-job-post", response_class=HTMLResponse)
+async def dashboard(req: Request):
+    return templates.TemplateResponse(TEMPLATES_PATH + "add_job_post.html", {
+        "request": req,
+        "page_title": "Create Job Post",
+        "active_navlink": "Job Posts"
+    })
 
 # Applicants
 @router.get("/applicants", response_class=HTMLResponse)

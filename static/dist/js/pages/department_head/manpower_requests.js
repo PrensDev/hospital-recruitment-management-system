@@ -7,7 +7,7 @@
 
 /** Request Nature For Add Select 2 */
 $('#requestNatureForAdd').select2({
-    placeholder: "Please select the request of nature",
+    placeholder: "Please select the nature of request",
     minimumResultsForSearch: -1,
 });
 
@@ -88,7 +88,7 @@ const submitManpowerRequest = () => {
     const deadline = formData.get("deadline");
 
     const data = {
-        position_id: "651aba26-0285-11ec-ac77-049226169d64",
+        position_id: "915793d0-ff07-11eb-9644-d8c497916dda",
         employment_type: formData.get("employmentType"),
         request_nature: formData.get("requestNature"),
         staffs_needed: parseInt(formData.get("staffsNeeded")),
