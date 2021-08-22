@@ -30,7 +30,8 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
             "request": req,
-            "page_title": "Dashboard",
+            "page_title": user_data['user_type'],
+            "sub_title": "Hiring Manager manages all selected applicants",
             "active_navlink": "Dashboard"
         })
     else:
@@ -44,6 +45,7 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
         return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
             "request": req,
             "page_title": "Manpower Requests",
+            "sub_title": "Manpower Requests to manage requests for employees",
             "active_navlink": "Manpower Requests"
         })
     else:
@@ -57,6 +59,7 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
         return templates.TemplateResponse(TEMPLATES_PATH + "applicants.html", {
             "request": req,
             "page_title": "Applicants",
+            "sub_title": "Applicants to manage potential candidates",
             "active_navlink": "Applicants"
         })    
     else:

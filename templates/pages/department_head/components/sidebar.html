@@ -49,7 +49,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="http://127.0.0.1:8000/d/hired-applicants" class="nav-link{% if active_navlink == "Hired Applicants" %} active{% endif %}">
+            <a href="{{D_WEB_ROUTE}}hired-applicants" class="nav-link{% if active_navlink == "Hired Applicants" %} active{% endif %}">
             <i class="nav-icon fas fa-user-tie"></i>
             <p>
                 Hired Applicants
@@ -60,7 +60,7 @@
 
         <li class="nav-header">ON BOARD</li>
         <li class="nav-item">
-            <a href="http://127.0.0.1:8000/d/onboarding-employees" class="nav-link{% if active_navlink == "Onboarding Employees" %} active{% endif %}">
+            <a href="{{D_WEB_ROUTE}}onboarding-employees" class="nav-link{% if active_navlink == "Onboarding Employees" %} active{% endif %}">
             <i class="fas fa-clipboard nav-icon"></i>
             <p>Onboarding Employees</p>
             </a>
@@ -118,7 +118,7 @@
             </ul>
         </li> -->
         <li class="nav-item">
-            <a href="http://127.0.0.1:8000/d/general-tasks" class="nav-link{% if active_navlink == "General Tasks" %} active{% endif %}">
+            <a href="{{D_WEB_ROUTE}}general-tasks" class="nav-link{% if active_navlink == "General Tasks" %} active{% endif %}">
             <i class="fas fa-tasks nav-icon"></i>
             <p>General Tasks</p>
             </a>

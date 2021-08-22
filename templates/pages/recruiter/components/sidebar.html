@@ -32,7 +32,7 @@
 
         <li class="nav-header">CORE</li>
         <li class="nav-item">
-            <a href="http://127.0.0.1:8000/r" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">
+            <a href="{{R_WEB_ROUTE}}" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">
             <i class="nav-icon fas fa-chart-line"></i>
             <p>Dashboard</p>
             </a>
@@ -40,13 +40,13 @@
 
         <li class="nav-header">RECRUITMENT</li>
         <li class="nav-item">
-            <a href="http://127.0.0.1:8000/r/manpower-requests" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
+            <a href="{{R_WEB_ROUTE}}manpower-requests" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
             <i class="nav-icon fas fa-people-carry"></i>
             <p>Manpower Requests</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="http://127.0.0.1:8000/r/job-posts" class="nav-link{% if active_navlink == "Job Posts" %} active{% endif %}">
+            <a href="{{R_WEB_ROUTE}}job-posts" class="nav-link{% if active_navlink == "Job Posts" %} active{% endif %}">
             <i class="nav-icon fas fa-briefcase"></i>
             <p>
                 Job Posts
@@ -55,7 +55,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="http://127.0.0.1:8000/r/applicants" class="nav-link{% if active_navlink == "Applicants" %} active{% endif %}">
+            <a href="{{R_WEB_ROUTE}}applicants" class="nav-link{% if active_navlink == "Applicants" %} active{% endif %}">
             <i class="nav-icon fas fa-users"></i>
             <p>
                 Applicants

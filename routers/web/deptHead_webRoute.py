@@ -41,6 +41,7 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
             "request": req,
             "page_title": user_data['user_type'],
+            "sub_title": "Department Head manages all employees assigned in each departments",
             "active_navlink": "Dashboard"
         })
     else:
@@ -54,6 +55,7 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
         return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
             "request": req,
             "page_title": "Manpower Requests",
+            "sub_title": "Manpower Requests to manage requests for employees",
             "active_navlink": "Manpower Requests"
         })
     else:
@@ -66,6 +68,7 @@ async def dashboard(req: Request):
     return templates.TemplateResponse(TEMPLATES_PATH + "add_manpower_request.html", {
         "request": req,
         "page_title": "Add Manpower Request",
+        "sub_title": "Add Manpower Request to request employees",
         "active_navlink": "Manpower Requests"
     })
 
@@ -76,6 +79,7 @@ async def dashboard(req: Request):
     return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants.html", {
         "request": req,
         "page_title": "Hired Applicants",
+        "sub_title": "Hired Applicants to manage new hired employees",
         "active_navlink": "Hired Applicants"
     })
 
@@ -86,6 +90,7 @@ async def dashboard(req: Request):
     return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employees.html", {
         "request": req,
         "page_title": "Onboarding Employees",
+        "sub_title": "Onboarding Employees to manage new employees on board",
         "active_navlink": "Onboarding Employees"
     })
 
@@ -96,5 +101,6 @@ async def dashboard(req: Request):
     return templates.TemplateResponse(TEMPLATES_PATH + "general_tasks.html", {
         "request": req,
         "page_title": "General Tasks",
+        "sub_title": "General Tasks to manage employees tasks and monitor performances",
         "active_navlink": "General Tasks"
     })
