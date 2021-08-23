@@ -34,110 +34,121 @@
 
             <!-- Info Boxes -->
             <div class="row">
-                <div class="col-md-6 col-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-info"><i class="fas fa-people-carry"></i></span>
-        
-                        <div class="info-box-content">
-                            <span class="info-box-text">Total Manpower Requests</span>
-                            <span class="info-box-number">1,410</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                <!-- /.info-box -->
+            <div class="col-lg-3 col-6">
+                <!-- small card -->
+                <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>150</h3>
+
+                    <p>Total Manpower Requests</p>
                 </div>
-                <!-- /.col -->
-                
-                <div class="col-md-6 col-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-success"><i class="fas fa-calendar-check"></i></span>
-        
-                        <div class="info-box-content">
-                            <span class="info-box-text">Total Completed Requests</span>
-                            <span class="info-box-number">93,139</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
+                <div class="icon">
+                    <i class="fas fa-people-carry"></i>
                 </div>
-                <!-- /.col -->
+                <a href="#" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+                </div>
             </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small card -->
+                <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>53<sup style="font-size: 20px">%</sup></h3>
 
-            <div class="row">
-                <div class="col-md-6 col-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-warning"><i class="fas fa-clipboard-check"></i></span>
-        
-                        <div class="info-box-content">
-                            <span class="info-box-text">Total Approved Requests</span>
-                            <span class="info-box-number">1,410</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                <!-- /.info-box -->
+                    <p>Total Hired Applicatnts</p>
                 </div>
-                <!-- /.col -->
+                <div class="icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small card -->
+                <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>65</h3>
 
-                <div class="col-md-6 col-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-danger"><i class="fas fa-file-excel"></i></span>
-        
-                        <div class="info-box-content">
-                            <span class="info-box-text">Total Rejected Requests</span>
-                            <span class="info-box-number">93,139</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
+                    <p>Total Onboarding Employees</p>
                 </div>
-                <!-- /.col -->
+                <div class="icon">
+                    <i class="fas fa-clipboard"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small card -->
+                <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>65</h3>
+
+                    <p>Total Completed Requests</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+                </div>
+            </div>
+            <!-- ./col -->
             </div>
             <!-- / Info Boxes -->
 
             <!-- Card -->
-            <div class="card card-primary card-outline">
+        <div class="card card-primary card-outline">
 
-                <!-- Card Header -->
-                <div class=" p-3 d-flex justify-content-between">
-                    <div>
-                        <h3 class="card-title">Lists of Manpower Requests</h3>
-                    </div>
-                    <div>
-                        <a 
-                            href="http://127.0.0.1:8000/d/add-manpower-request"
-                            class="btn btn-sm btn-primary"
-                        >
-                            <i class="fas fa-plus"></i>
-                            <span>Add Manpower Request</span>
-                        </a>
-                    </div>
+            <!-- Card Header -->
+            <div class=" p-3 d-flex justify-content-between">
+                <div>
+                    <h3 class="card-title">Lists of Manpower Requests</h3>
                 </div>
-                <!-- /.card-header -->
-
-                <!-- Card Body -->
-                <div class="card-body">
-                    
-                    <div class="table-responsive">
-                        <table id="manpowerRequestDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Position Title</th>
-                                    <th>Staffs Needed</th>
-                                    <th>Nature of Request</th>
-                                    <th>Status</th>
-                                    <th>Date Requested</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                
+                <div>
+                    <a 
+                        href="http://127.0.0.1:8000/d/add-manpower-request"
+                        class="btn btn-sm btn-primary"
+                    >
+                        <i class="fas fa-plus"></i>
+                        <span>Add Manpower Request</span>
+                    </a>
                 </div>
-                <!-- /.card-body -->
-
             </div>
-            <!-- /.card -->
+            <!-- /.card-header -->
+
+            <!-- Card Body -->
+            <div class="card-body">
+                
+                <div class="table-responsive">
+                    <table id="manpowerRequestDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Position Title</th>
+                                <th>Staffs Needed</th>
+                                <th>Nature of Request</th>
+                                <th>Status</th>
+                                <th>Date Requested</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            
+            </div>
+            <!-- /.card-body -->
+
+        </div>
+        <!-- /.card -->
             
         </div>
     </section>
