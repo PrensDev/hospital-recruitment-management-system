@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from hashing import Hash
 
-import schemas, models
+import models
 
 # Router Instance
 router = APIRouter(

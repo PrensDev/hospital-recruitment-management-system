@@ -5,12 +5,15 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, check_priviledge
-import schemas, models
+from schemas import db_schemas
+
+import models
 
 
 # Models
 User = models.User
-Position = models.User
+Position = models.Position
+Requisition = models.Requisition
 
 
 # Router Instance
@@ -25,10 +28,10 @@ AUTHORIZED_USER = "Department Head"
 
 
 # User Information
-@router.get("/info", response_model = schemas.UserInfo)
+@router.get("/info", response_model = db_schemas.UserInfo)
 def get_user_info(
     db: Session = Depends(get_db), 
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
@@ -52,9 +55,9 @@ REQUISITION_NOT_FOUND_RESPONSE = {"message": "Manpower request was not found"}
 # Create Manpower Request
 @router.post("/requisitions", status_code = 201)
 def create_manpower_request(
-    req: schemas.CreateManpowerRequest,
+    req: db_schemas.CreateManpowerRequest,
     db: Session = Depends(get_db),
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
@@ -82,28 +85,28 @@ def create_manpower_request(
 
 
 # Get All Manpower Request
-@router.get("/requisitions", response_model = List[schemas.ShowManpowerRequest])
+@router.get("/requisitions", response_model = List[db_schemas.ShowManpowerRequest])
 def get_all_requisitions(
     db: Session = Depends(get_db), 
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        return db.query(models.Requisition).filter(models.Requisition.requested_by == user_data.user_id).all()
+        return db.query(Requisition).filter(Requisition.requested_by == user_data.user_id).all()
     except Exception as e:
         print(e)
 
 
 # Get One Manpower Request
-@router.get("/requisitions/{requisition_id}", response_model = schemas.ShowManpowerRequest)
+@router.get("/requisitions/{requisition_id}", response_model = db_schemas.ShowManpowerRequest)
 def get_one_requisition(
     requisition_id: str,
     db: Session = Depends(get_db), 
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        requisition = db.query(models.Requisition).filter(models.Requisition.requisition_id == requisition_id).first()
+        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
         if not requisition:
             return REQUISITION_NOT_FOUND_RESPONSE
         else:
@@ -116,13 +119,13 @@ def get_one_requisition(
 @router.put("/requisitions/{requisition_id}", status_code = 202)
 def update_requisition(
     requisition_id: str,
-    req: schemas.CreateManpowerRequest,
+    req: db_schemas.CreateManpowerRequest,
     db: Session = Depends(get_db),
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        requisition = db.query(models.Requisition),filter(models.Requisition.requisition_id == requisition_id)
+        requisition = db.query(Requisition),filter(Requisition.requisition_id == requisition_id)
         if not requisition.first():
             raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
         else:
@@ -133,20 +136,39 @@ def update_requisition(
         print(e)
 
 
+# Delete Manpower Request
+@router.delete("/requisitions/{requisition_id", status_code = 204)
+def delete_requisition(
+    requisition_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id)
+        if not requisition.first():
+            raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
+        else:
+            requisition.delete(synchronize_session = False)
+            return {"message": "A requisition is successfully deleted"}
+    except Exception as e:
+        print(e) 
+
+
 # ====================================================================
 # REQUISITIONS/MANPOWER REQUESTS
 # ====================================================================
 
 
 # Department Positions
-@router.get("/department/positions")
-def department_positions(
-    db: Session = Depends(get_db),
-    user_data: schemas.User = Depends(get_user)
-):
-    try:
-        check_priviledge(user_data, AUTHORIZED_USER)
-        user_info = db.query(User).join(Position).all()
-        return user_info
-    except Exception as e:
-        print(e)
+# @router.get("/department/positions")
+# def department_positions(
+#     db: Session = Depends(get_db),
+#     user_data: db_schemas.User = Depends(get_user)
+# ):
+#     try:
+#         check_priviledge(user_data, AUTHORIZED_USER)
+#         user_info = db.query(User).join(Position).all()
+#         return user_info
+#     except Exception as e:
+#         print(e)

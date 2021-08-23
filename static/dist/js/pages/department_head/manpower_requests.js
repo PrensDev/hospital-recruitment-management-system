@@ -88,7 +88,7 @@ const submitManpowerRequest = () => {
     const deadline = formData.get("deadline");
 
     const data = {
-        position_id: "915793d0-ff07-11eb-9644-d8c497916dda",
+        position_id: "b9610b90-ff07-11eb-9644-d8c497916dda",
         employment_type: formData.get("employmentType"),
         request_nature: formData.get("requestNature"),
         staffs_needed: parseInt(formData.get("staffsNeeded")),
@@ -100,7 +100,13 @@ const submitManpowerRequest = () => {
 
     POST_ajax(`${ D_API_ROUTE }requisitions`, data, {
         success: result => {
-            console.log(result)
+            if(result) {
+                setSessionedAlertAndRedirect({
+                    theme: 'success', 
+                    message: 'A new request has been submitted', 
+                    redirectURL: `${ D_WEB_ROUTE }manpower-requests`
+                });
+            }
         },
         error: () => toastr.error("There was an error in creating manpower request")
     })
@@ -118,7 +124,14 @@ const submitManpowerRequest = () => {
 initDataTable('#manpowerRequestDT', {
     url: `${ D_API_ROUTE }requisitions`,
     columns: [
+
+        // Created At (For Default Sorting)
+        { data: 'created_at', visible: false },
+
+        // Vacant Position
         { data: "vacant_position.name" },
+
+        // Staffs Needed
         { 
             data: null,
             render: data => {
@@ -126,7 +139,11 @@ initDataTable('#manpowerRequestDT', {
                 return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`;
             }
         },
+
+        // Request Nature
         { data: "request_nature"},
+
+        // Request Status
         {
             data: null,
             render: data => {
@@ -160,6 +177,8 @@ initDataTable('#manpowerRequestDT', {
                     : `<div class="badge badge-light p-2 w-100">Undefined</div>`
             }
         },
+
+        // Date Submitted
         {
             data: null,
             render: data => {
@@ -170,6 +189,8 @@ initDataTable('#manpowerRequestDT', {
                 `
             }
         },
+
+        // Actions
         { 
             data: null,
             render: data => {
@@ -178,52 +199,59 @@ initDataTable('#manpowerRequestDT', {
 
                 const editBtn = `
                     <div 
-                        class="btn btn-info btn-sm"
+                        class="dropdown-item d-flex"
                         data-toggle="modal"
                         data-target="#"
                     >
-                        <i class="fas fa-pencil-alt mr-1"></i>
+                        <div style="width: 2rem"><i class="fas fa-pencil-alt mr-1"></i></div>
                         <span>Edit</span>
                     </div>
                 `;
 
                 const cancelBtn = `
                     <div 
-                        class="btn btn-warning btn-sm"
-                        data-toggle="modal"
-                        data-target="#"
+                        class="dropdown-item d-flex"
+                        role="button"
+                        onclick="cancelManpowerRequest('${ requisitionID }')"
                     >
-                        <i class="fas fa-times-circle mr-1"></i>
+                        <div style="width: 2rem"><i class="fas fa-times-circle mr-1"></i></div>
                         <span>Cancel</span>
                     </div>
                 `;
 
                 const deleteBtn = `
                     <div 
-                        class="btn btn-danger btn-sm"
-                        data-toggle="modal"
-                        data-target="#"
+                        class="dropdown-item d-flex"
+                        role="button"
+                        onclick="deleteManpowerRequest('${ requisitionID }')"
                     >
-                        <i class="fas fa-trash-alt mr-1"></i>
+                        <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
                         <span>Delete</span>
                     </div>
                 `;
 
                 return `
-                    <div class="text-center">
-                        <div 
-                            class="btn btn-secondary btn-sm"
-                            onclick="viewManpowerRequest('${ requisitionID }')"
-                        >
-                            <i class="fas fa-list mr-1"></i>
-                            <span>View</span>
+                    <div class="text-center dropdown">
+                        <div class="btn btn-sm btn-light" data-toggle="dropdown" role="button">
+                            <i class="fas fa-ellipsis-v"></i>
                         </div>
 
-                        ${ requestStatus === "Approved" ? editBtn : "" }
-                        
-                        ${ requestStatus === "For Review" ? cancelBtn : "" }
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div 
+                                class="dropdown-item d-flex"
+                                role="button"
+                                onclick="viewManpowerRequest('${ requisitionID }')"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                <span>View</span>
+                            </div>
 
-                        ${ requestStatus === "Rejected" ? deleteBtn : "" }
+                            ${ requestStatus === "Approved" ? editBtn : "" }
+                            
+                            ${ requestStatus === "For Review" ? cancelBtn : "" }
+
+                            ${ requestStatus === "Rejected" ? deleteBtn : "" }
+                        </div>
                     </div>
                 `
             }
@@ -332,3 +360,93 @@ const viewManpowerRequest = (requisitionID) => {
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });
 }
+
+
+
+/**
+ * ==============================================================================
+ * CANCEL MANPOWER REQUEST
+ * ==============================================================================
+ */
+
+
+/** Cancel Manpower Request */
+const cancelManpowerRequest = (requisitionID) => {
+    setValue('#requisitionIDForCancel', requisitionID);
+    showModal('#cancelManpowerRequestModal');
+}
+
+
+/** On Cancel Manpower Request Modal is going to be hidden */
+onHideModal('#cancelManpowerRequestModal', () => resetForm('#cancelManpowerRequestForm'));
+
+
+/** Validate Cancel Manpower Request Form */
+validateForm('#cancelManpowerRequestForm', {
+    rules: { requisitionID: { required: true }},
+    messages: { requisitionID: { required: 'Requisition ID should be here' }},
+    submitHandler: () => {
+        const formData = generateFormData('#cancelManpowerRequestForm');
+
+        const requisitionID = formData.get('requisitionID');
+
+        DELETE_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
+            success: result => {
+                if(result) {
+                    hideModal('#cancelManpowerRequestForm');
+                    reloadDataTable('#manpowerRequestDT');
+                    toastr.info('A manpower request is successfully canceled');
+                }
+            },
+            error: () => {
+                hideModal('#cancelManpowerRequestForm');
+                toastr.error('There was a problem in canceling a manpower request')
+            }
+        });
+    }
+});
+
+
+/** 
+ * ==============================================================================
+ * DELETE MANPOWER REQUEST
+ * ==============================================================================
+ */
+
+
+
+/** Delete Manpower Request */
+const deleteManpowerRequest = (requisitionID) => {
+    setValue('#requisitionIDForDelete', requisitionID);
+    showModal('#deleteManpowerRequestModal');
+}
+
+
+/** On Cancel Manpower Request Modal is going to be hidden */
+onHideModal('#deleteManpowerRequestModal', () => resetForm('#deleteManpowerRequestForm'));
+
+
+/** Validate Cancel Manpower Request Form */
+validateForm('#deleteManpowerRequestForm', {
+    rules: { requisitionID: { required: true }},
+    messages: { requisitionID: { required: 'Requisition ID should be here' }},
+    submitHandler: () => {
+        const formData = generateFormData('#deleteManpowerRequestForm');
+
+        const requisitionID = formData.get('requisitionID');
+
+        DELETE_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
+            success: result => {
+                if(result) {
+                    hideModal('#deleteManpowerRequestModal');
+                    reloadDataTable('#manpowerRequestDT');
+                    toastr.info('A manpower request is successfully deleted');
+                }
+            },
+            error: () => {
+                hideModal('#deleteManpowerRequestModal');
+                toastr.error('There was a problem in deleting a manpower request');
+            }
+        });
+    }
+});

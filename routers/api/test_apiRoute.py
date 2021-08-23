@@ -4,7 +4,9 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from hashing import Hash
 from database import get_db
-import schemas, models
+from schemas import db_schemas
+
+import models
 
 
 # Router Instance
@@ -21,7 +23,7 @@ router = APIRouter(
 
 # Create Department
 @router.post("/departments", status_code = 201)
-def create_department(req: schemas.Department, db: Session = Depends(get_db)):
+def create_department(req: db_schemas.Department, db: Session = Depends(get_db)):
     try:
         new_department = models.Department(
             name = req.name,
@@ -58,7 +60,7 @@ def get_one_departments(department_id, db: Session = Depends(get_db)):
 
 # Create Position Per Department
 @router.post("/departments/{department_id}/positions")
-def create_position(department_id, req: schemas.Position, db: Session = Depends(get_db)):
+def create_position(department_id, req: db_schemas.Position, db: Session = Depends(get_db)):
     try:
         new_position = models.Position(
             department_id = department_id,
@@ -76,7 +78,7 @@ def create_position(department_id, req: schemas.Position, db: Session = Depends(
         return {"error": e}
 
 # Get All Department Position
-@router.get("/departments/{department_id}/positions", response_model = schemas.ShowDepartmentPosition)
+@router.get("/departments/{department_id}/positions", response_model = db_schemas.ShowDepartmentPosition)
 def get_all_department_positions(department_id: str, db: Session = Depends(get_db)):
     try:
         return db.query(models.Department).filter(models.Department.department_id == department_id).first()
@@ -96,7 +98,7 @@ def get_all_positions(db: Session = Depends(get_db)):
 
 # Create User
 @router.post("/users", status_code = 201)
-def create_user(req: schemas.User, db: Session = Depends(get_db)):
+def create_user(req: db_schemas.User, db: Session = Depends(get_db)):
     try:
         new_user = models.User(
             first_name = req.first_name, 

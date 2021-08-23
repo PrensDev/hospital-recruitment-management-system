@@ -27,33 +27,59 @@ const initDataTable = (selector = "", dtOptions = {
     debugMode: false,
     url: "",
     columns: [],
-    sort: true
-}) => $(() => { 
-    var ajaxObj = {
-        url: dtOptions.url,
-        headers: AJAX_HEADERS,
-        dataSrc: ""
-    }
-    
-    ifSelectorExist(selector, () => {
-        if(dtOptions.debugMode) {
-            $(selector).DataTable({
-                ajax: {
-                    url: dtOptions.url,
-                    headers: AJAX_HEADERS,
-                    success: result => console.log(result)
-                }
-            });
-        } else {
-            $(selector).DataTable({
-                ajax: ajaxObj,
-                columns: dtOptions.columns,
-                responsive: true,
-                sort: dtOptions.sort
-            });
+}) => $(() => ifSelectorExist(selector, () => dtOptions.debugMode 
+    ? $(selector).DataTable({
+        ajax: {
+            url: dtOptions.url,
+            headers: AJAX_HEADERS,
+            success: result => console.log(result)
         }
     })
-});
+    : $(selector).DataTable({
+        ajax: {
+            url: dtOptions.url,
+            headers: AJAX_HEADERS,
+            dataSrc: ""
+        },
+        columns: dtOptions.columns,
+        order: [[0, 'desc']],
+        responsive: true,
+        columnDefs: [{
+            targets: [-1],
+            orderable: false
+        }],
+        language: {
+            emptyTable: `
+                <div class="p-5">
+                    <h3>No records</h3>
+                    <div class="text-secondary">There are no records yet here</div>
+                </div>
+            `,
+            loadingRecords: `
+                <div class="p-5 text-secondary">
+                    <div class="spinner-border mb-3" role="status"></div>
+                    <div>Please wait while loading records ...</div>
+                </div>
+            `,
+            processing: `
+                <div class="p-5 text-secondary">
+                    <div class="spinner-border mb-3" role="status"></div>
+                    <div>Processing, please wait ...</div>
+                </div>
+            `,
+            zeroRecords: `
+                <div class="p-5">
+                    <h3>No match found</h3>
+                    <div class="text-secondary">No records was found that matched to your query</div>
+                </div>
+            `,
+            paginate: {
+                previous: `<i class="fas fa-caret-left"></i>`,
+                next: `<i class="fas fa-caret-right"></i>`,
+            }
+        }
+    })
+));
 
 
 /** Reload DataTable */
@@ -102,6 +128,11 @@ const generateFormData = (selector) => { return new FormData($(selector)[0]) }
 /** Humanize DateTime */
 const fromNow = (datetime) => { return moment(datetime).fromNow() }
 const toNow = (datetime) => { return moment(datetime).fromNow() }
+
+
+/** If date is before/after today */
+const isBeforeToday = (datetime) => { return moment(datetime).isBefore(moment()) }
+const isAfterToday = (datetime) => { return moment(datetime).isAfter(moment()) }
 
 
 /** Format DateTime */
@@ -188,49 +219,86 @@ const formatName = (format = "", fullName = {
 /** GET AJAX */
 const GET_ajax = (url = "", options = {
     success: () => {},
-    error: () => {}
-}) => {
-    $.ajax({
-        url: url,
-        type: 'GET',
-        headers: AJAX_HEADERS,
-        success: options.success,
-        error: options.error
-    });
-}
+    error: () => console.error('GET_ajax failed')
+}) => $.ajax({
+    url: url,
+    type: 'GET',
+    headers: AJAX_HEADERS,
+    success: options.success,
+    error: options.error
+});
 
 
 /** POST AJAX */
 const POST_ajax = (url = "", data = {}, options = {
     success: () => {},
-    error: () => {}
-}) => {
-    $.ajax({
-        url: url,
-        type: 'POST',
-        headers: AJAX_HEADERS,
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(data),
-        success: options.success,
-        error: options.error
-    });
-}
+    error: () => console.error('POST_ajax failed')
+}) => $.ajax({
+    url: url,
+    type: 'POST',
+    headers: AJAX_HEADERS,
+    dataType: 'json',
+    contentType: 'application/json; charset=utf-8',
+    data: JSON.stringify(data),
+    success: options.success,
+    error: options.error
+});
 
 
 /** PUT AJAX */
 const PUT_ajax = (url = "", data = {}, options = {
     success: () => {},
-    error: () => {}
+    error: () => console.error('PUT_ajax failed')
+}) => $.ajax({
+    url: url,
+    type: "PUT",
+    headers: AJAX_HEADERS,
+    dataType: 'json',
+    contentType: 'application/json; charset=utf-8',
+    data: JSON.stringify(data),
+    success: options.success,
+    error: options.error
+});
+
+
+/** DELETE AJAX */
+const DELETE_ajax = (url = "", options = {
+    success: () => {},
+    error: () => console.error('DELETE_ajax failed')
+}) => $.ajax({
+    url: url,
+    type: 'DELETE',
+    headers: AJAX_HEADERS,
+    success: options.success,
+    error: options.error
+})
+
+
+/** Check if there are sessioned alert */
+$(() => {
+    if(localStorage.getItem('sessioned_alert')) {
+        const alertTheme = localStorage.getItem('sessioned_alert_theme');
+        const alertMessage = localStorage.getItem('sessioned_alert_message')
+
+        if(alertTheme === 'success') toastr.success(alertMessage);
+        if(alertTheme === 'warning') toastr.warning(alertMessage);
+        if(alertTheme === 'error') toastr.error(alertMessage);
+
+        localStorage.removeItem('sessioned_alert');
+        localStorage.removeItem('sessioned_alert_theme');
+        localStorage.removeItem('sessioned_alert_message');
+    }
+})
+
+
+/** Set Sessioned Alert */
+const setSessionedAlertAndRedirect = (data = {
+    theme: "", 
+    message: "", 
+    redirectURL: ""
 }) => {
-    $.ajax({
-        url: url,
-        type: "PUT",
-        headers: AJAX_HEADERS,
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(data),
-        success: options.success,
-        error: options.error
-    });
+    localStorage.setItem('sessioned_alert', true)
+    localStorage.setItem('sessioned_alert_theme', data.theme)
+    localStorage.setItem('sessioned_alert_theme', data.message)
+    location.assign(data.redirectURL)
 }

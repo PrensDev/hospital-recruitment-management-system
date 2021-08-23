@@ -1,4 +1,4 @@
-<!-- Extra Large Modal -->
+<!-- View Manpower Request Modal -->
 <div class="modal fade" id="viewManpowerRequestModal">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
@@ -93,5 +93,65 @@
                 <button type="button" class="btn btn-info">Edit</button>
             </div>
         </div>
+    </div>
+</div>
+
+
+<!-- Cancel Manpower Request Modal -->
+<div class="modal" id="cancelManpowerRequestModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="cancelManpowerRequestForm">
+
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fas fa-times-circle mr-2"></i>Cancel Manpower Request</h4>
+                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </button>
+            </div>
+
+            <div class="modal-body mb-3">
+                <input type="hidden" id="requisitionIDForCancel" name="requisitionID">
+                <div>Are you sure you want to cancel your request?</div>
+                <div class="small text-danger">NOTE: Your request will be remove and it cannot be undone</div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="submit" class="btn btn-warning">
+                    <span>Yes, cancel it.</span>
+                    <i class="fas fa-times-circle ml-1"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- Delete Manpower Request Modal -->
+<div class="modal" id="deleteManpowerRequestModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="deleteManpowerRequestForm">
+
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fas fa-trash-alt mr-2"></i>Delete Manpower Request</h4>
+                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </button>
+            </div>
+
+            <div class="modal-body mb-3">
+                <input type="hidden" id="requisitionIDForDelete" name="requisitionID">
+                <div>Are you sure you want to delete your request?</div>
+                <div class="small text-danger">NOTE: Your request will be remove and it cannot be undone</div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="submit" class="btn btn-danger">
+                    <span>Yes, delete it.</span>
+                    <i class="fas fa-trash-alt ml-1"></i>
+                </button>
+            </div>
+        </form>
     </div>
 </div>

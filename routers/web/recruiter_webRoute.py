@@ -1,10 +1,17 @@
 # Import Packages
+from database import get_db
 from routers.api.deptHead_apiRoute import AUTHORIZED_USER
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from routers.web import errPages_templates as errTemplate
+from sqlalchemy.orm import Session
 from jwt_token import get_token
+import models
+
+
+# Models
+Requisition = models.Requisition
 
 
 # Router
@@ -71,14 +78,29 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
         return errTemplate.page_not_found(req)
 
 # Create Job Post
-@router.get("/add-job-post", response_class=HTMLResponse)
-async def dashboard(req: Request):
-    return templates.TemplateResponse(TEMPLATES_PATH + "add_job_post.html", {
-        "request": req,
-        "page_title": "Create Job Post",
-        "sub_title": "Create Job Post to advertise available jobs",
-        "active_navlink": "Job Posts"
-    })
+@router.get("/add-job-post/{requisition_id}", response_class=HTMLResponse)
+async def dashboard(
+    requisition_id: str, 
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if not requisition_id:
+        return errTemplate.page_not_found(req)
+    elif user_data['user_type'] == AUTHORIZED_USER:
+        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
+        if not requisition:
+            return errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse(TEMPLATES_PATH + "add_job_post.html", {
+                "request": req,
+                "page_title": "Create Job Post",
+                "sub_title": "Create Job Post to advertise available jobs",
+                "active_navlink": "Job Posts"
+            })
+    else:
+        return errTemplate.page_not_found(req)
+
 
 # Applicants
 @router.get("/applicants", response_class=HTMLResponse)

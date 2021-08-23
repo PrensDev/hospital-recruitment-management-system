@@ -7,7 +7,9 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, check_priviledge
-import schemas, models
+from schemas import db_schemas
+
+import models
 
 
 # Models
@@ -29,10 +31,10 @@ AUTHORIZED_USER = "Recruiter"
 
 
 # User Information
-@router.get("/info", response_model = schemas.UserInfo)
+@router.get("/info", response_model = db_schemas.UserInfo)
 def get_user_info(
     db: Session = Depends(get_db), 
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
@@ -55,10 +57,10 @@ REQUISITION_NOT_FOUND_RESPONSE = {"message": "Requisition not found"}
 
 
 # Get All Approved Requisitions
-@router.get("/requisitions", response_model = List[schemas.ShowManpowerRequest])
+@router.get("/requisitions", response_model = List[db_schemas.ShowManpowerRequest])
 def get_all_approved_requisitions(
     db: Session = Depends(get_db), 
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
@@ -68,11 +70,11 @@ def get_all_approved_requisitions(
 
 
 # Get One Approved Requisition
-@router.get("/requisitions/{requisition_id}", response_model = schemas.ShowManpowerRequest)
+@router.get("/requisitions/{requisition_id}", response_model = db_schemas.ShowManpowerRequest)
 def get_one_approved_requisitions(
     requisition_id,
     db: Session = Depends(get_db), 
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
@@ -95,10 +97,10 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
 
 
 # Get All Job Posts
-@router.get("/job-posts")
+@router.get("/job-posts", response_model = List[db_schemas.ShowJobPost])
 def get_all_job_posts(
     db: Session = Depends(get_db),
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
@@ -108,11 +110,11 @@ def get_all_job_posts(
 
 
 # Get One Job Posts
-@router.get("/job-posts/${job_post_id}")
+@router.get("/job-posts/{job_post_id}", response_model = db_schemas.ShowJobPost)
 def get_one_job_post(
     job_post_id,
     db: Session = Depends(get_db),
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
@@ -128,9 +130,9 @@ def get_one_job_post(
 # Post Vacant Job
 @router.post("/job-posts", status_code = 201)
 def post_vacant_job(
-    req: schemas.JobPost,
+    req: db_schemas.JobPost,
     db: Session = Depends(get_db),
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
@@ -161,11 +163,11 @@ APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
 
 
 # Get All Applicants
-@router.get("/job-posts/${job_post_id}/applicants")
+@router.get("/job-posts/{job_post_id}/applicants")
 def get_all_applicants(
     job_post_id,
     db: Session = Depends(get_db),
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
@@ -179,7 +181,7 @@ def get_all_applicants(
 def get_one_applicant(
     applicant_id,
     db: Session = Depends(get_db),
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)

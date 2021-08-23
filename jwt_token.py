@@ -3,7 +3,7 @@ from fastapi import Cookie, HTTPException
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
-import schemas
+from schemas import auth_schemas
 
 
 # Constants
@@ -37,7 +37,7 @@ def verify_token(token: str):
         if user_id == None and user_type == None:
             raise credentials_exception
         else:
-            return schemas.TokenData(
+            return auth_schemas.TokenData(
                 user_id = user_id,
                 user_type = user_type
             )

@@ -3,8 +3,8 @@ from sqlalchemy.sql.expression import null
 from database import Base
 from sqlalchemy import text
 from sqlalchemy.sql.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import Date, String, Integer, DateTime, Float, Text, Boolean
-from sqlalchemy.orm import relation, relationship
+from sqlalchemy.sql.sqltypes import String, Integer, DateTime, Float, Text, Boolean
+from sqlalchemy.orm import relationship
 
 
 # User Model
@@ -298,7 +298,7 @@ class JobPost(Base):
         nullable = False
     )
     expiration_date = Column(
-        Date,
+        DateTime,
         nullable = True
     )
     posted_by = Column(

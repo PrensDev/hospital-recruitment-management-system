@@ -5,7 +5,9 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, check_priviledge
-import schemas, models
+from schemas import db_schemas
+
+import models
 
 
 # Models
@@ -25,10 +27,10 @@ AUTHORIZED_USER = "Hiring Manager"
 
 
 # User Information
-@router.get("/info", response_model = schemas.UserInfo)
+@router.get("/info", response_model = db_schemas.UserInfo)
 def get_user_info(
     db: Session = Depends(get_db), 
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
@@ -51,10 +53,10 @@ REQUISITION_NOT_FOUND_RESPONSE = {"message": "Requisition not found"}
 
 
 # Get All Requisitions
-@router.get("/requisitions", response_model = List[schemas.ShowManpowerRequest])
+@router.get("/requisitions", response_model = List[db_schemas.ShowManpowerRequest])
 def get_all_requisitions(
     db: Session = Depends(get_db),
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
@@ -64,11 +66,11 @@ def get_all_requisitions(
 
 
 # Get One Requisition
-@router.get("/requisitions/{requisition_id}", response_model = schemas.ShowManpowerRequest)
+@router.get("/requisitions/{requisition_id}", response_model = db_schemas.ShowManpowerRequest)
 def get_one_requisition(
     requisition_id: str, 
     db: Session = Depends(get_db),
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 
 ):
     try:
@@ -86,9 +88,9 @@ def get_one_requisition(
 @router.put("/requisitions/{requisition_id}")
 def update_requisition(
     requisition_id: str, 
-    req: schemas.ManpowerRequestStatus,
+    req: db_schemas.ManpowerRequestStatus,
     db: Session = Depends(get_db),
-    user_data: schemas.User = Depends(get_user)
+    user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)

@@ -4,48 +4,129 @@
  * ==============================================================================
  */
 
+/** Initialize Manpower Request DataTable */
 initDataTable('#manpowerRequestDT', {
+    // debugMode: true,
     url: `${ R_API_ROUTE }requisitions`,
     columns: [
-        { data: "vacant_position.name" },
-        { 
+
+        // Created At (For Default Sorting)
+        { data: 'created_at', visible: false },
+
+        // Requested By
+        {
+            data: null,
+            class: 'text-nowrap',
+            render: data => {
+                const requestedBy = data.manpower_request_by;
+
+                const requestedByFullName = formatName("F M. L, S", {
+                    firstName: requestedBy.first_name,
+                    middleName: requestedBy.middle_name,
+                    lastName: requestedBy.last_name,
+                    suffixName: requestedBy.suffix_name
+                });
+
+                const requestedByDepartment = requestedBy.position.department.name;
+
+                return `
+                    <div>${ requestedByFullName }</div>
+                    <div class="small text-secondary">${ requestedByDepartment }</div>
+                `
+            }
+        },
+
+        // Vacant Position
+        {
+            data: null,
+            render: data => { return `<div>${ data.vacant_position.name }</div>` }
+        },
+
+        // Staffs Needed
+        {
             data: null,
             render: data => {
                 staffsNeeded = data.staffs_needed;
                 return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`;
             }
         },
-        { data: "request_nature"},
+
+        // Request Nature
+        {
+            data: null,
+            render: data => { return `<div>${ data.request_nature }</div>` }
+        },
+
+        // Status
         {
             data: null,
             render: data => {
-                return "Status"
+                jobPost = data.job_post
+
+                if(jobPost.length == 1) {
+                    jobPost = jobPost[1]
+                    return dtBadge('success', 'Job post is created')
+                } else {
+                    return dtBadge('warning', 'No job post yet')
+                }
             }
         },
+
+        // Deadline
         {
             data: null,
+            class: 'text-nowrap',
             render: data => {
                 const deadline = data.deadline;
                 return isEmptyOrNull(deadline)
                     ? "Unset"
                     : `
-                        <div>${ formatDateTime(deadline, "Date") }</div>
+                        <div>${ formatDateTime(deadline, "MMM. D, YYYY") }</div>
                         <div class="small text-secondary">${ fromNow(deadline) }</div>
                     `
             }
         },
+
+        // Actions
         {
             data: null,
             render: data => {
                 const requisitionID = data.requisition_id;
-                return `
-                    <div class="text-center">
+
+                const jobPost = data.job_post;
+
+                const createJobPostBtn = jobPost.length == 1 
+                    ? "" 
+                    : `
                         <div 
-                            class="btn btn-secondary btn-sm"
-                            onclick="viewManpowerRequest('${ requisitionID }')"
+                            class="dropdown-item d-flex" 
+                            role="button"
+                            onclick="createJobPost('${ requisitionID }')"
                         >
-                            <i class="fas fa-list mr-1"></i>
-                            <span>View</span>
+                            <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
+                            <div>Create Job Post</div>
+                        </div>
+                    `;
+                
+                return `
+                    <div class="text-center dropdown">
+                        <div class="btn btn-sm btn-light" data-toggle="dropdown" role="button">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div 
+                                class="dropdown-item d-flex" 
+                                role="button"
+                                onclick="viewManpowerRequest('${ requisitionID }')"
+                            >
+                                <div style="width: 2rem">
+                                    <i class="fas fa-list mr-1"></i>
+                                </div>
+                                <div>View Details</div>
+                            </div>
+
+                            ${ createJobPostBtn }
                         </div>
                     </div>
                 `
@@ -66,6 +147,8 @@ initDataTable('#manpowerRequestDT', {
 const viewManpowerRequest = (requisitionID) => {
     GET_ajax(`${ R_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
+            console.log(result);
+
             const requestedBy = result.manpower_request_by;
             
             // Set Requestor Name
@@ -149,9 +232,25 @@ const viewManpowerRequest = (requisitionID) => {
                 return isEmptyOrNull(completedAt) ? "No status" : formatDateTime(completedAt, "Date")
             });
 
+            // Set Modal Footer
+            if(result.job_post.length == 1){
+                setContent('#viewManpowerRequestModalFooter', `<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>`)
+            } else {
+                setContent('#viewManpowerRequestModalFooter', `
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" onclick="createJobPost('${ result.requisition_id }')">
+                        <span>Create Job Post</span>
+                        <i class="fas fa-pen ml-1"></i>
+                    </button>
+                `)
+            }
+
             // Show View Manpower Request Modal
             showModal('#viewManpowerRequestModal');
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });
 }
+
+
+const createJobPost = (requisitionID) => location.assign(`${ R_WEB_ROUTE }add-job-post/${ requisitionID }`)

@@ -9,7 +9,14 @@
 initDataTable('#manpowerRequestDT', {
     url: `${ H_API_ROUTE }requisitions`,
     columns: [
+        
+        // Created At (For Default Sorting)
+        { data: 'created_at', visible: false },
+
+        // Vacant Position
         { data: "vacant_position.name" },
+
+        // Staffs Needed
         { 
             data: null,
             render: data => {
@@ -17,6 +24,8 @@ initDataTable('#manpowerRequestDT', {
                 return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`;
             }
         },
+
+        // Request Nature
         { data: "request_nature"},
         {
             data: null,
@@ -280,7 +289,7 @@ validateForm('#updateManpowerRequestStatusForm', {
         }
     },
     submitHandler: () => updateManpowerRequestStatus()
-})
+});
 
 
 /** Update Manpower Request Status */

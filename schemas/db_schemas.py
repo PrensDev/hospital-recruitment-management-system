@@ -1,9 +1,7 @@
 # Import Package
-from database import Base
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Optional
 from pydantic import BaseModel
-from sqlalchemy.sql.expression import update
 
 
 # Department Schema
@@ -47,12 +45,6 @@ class User(BaseModel):
     user_type: str
 
 
-# Login
-class Login(BaseModel):
-    email: str
-    password: str
-
-
 # User Info
 class UserInfo(BaseModel):
     first_name: str
@@ -64,12 +56,6 @@ class UserInfo(BaseModel):
 
     class Config():
         orm_mode = True
-
-
-# Token Data
-class TokenData(BaseModel):
-    user_id: str
-    user_type: str
 
 
 # ManPowerRequest Schema
@@ -84,8 +70,8 @@ class CreateManpowerRequest(BaseModel):
     deadline: Optional[datetime]
 
 
-# Show Manpower Request
-class ShowManpowerRequest(BaseModel):
+# Manpower Request
+class ManpowerRequest(BaseModel):
     requisition_id: str
     manpower_request_by: UserInfo
     vacant_position: ShowPosition
@@ -128,9 +114,49 @@ class ManpowerRequestStatus(BaseModel):
     reviewed_at: datetime
 
 
+# Applicants Schema
+class Applicant(BaseModel):
+    first_name: str
+    middle_name: str
+    last_name: str
+    suffix_name: str
+    resume: str
+    contact_number: str
+    email: str
+
+
+# Show Applicant Schema
+class ShowApplicant(Applicant):
+    applicant_id: str
+
+    class Config():
+        orm_mode = True
+
+
 # Job Post Schema
 class JobPost(BaseModel):
     requisition_id: str
     salary_is_visible: bool
     content: str
     expiration_date: Optional[datetime]
+
+
+# Show Job Post
+class ShowJobPost(JobPost):
+    job_post_id: str
+    manpower_request: ManpowerRequest
+    job_posted_by: UserInfo
+    applicants: List[Optional[Applicant]]
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+# Show Manpower Request
+class ShowManpowerRequest(ManpowerRequest):
+    job_post: List[Optional[ShowJobPost]]
+
+    class Config():
+        orm_mode = True
