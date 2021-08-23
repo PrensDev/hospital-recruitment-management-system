@@ -34,75 +34,53 @@
 
             <!-- Info Boxes -->
             <div class="row">
-                <div class="col-lg-3 col-6">
-                    <!-- small card -->
-                    <div class="small-box bg-info">
-                    <div class="inner">
-                        <h3>150</h3>
-    
-                        <p>Total Approved Requests</p>
+                <div class="col-md-4 col-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-info"><i class="fas fa-briefcase"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">Total Job Posts</span>
+                            <span class="info-box-number">1,410</span>
+                        </div>
+                        <!-- /.info-box-content -->
                     </div>
-                    <div class="icon">
-                        <i class="fas fa-people-carry"></i>
-                    </div>
-                    <a href="#" class="small-box-footer">
-                        More info <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                    </div>
+                <!-- /.info-box -->
                 </div>
-                <!-- ./col -->
-                <div class="col-lg-3 col-6">
-                    <!-- small card -->
-                    <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3>53<sup style="font-size: 20px">%</sup></h3>
-    
-                        <p>Total Job Posts</p>
+                <!-- /.col -->
+
+                <div class="col-md-4 col-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-success"><i class="fas fa-check-double"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">
+                                Total Ended Job Recruitment
+                            </span>
+                            <span class="info-box-number">93,139</span>
+                        </div>
+                        <!-- /.info-box-content -->
                     </div>
-                    <div class="icon">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <a href="#" class="small-box-footer">
-                        More info <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                    </div>
+                    <!-- /.info-box -->
                 </div>
-                <!-- ./col -->
-                <div class="col-lg-3 col-6">
-                    <!-- small card -->
-                    <div class="small-box bg-warning">
-                    <div class="inner">
-                        <h3>65</h3>
-    
-                        <p>Total Applicants</p>
+                <!-- /.col -->
+
+                <div class="col-md-4 col-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-warning"><i class="fas fa-file-signature"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">
+                                Total Ongoing Job Recruitment
+                            </span>
+                            <span class="info-box-number">93,139</span>
+                        </div>
+                        <!-- /.info-box-content -->
                     </div>
-                    <div class="icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <a href="#" class="small-box-footer">
-                        More info <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                    </div>
+                    <!-- /.info-box -->
                 </div>
-                <!-- ./col -->
-                <div class="col-lg-3 col-6">
-                    <!-- small card -->
-                    <div class="small-box bg-danger">
-                    <div class="inner">
-                        <h3>65</h3>
-    
-                        <p>Total Completed Requests</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <a href="#" class="small-box-footer">
-                        More info <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                    </div>
-                </div>
-                <!-- ./col -->
+                <!-- /.col -->
             </div>
+
             <!-- / Info Boxes -->
 
             <!-- Card -->
@@ -115,7 +93,7 @@
                     </div>
                     <div>
                         <a 
-                            href="http://127.0.0.1:8000/r/add-job-post"
+                            href="{{ R_WEB_ROUTE }}add-job-post"
                             class="btn btn-sm btn-primary"
                         >
                             <i class="fas fa-plus"></i>
@@ -133,7 +111,7 @@
                                 <tr>
                                     <th>Position Title</th>
                                     <th>Staffs Needed</th>
-                                    <th>Nature of Request</th>
+                                    <th>Employement Type</th>
                                     <th>Status</th>
                                     <th>Deadline</th>
                                     <th class="text-center">Actions</th>
@@ -148,24 +126,33 @@
                                         1 staff
                                     </td>
                                     <td>
-                                        Replacement
+                                        Full Time
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge badge-success px-2">Approved</span>
+                                        <span class="badge badge-warning px-2">Ongoing</span>
                                     </td>
                                     <td>
                                         September 20, 2021; 7:00 AM
                                     </td>
                                     <td class="project-actions text-center">
                                         <div 
-                                            class="btn btn-primary btn-sm"
+                                            class="btn btn-secondary btn-sm"
                                             data-toggle="modal"
-                                            data-target="#viewManPowerRequest"
+                                            data-target="#viewJobPostModal"
                                         >
-                                            <i class="fas fa-folder mr-1"></i>
+                                            <i class="fas fa-list mr-1"></i>
                                             <span>View</span>
                                         </div>
                                         
+                                        <div 
+                                            class="btn btn-info btn-sm"
+                                            data-toggle="modal"
+                                            data-target="#editJobPostModal"
+                                        >
+                                            <i class="fas fa-pencil-alt mr-1"></i>
+                                            <span>Edit</span>
+                                        </div>
+
                                         <div 
                                             class="btn btn-danger btn-sm"
                                             data-toggle="modal"
@@ -191,6 +178,9 @@
     <!-- /. content -->
 {% endblock %}
 
+{% block page_modals %}
+    {% include "pages/recruiter/modals/job_posts_modal.html" %}
+{% endblock %}
 
 {% block page_scripts %}
     <script src="{{url_for('static', path='/dist/js/pages/recruiter/job_posts.js')}}"></script>
