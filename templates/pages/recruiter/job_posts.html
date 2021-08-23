@@ -22,13 +22,12 @@
                 <li class="breadcrumb-item active">Fixed Layout</li>
                 </ol>
             </div> -->
-            <!-- / breadcrumb -->
     
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </section>
 
-        <!-- Main content -->
+    <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
 
@@ -103,19 +102,18 @@
                 </div>
                 <!-- ./col -->
             </div>
-            <!-- / Info Boxes -->
 
             <!-- Card -->
             <div class="card card-primary card-outline">
 
                 <!-- Card Header -->
-                <div class=" p-3 d-flex justify-content-between">
+                <div class="p-3 d-flex justify-content-between">
                     <div>
                         <h3 class="card-title">Lists of Job Posts</h3>
                     </div>
                     <div>
                         <a 
-                            href="http://127.0.0.1:8000/r/add-job-post"
+                            href="{{ R_WEB_ROUTE }}add-job-post"
                             class="btn btn-sm btn-primary"
                         >
                             <i class="fas fa-plus"></i>
@@ -128,67 +126,27 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="jobPostDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
+                        <table id="jobPostsDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Position Title</th>
-                                    <th>Staffs Needed</th>
-                                    <th>Nature of Request</th>
-                                    <th>Status</th>
-                                    <th>Deadline</th>
+                                    <th></th>
+                                    <th>Manpower Request</th>
+                                    <th>Vacant Position</th>
+                                    <th>Applicants</th>
+                                    <th>Application Status</th>
+                                    <th>End at</th>
                                     <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        Assistant Manager
-                                    </td>
-                                    <td>
-                                        1 staff
-                                    </td>
-                                    <td>
-                                        Replacement
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge badge-success px-2">Approved</span>
-                                    </td>
-                                    <td>
-                                        September 20, 2021; 7:00 AM
-                                    </td>
-                                    <td class="project-actions text-center">
-                                        <div 
-                                            class="btn btn-primary btn-sm"
-                                            data-toggle="modal"
-                                            data-target="#viewManPowerRequest"
-                                        >
-                                            <i class="fas fa-folder mr-1"></i>
-                                            <span>View</span>
-                                        </div>
-                                        
-                                        <div 
-                                            class="btn btn-danger btn-sm"
-                                            data-toggle="modal"
-                                            data-target="#"
-                                        >
-                                            <i class="fas fa-trash mr-1"></i>
-                                            <span>Delete</span>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
-                <!-- /.card-body -->
 
             </div>
-            <!-- /.card -->
             
         </div>
     </section>
-    <!-- /. content -->
 {% endblock %}
 
 
