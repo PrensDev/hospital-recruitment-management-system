@@ -22,7 +22,6 @@
                 <li class="breadcrumb-item active">Fixed Layout</li>
                 </ol>
             </div> -->
-            <!-- / breadcrumb -->
 
             </div>
         </div>
@@ -35,8 +34,14 @@
             <div class="col-md-8">
                 <form class="card card-primary card-outline" id="editJobPostForm">
     
-                    <div class="card-header">
-                        <h3 class="card-title">Edit Job Post</h3>
+                    <div class="card-header align-items-center">
+                        <div class="card-title">Edit Job Post</div>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-sm btn-tool" data-card-widget="maximize">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="card-body">
@@ -107,43 +112,83 @@
                 </form>
             </div>
             
-            <!-- Manpower Request Summary -->
             <div class="col-md-4">
+
+                <!-- Job Post Details -->
                 <div class="card card-primary card-outline">
                     <div class="card-header">
-                        <h3 class="card-title">Manpower Request</h3>
+                        <div class="card-title">Job Post Details</div>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr>
+                                <td>
+                                    <h6 class="mb-1">Posted at</h6>
+                                    <div id="postedAtDate"></div>
+                                    <div id="postedAtTime"></div>
+                                    <div class="small text-secondary" id="postedAtHumanized"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h6 class="mb-1">Last updated</h6>
+                                    <div id="lastUpdatedDate"></div>
+                                    <div id="lastUpdatedTime"></div>
+                                    <div class="small text-secondary" id="lastUpdatedHumanized"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Manpower Request Summary -->
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <div class="card-title">Manpower Request</div>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <table class="table w-100">
                             <tr>
                                 <td>
                                     <h6 class="mb-1">Vacant Position</h6>
-                                    <div id="vacantPosition"></div>
+                                    <div id="vacantPositionForSummary"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h6 class="mb-1">Staffs Needed</h6>
-                                    <div id="staffsNeeded"></div>
+                                    <div id="staffsNeededForSummary"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h6 class="mb-1">Employment Type</h6>
-                                    <div id="employmentType"></div>
+                                    <div id="employmentTypeForSummary"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h6 class="mb-1">Salary Range</h6>
-                                    <div id="salaryRange"></div>
+                                    <div id="salaryRangeForSummary"></div>
                                     <div id="salaryRangeStatus"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h6 class="mb-1">Deadline</h6>
-                                    <div id="deadline"></div>
+                                    <div id="deadlineForSummary"></div>
                                 </td>
                             </tr>
                             <tr>
@@ -151,17 +196,23 @@
                                     <button 
                                         class="btn btn-sm btn-secondary btn-block"
                                         data-toggle="modal"
-                                        data-target="#"
+                                        data-target="#viewManpowerRequestModal"
                                     >View Full Details</button>
                                 </td>
                             </tr>
                         </table>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
     
+{% endblock %}
+
+
+{% block page_modals %}
+    {% include "pages/recruiter/modals/job_posts_modal.html" %}
 {% endblock %}
 
 

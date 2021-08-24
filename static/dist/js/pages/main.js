@@ -145,8 +145,12 @@ const formatDateTime = (datetime, format = "") => {
             realFormat = "dddd, MMMM D, YYYY; hh:mm A"
         else if(format === "DateTime")
             realFormat = "MMMM D, YYYY; hh:mm A"
+        else if(format === "Full Date")
+            realFormat = "dddd, MMMM D, YYYY"
         else if(format === "Date")
             realFormat = "MMMM D, YYYY"
+        else if(format === "Short Date")
+            realFormat = "MMM. D, YYYY"
         else if(format === "Time")
             realFormat = "hh:mm A"
         else
