@@ -12,6 +12,7 @@ import models
 
 # Models
 Requisition = models.Requisition
+JobPost = models.JobPost
 
 
 # Router
@@ -100,6 +101,32 @@ async def dashboard(
             })
     else:
         return errTemplate.page_not_found(req)
+
+
+# Edit Job Post
+@router.get("/edit-job-post/{job_post_id}", response_class=HTMLResponse)
+async def dashboard(
+    job_post_id: str, 
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if not job_post_id:
+        return errTemplate.page_not_found(req)
+    elif user_data['user_type'] == AUTHORIZED_USER:
+        job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+        if not job_post:
+            return errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse(TEMPLATES_PATH + "edit_job_post.html", {
+                "request": req,
+                "page_title": "Edit Job Post",
+                "sub_title": "Edit your job post here",
+                "active_navlink": "Job Posts"
+            })
+    else:
+        return errTemplate.page_not_found(req)
+
 
 
 # Applicants

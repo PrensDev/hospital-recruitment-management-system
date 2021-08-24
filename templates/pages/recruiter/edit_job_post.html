@@ -33,20 +33,20 @@
 
             <!-- Create Job Post Form -->
             <div class="col-md-8">
-                <form class="card card-primary card-outline" id="createJobPostForm">
+                <form class="card card-primary card-outline" id="editJobPostForm">
     
                     <div class="card-header">
-                        <h3 class="card-title">Create Job Post</h3>
+                        <h3 class="card-title">Edit Job Post</h3>
                     </div>
                     
                     <div class="card-body">
-                        <input type="hidden" id="requisitionID" name="requisitionID">
+                        <input type="hidden" id="jobPostID" name="requisitionID">
     
                         <!-- Job Description -->
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="jobDescription">Job Description<span class="text-danger"> *</span></label>
+                                    <label for="jobDescription">Job Description <span class="text-danger">*</span></label>
                                     <textarea
                                         name="jobDescription" 
                                         id="jobDescription" 
@@ -98,9 +98,9 @@
                     <div class="card-footer">
                         <div class="float-right">
                             <button type="button" class="btn btn-default" onclick="history.back()">Cancel</button>
-                            <button type="submit" class="btn btn-primary">
-                                <span>Post</span>
-                                <i class="fas fa-pen ml-1"></i>
+                            <button type="submit" class="btn btn-info">
+                                <span>Save</span>
+                                <i class="fas fa-check ml-1"></i>
                             </button>
                         </div>
                     </div>
@@ -111,7 +111,7 @@
             <div class="col-md-4">
                 <div class="card card-primary card-outline">
                     <div class="card-header">
-                        <div class="card-title">Manpower Request</div>
+                        <h3 class="card-title">Manpower Request</h3>
                     </div>
                     <div class="card-body">
                         <table class="table w-100">

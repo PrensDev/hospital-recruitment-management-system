@@ -30,6 +30,9 @@ loginAJAX = () => {
         password: formData.get('password')
     }
 
+    setContent('#loginBtn', `<div class="spinner-border spinner-border-sm"></div>`);
+    disableElement('#loginBtn');
+
     $.ajax({
         url: `${ BASE_URL_API }auth/login`,
         type: 'POST',
@@ -39,19 +42,21 @@ loginAJAX = () => {
             if(result.login_status === "Failed") {
                 toastr.options = {
                     "preventDuplicates": true,
-                    "positionClass": "toast-top-center",
+                    "positionClass": "mt-3 toast-top-center",
                     "showDuration": "3000"
                 }
-                toastr.warning(result.message)
+                toastr.warning(result.message);
+                setContent('#loginBtn', 'Log in');
+                enableElement('#loginBtn');
             } else {
                 localStorage.setItem("access_token", result.access_token);
 
                 toastr.options = {
                     "preventDuplicates": true,
-                    "positionClass": "toast-top-center",
+                    "positionClass": "mt-3 toast-top-center",
                     "showDuration": "3000"
                 }
-                toastr.success("Wow! Log in was successful!");
+                toastr.success("Log in was successful!");
 
                 location.assign(`${ BASE_URL_WEB }redirect`);
             }

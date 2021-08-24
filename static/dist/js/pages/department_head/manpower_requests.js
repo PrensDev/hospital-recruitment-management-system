@@ -393,13 +393,13 @@ validateForm('#cancelManpowerRequestForm', {
         DELETE_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
             success: result => {
                 if(result) {
-                    hideModal('#cancelManpowerRequestForm');
+                    hideModal('#cancelManpowerRequestModal');
                     reloadDataTable('#manpowerRequestDT');
                     toastr.info('A manpower request is successfully canceled');
                 }
             },
             error: () => {
-                hideModal('#cancelManpowerRequestForm');
+                hideModal('#cancelManpowerRequestModal');
                 toastr.error('There was a problem in canceling a manpower request')
             }
         });

@@ -154,11 +154,31 @@ def post_vacant_job(
         print(e)
 
 
+# Edit Job Post
+@router.put("/job-posts/{job_post_id}")
+def edit_job_post(
+    job_post_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+        if not job_post:
+            return JOB_POST_NOT_FOUND_RESPONSE
+        else:
+            return job_post
+    except Exception as e:
+        print(e)
+
+
+
 # ====================================================================
 # APPLICANTS
 # ====================================================================
 
 
+# Applicant Not Found Response
 APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
 
 
