@@ -1,7 +1,7 @@
 # Import Packages
 from routers.api.recruiter_apiRoute import JOB_POST_NOT_FOUND_RESPONSE
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
@@ -45,9 +45,10 @@ def get_all_job_posts(db: Session = Depends(get_db)):
 
 # Search Job Post
 @router.post("/job-posts/search", response_model = List[db_schemas.ShowJobPostForApplicants])
-def search_job_post(query: str, db: Session = Depends(get_db)):
+def search_job_post(req: Request, db: Session = Depends(get_db)):
     try:
-        return db.query(JobPost).filter(Position.name.contains(query)).all()
+        print(req)
+        # return db.query(JobPost).filter(Position.name.contains(query)).all()
     except Exception as e:
         print(e)
 
@@ -58,7 +59,7 @@ def get_one_job_post(job_post_id: str, db: Session = Depends(get_db)):
     try:
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
         if not job_post:
-            raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
+            return HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
         else:
             return job_post
     except Exception as e:

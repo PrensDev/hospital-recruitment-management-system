@@ -3,6 +3,16 @@
 {% block body %}
 <body class="layout-top-nav control-sidebar-slide-open layout-navbar-fixed">
     <div class="wrapper">
+
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <div 
+                class="spinner-border text-primary" 
+                role="status" 
+                style="width: 2.5rem; height: 2.5rem;"
+            ></div>
+        </div>
+
         {% include 'pages/home/components/topbar.html' %}
         
         <!-- Content Wrapper. Contains page content -->
