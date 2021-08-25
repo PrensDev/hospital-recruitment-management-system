@@ -3,83 +3,115 @@
 
 {% block content %}
 
-     <!-- Content Header (Page header) -->
-     <div class="content-header">
-        <div class="container">
-            <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{ page_title }}</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Layout</a></li>
-                <li class="breadcrumb-item active">Top Navigation</li>
-                </ol>
-            </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container">
+        <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0">{{ page_title }}</h1>
+        </div><!-- /.col -->
+    </div><!-- /.container-fluid -->
+</div>
 
     <!-- Main content -->
-    <div class="content">
-        <div class="container">
+    <section class="content">
+        <div class="container-fluid">
             <div class="row">
-            <div class="col-lg-6">
-                <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-    
-                    <p class="card-text">
-                    Some quick example text to build on the card title and make up the bulk of the card's
-                    content.
-                    </p>
-    
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
-                </div>
-                </div>
-    
-                <div class="card card-primary card-outline">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-    
-                    <p class="card-text">
-                    Some quick example text to build on the card title and make up the bulk of the card's
-                    content.
-                    </p>
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
-                </div>
-                </div><!-- /.card -->
-            </div>
-            <!-- /.col-md-6 -->
-            <div class="col-lg-6">
-                <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title m-0">Featured</h5>
-                </div>
-                <div class="card-body">
-                    <h6 class="card-title">Special title treatment</h6>
-    
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-                </div>
-    
-                <div class="card card-primary card-outline">
-                <div class="card-header">
-                    <h5 class="card-title m-0">Featured</h5>
-                </div>
-                <div class="card-body">
-                    <h6 class="card-title">Special title treatment</h6>
-    
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
+                <div class="col-md-8 offset-md-2">
+                    <form action="simple-results.html">
+                        <div class="input-group">
+                            <input type="search" class="form-control form-control-lg" placeholder="Search available job here">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-lg btn-default">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <!-- /.col-md-6 -->
+        </div>
+    </section>
+
+    <div class="content p-5">
+        <div class="container">
+            <p class="mt-3 text-center font-weight-normal display-4">Available Jobs</p>
+            <h5 class="text-center font-weight-normal">Discover latest available jobs here</h5>
+            <div class="row p-3">
+                <!-- /.col-md-6 -->
+                <div class="col-md-6 col-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="card-title m-0 text-primary">Recruiter</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <p class="card-text col-md-6"><i class="fas fa-money-bill-wave text-success mr-2"></i>P20000 - P50000</p>
+                                <p class="card-text col-md-6"><i class="fas fa-user-tie text-success mr-2"></i>Full Time</p>
+                                <p class="card-text col-md-6"><i class="fas fa-clock text-success mr-2"></i>August 31, 2021</p>
+                            </div>
+                                <a href="#" class="btn btn-secondary float-right">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-md-6 -->
+
+                <!-- /.col-md-6 -->
+                <div class="col-md-6 col-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="card-title m-0 text-primary">Assistant Manager</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <p class="card-text col-md-6"><i class="fas fa-money-bill-wave text-success mr-2"></i>P20000 - P50000</p>
+                                <p class="card-text col-md-6"><i class="fas fa-user-tie text-success mr-2"></i>Full Time</p>
+                                <p class="card-text col-md-6"><i class="fas fa-clock text-success mr-2"></i>August 31, 2021</p>
+                            </div>
+                                <a href="#" class="btn btn-secondary float-right">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+
+            <div class="row p-3">
+                <!-- /.col-md-6 -->
+                <div class="col-md-6 col-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="card-title m-0 text-primary">Recruiter</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <p class="card-text col-md-6"><i class="fas fa-money-bill-wave text-success mr-2"></i>P20000 - P50000</p>
+                                <p class="card-text col-md-6"><i class="fas fa-user-tie text-success mr-2"></i>Full Time</p>
+                                <p class="card-text col-md-6"><i class="fas fa-clock text-success mr-2"></i>August 31, 2021</p>
+                            </div>
+                                <a href="#" class="btn btn-secondary float-right">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-md-6 -->
+
+                <!-- /.col-md-6 -->
+                <div class="col-md-6 col-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h5 class="card-title m-0 text-primary">Assistant Manager</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <p class="card-text col-md-6"><i class="fas fa-money-bill-wave text-success mr-2"></i>P20000 - P50000</p>
+                                <p class="card-text col-md-6"><i class="fas fa-user-tie text-success mr-2"></i>Full Time</p>
+                                <p class="card-text col-md-6"><i class="fas fa-clock text-success mr-2"></i>August 31, 2021</p>
+                            </div>
+                                <a href="#" class="btn btn-secondary float-right">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-md-6 -->
             </div>
             <!-- /.row -->
         </div>
