@@ -44,3 +44,32 @@ async def redirect(req: Request, user_data: dict = Depends(get_token)):
         return RedirectResponse("/r")
     else:
         return errTemplate.page_not_found(req)
+
+
+# ===========================================================
+# CAREERS/JOB POSTS
+# ===========================================================
+
+
+# Careers
+@router.get("/careers")
+async def careers(req: Request):
+    try:
+        return templates.TemplateResponse("pages/home/careers.html", {
+            "request": req,
+            "page_title": "Careers"
+        })
+    except Exception as e:
+        print(e)
+
+
+# Available Job Details
+@router.get("/careers/{job_post_id}")
+async def available_job_details(req: Request):
+    try:
+        return templates.TemplateResponse("pages/home/available_job_details.html", {
+            "request": req,
+            "page_title": "Available Job Details"
+        })
+    except Exception as e:
+        print(e)

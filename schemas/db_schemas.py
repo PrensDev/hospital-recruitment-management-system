@@ -94,6 +94,20 @@ class ManpowerRequest(BaseModel):
         orm_mode = True
 
 
+
+# Manpower Request
+class ManpowerRequestForApplicants(BaseModel):
+    vacant_position: ShowPosition
+    employment_type: str
+    request_nature: str
+    staffs_needed: int
+    min_monthly_salary: Optional[float]
+    max_monthly_salary: Optional[float]
+
+    class Config():
+        orm_mode = True
+
+
 # Show Department Positions Schema
 class ShowDepartmentPosition(BaseModel):
     department_id: str
@@ -151,6 +165,17 @@ class ShowJobPost(JobPost):
     manpower_request: ManpowerRequest
     job_posted_by: UserInfo
     applicants: List[Optional[Applicant]]
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+# Show Job Post For Applicants
+class ShowJobPostForApplicants(JobPost):
+    job_post_id: str
+    manpower_request: ManpowerRequestForApplicants
     created_at: datetime
     updated_at: Optional[datetime]
 

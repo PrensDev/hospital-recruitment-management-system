@@ -18,7 +18,8 @@ router = APIRouter(
 )
 
 JobPost = models.JobPost
-
+Requisition = models.Requisition
+Position = models.Position
 
 
 # ====================================================================
@@ -31,30 +32,28 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
 
 
 # Get All Job Posts
-@router.get("/job-posts", response_model = List[db_schemas.ShowJobPost])
+@router.get("/job-posts", response_model = List[db_schemas.ShowJobPostForApplicants])
 def get_all_job_posts(db: Session = Depends(get_db)):
     try:
         return db.query(JobPost).filter(or_(
             JobPost.expiration_date > date.today(), 
-            JobPost.expiration_date == None)
-        ).all()
+            JobPost.expiration_date == None
+        )).all()
     except Exception as e:
         print(e)
 
 
-
-
 # Search Job Post
-@router.post("/job-posts/search")
-def search_job_post(db: Session = Depends(get_db)):
+@router.post("/job-posts/search", response_model = List[db_schemas.ShowJobPostForApplicants])
+def search_job_post(query: str, db: Session = Depends(get_db)):
     try:
-        pass
+        return db.query(JobPost).filter(Position.name.contains(query)).all()
     except Exception as e:
         print(e)
 
 
 # Get One Job Post
-@router.get("/job-posts/{job_post_id}", response_model = db_schemas.ShowJobPost)
+@router.get("/job-posts/{job_post_id}", response_model = db_schemas.ShowJobPostForApplicants)
 def get_one_job_post(job_post_id: str, db: Session = Depends(get_db)):
     try:
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
