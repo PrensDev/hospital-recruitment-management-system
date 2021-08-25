@@ -546,12 +546,10 @@ onClick('#confirmUpdateJobPostBtn', () => {
 
     const jobPostID = formData.get('jobPostID')
 
-    console.log(data);
-
     PUT_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, data, {
         success: result => {
             if(result) {
-                console.log(result)
+                location.assign(`${ R_WEB_ROUTE }job-posts`)
             }
         },
         error: () => {

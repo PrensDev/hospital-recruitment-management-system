@@ -168,7 +168,7 @@ def update_job_post(
         if not job_post.first():
             raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
         else:
-            job_post.update(req)
+            job_post.update(req.dict())
             db.commit()
             return {"message": "A job post is successfully updated"}
     except Exception as e:

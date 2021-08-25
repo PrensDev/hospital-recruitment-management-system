@@ -140,7 +140,7 @@ class JobPost(BaseModel):
     expiration_date: Optional[datetime]
 
 
-# Create Job Post
+# Create Job Post Schema
 class CreateJobPost(JobPost):
     requisition_id: str
 
