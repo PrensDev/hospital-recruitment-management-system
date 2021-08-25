@@ -135,10 +135,14 @@ class ShowApplicant(Applicant):
 
 # Job Post Schema
 class JobPost(BaseModel):
-    requisition_id: str
     salary_is_visible: bool
     content: str
     expiration_date: Optional[datetime]
+
+
+# Create Job Post
+class CreateJobPost(JobPost):
+    requisition_id: str
 
 
 # Show Job Post

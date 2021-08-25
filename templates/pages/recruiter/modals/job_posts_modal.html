@@ -12,78 +12,35 @@
                 </button>
             </div>
             <div class="modal-body p-5">
-                <!-- <div class="table-responsive">
-                    <table class="table table-bordered w-100" width="100%">
-                        <tr class="bg-light">
-                            <th colspan="3" class="text-center">Assistant Manager</th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="font-weight-bold">Department</div>
-                                <div class="mx-3" id="requestorName"></div>
-                                <div class="mx-3 small text-secondary" id="department"></div>
-                            </td>
-                            <td>
-                                <div class="font-weight-bold">Deadline</div>
-                                <div class="mx-3">
-                                    <div id="deadline"></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="font-weight-bold">Position</div>
-                                <div class="mx-3" id="position"></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="font-weight-bold">Staffs Needed</div>
-                                <div class="mx-3" id="noOfStaffsNeeded"></div>
-                            </td>
-                            <td>
-                                <div class="font-weight-bold">Employment Type</div>
-                                <div class="mx-3" id="employmentType"></div>
-                            </td>
-                            <td colspan="2">
-                                <div class="font-weight-bold">Suggested Salary</div>
-                                <div class="mx-3" id="suggestedSalary"></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4">
-                                <div class="font-weight-bold">Job Description</div>
-                                <div class="mx-3">
-                                    <div class="my-3 text-justify" id="jobDescription"></div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </div> -->
-
                 <!-- Job Summary -->
-                <div class="mb-4">
+                <div class="mb-5">
                     <div class="d-flex align-items-center justify-content-between">
-                        <h1>Medical Nurse</h1>
-                        <div>
-                            <badge class="badge bagde-info"></badge>
-                        </div>
+                        <h1 class="m-0" id="vacantPosition">Medical Nurse</h1>
                     </div>
                     <div class="dropdown-divider"></div>
-                    <div id="employmentType">Part Time</div>
-                    <div id="salaryRange">Offered Salary: P 12000 - P 34000</div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div id="jobPostStatus">
+                            <badge class="badge badge-info p-2">On going</badge>
+                        </div>
+                        <div class="mx-2">|</div>
+                        <div class="font-italic" id="postedAt">Posted January 23, 2021</div>
+                    </div>
+                    <div>
+                        <b>Employment Type: </b><span id="employmentType"></span>
+                    </div>
+                    <div id="salaryRangeDisplay">
+                        <b>Offered Salary: </b><span id="salaryRange"></span>
+                    </div>
+                    <div id="openUntilDisplay">
+                        <b>Open Until: </b><span id="openUntil"></span>
+                    </div>
                 </div>
 
                 <!-- Job Description -->
-                <div class="mb-4">
+                <div class="mb-5">
                     <h3>Job Description</h3>
                     <div class="dropdown-divider"></div>
-                    <div id="jobDescriptionContent">
-                        <div><b>Description</b></div>
-                        <div><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo aspernatur voluptates excepturi doloremque itaque dicta distinctio enim sunt omnis unde eveniet ut eius eaque, nemo harum perferendis corrupti suscipit. Alias perspiciatis expedita placeat dolorem.</p></div>
-                        <div><b>Qualifications</b></div>
-                        <div><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo aspernatur voluptates excepturi doloremque itaque dicta distinctio enim sunt omnis unde eveniet ut eius eaque, nemo harum perferendis corrupti suscipit. Alias perspiciatis expedita placeat dolorem.</p></div>
-                        <div><b>Educational Attainment</b></div>
-                        <div><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo aspernatur voluptates excepturi doloremque itaque dicta distinctio enim sunt omnis unde eveniet ut eius eaque, nemo harum perferendis corrupti suscipit. Alias perspiciatis expedita placeat dolorem.</p></div>
-                    </div>
+                    <div class="my-3" id="jobDescription"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -98,98 +55,3 @@
         </div>
     </div>
 </div>
-
-<!-- View Manpower Request Modal -->
-<div class="modal fade" id="viewManpowerRequestModal">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title"><i class="fas fa-file-alt text-secondary mr-2"></i>Manpower Request</h4>
-                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                </button>
-            </div>
-            <div class="modal-body p-5">
-                <div class="table-responsive">
-                    <table class="table table-bordered w-100" width="100%">
-                        <tr class="bg-light">
-                            <th colspan="3" class="text-center">MANPOWER REQUEST FORM</th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="font-weight-bold">Requesting Department</div>
-                                <div class="mx-3" id="requestorName"></div>
-                                <div class="mx-3 small text-secondary" id="requestorDepartment"></div>
-                            </td>
-                            <td>
-                                <div class="font-weight-bold">Date Requested</div>
-                                <div class="mx-3">
-                                    <div id="dateRequested"></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="font-weight-bold">Deadline</div>
-                                <div class="mx-3">
-                                    <div id="deadline"></div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="font-weight-bold">Position</div>
-                                <div class="mx-3" id="requestedPosition"></div>
-                            </td>
-                            <td>
-                                <div class="font-weight-bold">Staffs Needed</div>
-                                <div class="mx-3" id="noOfStaffsNeeded"></div>
-                            </td>
-                            <td>
-                                <div class="font-weight-bold">Employment Type</div>
-                                <div class="mx-3" id="employmentType"></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="font-weight-bold">Nature of Request</div>
-                                <div class="mx-3" id="requestNature"></div>
-                            </td>
-                            <td colspan="2">
-                                <div class="font-weight-bold">Suggested Salary</div>
-                                <div class="mx-3" id="suggestedSalary"></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4">
-                                <div class="font-weight-bold">Request Description</div>
-                                <div class="mx-3">
-                                    <div class="my-3 text-justify" id="requestDescription"></div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="bg-light">
-                            <th class="text-center" colspan="3">Approval</th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="font-weight-bold">Approved By</div>
-                                <div class="mx-3" id="approvedBy"></div>
-                            </td>
-                            <td>
-                                <div class="font-weight-bold">Approved At</div>
-                                <div class="mx-3" id="approvedAt"></div>
-                            </td>
-                            <td>
-                                <div class="font-weight-bold">Completed At</div>
-                                <div class="mx-3" id="completedAt"></div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-

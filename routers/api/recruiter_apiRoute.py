@@ -120,7 +120,7 @@ def get_one_job_post(
         check_priviledge(user_data, AUTHORIZED_USER)
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
         if not job_post:
-            return JOB_POST_NOT_FOUND_RESPONSE
+            raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
         else:
             return job_post
     except Exception as e:
@@ -130,13 +130,13 @@ def get_one_job_post(
 # Post Vacant Job
 @router.post("/job-posts", status_code = 201)
 def post_vacant_job(
-    req: db_schemas.JobPost,
+    req: db_schemas.CreateJobPost,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        new_job_post = models.JobPost(
+        new_job_post = JobPost(
             requisition_id = req.requisition_id,
             salary_is_visible = req.salary_is_visible,
             content = req.content,
@@ -154,20 +154,23 @@ def post_vacant_job(
         print(e)
 
 
-# Edit Job Post
+# Update Job Post
 @router.put("/job-posts/{job_post_id}")
-def edit_job_post(
+def update_job_post(
     job_post_id: str,
+    req: db_schemas.JobPost,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
-        if not job_post:
-            return JOB_POST_NOT_FOUND_RESPONSE
+        job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id)
+        if not job_post.first():
+            raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
         else:
-            return job_post
+            job_post.update(req)
+            db.commit()
+            return {"message": "A job post is successfully updated"}
     except Exception as e:
         print(e)
 

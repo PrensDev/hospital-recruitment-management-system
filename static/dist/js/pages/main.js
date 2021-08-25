@@ -10,7 +10,7 @@ $(() => ifSelectorExist('#demo', () => $('#demo').html('')))
 /** If Selector Exist */
 const ifSelectorExist = (selector = "", handler = () => {}, isRequired = true) => {
     if($(selector).length) return handler() 
-    else if(isRequired && IF_SELECTOR_EXIST_DEBUG_MODE) console.error(`Selector ${ selector } does not exist.`)
+    else if(isRequired && IF_SELECTOR_EXIST_DEBUG_MODE) console.warn(`Selector ${ selector } does not exist.`)
 }
 
 
@@ -183,9 +183,18 @@ const enableElement = (selector) => ifSelectorExist(selector, () => $(selector).
 const disableElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("disabled", true));
 
 
+/** Check/Uncheck Element */
+const checkElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("checked", true));
+const uncheckElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("checked", false));
+
+
 /** Show/Hide Element */
 const showElement = (selector) => ifSelectorExist(selector, () => $(selector).show());
 const hideElement = (selector) => ifSelectorExist(selector, () => $(selector).hide());
+
+
+/** On Click */
+const onClick = (selector, handler = () => {}) => ifSelectorExist(selector, () => $(selector).on('click', () => handler()))
 
 
 /** Is checked */

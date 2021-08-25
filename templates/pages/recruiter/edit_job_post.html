@@ -45,7 +45,7 @@
                     </div>
                     
                     <div class="card-body">
-                        <input type="hidden" id="jobPostID" name="requisitionID">
+                        <input type="text" id="jobPostID" name="jobPostID">
     
                         <!-- Job Description -->
                         <div class="form-row">
@@ -112,6 +112,7 @@
                 </form>
             </div>
             
+            <!-- Job Post Details & Manpower Request -->
             <div class="col-md-4">
 
                 <!-- Job Post Details -->
@@ -212,7 +213,7 @@
 
 
 {% block page_modals %}
-    {% include "pages/recruiter/modals/job_posts_modal.html" %}
+    {% include "pages/recruiter/modals/edit_job_post_modal.html" %}
 {% endblock %}
 
 

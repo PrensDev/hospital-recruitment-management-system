@@ -7,6 +7,18 @@
 
 /** Load Primary Input */
 ifSelectorExist('#createJobPostForm', () => {
+    
+    /** Job Description For Add Summernote */
+    $('#jobDescription').summernote({
+        height: 750,
+        placeholder: "Write the description of job here",
+        toolbar: [
+            ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'clear']],
+            ['para', ['ol', 'ul', 'paragraph']],
+            ['table', ['table']]
+        ]
+    });
+
     const requisitionID = window.location.pathname.split("/")[3];
     GET_ajax(`${ R_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
@@ -54,18 +66,6 @@ ifSelectorExist('#createJobPostForm', () => {
 });
 
 
-/** Job Description For Add Summernote */
-$('#jobDescription').summernote({
-    height: 750,
-    placeholder: "Write the description of job here",
-    toolbar: [
-        ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'clear']],
-        ['para', ['ol', 'ul', 'paragraph']],
-        ['table', ['table']]
-    ]
-});
-
-
 /** Set Expriration Date On Change */
 $('#expirationDate').on('change', () => isChecked('#expirationDate') ? showElement('#openUntilField') : hideElement('#openUntilField'))
 
@@ -94,12 +94,15 @@ validateForm('#createJobPostForm', {
             required: 'Please select a date'
         }
     },
-    submitHandler:() => submitJobPost()
+    submitHandler:() => {
+        showModal('#confirmPostNewJobModal');
+        return false;
+    }
 });
 
 
 /** Submit Job Post */
-const submitJobPost = () => {
+onClick('#confirmPostNewJobPostBtn', () => {
     const formData = generateFormData('#createJobPostForm');
 
     const expirationDate = isChecked('#expirationDate') ? formatDateTime(formData.get('openUntil')) : null;
@@ -117,9 +120,12 @@ const submitJobPost = () => {
                 location.assign(`${ R_WEB_ROUTE }job-posts`);
             }
         },
-        eroor: () => toastr.error('There was an error in posting new job')
+        error: () => {
+            hideModal('#confirmPostNewJobModal');
+            toastr.error('There was an error in posting new job')
+        }
     })
-}
+})
 
 
 /**
@@ -254,6 +260,55 @@ const viewJobPostDetails = (jobPostID) => {
         success: result => {
             console.log(result)
 
+            const manpowerRequest = result.manpower_request;
+
+            // Set Job Post Status
+            const expiresAt = result.expiration_date;
+
+            if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
+                setContent('#jobPostStatus', dtBadge('info', 'On Going'))
+            else if(isBeforeToday(expiresAt))
+                setContent('#jobPostStatus', dtBadge('danger', 'Ended'))
+            else
+                setContent('#jobPostStatus', dtBadge('warning', 'Last Day Today'))
+
+            // Set Posted At
+            setContent('#postedAt', `Posted ${ formatDateTime(result.created_at, 'Date') }`);
+
+            // Set Vacant Position
+            setContent('#vacantPosition', manpowerRequest.vacant_position.name);
+
+            // Set Employment Type
+            setContent('#employmentType', manpowerRequest.employment_type);
+
+            // Set Salary Range
+            const minSalary = manpowerRequest.min_monthly_salary;
+            const maxSalary = manpowerRequest.max_monthly_salary;
+
+            const noSalaryRange = isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary)
+
+            if(noSalaryRange || !result.salary_is_visible) {
+                hideElement('#salaryRangeDisplay');
+                setContent('#salaryRange', '');
+            } else {
+                showElement('#salaryRangeDisplay');
+                setContent('#salaryRange', `P ${ minSalary } - P ${ maxSalary }`);
+            }
+
+            // Set Open Until
+            const openUntil = result.expiration_date;
+            if(isEmptyOrNull(openUntil)) {
+                hideElement('#openUntilDisplay');
+                setContent('#openUntil', '');
+            } else {
+                showElement('#openUntilDisplay');
+                setContent('#openUntil', formatDateTime(openUntil, "Full Date"))
+            }
+
+            // Set Job Description
+            setContent('#jobDescription', result.content);
+
+            /** Show View Job Post Modal */
             showModal('#viewJobPostModal');
         },
         error: () => toastr.error('There was a problem in getting job post details')
@@ -272,8 +327,20 @@ const viewJobPostDetails = (jobPostID) => {
 const editJobPost = (jobPostID) => location.assign(`${ R_WEB_ROUTE }edit-job-post/${ jobPostID }`)
 
 
-/** If Selector Exists */
+/** If Edit Job Post Form Exists */
 ifSelectorExist('#editJobPostForm', () => {
+    
+    /** Job Description For Add Summernote */
+    $('#jobDescription').summernote({
+        height: 750,
+        placeholder: "Write the description of job here",
+        toolbar: [
+            ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'clear']],
+            ['para', ['ol', 'ul', 'paragraph']],
+            ['table', ['table']]
+        ]
+    });
+
     const jobPostID = window.location.pathname.split("/")[3];
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
@@ -284,8 +351,8 @@ ifSelectorExist('#editJobPostForm', () => {
             const minSalary = manpowerRequest.min_monthly_salary;
             const maxSalary = manpowerRequest.max_monthly_salary;
 
-            // Set Job Description
-            setValue('#jobDescription', result.content);
+            // Set Job Post ID
+            setValue('#jobPostID', result.job_post_id);
 
 
             /** FOR MANPOWER REQUEST SUMMARY */
@@ -412,7 +479,84 @@ ifSelectorExist('#editJobPostForm', () => {
             setContent("#lastUpdatedDate", formatDateTime(lastUpdated, "Full Date"));
             setContent("#lastUpdatedTime", formatDateTime(lastUpdated, "Time"));
             setContent("#lastUpdatedHumanized", fromNow(lastUpdated));
+
+
+            /** SET INPUTS */
+            
+            // Set Job Description
+            $('#jobDescription').summernote('code', result.content);
+
+            if(result.salary_is_visible) checkElement('#salaryRangeIsVisible');
+
+            // Set Expiration Date
+            if(!isEmptyOrNull(result.expiration_date)) {
+                checkElement('#expirationDate');
+                showElement('#openUntilField');
+                setValue('#openUntil', formatDateTime(result.expiration_date, "YYYY-MM-DD"));
+            }
+
         },
         error: () => toastr.error('There was an error in getting job post details')
     })
-})
+});
+
+
+/** Validate Edit Job Post */
+validateForm('#editJobPostForm', {
+    rules: {
+        jobPostID: {
+            required: true
+        },
+        jobDescription: {
+            required: true
+        },
+        openUntil: {
+            required: true
+        }
+    },
+    messages: {
+        jobPostID: {
+            required: "This must have a hidden value"
+        },
+        jobDescription: {
+            required: "Job Description is required"
+        },
+        openUntil: {
+            required: "Please select a date"
+        }
+    },
+    submitHandler: () => {
+        showModal('#confirmUpdateJobPostModal');
+        return false;
+    }
+});
+
+
+/** Update Job Post */
+onClick('#confirmUpdateJobPostBtn', () => {
+    const formData = generateFormData('#editJobPostForm');
+
+    const expirationDate = isChecked('#expirationDate') ? formatDateTime(formData.get('openUntil')) : null;
+
+    const data = {
+        content: formData.get('jobDescription'),
+        salary_is_visible: isChecked('#salaryRangeIsVisible'),
+        expiration_date: expirationDate
+    }
+
+    const jobPostID = formData.get('jobPostID')
+
+    console.log(data);
+
+    PUT_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, data, {
+        success: result => {
+            if(result) {
+                console.log(result)
+            }
+        },
+        error: () => {
+            hideModal('#confirmUpdateJobPostModal');
+            toastr.error('There was an error in updating a job post');
+        }
+    });
+});

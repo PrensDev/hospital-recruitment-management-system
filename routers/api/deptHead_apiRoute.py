@@ -125,7 +125,7 @@ def update_requisition(
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        requisition = db.query(Requisition),filter(Requisition.requisition_id == requisition_id)
+        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id)
         if not requisition.first():
             raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
         else:
