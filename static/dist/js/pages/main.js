@@ -4,14 +4,20 @@
  * =====================================================
  * */
 
-$(() => ifSelectorExist('#demo', () => $('#demo').html('')))
-
 
 /** If Selector Exist */
 const ifSelectorExist = (selector = "", handler = () => {}, isRequired = true) => {
     if($(selector).length) return handler() 
     else if(isRequired && IF_SELECTOR_EXIST_DEBUG_MODE) console.warn(`Selector ${ selector } does not exist.`)
 }
+
+
+/** Initialize Data Mask */
+ifSelectorExist('[data-mask]', () => $('[data-mask]').inputmask());
+
+
+/** Initialize Bootstrap Custom File Input */
+bsCustomFileInput.init();
 
 
 /** Is Empty Or Null */
@@ -193,8 +199,16 @@ const showElement = (selector) => ifSelectorExist(selector, () => $(selector).sh
 const hideElement = (selector) => ifSelectorExist(selector, () => $(selector).hide());
 
 
+/** On Event */
+const onEvent = (selector, event, handler = () => {}) => ifSelectorExist(selector, () => $(selector).on(event, () => handler()))
+
+
 /** On Click */
-const onClick = (selector, handler = () => {}) => ifSelectorExist(selector, () => $(selector).on('click', () => handler()))
+const onClick = (selector, handler = () => {}) => onEvent(selector, 'click', () => handler());
+
+
+/** On Change */
+const onChange = (selector, handler = () => {}) => onEvent(selector, 'change', () => handler());
 
 
 /** Is checked */

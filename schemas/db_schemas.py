@@ -130,13 +130,14 @@ class ManpowerRequestStatus(BaseModel):
 
 # Applicants Schema
 class Applicant(BaseModel):
+    job_post_id: str
     first_name: str
-    middle_name: str
+    middle_name: Optional[str]
     last_name: str
-    suffix_name: str
-    resume: str
+    suffix_name: Optional[str]
     contact_number: str
     email: str
+    resume: str
 
 
 # Show Applicant Schema
@@ -164,7 +165,7 @@ class ShowJobPost(JobPost):
     job_post_id: str
     manpower_request: ManpowerRequest
     job_posted_by: UserInfo
-    applicants: List[Optional[Applicant]]
+    applicants: List[Optional[ShowApplicant]]
     created_at: datetime
     updated_at: Optional[datetime]
 

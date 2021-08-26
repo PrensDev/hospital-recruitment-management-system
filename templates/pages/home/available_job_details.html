@@ -7,33 +7,172 @@
     <div class="container pt-4">
         <h1 id="vacantPosition"></h1>
         <div class="dropdown-divider"></div>
+        <div class="mb-3">
+            <div>
+                <div class="d-flex mb-3">
+                    <div>
+                        <i class="fas fa-clock mr-2 text-secondary"></i>
+                    </div>
+                    <div>
+                        <div id="datePosted"></div>
+                        <div class="small text-secondary" id="datePostedHumanized"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Main content -->
     <div class="content" id="availableJobDetails">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8">
-                    <div class="mb-4">
-                        <div>
-                            <div class="d-flex mb-3">
-                                <div>
-                                    <i class="fas fa-clock mr-2 text-secondary"></i>
+                <div class="col-lg-8 order-1 order-lg-0">
+
+                    <!-- Job Description -->
+                    <div class="mb-5">
+                        <div class="mb-3" id="jobDescription"></div>
+                    </div>
+
+                    <!-- Application form -->
+                    <form class="mb-5" id="applicationForm">
+
+                        <h3 id="applyNow">Apply Here</h3>
+
+                        <div class="dropdown-divider"></div>
+
+                        <input type="hidden" id="jobPostID" name="jobPostID">
+
+                        <!-- Applicant's Name Field -->
+                        <div class="form-row my-3">
+
+                            <!-- First name -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        id="firstName"
+                                        name="firstName"
+                                        placeholder="Enter your first name here"
+                                    >
                                 </div>
-                                <div>
-                                    <div id="datePosted"></div>
-                                    <div class="small text-secondary" id="datePostedHumanized"></div>
+                            </div>
+    
+                            <!-- Middle Name -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="middlleName">Middle Name</label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        id="middlleName"
+                                        name="middlleName"
+                                        placeholder="Enter your middle name here"
+                                    >
+                                </div>
+                            </div>
+    
+                            <!-- Last Name -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        id="lastName"
+                                        name="lastName"
+                                        placeholder="Enter your last name here"
+                                    >
+                                </div>
+                            </div>
+    
+                            <!-- Suffix Name -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="suffixName">Suffix Name</label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        id="suffixName"
+                                        name="suffixName"
+                                        placeholder="Enter your suffix name here"
+                                    >
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="mb-4">
-                        <div class="my-3" id="jobDescription"></div>
-                    </div>
+                        <!-- Contact Information Field -->
+                        <div class="form-row mb-3">
+
+                            <!-- Contact Number -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="contactNumber">Contact Number</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text">
+                                              <i class="fas fa-phone"></i>
+                                            </span>
+                                        </div>
+                                        <input 
+                                            type="text" 
+                                            class="form-control" 
+                                            id="contactNumber"
+                                            name="contactNumber"
+                                            placeholder="Please type your contact number"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-envelope"></i>
+                                            </div>
+                                        </div>
+                                        <input 
+                                            type="email" 
+                                            class="form-control" 
+                                            id="email"
+                                            name="email"
+                                            placeholder="Enter your contact here"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resume -->
+                        <div class="form-group">
+                            <label for="resume">Upload your resume here</label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input 
+                                        type="file" 
+                                        class="custom-file-input" 
+                                        id="resume"
+                                        name="resume"
+                                    >
+                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Actions -->
+                        <div class="form-group text-center">
+                            <button class="btn btn-primary">Apply Now!</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="col-lg-4">
-                    <div class="card card-primary card-outline">
+
+                <div class="col-lg-4 order-0 order-lg-1">
+                    <div class="card card-primary card-outline mb-3">
                         <div class="card-body">
                             <table class="table">
                                 <tr>
@@ -56,7 +195,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <a href="#" class="btn btn-primary btn-block">Apply Now</a>
+                                        <a href="#applyNow" class="btn btn-primary btn-block">Apply Now</a>
                                     </td>
                                 </tr>
                             </table>
@@ -64,10 +203,14 @@
                     </div>
                 </div>
             </div>
-            <!-- /.row -->
         </div>
     </div>
 
+{% endblock %}
+
+
+{% block page_modals %}
+    {% include 'pages/home/modals/apply_modal.html' %}
 {% endblock %}
 
 

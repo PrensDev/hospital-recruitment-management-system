@@ -164,7 +164,7 @@ initDataTable('#jobPostsDT', {
             data: null,
             render: data => {
                 const applicants = data.applicants.length;
-                return applicants == 0 ? 'No applicants yet' : `${ applicants } applicant{ applicant > 1 ? 's' : '' }`
+                return applicants == 0 ? 'No applicants yet' : `${ applicants } applicant${ applicants > 1 ? 's' : '' }`
             }
         },
 

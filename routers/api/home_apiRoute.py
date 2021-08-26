@@ -20,6 +20,7 @@ router = APIRouter(
 JobPost = models.JobPost
 Requisition = models.Requisition
 Position = models.Position
+Applicant = models.Applicant
 
 
 # ====================================================================
@@ -62,5 +63,35 @@ def get_one_job_post(job_post_id: str, db: Session = Depends(get_db)):
             return HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
         else:
             return job_post
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# APPLICATION
+# ====================================================================
+
+
+#  Apply for a job
+@router.post("/apply")
+def apply(req: db_schemas.Applicant, db: Session = Depends(get_db)):
+    try:
+        new_applicant = Applicant(
+            job_post_id = req.job_post_id,
+            first_name = req.first_name,
+            middle_name = req.middle_name,
+            last_name = req.last_name,
+            suffix_name = req.suffix_name,
+            contact_number = req.contact_number,
+            email = req.email,
+            resume = req.resume
+        )
+        db.add(new_applicant)
+        db.commit()
+        db.refresh(new_applicant)
+        return {
+            "data": new_applicant,
+            "message": "A new applicant has been added"
+        }
     except Exception as e:
         print(e)
