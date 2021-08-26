@@ -1,4 +1,5 @@
 # Import Packages
+from typing import Optional
 from routers.api.home_apiRoute import JobPost
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import RedirectResponse
@@ -68,6 +69,19 @@ async def careers(req: Request):
             "request": req,
             "page_title": "Careers"
         })
+    except Exception as e:
+        print(e)
+
+@router.get("/careers/")
+async def search(req: Request, query: Optional[str]):
+    try:
+        if not query:
+            return errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse("pages/home/search_result.html", {
+                "request": req,
+                "page_title": "Search Result for \"" + query + "\""
+            })
     except Exception as e:
         print(e)
 

@@ -46,10 +46,9 @@ def get_all_job_posts(db: Session = Depends(get_db)):
 
 # Search Job Post
 @router.post("/job-posts/search", response_model = List[db_schemas.ShowJobPostForApplicants])
-def search_job_post(req: Request, db: Session = Depends(get_db)):
+def search_job_post(req: db_schemas.Search, db: Session = Depends(get_db)):
     try:
-        print(req)
-        # return db.query(JobPost).filter(Position.name.contains(query)).all()
+        return db.query(JobPost).filter(Position.name.contains(req.query)).all()
     except Exception as e:
         print(e)
 

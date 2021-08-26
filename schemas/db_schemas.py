@@ -190,3 +190,8 @@ class ShowManpowerRequest(ManpowerRequest):
 
     class Config():
         orm_mode = True
+
+
+# Search
+class Search(BaseModel):
+    query: str
