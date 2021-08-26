@@ -186,8 +186,20 @@ APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
 
 
 # Get All Applicants
-@router.get("/job-posts/{job_post_id}/applicants")
+@router.get("/applicants")
 def get_all_applicants(
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        return db.query(Applicant).all()
+    except Exception as e:
+        print(e)
+
+# Get All Applicants Per Job
+@router.get("/job-posts/{job_post_id}/applicants")
+def get_all_applicants_per_job(
     job_post_id,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)

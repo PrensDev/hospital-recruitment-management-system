@@ -59,7 +59,83 @@ ifSelectorExist('#createJobPostForm', () => {
                     <div>${ formatDateTime(deadline, "Date") }</div>
                     <div class="small text-secondary">${ fromNow(deadline) }</div>
                 `
-            })
+            });
+
+            /** FOR MANPOWER REQUEST MODAL */
+
+            const requestedBy = manpowerRequest.manpower_request_by;
+
+            // Set Requestor Name
+            setContent('#requestorName', formatName('F M. L, S', {
+                firstName: requestedBy.first_name,
+                middleName: requestedBy.middle_name,
+                lastName: requestedBy.last_name,
+                suffixName: requestedBy.suffix_name
+            }));
+
+            // Set Requestor Department
+            setContent('#requestorDepartment', requestedBy.position.name);
+
+            // Set Date Requested
+            setContent('#dateRequested', formatDateTime(manpowerRequest, "Date"));
+
+            // Set Deadline
+            setContent('#deadline', () => {
+                const deadline = manpowerRequest.deadline;
+                return isEmptyOrNull(deadline) ? 'Unset' : formatDateTime(deadline, "Date");
+            });
+
+            // Set Requested Position
+            setContent('#requestedPosition', manpowerRequest.vacant_position.name);
+
+            // Set Staffs Needed
+            setContent('#noOfStaffsNeeded', () => {
+                const staffsNeeded = manpowerRequest.staffs_needed;
+                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' }`;
+            });
+
+            // Set Employment Type
+            setContent('#employmentType', manpowerRequest.employment_type);
+
+            // Set Request Nature
+            setContent('#requestNaure', manpowerRequest.request_nature);
+
+            // Set Suggested Salary
+            setContent('#suggestedSalary', () => {
+                if(isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)) {
+                    return 'Unset';
+                } else {
+                    return `P ${minSalary} - P ${maxSalary}`;
+                }
+            });
+
+            // Set Request Description
+            setContent('#requestDescription', manpowerRequest.content);
+
+            // Set Approved By
+            setContent('#approvedBy', () => {
+                const approvedBy = manpowerRequest.manpower_request_reviewed_by;
+
+                const approvedByFullName = formatName("F M. L, S", {
+                    firstName: approvedBy.first_name,
+                    middleName: approvedBy.middle_name,
+                    lastName: approvedBy.last_name,
+                    suffixName: approvedBy.suffix_name
+                });
+
+                return `
+                    <div>${ approvedByFullName }</div>
+                `
+            });
+
+            // Set Approved At
+            setContent('#approvedAt', formatDateTime(manpowerRequest.reviewed_at, "Date"));
+
+            // Set Completed At
+            setContent('#completedAt', () => {
+                const completedAt = manpowerRequest.completed_at;
+                isEmptyOrNull(completedAt) ? 'Not yet completed' : formatDateTime(completedAt, "Date");
+            });
         },
         error: () => toastr.error('There was an error in getting requisition details')
     })
@@ -307,6 +383,14 @@ const viewJobPostDetails = (jobPostID) => {
 
             // Set Job Description
             setContent('#jobDescription', result.content);
+
+            // Set Edit Button
+            setContent('#editJobPostBtn', `
+                <a href="${ R_WEB_ROUTE }edit-job-post/${ result.job_post_id }" class="btn btn-info">
+                    <span>Edit Job Post</span>
+                    <i class="fas fa-pencil-alt ml-1"></i>
+                </a>
+            `);
 
             /** Show View Job Post Modal */
             showModal('#viewJobPostModal');

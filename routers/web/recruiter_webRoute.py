@@ -39,7 +39,7 @@ AUTHORIZED_USER = "Recruiter"
 
 # Department Head Dashboard
 @router.get("", response_class=HTMLResponse)
-async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+def dashboard(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
             "request": req,
@@ -53,7 +53,7 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
 
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
-async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+def dashboard(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
             "request": req,
@@ -67,7 +67,7 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
 
 # Job Posts
 @router.get("/job-posts", response_class=HTMLResponse)
-async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+def dashboard(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "job_posts.html", {
             "request": req,
@@ -78,9 +78,10 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
     else:
         return errTemplate.page_not_found(req)
 
+
 # Create Job Post
 @router.get("/add-job-post/{requisition_id}", response_class=HTMLResponse)
-async def dashboard(
+def dashboard(
     requisition_id: str, 
     req: Request, 
     db: Session = Depends(get_db),
@@ -105,7 +106,7 @@ async def dashboard(
 
 # Edit Job Post
 @router.get("/edit-job-post/{job_post_id}", response_class=HTMLResponse)
-async def dashboard(
+def dashboard(
     job_post_id: str, 
     req: Request, 
     db: Session = Depends(get_db),
@@ -131,7 +132,7 @@ async def dashboard(
 
 # Applicants
 @router.get("/applicants", response_class=HTMLResponse)
-async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+def dashboard(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "applicants.html", {
             "request": req,

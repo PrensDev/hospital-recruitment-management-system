@@ -46,7 +46,7 @@
                                 <select
                                     name="vacantPosition" 
                                     id="vacantPositionForAdd"
-                                    class="form-control select2" 
+                                    class="form-control select2 w-100" 
                                 >
                                     <option></option>
                                     <option value="1">Assistant Manager</option>
@@ -90,7 +90,7 @@
                         <!-- Deadline -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="deadline">Deadline<span class="text-danger"> *</span></label>
+                                <label for="deadline">Deadline</label>
                                 <input 
                                     type="date" 
                                     name="deadline" 
@@ -122,7 +122,7 @@
                         <!-- Minimum Salary -->
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="minSalary">Minimum Salary<span class="text-danger"> *</span></label>
+                                <label for="minSalary">Minimum Salary</label>
                                 <input 
                                     type="text" 
                                     name="minSalary" 
@@ -136,7 +136,7 @@
                         <!-- Maximum Salary -->
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="maxSalary">Maximun Salary<span class="text-danger"> *</span></label>
+                                <label for="maxSalary">Maximum Salary</label>
                                 <input 
                                     type="text" 
                                     name="maxSalary" 
@@ -175,6 +175,11 @@
         </form>
     </section>
     
+{% endblock %}
+
+
+{% block page_modals %}
+    {% include "pages/department_head/modals/add_manpower_request_modal.html" %}
 {% endblock %}
 
 

@@ -222,7 +222,7 @@ const viewManpowerRequest = (requisitionID) => {
 
             // Set Approved At
             setContent('#approvedAt', () => {
-                const approvedAt = result.approved_at;
+                const approvedAt = result.reviewed_at;
                 return isEmptyOrNull(approvedAt) ? "No status" : formatDateTime(approvedAt, "Date")
             });
 

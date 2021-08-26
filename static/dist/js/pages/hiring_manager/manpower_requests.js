@@ -158,7 +158,7 @@ const viewManpowerRequest = (requisitionID) => {
             // Set Approved By
             setContent('#approvedBy', () => {
                 const approvedBy = result.manpower_request_reviewed_by;
-                return isEmptyOrNull(approvedBy)
+                return isEmptyOrNull(approvedBy) || result.request_status === 'Rejected'
                     ? "Not yet approved"
                     : () => {
                         const approvedByFullName = formatName("L, F M., S", {
@@ -176,8 +176,11 @@ const viewManpowerRequest = (requisitionID) => {
 
             // Set Approved At
             setContent('#approvedAt', () => {
-                const approvedAt = result.approved_at;
-                return isEmptyOrNull(approvedAt) ? "No status" : formatDateTime(approvedAt, "Date")
+                const approvedAt = result.reviewed_at;
+                if(isEmptyOrNull(approvedAt) || result.request_status === 'Rejected') 
+                    return "No status"
+                else
+                    formatDateTime(approvedAt, "Date")
             });
 
             // Set Approved At

@@ -25,7 +25,7 @@ AUTHORIZED_USER = "Department Head"
 
 # Test
 @router.get("/test-web", response_class=HTMLResponse)
-async def test_web(req: Request, user_data: dict = Depends(get_token)):
+def test_web(req: Request, user_data: dict = Depends(get_token)):
     if user_data["user_type"] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "test.html", {
             "request": req
@@ -36,7 +36,7 @@ async def test_web(req: Request, user_data: dict = Depends(get_token)):
 
 # Department Head Dashboard
 @router.get("", response_class=HTMLResponse)
-async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+def dashboard(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
             "request": req,
@@ -50,7 +50,7 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
 
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
-async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+def dashboard(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
             "request": req,
@@ -64,7 +64,7 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
 
 # Add Manpower Request
 @router.get("/add-manpower-request", response_class=HTMLResponse)
-async def dashboard(req: Request):
+def dashboard(req: Request):
     return templates.TemplateResponse(TEMPLATES_PATH + "add_manpower_request.html", {
         "request": req,
         "page_title": "Add Manpower Request",
@@ -75,7 +75,7 @@ async def dashboard(req: Request):
 
 # Hired Applicants
 @router.get("/hired-applicants", response_class=HTMLResponse)
-async def dashboard(req: Request):
+def dashboard(req: Request):
     return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants.html", {
         "request": req,
         "page_title": "Hired Applicants",
@@ -86,7 +86,7 @@ async def dashboard(req: Request):
 
 # Onboarding Employees
 @router.get("/onboarding-employees", response_class=HTMLResponse)
-async def dashboard(req: Request):
+def dashboard(req: Request):
     return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employees.html", {
         "request": req,
         "page_title": "Onboarding Employees",
@@ -97,7 +97,7 @@ async def dashboard(req: Request):
 
 # General Tasks
 @router.get("/general-tasks", response_class=HTMLResponse)
-async def dashboard(req: Request):
+def dashboard(req: Request):
     return templates.TemplateResponse(TEMPLATES_PATH + "general_tasks.html", {
         "request": req,
         "page_title": "General Tasks",

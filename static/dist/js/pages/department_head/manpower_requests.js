@@ -21,7 +21,7 @@ $('#employmentTypeForAdd').select2({
 
 /** Vacant Position For Add Select2 */
 $('#vacantPositionForAdd').select2({
-    placeholder: "Please the vacant position",
+    placeholder: "Please select a vacant position",
 })
 
 
@@ -75,12 +75,15 @@ validateForm('#addManpowerRequestForm', {
             required: 'Job description is required'
         },
     },
-    submitHandler:() => submitManpowerRequest()
+    submitHandler:() => {
+        showModal('#confirmAddManpowerRequestModal');
+        return false
+    }
 });
 
 
 /** Submit Manpower Request */
-const submitManpowerRequest = () => {
+onClick('#confirmAddManpowerRequestBtn', () => {
     const formData = generateFormData('#addManpowerRequestForm');
     
     const minMonthlySalary = formData.get("minSalary");
@@ -108,9 +111,12 @@ const submitManpowerRequest = () => {
                 });
             }
         },
-        error: () => toastr.error("There was an error in creating manpower request")
+        error: () => {
+            hideModal('#confirmAddManpowerRequestModal')
+            toastr.error("There was an error in creating manpower request");
+        }
     })
-}
+});
 
 
 /**
