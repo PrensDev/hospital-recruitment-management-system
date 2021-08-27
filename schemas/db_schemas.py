@@ -143,6 +143,8 @@ class Applicant(BaseModel):
 # Show Applicant Schema
 class ShowApplicant(Applicant):
     applicant_id: str
+    created_at: datetime
+    updated_at: datetime
 
     class Config():
         orm_mode = True
@@ -168,6 +170,29 @@ class ShowJobPost(JobPost):
     applicants: List[Optional[ShowApplicant]]
     created_at: datetime
     updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+# Show Job Post For Applicant Info
+class ShowJobPostForApplicantInfo(BaseModel):
+    job_post_id: str
+    manpower_request: ManpowerRequest
+    job_posted_by: UserInfo
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+# Show Applicant
+class ShowApplicantInfo(ShowApplicant):
+    applied_job: ShowJobPostForApplicantInfo
+    status: str
+    evaluation_done_by: Optional[UserInfo]
+    screening_done_by: Optional[UserInfo]
 
     class Config():
         orm_mode = True

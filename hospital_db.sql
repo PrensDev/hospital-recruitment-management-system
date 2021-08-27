@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 23, 2021 at 07:22 PM
+-- Generation Time: Aug 27, 2021 at 08:26 AM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.4.22
 
@@ -44,6 +44,14 @@ CREATE TABLE `applicants` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `applicants`
+--
+
+INSERT INTO `applicants` (`applicant_id`, `job_post_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `resume`, `contact_number`, `email`, `status`, `evaluated_by`, `screened_by`, `remarks`, `created_at`, `updated_at`) VALUES
+('8323a74a-0665-11ec-a443-d8c497916dda', '49b28e24-036b-11ec-9258-d8c497916dda', 'Michelle', NULL, 'Bancifra', '', 'resume.pdf', '+639999999999', 'michellebancifra@email.com', 'For evaluation', NULL, NULL, NULL, '2021-08-26 20:02:40', '2021-08-26 20:02:40'),
+('ad4aeed9-063b-11ec-a443-d8c497916dda', '49b28e24-036b-11ec-9258-d8c497916dda', 'Mark Angel', NULL, 'Monterde', '', 'resume.pdf', '+639999999999', 'markangel@email.com', 'For evaluation', NULL, NULL, NULL, '2021-08-26 15:03:12', '2021-08-26 15:03:12');
 
 -- --------------------------------------------------------
 
@@ -117,7 +125,8 @@ CREATE TABLE `job_posts` (
 --
 
 INSERT INTO `job_posts` (`job_post_id`, `requisition_id`, `salary_is_visible`, `content`, `expiration_date`, `posted_by`, `created_at`, `updated_at`) VALUES
-('49b28e24-036b-11ec-9258-d8c497916dda', '0fbde148-0240-11ec-9ccc-d8c497916dda', 0, 'Lorem impsum', '2021-10-22 12:00:00', 'f87dd92a-ff0c-11eb-9644-d8c497916dda', '2021-08-23 01:06:27', '2021-08-23 01:06:27');
+('49b28e24-036b-11ec-9258-d8c497916dda', '0fbde148-0240-11ec-9ccc-d8c497916dda', 1, '<p><b>Qualifications</b></p><p>Lorem ipsum folot sit amet consect conset lore lorem sina<span style=\"font-size: 1rem;\">&nbsp;</span><span style=\"font-size: 1rem;\">ipsum folot sit amet consect conset lore lorem sina</span><span style=\"font-size: 1rem;\">&nbsp;</span><span style=\"font-size: 1rem;\">ipsum folot sit amet consect conset lore lorem sina</span><span style=\"font-size: 1rem;\">&nbsp;</span><span style=\"font-size: 1rem;\">ipsum folot sit amet consect conset lore lorem sina</span><span style=\"font-size: 1rem;\">&nbsp;</span><span style=\"font-size: 1rem;\">ipsum folot sit amet consect conset lore lorem sina</span><span style=\"font-size: 1rem;\">&nbsp;</span><span style=\"font-size: 1rem;\">ipsum folot sit amet consect conset lore lorem sina</span><span style=\"font-size: 1rem;\">&nbsp;</span><span style=\"font-size: 1rem;\">ipsum folot sit amet consect conset lore lorem sina</span></p><ul><li>Test Lorem ipsum dolor sit amet consecteture sit amed</li><li>Lorem ipsum dolor sit amet consecteture sit amed</li><li>Lorem ipsum dolor sit amet consecteture sit amed</li></ul><p><br></p><p><b>Educational Attainment</b></p><p>Lorem ipsum folot sit amet consect conset lore lorem sina<span style=\"font-size: 1rem;\">&nbsp;</span><span style=\"font-size: 1rem;\">ipsum folot sit amet consect conset lore lorem sina</span><span style=\"font-size: 1rem;\">&nbsp;</span><span style=\"font-size: 1rem;\">ipsum folot sit amet consect conset lore lorem sina</span><span style=\"font-size: 1rem;\">&nbsp;</span><span style=\"font-size: 1rem;\">ipsum folot sit amet consect conset lore lorem sina</span><span style=\"font-size: 1rem;\">&nbsp;</span><span style=\"font-size: 1rem;\">ipsum</span><b><br></b></p><ul><li>Lorem ipsum dolor sit amet consecteture sit amed</li><li>Lorem ipsum dolor sit amet consecteture sit amed</li></ul>', '2021-10-22 00:00:00', 'f87dd92a-ff0c-11eb-9644-d8c497916dda', '2021-08-23 01:06:27', '2021-08-26 15:58:57'),
+('ba6c45a5-04f6-11ec-bebb-d8c497916dda', '2ffb8ef8-0230-11ec-9ccc-d8c497916dda', 0, '<p><b>Qualifications</b></p><p>Lorem impsum dolor&nbsp;<span style=\"font-size: 1rem;\">ipsum dolor sit amet consecteture sit amed&nbsp;</span><span style=\"font-size: 1rem;\">ipsum dolor sit amet consecteture sit amed&nbsp;</span><span style=\"font-size: 1rem;\">ipsum dolor sit amet consecteture sit amed&nbsp;</span><span style=\"font-size: 1rem;\">ipsum dolor sit amet consecteture sit amed.</span></p><ul><li>Lorem ipsum dolor sit amet consecteture sit amed</li><li>Lorem ipsum dolor sit amet consecteture sit amed</li><li>Lorem ipsum dolor sit amet consecteture sit amed</li><li>Test updates</li></ul><p><br></p><p><b>Educational Attainment</b></p><p>Lorem impsum dolor&nbsp;<span style=\"font-size: 1rem;\">ipsum dolor sit amet consecteture sit amed&nbsp;</span><span style=\"font-size: 1rem;\">ipsum dolor sit amet consecteture sit amed&nbsp;</span><span style=\"font-size: 1rem;\">ipsum dolor sit amet consecteture sit amed&nbsp;</span><span style=\"font-size: 1rem;\">ipsum dolor sit amet consecteture sit amed.</span><b><br></b></p><ul><li>Lorem ipsum dolor sit amet consecteture sit amed</li><li>Lorem ipsum dolor sit amet consecteture sit amed</li></ul>', NULL, 'f87dd92a-ff0c-11eb-9644-d8c497916dda', '2021-08-25 00:17:07', '2021-08-27 14:03:41');
 
 -- --------------------------------------------------------
 
@@ -160,7 +169,7 @@ CREATE TABLE `requisitions` (
   `max_monthly_salary` float DEFAULT NULL,
   `content` text NOT NULL,
   `request_status` varchar(255) NOT NULL,
-  `deadline` datetime NOT NULL,
+  `deadline` datetime DEFAULT NULL,
   `reviewed_by` varchar(36) DEFAULT NULL,
   `reviewed_at` datetime DEFAULT NULL,
   `completed_at` datetime DEFAULT NULL,
