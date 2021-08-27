@@ -4,37 +4,55 @@
  * ==============================================================================
  */
 
+// Initialize Plugins for Custom Controls
+ifSelectorExist('#addManpowerRequestForm', () => {
+    
+    /** Vacant Position For Add Select2 */
+    GET_ajax(`${ D_API_ROUTE }department/positions`, {
+        success: result => {
+            // console.log(result);
 
-/** Request Nature For Add Select 2 */
-$('#requestNatureForAdd').select2({
-    placeholder: "Please select the nature of request",
-    minimumResultsForSearch: -1,
+            const positions = result.department_positions;
+
+            let vacantPositionForAdd = $('#vacantPositionForAdd');
+            vacantPositionForAdd.empty();
+            vacantPositionForAdd.append(`<option></option>`);
+
+            positions.forEach(p => vacantPositionForAdd.append(`<option value="${ p.position_id }">${ p.name }</option>`));
+
+            $('#vacantPositionForAdd').select2({
+                placeholder: "Please select a vacant position",
+            });
+        },
+        error: () => {
+            toastr.error('There was an error in getting positions')
+        }
+    })
+
+    /** Request Nature For Add Select 2 */
+    $('#requestNatureForAdd').select2({
+        placeholder: "Please select the nature of request",
+        minimumResultsForSearch: -1,
+    });
+    
+    /** Employment Type For Add Select2 */
+    $('#employmentTypeForAdd').select2({
+        placeholder: "Please select an employment type",
+        minimumResultsForSearch: -1,
+    });
+    
+    /** Request Description For Add Summernote */
+    $('#requestDescriptionForAdd').summernote({
+        height: 500,
+        placeholder: "Write the description of your request here",
+        toolbar: [
+            ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'clear']],
+            ['para', ['ol', 'ul', 'paragraph']],
+            ['table', ['table']]
+        ]
+    });
+
 });
-
-
-/** Employment Type For Add Select2 */
-$('#employmentTypeForAdd').select2({
-    placeholder: "Please select an employment type",
-    minimumResultsForSearch: -1,
-});
-
-
-/** Vacant Position For Add Select2 */
-$('#vacantPositionForAdd').select2({
-    placeholder: "Please select a vacant position",
-})
-
-
-/** Request Description For Add Summernote */
-$('#requestDescriptionForAdd').summernote({
-    height: 500,
-    placeholder: "Write the description of your request here",
-    toolbar: [
-        ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'clear']],
-        ['para', ['ol', 'ul', 'paragraph']],
-        ['table', ['table']]
-    ]
-})
 
 
 /** Validate Add Manpower Request Form */
@@ -91,7 +109,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
     const deadline = formData.get("deadline");
 
     const data = {
-        position_id: "b9610b90-ff07-11eb-9644-d8c497916dda",
+        position_id: formData.get('vacantPosition'),
         employment_type: formData.get("employmentType"),
         request_nature: formData.get("requestNature"),
         staffs_needed: parseInt(formData.get("staffsNeeded")),
@@ -115,7 +133,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
             hideModal('#confirmAddManpowerRequestModal')
             toastr.error("There was an error in creating manpower request");
         }
-    })
+    });
 });
 
 
@@ -128,6 +146,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
 
 /** ManPower Requests DataTable */
 initDataTable('#manpowerRequestDT', {
+    // debugMode: true,
     url: `${ D_API_ROUTE }requisitions`,
     columns: [
 
@@ -203,16 +222,26 @@ initDataTable('#manpowerRequestDT', {
                 const requisitionID = data.requisition_id;
                 const requestStatus = data.request_status;
 
-                const editBtn = `
+                const markAsCompletedBtn = `
                     <div 
                         class="dropdown-item d-flex"
                         data-toggle="modal"
                         data-target="#"
                     >
-                        <div style="width: 2rem"><i class="fas fa-pencil-alt mr-1"></i></div>
-                        <span>Edit</span>
+                        <div style="width: 2rem"><i class="fas fa-check mr-1"></i></div>
+                        <span>Mark as Completed</span>
                     </div>
                 `;
+
+                const editBtn = `
+                    <a 
+                        class="dropdown-item d-flex"
+                        href="${ D_WEB_ROUTE }edit-manpower-request/${ data.requisition_id }"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-pen mr-1"></i></div>
+                        <span>Edit</span>
+                    </a>
+                `
 
                 const cancelBtn = `
                     <div 
@@ -238,7 +267,7 @@ initDataTable('#manpowerRequestDT', {
 
                 return `
                     <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-light" data-toggle="dropdown" role="button">
+                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
                             <i class="fas fa-ellipsis-v"></i>
                         </div>
 
@@ -252,9 +281,9 @@ initDataTable('#manpowerRequestDT', {
                                 <span>View</span>
                             </div>
 
-                            ${ requestStatus === "Approved" ? editBtn : "" }
-                            
-                            ${ requestStatus === "For Review" ? cancelBtn : "" }
+                            ${ requestStatus === "For Review" ? editBtn + cancelBtn : "" }
+
+                            ${ requestStatus === "Approved" ? markAsCompletedBtn : "" }
 
                             ${ requestStatus === "Rejected" ? deleteBtn : "" }
                         </div>
@@ -277,6 +306,8 @@ initDataTable('#manpowerRequestDT', {
 const viewManpowerRequest = (requisitionID) => {
     GET_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
+            console.log(result);
+
             const requestedBy = result.manpower_request_by;
             
             // Set Requestor Name
@@ -335,16 +366,20 @@ const viewManpowerRequest = (requisitionID) => {
                 return isEmptyOrNull(approvedBy)
                     ? "Not yet approved"
                     : () => {
-                        const approvedByFullName = formatName("L, F M., S", {
-                            firstName: approvedBy.first_name,
-                            middleName: approvedBy.middle_name,
-                            lastName: approvedBy.last_name,
-                            suffixName: approvedBy.suffix_name
-                        });
-                        return `
-                            <div>${ approvedByFullName }</div>
-                            <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
-                        `
+                        if(result.request_status === "Rejected") {
+                            return '<div class="text-danger">This request has been rejected</div>'
+                        } else {
+                            const approvedByFullName = formatName("L, F M., S", {
+                                firstName: approvedBy.first_name,
+                                middleName: approvedBy.middle_name,
+                                lastName: approvedBy.last_name,
+                                suffixName: approvedBy.suffix_name
+                            });
+                            return `
+                                <div>${ approvedByFullName }</div>
+                                <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
+                            `
+                        }
                     }
             });
 

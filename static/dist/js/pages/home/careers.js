@@ -29,9 +29,7 @@ ifSelectorExist('#availableJobDetails', () => {
 
             // Set Salary Range
             if(result.salary_is_visible) {
-                setContent('#salaryRange', `
-                    P ${ manpowerRequest.min_monthly_salary } - P ${ manpowerRequest.max_monthly_salary }
-                `)
+                setContent('#salaryRange', `${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }`)
             } else {
                 hideElement('#salaryRangeDisplay')
             }
@@ -202,6 +200,8 @@ ifSelectorExist('#availableJobList', () => {
         url: `${ BASE_URL_API }home/job-posts`,
         type: 'GET',
         success: result => {
+            console.log(result)
+            
             let jobList = '';
 
             result.forEach(r => {
@@ -211,7 +211,7 @@ ifSelectorExist('#availableJobList', () => {
                     ? `
                         <div>
                             <i style="width: 2rem" class="fas fa-money-bill-wave text-success"></i>
-                            <span>P 20000 - P 50000</span>
+                            <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
                         </div>
                     `
                     : '';
@@ -231,8 +231,8 @@ ifSelectorExist('#availableJobList', () => {
                     `
 
                 jobList += `
-                    <div class="col-md-6 col-12">
-                        <div class="card card-primary card-outline h-100 mb-3">
+                    <div class="col-md-6 col-12 mb-3">
+                        <div class="card card-primary card-outline h-100">
                             <div class="card-body d-flex flex-column justify-content-between h-100">
 
                                 <div>

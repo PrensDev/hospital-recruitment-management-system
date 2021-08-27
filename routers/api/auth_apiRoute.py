@@ -17,11 +17,7 @@ router = APIRouter(
 
 # Login
 @router.post("/login")
-def login(
-    res: Response, 
-    req: OAuth2PasswordRequestForm = Depends(), 
-    db: Session = Depends(get_db)
-):
+def login(res: Response, req: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     try:
         user = db.query(models.User).filter(models.User.email == req.username).first()
         if user:
@@ -29,35 +25,15 @@ def login(
             if matched:
                 user_id = user.user_id
                 user_type = user.user_type
-                token_data = {
-                    "user_id": user_id,
-                    "user_type": user_type
-                }
+                token_data = { "user_id": user_id, "user_type": user_type }
                 access_token = generate_token(data = token_data)
-                res.set_cookie(
-                    key = "access_token",
-                    value = access_token,
-                    httponly = True
-                )
-                res.set_cookie(
-                    key = "user_type",
-                    value = user_type,
-                    httponly = True
-                )
-                return {
-                    "access_token": access_token,
-                    "token_type": "bearer"
-                }
+                res.set_cookie(key = "access_token", value = access_token, httponly = True)
+                res.set_cookie(key = "user_type", value = user_type, httponly = True)
+                return { "access_token": access_token, "token_type": "bearer" }
             else:
-                return {
-                    "login_status": "Failed",
-                    "message": "Invalid password"
-                }
+                return { "login_status": "Failed", "message": "Incorrect Credentials" }
         else:
-            return {
-                "login_status": "Failed",
-                "message": "User does not exist"
-            }
+            return { "login_status": "Failed", "message": "User does not exist" }
     except Exception as e:
         print(e)
 
@@ -68,9 +44,6 @@ def logout(res: Response):
     try:
         res.delete_cookie("access_token")
         res.delete_cookie("user_type")
-        return {
-            "logout_status": "Success",
-            "message": "Log out is successful"
-        }
+        return { "logout_status": "Success", "message": "Log out is successful" }
     except Exception as e:
         print(e)

@@ -197,7 +197,7 @@ def get_all_applicants(
 
 
 # Get All Applicants Per Job
-@router.get("/job-posts/{job_post_id}/applicants")
+@router.get("/job-posts/{job_post_id}/applicants", response_model = List[db_schemas.ShowApplicantInfo])
 def get_all_applicants_per_job(
     job_post_id,
     db: Session = Depends(get_db),
@@ -211,7 +211,7 @@ def get_all_applicants_per_job(
 
 
 # Get One Applicant
-@router.get("/applicants/{applicant_id}")
+@router.get("/applicants/{applicant_id}", response_model = db_schemas.ShowApplicantInfo)
 def get_one_applicant(
     applicant_id,
     db: Session = Depends(get_db),

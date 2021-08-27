@@ -110,7 +110,7 @@ initDataTable('#manpowerRequestDT', {
                 
                 return `
                     <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-light" data-toggle="dropdown" role="button">
+                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
                             <i class="fas fa-ellipsis-v"></i>
                         </div>
 
@@ -152,7 +152,7 @@ const viewManpowerRequest = (requisitionID) => {
             const requestedBy = result.manpower_request_by;
             
             // Set Requestor Name
-            setContent('#requestorName', formatName("L, F M., S", {
+            setContent('#requestorName', formatName("F M. L, S", {
                 firstName: requestedBy.first_name,
                 middleName: requestedBy.middle_name,
                 lastName: requestedBy.last_name,
@@ -160,7 +160,7 @@ const viewManpowerRequest = (requisitionID) => {
             }));
             
             // Set Requestor Department
-            setContent('#requestorDepartment', requestedBy.position.name);
+            setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
             
             // Set Date Requested
             setContent('#dateRequested', formatDateTime(result.created_at, "Date"));
@@ -168,8 +168,11 @@ const viewManpowerRequest = (requisitionID) => {
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
-                if(isEmptyOrNull(deadline)) return "No deadline"
-                else return formatDateTime(result.deadline, "Date")
+                if(isEmptyOrNull(deadline)) {
+                    return "No deadline"
+                } else {
+                    return formatDateTime(result.deadline, "Date")
+                }
             });
 
             // Set Requested Position
@@ -195,7 +198,7 @@ const viewManpowerRequest = (requisitionID) => {
                 const minMonthlySalary = result.min_monthly_salary;
                 const maxMonthlySalary = result.max_monthly_salary;
                 const hasNoSalaryRange = isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary);
-                return hasNoSalaryRange ? 'Unset' : `P ${ minMonthlySalary } - P ${ maxMonthlySalary }/mon`;
+                return hasNoSalaryRange ? 'Unset' : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
             });
 
             // Set Request Description

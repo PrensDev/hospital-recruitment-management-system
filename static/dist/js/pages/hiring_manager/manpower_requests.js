@@ -14,8 +14,17 @@ initDataTable('#manpowerRequestDT', {
         { data: 'created_at', visible: false },
 
         // Vacant Position
-        { data: "vacant_position.name" },
-
+        {
+            data: null,
+            render: data => {
+                const vacantPosition = data.vacant_position;
+                return `
+                    <div>${ vacantPosition.name }</div>
+                    <div class="small text-secondary">${ vacantPosition.department.name }</div>
+                `
+            }
+        },
+        
         // Staffs Needed
         { 
             data: null,
@@ -106,7 +115,7 @@ const viewManpowerRequest = (requisitionID) => {
             setValue('#requisitionID', result.requisition_id)
             
             // Set Requestor Name
-            setContent('#requestorName', formatName("L, F M., S", {
+            setContent('#requestorName', formatName("F M. L, S", {
                 firstName: requestedBy.first_name,
                 middleName: requestedBy.middle_name,
                 lastName: requestedBy.last_name,
@@ -114,7 +123,7 @@ const viewManpowerRequest = (requisitionID) => {
             }));
             
             // Set Requestor Department
-            setContent('#requestorDepartment', requestedBy.position.name);
+            setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
             
             // Set Date Requested
             setContent('#dateRequested', formatDateTime(result.created_at, "Date"));
@@ -149,7 +158,7 @@ const viewManpowerRequest = (requisitionID) => {
                 const minMonthlySalary = result.min_monthly_salary;
                 const maxMonthlySalary = result.max_monthly_salary;
                 const hasNoSalaryRange = isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary);
-                return hasNoSalaryRange ? 'Unset' : `P ${ minMonthlySalary } - P ${ maxMonthlySalary }/mon`;
+                return hasNoSalaryRange ? 'Unset' : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
             });
 
             // Set Request Description

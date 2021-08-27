@@ -1,0 +1,72 @@
+<div class="modal" id="applicantDetailsModal">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-file-alt text-secondary mr-1"></i>
+                    <span>Applicant Details</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <table class="table border-bottom">
+                    <tr>
+                        <th>Applicant Name</th>
+                        <td id="applicantFullName"></td>
+                    </tr>
+                    <tr>
+                        <th>Contact Number</th>
+                        <td id="applicantContactNumber"></td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td id="applicantEmail"></td>
+                    </tr>
+                    <tr>
+                        <th>Resume</th>
+                        <td id="applicantResume">--</td>
+                    </tr>
+                    <tr>
+                        <th>Date Applied</th>
+                        <td id="applicantDateApplied"></td>
+                    </tr>
+                </table>
+
+                <!-- Job Post ID -->
+                <input type="hidden" id="jobPostID" name="jobPostID">
+
+                <!-- Reject or Approve -->
+                <label class="mt-3">Select decision for this request</label>
+                <div class="form-group">
+                    <div class="d-flex">
+                        <div class="custom-control custom-radio">
+                            <div class="icheck-danger d-inline">
+                                <input 
+                                    type="radio" 
+                                    name="requestStatus" 
+                                    id="rejectRequest"
+                                    value="Rejected"
+                                >
+                                <label for="rejectRequest">Reject</label>
+                            </div>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <div class="icheck-success d-inline">
+                                <input 
+                                    type="radio" 
+                                    name="requestStatus" 
+                                    id="approveRequest"
+                                    value="Approved"
+                                >
+                                <label for="approveRequest">Approve</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" disabled>Submit</button>
+            </div>
+        </div>
+    </div>
+</div>

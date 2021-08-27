@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, Request
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.functions import user
 from database import get_db
 from oauth2 import get_user, check_priviledge
 from schemas import db_schemas
@@ -14,6 +15,7 @@ import models
 User = models.User
 Position = models.Position
 Requisition = models.Requisition
+Department = models.Department
 
 
 # Router Instance
@@ -48,6 +50,7 @@ def get_user_info(
 # REQUISITIONS/MANPOWER REQUESTS
 # ====================================================================
 
+
 # Requisition/Manpower Request Not Found Response
 REQUISITION_NOT_FOUND_RESPONSE = {"message": "Manpower request was not found"}
 
@@ -61,7 +64,7 @@ def create_manpower_request(
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        new_requisition = models.Requisition(
+        new_requisition = Requisition(
             requested_by = user_data.user_id,
             position_id = req.position_id,
             employment_type = req.employment_type,
@@ -161,14 +164,27 @@ def delete_requisition(
 
 
 # Department Positions
-# @router.get("/department/positions")
-# def department_positions(
-#     db: Session = Depends(get_db),
-#     user_data: db_schemas.User = Depends(get_user)
-# ):
-#     try:
-#         check_priviledge(user_data, AUTHORIZED_USER)
-#         user_info = db.query(User).join(Position).all()
-#         return user_info
-#     except Exception as e:
-#         print(e)
+@router.get("/department/positions", response_model = db_schemas.ShowDepartmentPosition)
+def department_positions(
+    db: Session = Depends(get_db), 
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+        if not user_info:
+            raise HTTPException(status_code=404, detail="User does not exist")
+        else:
+            position_id = user_info.position_id
+            user_position = db.query(Position).filter(Position.position_id == position_id).first()
+            if not user_position:
+                raise HTTPException(status_code=404, detail="Position does not exist")
+            else:
+                department_id = user_position.department_id
+                user_department = db.query(Department).filter(Department.department_id == department_id).first()
+                if not user_department:
+                    raise HTTPException(status_code=404, detail="Deparment does not exist")
+                else:
+                    return user_department
+    except Exception as e:
+        print(e)

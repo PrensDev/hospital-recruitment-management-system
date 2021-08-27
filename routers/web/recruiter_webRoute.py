@@ -142,3 +142,29 @@ def dashboard(req: Request, user_data: dict = Depends(get_token)):
         })
     else:
         return errTemplate.page_not_found(req)
+
+
+# Applicants Per Job Post
+@router.get("/job-posts/{job_post_id}/applicants", response_class=HTMLResponse)
+def dashboard(
+    job_post_id: str, 
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        if not job_post_id:
+            return errTemplate.page_not_found(req)
+        else:
+            job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+            if not job_post:
+                return errTemplate.page_not_found(req)
+            else:
+                return templates.TemplateResponse(TEMPLATES_PATH + "applicants_per_job.html", {
+                    "request": req,
+                    "page_title": "Applicants",
+                    "sub_title": "Applicants to manage potential candidates",
+                    "active_navlink": "Applicants"
+                })
+    else:
+        return errTemplate.page_not_found(req)

@@ -33,6 +33,14 @@ class ShowPosition(Position):
         orm_mode = True
 
 
+# Show Position For Department
+class ShowPositionForDepartment(Position):
+    position_id: str
+
+    class Config():
+        orm_mode = True
+
+
 # User Schema
 class User(BaseModel):
     first_name: str
@@ -115,7 +123,7 @@ class ShowDepartmentPosition(BaseModel):
     description: str
     created_at: datetime
     updated_at: Optional[datetime]
-    department_positions: List
+    department_positions: List[ShowPositionForDepartment]
 
     class Config():
         orm_mode = True

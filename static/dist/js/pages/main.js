@@ -262,6 +262,13 @@ const formatName = (format = "", fullName = {
 }
 
 
+/** Format Currency */
+const formatCurrency = (money) => {
+    const formattedMoney = new Intl.NumberFormat('en', {minimumFactionDigits: 2}).format(money);
+    return `&#8369; ${ formattedMoney }`
+}
+
+
 /** GET AJAX */
 const GET_ajax = (url = "", options = {
     success: () => {},

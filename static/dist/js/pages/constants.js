@@ -23,7 +23,7 @@ const API_AUTH_ROUTE = `${ BASE_URL_API }auth/`;
 
 
 // Configurations
-IF_SELECTOR_EXIST_DEBUG_MODE = true
+IF_SELECTOR_EXIST_DEBUG_MODE = false
 
 
 // AJAX Header
