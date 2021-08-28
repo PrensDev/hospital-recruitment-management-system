@@ -140,7 +140,7 @@ def update_requisition(
 
 
 # Delete Manpower Request
-@router.delete("/requisitions/{requisition_id", status_code = 204)
+@router.delete("/requisitions/{requisition_id}", status_code = 204)
 def delete_requisition(
     requisition_id: str,
     db: Session = Depends(get_db),

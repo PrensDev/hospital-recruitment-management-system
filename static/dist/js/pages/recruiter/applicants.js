@@ -54,12 +54,12 @@ initDataTable('#applicantsDT', {
                         <i class="fas fa-redo mr-1"></i>
                         <span>${ status }</span>
                     `);
-                } else if(status === "For Screening") {
+                } else if(status === "For screening") {
                     return dtBadge('secondary', `
                         <i class="fas fa-user mr-1"></i>
                         <span>${ status }</span>
                     `);
-                } else if(status === "For Interview") {
+                } else if(status === "For interview") {
                     return dtBadge('info', `
                         <i class="fas fa-file-alt mr-1"></i>
                         <span>${ status }</span>
@@ -71,15 +71,15 @@ initDataTable('#applicantsDT', {
                     `);
                 } else if(
                     status === "Rejected from evaluation" || 
-                    status === "Rejected from screnning" || 
+                    status === "Rejected from screnning"  || 
                     status === "Rejected from interview"
                 ) {
                     return dtBadge('danger', `
-                        <i class="fas fa-redo mr-1"></i>
+                        <i class="fas fa-times mr-1"></i>
                         <span>${ status }</span>
                     `);
                 } else {
-                    return dtBadge('light', `<span>No data</span>`);
+                    return dtBadge('light', `<span>Invalid data</span>`);
                 }
             }
         },
@@ -123,7 +123,10 @@ initDataTable('#applicantsDT', {
 const viewApplicantDetails = (applicantID) => {
     GET_ajax(`${ R_API_ROUTE }applicants/${ applicantID }`, {
         success: result => {
-            console.log(result);
+            // console.log(result);
+
+            // Set Applicant ID
+            setValue('#applicantID', result.applicant_id)
 
             // Set Applicant Full Name
             setContent('#applicantFullName', formatName('F M. L, S', {
@@ -144,6 +147,15 @@ const viewApplicantDetails = (applicantID) => {
                 <div>${  formatDateTime(result.created_at, "Date") }</div>
                 <div class="small text-secondary">${  fromNow(result.created_at) }</div>
             `);
+
+            // Display evluation field
+            if(result.status === "For evaluation") {
+                showElement('#evaluationField');
+                showElement('#submitBtn')
+            } else {
+                hideElement('#evaluationField');
+                hideElement('#submitBtn')
+            }
 
             showModal('#applicantDetailsModal');
         },
@@ -229,11 +241,11 @@ ifSelectorExist('#applicantsPerJobDT', () => {
                 }
             },
 
-            // Position
-            { data: 'applied_job.manpower_request.vacant_position.name' },
+            // Contact Number
+            { data: 'contact_number' },
 
-            // Employment Type
-            { data: 'applied_job.manpower_request.employment_type' },
+            // Email
+            { data: 'email' },
 
             // Date Applied
             {
@@ -257,12 +269,12 @@ ifSelectorExist('#applicantsPerJobDT', () => {
                             <i class="fas fa-redo mr-1"></i>
                             <span>${ status }</span>
                         `);
-                    } else if(status === "For Screening") {
+                    } else if(status === "For screening") {
                         return dtBadge('secondary', `
                             <i class="fas fa-user mr-1"></i>
                             <span>${ status }</span>
                         `);
-                    } else if(status === "For Interview") {
+                    } else if(status === "For interview") {
                         return dtBadge('info', `
                             <i class="fas fa-file-alt mr-1"></i>
                             <span>${ status }</span>
@@ -278,11 +290,11 @@ ifSelectorExist('#applicantsPerJobDT', () => {
                         status === "Rejected from interview"
                     ) {
                         return dtBadge('danger', `
-                            <i class="fas fa-redo mr-1"></i>
+                            <i class="fas fa-times mr-1"></i>
                             <span>${ status }</span>
                         `);
                     } else {
-                        return dtBadge('light', `<span>No data</span>`);
+                        return dtBadge('light', `<span>Invalid data</span>`);
                     }
                 }
             },
@@ -313,4 +325,90 @@ ifSelectorExist('#applicantsPerJobDT', () => {
             }
         ]
     })
-})
+});
+
+
+/**
+ * ==============================================================================
+ * APPLICANT EVALUATION
+ * ==============================================================================
+*/
+
+
+/** If user select reject for manpower request */
+$("#approveForScreening, #rejectFromEvaluation").on('change', () => {
+    const requestStatus = $(`input[name="applicantStatus"]:checked`).val();
+    if(requestStatus == "For screening") hideElement("#remarksField");
+    if(requestStatus == "Rejected from evaluation") showElement("#remarksField");
+
+    ifSelectorExist('#submitBtn', () => enableElement('#submitBtn'));
+});
+
+
+/** On Applicant details modal is going to be hidden  */
+onHideModal('#applicantDetailsModal', () => {
+    resetForm('#applicantEvaluationForm');
+    hideElement("#remarksField");
+    disableElement('#submitBtn');
+});
+
+
+/** Validate Applicant Evaluation Form */
+validateForm('#applicantEvaluationForm', {
+    rules: {
+        applicantID: {
+            required: true
+        },
+        applicantStatus: {
+            required: true
+        },
+        remarks: {
+            required: true
+        }
+    },
+    messages: {
+        applicantID: {
+            required: "This must have a value"
+        },
+        applicantStatus: {
+            required: "Please select a status for this applicant"
+        },
+        remarks: {
+            required: "Please insert remarks here"
+        }
+    },
+    submitHandler: () => evaluateApplicant()
+});
+
+
+/** Evaluate Applicant */
+const evaluateApplicant = () => {
+    const formData = generateFormData('#applicantEvaluationForm');
+    const get = (name) => { return formData.get(name) }
+
+    const applicantStatus = get('applicantStatus');
+    const remarks = applicantStatus === 'Rejected from evaluation' ? get('remarks') : null;
+
+    const data = {
+        status: applicantStatus,
+        remarks: remarks
+    }
+
+    const applicantID = get('applicantID')
+
+    console.log(data);
+
+    PUT_ajax(`${ R_API_ROUTE }applicants/${ applicantID }`, data, {
+        success: result => {
+            if(result) {
+                hideModal('#applicantDetailsModal');
+                reloadDataTable('#applicantsPerJobDT');
+                toastr.success('An applicant is successfully evaluated');
+            }
+        },
+        error: () => {
+            hideModal('#applicantDetailsModal');
+            toastr.error('There was an error while updating applicant evaluation');
+        }
+    })
+}

@@ -166,7 +166,7 @@ def update_job_post(
         if not job_post.first():
             raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
         else:
-            job_post.update(req.dict())
+            job_post.update(req)
             db.commit()
             return {"message": "A job post is successfully updated"}
     except Exception as e:
@@ -224,5 +224,30 @@ def get_one_applicant(
             return APPLICANT_NOT_FOUND_RESPONSE
         else:
             return applicant
+    except Exception as e:
+        print(e)
+
+
+# Evaluate Applicant
+@router.put("/applicants/{applicant_id}", status_code = 202)
+def evaluate_applicant(
+    applicant_id,
+    req: db_schemas.ApplicantEvaluation,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
+        if not applicant.first():
+            raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
+        else:
+            applicant.update({
+                "evaluated_by": user_data.user_id,
+                "status": req.status,
+                "remarks": req.remarks
+            })
+            db.commit()
+            return {"message": "An evaluation for an applicant is successfully updated"}
     except Exception as e:
         print(e)

@@ -270,7 +270,7 @@ const formatCurrency = (money) => {
 
 
 /** GET AJAX */
-const GET_ajax = (url = "", options = {
+const GET_ajax = (url = '', options = {
     success: () => {},
     error: () => console.error('GET_ajax failed')
 }) => $.ajax({
@@ -283,7 +283,7 @@ const GET_ajax = (url = "", options = {
 
 
 /** POST AJAX */
-const POST_ajax = (url = "", data = {}, options = {
+const POST_ajax = (url = '', data = {}, options = {
     success: () => {},
     error: () => console.error('POST_ajax failed')
 }) => $.ajax({
@@ -299,12 +299,12 @@ const POST_ajax = (url = "", data = {}, options = {
 
 
 /** PUT AJAX */
-const PUT_ajax = (url = "", data = {}, options = {
+const PUT_ajax = (url = '', data = {}, options = {
     success: () => {},
     error: () => console.error('PUT_ajax failed')
 }) => $.ajax({
     url: url,
-    type: "PUT",
+    type: 'PUT',
     headers: AJAX_HEADERS,
     dataType: 'json',
     contentType: 'application/json; charset=utf-8',
@@ -315,7 +315,7 @@ const PUT_ajax = (url = "", data = {}, options = {
 
 
 /** DELETE AJAX */
-const DELETE_ajax = (url = "", options = {
+const DELETE_ajax = (url = '', options = {
     success: () => {},
     error: () => console.error('DELETE_ajax failed')
 }) => $.ajax({

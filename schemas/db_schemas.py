@@ -228,3 +228,9 @@ class ShowManpowerRequest(ManpowerRequest):
 # Search
 class Search(BaseModel):
     query: str
+
+
+# Applicant Evaluation
+class ApplicantEvaluation(BaseModel):
+    status: str
+    remarks: Optional[str]
