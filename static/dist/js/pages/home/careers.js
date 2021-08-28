@@ -182,7 +182,7 @@ onClick('#submitApplicationBtn', () => {
                 hideModal('#confirmApplicationModal');
                 resetForm('#applicationForm');
                 uncheckElement('#confirmReview');
-                toastr.success('Your application is successfulyy submitted');
+                toastr.success('Your application is successfully submitted');
             }
         },
         error: () => {
