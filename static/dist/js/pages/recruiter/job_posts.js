@@ -193,7 +193,11 @@ onClick('#confirmPostNewJobPostBtn', () => {
     POST_ajax(`${ R_API_ROUTE }job-posts`, data, {
         success: result => {
             if(result) {
-                location.assign(`${ R_WEB_ROUTE }job-posts`);
+                setSessionedAlertAndRedirect({
+                    theme: 'success',
+                    message: 'A new available job is successfully posted',
+                    redirectURL: `${ R_WEB_ROUTE }job-posts`
+                });
             }
         },
         error: () => {
@@ -650,7 +654,11 @@ onClick('#confirmUpdateJobPostBtn', () => {
     PUT_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, data, {
         success: result => {
             if(result) {
-                location.assign(`${ R_WEB_ROUTE }job-posts`)
+                setSessionedAlertAndRedirect({
+                    theme: 'success',
+                    message: 'A posted job is successfully updated',
+                    redirectURL: `${ R_WEB_ROUTE }job-posts`
+                });
             }
         },
         error: () => {

@@ -352,6 +352,6 @@ const setSessionedAlertAndRedirect = (data = {
 }) => {
     localStorage.setItem('sessioned_alert', true)
     localStorage.setItem('sessioned_alert_theme', data.theme)
-    localStorage.setItem('sessioned_alert_theme', data.message)
+    localStorage.setItem('sessioned_alert_message', data.message)
     location.assign(data.redirectURL)
 }

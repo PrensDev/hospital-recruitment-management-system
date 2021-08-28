@@ -140,7 +140,7 @@ def update_requisition(
 
 
 # Delete Manpower Request
-@router.delete("/requisitions/{requisition_id}", status_code = 204)
+@router.delete("/requisitions/{requisition_id}")
 def delete_requisition(
     requisition_id: str,
     db: Session = Depends(get_db),
@@ -153,6 +153,7 @@ def delete_requisition(
             raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
         else:
             requisition.delete(synchronize_session = False)
+            db.commit()
             return {"message": "A requisition is successfully deleted"}
     except Exception as e:
         print(e) 

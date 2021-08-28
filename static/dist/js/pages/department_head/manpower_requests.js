@@ -306,7 +306,7 @@ initDataTable('#manpowerRequestDT', {
 const viewManpowerRequest = (requisitionID) => {
     GET_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
-            console.log(result);
+            // console.log(result);
 
             const requestedBy = result.manpower_request_by;
             

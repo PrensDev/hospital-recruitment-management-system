@@ -39,7 +39,7 @@ def get_all_job_posts(db: Session = Depends(get_db)):
         return db.query(JobPost).filter(or_(
             JobPost.expiration_date > date.today(), 
             JobPost.expiration_date == None
-        )).all()
+        )).order_by(JobPost.created_at.desc()).all()
     except Exception as e:
         print(e)
 
