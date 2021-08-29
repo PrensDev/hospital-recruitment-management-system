@@ -70,7 +70,8 @@ validateForm('#applicationForm', {
             email: true
         },
         resume: {
-            required: true
+            required: true,
+            accept: 'application/pdf'
         }
     },
     messages: {
@@ -91,7 +92,8 @@ validateForm('#applicationForm', {
             email: "This must be a valid email"
         },
         resume: {
-            required: "Please upload your resume in PDF type"
+            required: "Your resume is required to upload",
+            accept: "Please upload your resume in PDF type"
         }
     },
     submitHandler: () => {
@@ -156,22 +158,8 @@ onClick('#submitApplicationBtn', () => {
     const get = (name) => { return formData.get(name) }
 
     const resume = $('#resume')[0].files[0];
-
-    const data = {
-        job_post_id: get('jobPostID'),
-        first_name: get('firstName'),
-        middle_name: get('middleName'),
-        last_name: get('lastName'),
-        suffix_name: get('suffixName'),
-        contact_number: get('contactNumber'),
-        email: get('email'),
-        resume: resume
-    }
-
     const fd = new FormData();
     fd.append('file', resume);
-
-    console.log(fd);
 
     $.ajax({
         url: `${ BASE_URL_API }home/upload/resume`,
@@ -180,31 +168,40 @@ onClick('#submitApplicationBtn', () => {
         contentType: false,
         data: fd,
         success: result => {
-            console.log(result)
+            const data = {
+                job_post_id: get('jobPostID'),
+                first_name: get('firstName'),
+                middle_name: get('middleName'),
+                last_name: get('lastName'),
+                suffix_name: get('suffixName'),
+                contact_number: get('contactNumber'),
+                email: get('email'),
+                resume: result.new_file
+            }
+
+            $.ajax({
+                url: `${ BASE_URL_API }home/apply`,
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(data),
+                success: result2 => {
+                    if(result2) {
+                        hideModal('#confirmApplicationModal');
+                        resetForm('#applicationForm');
+                        uncheckElement('#confirmReview');
+                        toastr.success('Your application is successfully submitted');
+                    }
+                },
+                error: () => {
+                    hideModal('#confirmApplicationModal');
+                    uncheckElement('#confirmReview');
+                    toastr.error('There was a problem in submitting your application')
+                }
+            });
         },
         error: () => console.error('There was an error while uploading yung resume')
     });
-
-    // $.ajax({
-    //     url: `${ BASE_URL_API }home/apply`,
-    //     type: 'POST',
-    //     dataType: 'json',
-    //     contentType: 'application/json; charset=utf-8',
-    //     data: JSON.stringify(data),
-    //     success: result => {
-    //         if(result) {
-    //             hideModal('#confirmApplicationModal');
-    //             resetForm('#applicationForm');
-    //             uncheckElement('#confirmReview');
-    //             toastr.success('Your application is successfully submitted');
-    //         }
-    //     },
-    //     error: () => {
-    //         hideModal('#confirmApplicationModal');
-    //         uncheckElement('#confirmReview');
-    //         toastr.error('There was a problem in submitting your application')
-    //     }
-    // });
 })
 
 

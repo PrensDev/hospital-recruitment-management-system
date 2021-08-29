@@ -8,6 +8,8 @@ from database import get_db
 from schemas import db_schemas
 from datetime import date
 from sqlalchemy import or_
+import shutil
+import uuid
 
 import models
 
@@ -74,7 +76,21 @@ def get_one_job_post(job_post_id: str, db: Session = Depends(get_db)):
 # Upload Resume
 @router.post("/upload/resume")
 def upload_resume(file: UploadFile = File(...)):
-    return {"file":file.filename}
+    try:
+        orig_filename = f"{file.filename}"
+        file_extension = orig_filename.split('.')[-1]
+        new_filename = uuid.uuid4().hex
+        file_location = f"static/app/files/resumes/{new_filename}.{file_extension}"
+        with open(file_location, "wb") as fileObj:
+            shutil.copyfileobj(file.file, fileObj)
+        return {
+            "original_file": orig_filename,
+            "new_file": f"{new_filename}.{file_extension}"
+        }
+    except Exception as e:
+        print(e)
+    finally:
+        file.file.close()
 
 
 #  Apply for a job
