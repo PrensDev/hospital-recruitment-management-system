@@ -1,7 +1,7 @@
 # Import Packages
 from routers.api.recruiter_apiRoute import JOB_POST_NOT_FOUND_RESPONSE
 from typing import List
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, UploadFile, File
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
@@ -69,6 +69,12 @@ def get_one_job_post(job_post_id: str, db: Session = Depends(get_db)):
 # ====================================================================
 # APPLICATION
 # ====================================================================
+
+
+# Upload Resume
+@router.post("/upload/resume")
+def upload_resume(file: UploadFile = File(...)):
+    return {"file":file.filename}
 
 
 #  Apply for a job

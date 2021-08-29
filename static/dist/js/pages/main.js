@@ -29,11 +29,7 @@ const nullOrReturnValue = (nullable, returnValue) => { return isEmptyOrNull(null
 
 
 /** Initialize DataTable */
-const initDataTable = (selector = "", dtOptions = {
-    debugMode: false,
-    url: "",
-    columns: [],
-}) => $(() => ifSelectorExist(selector, () => dtOptions.debugMode 
+const initDataTable = (selector = "", dtOptions = { debugMode: false, url: "", columns: [] }) => $(() => ifSelectorExist(selector, () => dtOptions.debugMode 
     ? $(selector).DataTable({
         ajax: {
             url: dtOptions.url,
@@ -96,12 +92,57 @@ const reloadDataTable = (selector) => ifSelectorExist(selector, () => $(selector
 const dtBadge = (theme = "light", content) => { return `<div class="badge badge-${ theme } p-2 w-100">${ content }</div>` }
 
 
+/** jQuery Validation Methods */
+
+// Less Than
+jQuery.validator.addMethod("lessThan", function(val, elem, params) {
+    if($(params).length) {
+        const c = getValue(params);
+        return isEmptyOrNull(c) ? true : val < c;
+    }
+    return true;
+}, `It must be less than something`);
+
+// Greater Than
+jQuery.validator.addMethod("greaterThan", function(val, elem, params) {
+    if($(params).length) {
+        const c = getValue(params);
+        return isEmptyOrNull(c) ? true : val > c;
+    }
+    return true;
+}, `It must be greater than something`);
+
+// Less Than Or Equal To
+jQuery.validator.addMethod("lessThanOrEqualTo", function(val, elem, params) {
+    if($(params).length) {
+        const c = getValue(params);
+        if(!(isEmptyOrNull(c) || c == 0)) return val <= c;
+    }
+    return true;
+}, `It must be less than or equal to something`);
+
+// Greater Than Or Equal To
+jQuery.validator.addMethod("greaterThan", function(val, elem, params) {
+    if($(params).length) {
+        const c = getValue(params);
+        if(!(isEmptyOrNull(c) || c == 0)) return val >= c;
+    }
+    return true;
+}, `It must be greater than or equal to something`);
+
+// Before Today
+jQuery.validator.addMethod("beforeToday", function(val, elem, params) {
+    return this.optional(elem) || isBeforeToday(val);
+}, `Date and Time must be before today`);
+
+// After Today
+jQuery.validator.addMethod("afterToday", function(val, elem, params) {
+    return this.optional(elem) || isAfterToday(val);
+}, `Date and Time must be before today`);
+
+
 /** Validate Form */
-const validateForm = (selector = "", validationOptions = {
-    rules: {},
-    messages: {},
-    submitHandler: () => {}
-}) => {
+const validateForm = (selector = "", validationOptions = { rules: {}, messages: {}, submitHandler: () => {} }) => {
     ifSelectorExist(selector, () => {
         $(selector).validate({
             rules: validationOptions.rules,
@@ -184,6 +225,10 @@ const setContent = (selector, content) => ifSelectorExist(selector, () => $(sele
 const setValue = (selector, value) => ifSelectorExist(selector, () => $(selector).val(value));
 
 
+/** Get Value */
+const getValue = (selector) => { return ifSelectorExist(selector, () => { return $(selector).val() }) }
+
+
 /** Enable/Disable Element */
 const enableElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("disabled", false));
 const disableElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("disabled", true));
@@ -212,11 +257,7 @@ const onChange = (selector, handler = () => {}) => onEvent(selector, 'change', (
 
 
 /** Is checked */
-const isChecked = (
-    selector, 
-    handlerIfChecked = () => {}, 
-    handlerIfNotChecked = () => {}
-) => {
+const isChecked = ( selector,  handlerIfChecked = () => {},  handlerIfNotChecked = () => {} ) => {
     return ifSelectorExist(selector, () => {
         const checkStatus = $(selector).prop('checked');
         checkStatus ? handlerIfChecked() : handlerIfNotChecked();
@@ -226,47 +267,29 @@ const isChecked = (
 
 
 /** Format Name */
-const formatName = (format = "", fullName = {
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    suffixName: ""
-}) => {
-    const toMiddleInitial = (middleName) => { return `${ middleName.charAt(0) }.`}
+const formatName = (format = '', fullName = {firstName: '', middleName: '', lastName: '', suffixName: ''}) => {
+    const F = $.trim(fullName.firstName);
+    const L = $.trim(fullName.lastName);
+    
+    let M = $.trim(fullName.middleName);
+    let S = $.trim(fullName.suffixName);
+    
+    const Mi = isEmptyOrNull(M) ? '' : ` ${ M.charAt(0) }.`;
+    
+    M = isEmptyOrNull(M) ? '' : ` ${ M }`;
+    S = isEmptyOrNull(S) ? '' : `, ${ S }`;
 
-    var F = $.trim(fullName.firstName);
-    var M = $.trim(fullName.middleName);
-    var L = $.trim(fullName.lastName);
-    var S = $.trim(fullName.suffixName);
-
-    if(format === "L, F M., S") {
-        if(isEmptyOrNull(M) && isEmptyOrNull(S)) {
-            return `${ L }, ${ F }`
-        } else if(isEmptyOrNull(S)) {
-            return `${ L }, ${ F } ${ toMiddleInitial(M) }`
-        } else {
-            return `${ L }, ${ F } ${ toMiddleInitial(M) }, ${ S }`
-        }
-    } else if(format === "F M. L, S") {
-        if(isEmptyOrNull(M) && isEmptyOrNull(S)) {
-            return `${ F } ${ L }`;
-        } else if(isEmptyOrNull(S)) {
-            return `${ F } ${ toMiddleInitial(M) } ${ L }`;
-        } else {
-            return `${ F } ${ toMiddleInitial(M) } ${ L }, ${ S }`;
-        }
-    } else {
+    if(format === "L, F M., S")     return L + ' ,' + F + Mi + S
+    else if(format === "F M. L, S") return F + Mi + ' ' + L + S
+    else {
         console.error(`Format "${ format }" for name is invalid`)
-        return ""
+        return ''
     }
 }
 
 
 /** Format Currency */
-const formatCurrency = (money) => {
-    const formattedMoney = new Intl.NumberFormat('en', {minimumFactionDigits: 2}).format(money);
-    return `&#8369; ${ formattedMoney }`
-}
+const formatCurrency = (money) => { return `&#8369; ${ new Intl.NumberFormat('en', {minimumFactionDigits: 2}).format(money) }` }
 
 
 /** GET AJAX */

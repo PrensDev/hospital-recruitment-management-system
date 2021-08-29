@@ -19,7 +19,9 @@ ifSelectorExist('#createJobPostForm', () => {
         ]
     });
 
+    // Get the requisition ID from the URL
     const requisitionID = window.location.pathname.split("/")[3];
+
     GET_ajax(`${ R_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
             console.log(result)
@@ -156,7 +158,8 @@ validateForm('#createJobPostForm', {
             required: true
         },
         openUntil: {
-            required: true
+            required: true,
+            afterToday: true
         }
     },
     messages:{
@@ -167,7 +170,8 @@ validateForm('#createJobPostForm', {
             required: 'Job Description is required'
         },
         openUntil: {
-            required: 'Please select a date'
+            required: 'Please select a date',
+            afterToday: 'The date and time must be in the future'
         }
     },
     submitHandler:() => {
@@ -205,7 +209,7 @@ onClick('#confirmPostNewJobPostBtn', () => {
             toastr.error('There was an error in posting new job')
         }
     })
-})
+});
 
 
 /**

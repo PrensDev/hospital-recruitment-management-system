@@ -37,19 +37,15 @@ ifSelectorExist('#availableJobDetails', () => {
             // Set Open Until
             setContent('#openUntil', () => {
                 const expiresAt = result.expiration_date;
-                if(isEmptyOrNull(expiresAt)) {
-                    return `No deadline`
-                } else  {
-                    return `
+                return isEmptyOrNull(expiresAt)
+                    ? `No deadline`
+                    : `
                         <div>${ formatDateTime(expiresAt, "Date") }</div>
                         <div class="small text-secondary">${ fromNow(expiresAt) }</div>
                     `
-                }
             })
         },
-        error: () => {
-            toastr.error('There was an error in getting job details')
-        }
+        error: () => toastr.error('There was an error in getting job details')
     });
 });
 
@@ -127,7 +123,6 @@ validateForm('#applicationForm', {
 onHideModal('#confirmApplicationModal', () => {
     uncheckElement('#confirmReview');
     disableElement('#submitApplicationBtn');
-
     setContent('#applicantFullName', '');
     setContent('#applicantContactNumber', '');
     setContent('#applicantEmail', '');
@@ -160,6 +155,8 @@ onClick('#submitApplicationBtn', () => {
     const formData = generateFormData('#applicationForm');
     const get = (name) => { return formData.get(name) }
 
+    const resume = $('#resume')[0].files[0];
+
     const data = {
         job_post_id: get('jobPostID'),
         first_name: get('firstName'),
@@ -168,29 +165,46 @@ onClick('#submitApplicationBtn', () => {
         suffix_name: get('suffixName'),
         contact_number: get('contactNumber'),
         email: get('email'),
-        resume: "resume.pdf"
+        resume: resume
     }
 
+    const fd = new FormData();
+    fd.append('file', resume);
+
+    console.log(fd);
+
     $.ajax({
-        url: `${ BASE_URL_API }home/apply`,
+        url: `${ BASE_URL_API }home/upload/resume`,
         type: 'POST',
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(data),
+        processData: false,
+        contentType: false,
+        data: fd,
         success: result => {
-            if(result) {
-                hideModal('#confirmApplicationModal');
-                resetForm('#applicationForm');
-                uncheckElement('#confirmReview');
-                toastr.success('Your application is successfully submitted');
-            }
+            console.log(result)
         },
-        error: () => {
-            hideModal('#confirmApplicationModal');
-            uncheckElement('#confirmReview');
-            toastr.error('There was a problem in submitting your application')
-        }
+        error: () => console.error('There was an error while uploading yung resume')
     });
+
+    // $.ajax({
+    //     url: `${ BASE_URL_API }home/apply`,
+    //     type: 'POST',
+    //     dataType: 'json',
+    //     contentType: 'application/json; charset=utf-8',
+    //     data: JSON.stringify(data),
+    //     success: result => {
+    //         if(result) {
+    //             hideModal('#confirmApplicationModal');
+    //             resetForm('#applicationForm');
+    //             uncheckElement('#confirmReview');
+    //             toastr.success('Your application is successfully submitted');
+    //         }
+    //     },
+    //     error: () => {
+    //         hideModal('#confirmApplicationModal');
+    //         uncheckElement('#confirmReview');
+    //         toastr.error('There was a problem in submitting your application')
+    //     }
+    // });
 })
 
 
@@ -275,13 +289,8 @@ ifSelectorExist('#availableJobList', () => {
 validateForm('#searchJobForm', {
     submitHandler: () => {
         const formData = generateFormData('#searchJobForm');
-
         const searchQuery = formData.get('searchQuery');
-
-        if(!isEmptyOrNull(searchQuery)) {
-            location.assign(`${ BASE_URL_WEB }careers/?query=${ searchQuery }`);
-        }
-
+        if(!isEmptyOrNull(searchQuery)) location.assign(`${ BASE_URL_WEB }careers/?query=${ searchQuery }`);
         return false;
     }
 });
@@ -376,7 +385,6 @@ ifSelectorExist('#searchResultList', () => {
                     </div>
                 `
             }
-
 
             setContent('#searchResultList', jobList);
         },

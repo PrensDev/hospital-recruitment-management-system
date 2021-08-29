@@ -54,6 +54,11 @@ ifSelectorExist('#addManpowerRequestForm', () => {
 
 });
 
+/** On Set Salary Range Change */
+onChange('#setDeadline', () => isChecked('#setDeadline') ? showElement('#deadlineField') : hideElement('#deadlineField'))
+
+/** On Set Salary Range Change */
+onChange('#setSalaryRange', () => isChecked('#setSalaryRange') ? showElement('#salaryRangeField') : hideElement('#salaryRangeField'))
 
 /** Validate Add Manpower Request Form */
 validateForm('#addManpowerRequestForm', {
@@ -74,6 +79,22 @@ validateForm('#addManpowerRequestForm', {
         requestDescription: {
             required: true
         },
+        deadline: {
+            required: true,
+            afterToday: true
+        },
+        minSalary: {
+            required: true,
+            number: true,
+            min: 1,
+            lessThan: "#maxSalary"
+        },
+        maxSalary: {
+            required: true,
+            number: true,
+            min: 1,
+            greaterThan: "#minSalary"
+        },
     },
     messages:{
         vacantPosition: {
@@ -92,6 +113,22 @@ validateForm('#addManpowerRequestForm', {
         requestDescription: {
             required: 'Job description is required'
         },
+        deadline: {
+            required: 'Please select a deadline',
+            afterToday: 'Deadline must be in the future'
+        },
+        minSalary: {
+            required: 'Please type the minimum salary here',
+            number: "Invalid value",
+            min: "Invalid value",
+            lessThan: "This must be less than the maximum salary"
+        },
+        maxSalary: {
+            required: 'Please type the maximum salary here',
+            number: "Invalid value",
+            min: "Invalid value",
+            greaterThan: "This must be greater than the minimum salary"
+        }
     },
     submitHandler:() => {
         showModal('#confirmAddManpowerRequestModal');
@@ -99,24 +136,19 @@ validateForm('#addManpowerRequestForm', {
     }
 });
 
-
 /** Submit Manpower Request */
 onClick('#confirmAddManpowerRequestBtn', () => {
     const formData = generateFormData('#addManpowerRequestForm');
     
-    const minMonthlySalary = formData.get("minSalary");
-    const maxMonthlySalary = formData.get("maxSalary");
-    const deadline = formData.get("deadline");
-
     const data = {
         position_id: formData.get('vacantPosition'),
         employment_type: formData.get("employmentType"),
         request_nature: formData.get("requestNature"),
         staffs_needed: parseInt(formData.get("staffsNeeded")),
-        min_monthly_salary: nullOrReturnValue(minMonthlySalary, parseFloat(minMonthlySalary)),
-        max_monthly_salary: nullOrReturnValue(maxMonthlySalary, parseFloat(maxMonthlySalary)),
+        min_monthly_salary: isChecked('#setSalary') ? null : parseFloat(formData.get("minSalary")),
+        max_monthly_salary: isChecked('#setSalary') ? null : parseFloat(formData.get("maxSalary")),
         content: formData.get("requestDescription"),
-        deadline: nullOrReturnValue(deadline, formatDateTime(deadline))
+        deadline: isChecked('#setDeadlline') ? null : formatDateTime(formData.get("deadline"))
     }
 
     POST_ajax(`${ D_API_ROUTE }requisitions`, data, {
