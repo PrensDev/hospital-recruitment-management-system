@@ -4,7 +4,14 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from routers.web import errPages_templates as errTemplate
 from jwt_token import get_token
-import schemas
+from sqlalchemy.orm import Session
+from database import get_db
+import schemas, models
+
+
+# Models
+Requisition = models.Requisition
+
 
 # Router
 router = APIRouter(
@@ -12,16 +19,20 @@ router = APIRouter(
     tags = ["Department Head Web Routes"]
 )
 
+
 # Templates
 templates = Jinja2Templates(directory = "templates")
+
 
 # Constants
 TEMPLATES_PATH = "/pages/department_head/"
 AUTHORIZED_USER = "Department Head"
 
+
 # ===========================================================
 # WEB ROUTES
 # ===========================================================
+
 
 # Test
 @router.get("/test-web", response_class=HTMLResponse)
@@ -71,6 +82,27 @@ def dashboard(req: Request):
         "sub_title": "Add Manpower Request to request employees",
         "active_navlink": "Manpower Requests"
     })
+
+
+# Edit Manpower Request
+@router.get("/edit-manpower-request/{requisition_id}", response_class=HTMLResponse)
+def dashboard(requisition_id: str, req: Request, db: Session = Depends(get_db)):
+    if not requisition_id:
+        return errTemplate.page_not_found(req)
+    else:
+        requisition = db.query(Requisition).filter(
+            Requisition.requisition_id == requisition_id,
+            Requisition.request_status == 'For review'
+        ).first()
+        if not requisition:
+            return errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse(TEMPLATES_PATH + "edit_manpower_request.html", {
+                "request": req,
+                "page_title": "Edit Manpower Request",
+                "sub_title": "Edit your manpower request here",
+                "active_navlink": "Manpower Requests"
+            })
 
 
 # Hired Applicants

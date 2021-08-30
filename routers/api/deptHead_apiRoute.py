@@ -132,7 +132,7 @@ def update_requisition(
         if not requisition.first():
             raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
         else:
-            requisition.update(req)
+            requisition.update(req.dict())
             db.commit()
             return {"message": "A requisition has been updated"}
     except Exception as e:

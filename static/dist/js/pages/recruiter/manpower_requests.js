@@ -152,7 +152,7 @@ const viewManpowerRequest = (requisitionID) => {
             const requestedBy = result.manpower_request_by;
             
             // Set Requestor Name
-            setContent('#requestorName', formatName("F M. L, S", {
+            setContent('#requestorName', formatName("L, F M., S", {
                 firstName: requestedBy.first_name,
                 middleName: requestedBy.middle_name,
                 lastName: requestedBy.last_name,
@@ -197,8 +197,9 @@ const viewManpowerRequest = (requisitionID) => {
             setContent('#suggestedSalary', () => {
                 const minMonthlySalary = result.min_monthly_salary;
                 const maxMonthlySalary = result.max_monthly_salary;
-                const hasNoSalaryRange = isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary);
-                return hasNoSalaryRange ? 'Unset' : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
+                return isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary) 
+                    ? 'Unset' 
+                    : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
             });
 
             // Set Request Description
@@ -245,7 +246,7 @@ const viewManpowerRequest = (requisitionID) => {
                         <span>Create Job Post</span>
                         <i class="fas fa-pen ml-1"></i>
                     </button>
-                `)
+                `);
             }
 
             // Show View Manpower Request Modal

@@ -279,7 +279,7 @@ const formatName = (format = '', fullName = {firstName: '', middleName: '', last
     M = isEmptyOrNull(M) ? '' : ` ${ M }`;
     S = isEmptyOrNull(S) ? '' : `, ${ S }`;
 
-    if(format === "L, F M., S")     return L + ' ,' + F + Mi + S
+    if(format === "L, F M., S")     return L + ', ' + F + Mi + S
     else if(format === "F M. L, S") return F + Mi + ' ' + L + S
     else {
         console.error(`Format "${ format }" for name is invalid`)

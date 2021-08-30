@@ -22,9 +22,10 @@ ifSelectorExist('#createJobPostForm', () => {
     // Get the requisition ID from the URL
     const requisitionID = window.location.pathname.split("/")[3];
 
+    /** Get Manpower Request Information */
     GET_ajax(`${ R_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
-            console.log(result)
+            // console.log(result)
 
             // Set Value for Requisition ID
             setValue('#requisitionID', result.requisition_id);
@@ -450,7 +451,10 @@ ifSelectorExist('#editJobPostForm', () => {
         ]
     });
 
+    /** Get Job Post ID from the URL */
     const jobPostID = window.location.pathname.split("/")[3];
+
+    /** Get Job Post Information */
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
             console.log(result)
