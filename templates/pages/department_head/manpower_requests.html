@@ -32,59 +32,53 @@
     <section class="content">
         <div class="container-fluid">
 
-            <!-- Info Boxes -->
-            <div class="row">
+            <!-- Manpower Requests Analytics -->
+            <div class="row" id="manpowerRequestAnalytics">
+
+                <!-- Total Manpower Requests -->
                 <div class="col-md-6 col-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fas fa-people-carry"></i></span>
         
                         <div class="info-box-content">
                             <span class="info-box-text">Total Manpower Requests</span>
-                            <span class="info-box-number">1,410</span>
+                            <span class="info-box-number" id="totalManpowerRequestsCount">0</span>
                         </div>
-                        <!-- /.info-box-content -->
                     </div>
-                <!-- /.info-box -->
                 </div>
-                <!-- /.col -->
                 
+                <!-- Completed Requests -->
                 <div class="col-md-6 col-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-success"><i class="fas fa-calendar-check"></i></span>
         
                         <div class="info-box-content">
-                            <span class="info-box-text">Total Completed Requests</span>
-                            <span class="info-box-number">93,139</span>
+                            <span class="info-box-text">Completed Requests</span>
+                            <span class="info-box-number" id="completedRequestsCount">0</span>
                         </div>
-                        <!-- /.info-box-content -->
                     </div>
-                    <!-- /.info-box -->
                 </div>
-                <!-- /.col -->
-            </div>
 
-            <div class="row">
+                <!-- Approved Requests -->
                 <div class="col-md-6 col-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-warning"><i class="fas fa-clipboard-check"></i></span>
         
                         <div class="info-box-content">
-                            <span class="info-box-text">Total Approved Requests</span>
-                            <span class="info-box-number">1,410</span>
+                            <span class="info-box-text">Approved Requests</span>
+                            <span class="info-box-number" id="approvedRequestsCount">0</span>
                         </div>
-                        <!-- /.info-box-content -->
                     </div>
-                <!-- /.info-box -->
                 </div>
-                <!-- /.col -->
 
+                <!-- Rejected Requests -->
                 <div class="col-md-6 col-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-danger"><i class="fas fa-file-excel"></i></span>
         
                         <div class="info-box-content">
-                            <span class="info-box-text">Total Rejected Requests</span>
-                            <span class="info-box-number">93,139</span>
+                            <span class="info-box-text">Rejected Requests</span>
+                            <span class="info-box-number" id="rejectedRequestsCount">0</span>
                         </div>
                     </div>
                 </div>

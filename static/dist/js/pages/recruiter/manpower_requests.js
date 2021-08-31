@@ -142,7 +142,6 @@ initDataTable('#manpowerRequestDT', {
  * ==============================================================================
  */
 
-
 /** View Manpower Request */
 const viewManpowerRequest = (requisitionID) => {
     GET_ajax(`${ R_API_ROUTE }requisitions/${ requisitionID }`, {
@@ -168,11 +167,9 @@ const viewManpowerRequest = (requisitionID) => {
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
-                if(isEmptyOrNull(deadline)) {
-                    return "No deadline"
-                } else {
-                    return formatDateTime(result.deadline, "Date")
-                }
+                return isEmptyOrNull(deadline)
+                    ? `<div class="text-secondary font-italic">No deadline</div>`
+                    : formatDateTime(result.deadline, "DateTime")
             });
 
             // Set Requested Position
@@ -198,7 +195,7 @@ const viewManpowerRequest = (requisitionID) => {
                 const minMonthlySalary = result.min_monthly_salary;
                 const maxMonthlySalary = result.max_monthly_salary;
                 return isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary) 
-                    ? 'Unset' 
+                    ? `<div class="text-secondary font-italic">Unset</div>`
                     : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
             });
 
@@ -227,13 +224,17 @@ const viewManpowerRequest = (requisitionID) => {
             // Set Approved At
             setContent('#approvedAt', () => {
                 const approvedAt = result.reviewed_at;
-                return isEmptyOrNull(approvedAt) ? "No status" : formatDateTime(approvedAt, "Date")
+                return isEmptyOrNull(approvedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    : formatDateTime(approvedAt, "DateTime")
             });
 
             // Set Approved At
             setContent('#completedAt', () => {
                 const completedAt = result.completed_at;
-                return isEmptyOrNull(completedAt) ? "No status" : formatDateTime(completedAt, "Date")
+                return isEmptyOrNull(completedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    : formatDateTime(completedAt, "DatTime")
             });
 
             // Set Modal Footer
@@ -256,5 +257,5 @@ const viewManpowerRequest = (requisitionID) => {
     });
 }
 
-
+/** Create Job Post */
 const createJobPost = (requisitionID) => location.assign(`${ R_WEB_ROUTE }add-job-post/${ requisitionID }`)

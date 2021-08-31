@@ -65,13 +65,35 @@ def get_all_requisitions(
         print(e)
 
 
+# Requisition Analytics
+@router.get("/requisitions/analytics")
+def requisition_analytics(
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        query = db.query(Requisition)
+        total = query.count()
+        for_review_count = query.filter(Requisition.request_status == "For Review").count()
+        approved = query.filter(Requisition.request_status == "Approved").count()
+        rejected = query.filter(Requisition.request_status == "Rejected").count()
+        return {
+            "total": total,
+            "for_review": for_review_count,
+            "approved": approved,
+            "rejected": rejected
+        }
+    except Exception as e:
+        print(e)
+
+
 # Get One Requisition
 @router.get("/requisitions/{requisition_id}", response_model = db_schemas.ShowManpowerRequest)
 def get_one_requisition(
     requisition_id: str, 
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
-
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)

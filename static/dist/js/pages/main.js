@@ -58,15 +58,15 @@ const initDataTable = (selector = "", dtOptions = { debugMode: false, url: "", c
                 </div>
             `,
             loadingRecords: `
-                <div class="p-5 text-secondary">
-                    <div class="spinner-border mb-3" role="status"></div>
-                    <div>Please wait while loading records ...</div>
+                <div class="p-5">
+                    <div class="spinner-border text-primary mb-3" role="status"></div>
+                    <div class="text-secondary">Please wait while loading records ...</div>
                 </div>
             `,
             processing: `
-                <div class="p-5 text-secondary">
-                    <div class="spinner-border mb-3" role="status"></div>
-                    <div>Processing, please wait ...</div>
+                <div class="p-5">
+                    <div class="spinner-border text-primary mb-3" role="status"></div>
+                    <div class="text-secondary">Processing, please wait ...</div>
                 </div>
             `,
             zeroRecords: `
@@ -288,15 +288,23 @@ const formatName = (format = '', fullName = {firstName: '', middleName: '', last
 }
 
 
+/** Format Number */
+const formatNumber = (n) => { return new Intl.NumberFormat('en-US').format(n) }
+
+
 /** Format Currency */
-const formatCurrency = (money) => { return `&#8369; ${ new Intl.NumberFormat('en', {minimumFactionDigits: 2}).format(money) }` }
+const formatCurrency = (money) => { 
+    return new Intl.NumberFormat('fil-PH', {
+        style: 'currency',
+        currency: 'PHP',
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2
+    }).format(money);
+}
 
 
 /** GET AJAX */
-const GET_ajax = (url = '', options = {
-    success: () => {},
-    error: () => console.error('GET_ajax failed')
-}) => $.ajax({
+const GET_ajax = (url = '', options = {success: () => {}, error: () => console.error('GET_ajax failed')}) => $.ajax({
     url: url,
     type: 'GET',
     headers: AJAX_HEADERS,
@@ -306,10 +314,7 @@ const GET_ajax = (url = '', options = {
 
 
 /** POST AJAX */
-const POST_ajax = (url = '', data = {}, options = {
-    success: () => {},
-    error: () => console.error('POST_ajax failed')
-}) => $.ajax({
+const POST_ajax = (url = '', data = {}, options = {success: () => {}, error: () => console.error('POST_ajax failed')}) => $.ajax({
     url: url,
     type: 'POST',
     headers: AJAX_HEADERS,
@@ -322,10 +327,7 @@ const POST_ajax = (url = '', data = {}, options = {
 
 
 /** PUT AJAX */
-const PUT_ajax = (url = '', data = {}, options = {
-    success: () => {},
-    error: () => console.error('PUT_ajax failed')
-}) => $.ajax({
+const PUT_ajax = (url = '', data = {}, options = {success: () => {}, error: () => console.error('PUT_ajax failed')}) => $.ajax({
     url: url,
     type: 'PUT',
     headers: AJAX_HEADERS,
@@ -338,10 +340,7 @@ const PUT_ajax = (url = '', data = {}, options = {
 
 
 /** DELETE AJAX */
-const DELETE_ajax = (url = '', options = {
-    success: () => {},
-    error: () => console.error('DELETE_ajax failed')
-}) => $.ajax({
+const DELETE_ajax = (url = '', options = {success: () => {}, error: () => console.error('DELETE_ajax failed')}) => $.ajax({
     url: url,
     type: 'DELETE',
     headers: AJAX_HEADERS,
@@ -368,11 +367,7 @@ $(() => {
 
 
 /** Set Sessioned Alert */
-const setSessionedAlertAndRedirect = (data = {
-    theme: "", 
-    message: "", 
-    redirectURL: ""
-}) => {
+const setSessionedAlertAndRedirect = (data = {theme: "", message: "", redirectURL: ""}) => {
     localStorage.setItem('sessioned_alert', true)
     localStorage.setItem('sessioned_alert_theme', data.theme)
     localStorage.setItem('sessioned_alert_message', data.message)

@@ -4,7 +4,6 @@
  * ==============================================================================
  */
 
-
 /** Manpower Request DataTable */
 initDataTable('#manpowerRequestDT', {
     url: `${ H_API_ROUTE }requisitions`,
@@ -36,6 +35,8 @@ initDataTable('#manpowerRequestDT', {
 
         // Request Nature
         { data: "request_nature"},
+
+        // Request Status
         {
             data: null,
             render: data => {
@@ -67,6 +68,8 @@ initDataTable('#manpowerRequestDT', {
                     : `<div class="badge badge-light p-2 w-100">Undefined</div>`
             }
         },
+
+        // Requested At
         {
             data: null,
             render: data => {
@@ -77,25 +80,65 @@ initDataTable('#manpowerRequestDT', {
                 `
             }
         },
+
+        // Actions
         { 
             data: null,
             render: data => {
                 requisitionID = data.requisition_id
                 return `
-                    <div class="text-center">
-                        <div 
-                            class="btn btn-secondary btn-sm"
-                            onclick="viewManpowerRequest('${ requisitionID }')"
-                        >
-                            <i class="fas fa-list mr-1"></i>
-                            <span>View</span>
+                    <div class="text-center dropdown">
+                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div 
+                                class="dropdown-item d-flex"
+                                onclick="viewManpowerRequest('${ requisitionID }')"
+                                role="button"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                <span>View Details</span>
+                            </div>
                         </div>
                     </div>
                 `
             }
         }
     ],
-})
+});
+
+
+/**
+ * ==============================================================================
+ * MANPOWER REQUESTS ANALYICS
+ * ==============================================================================
+ */
+
+/** Manpower Requests Analytics */
+const manpowerRequestAnalytics = () => {
+    GET_ajax(`${ H_API_ROUTE }requisitions/analytics`, {
+        success: result => {
+            
+            // Set Total Manpower Requests
+            setContent('#totalManpowerRequestsCount', formatNumber(result.total));
+
+            // Set For Review Requests
+            setContent('#forReviewRequestsCount', formatNumber(result.for_review));
+
+            // Set Approved Requests
+            setContent('#approvedRequestsCount', formatNumber(result.approved));
+
+            // Set Rejected Requests
+            setContent('#rejectedRequestsCount', formatNumber(result.rejected));
+        },
+        error: () => toastr.error('There was an error in getting manpower request analytics')
+    });
+}
+
+/** Load manpower request analytics if its container exist */
+ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics())
 
 
 /**
@@ -103,7 +146,6 @@ initDataTable('#manpowerRequestDT', {
  * VIEW MANPOWER REQUEST DETAILS
  * ==============================================================================
  */
-
 
 /** View Manpower Request */
 const viewManpowerRequest = (requisitionID) => {
@@ -126,13 +168,13 @@ const viewManpowerRequest = (requisitionID) => {
             setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
             
             // Set Date Requested
-            setContent('#dateRequested', formatDateTime(result.created_at, "Date"));
+            setContent('#dateRequested', formatDateTime(result.created_at, "DateTime"));
             
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
-                if(isEmptyOrNull(deadline)) return "No deadline"
-                else return formatDateTime(result.deadline, "Date")
+                if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No deadline</div>`
+                else return formatDateTime(result.deadline, "DateTime")
             });
 
             // Set Requested Position
@@ -157,8 +199,9 @@ const viewManpowerRequest = (requisitionID) => {
             setContent('#suggestedSalary', () => {
                 const minMonthlySalary = result.min_monthly_salary;
                 const maxMonthlySalary = result.max_monthly_salary;
-                const hasNoSalaryRange = isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary);
-                return hasNoSalaryRange ? 'Unset' : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
+                return isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary) 
+                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
             });
 
             // Set Request Description
@@ -167,35 +210,40 @@ const viewManpowerRequest = (requisitionID) => {
             // Set Approved By
             setContent('#approvedBy', () => {
                 const approvedBy = result.manpower_request_reviewed_by;
-                return isEmptyOrNull(approvedBy) || result.request_status === 'Rejected'
-                    ? "Not yet approved"
+                return isEmptyOrNull(approvedBy)
+                    ? `<div class="text-secondary font-italic">Not yet approved</div>`
                     : () => {
-                        const approvedByFullName = formatName("L, F M., S", {
-                            firstName: approvedBy.first_name,
-                            middleName: approvedBy.middle_name,
-                            lastName: approvedBy.last_name,
-                            suffixName: approvedBy.suffix_name
-                        });
-                        return `
-                            <div>${ approvedByFullName }</div>
-                            <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
-                        `
+                        if(result.request_status === "Rejected") {
+                            return `<div class="text-danger">This request has been rejected</div>`
+                        } else {
+                            const approvedByFullName = formatName("L, F M., S", {
+                                firstName: approvedBy.first_name,
+                                middleName: approvedBy.middle_name,
+                                lastName: approvedBy.last_name,
+                                suffixName: approvedBy.suffix_name
+                            });
+                            return `
+                                <div>${ approvedByFullName }</div>
+                                <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
+                            `
+                        }
                     }
             });
 
             // Set Approved At
             setContent('#approvedAt', () => {
                 const approvedAt = result.reviewed_at;
-                if(isEmptyOrNull(approvedAt) || result.request_status === 'Rejected') 
-                    return "No status"
-                else
-                    formatDateTime(approvedAt, "Date")
+                return (isEmptyOrNull(approvedAt) || result.request_status === 'Rejected') 
+                    ? `<div class="text-secondary font-italic">No status</div>`
+                    : formatDateTime(approvedAt, "DateTime")
             });
 
             // Set Approved At
             setContent('#completedAt', () => {
                 const completedAt = result.completed_at;
-                return isEmptyOrNull(completedAt) ? "No status" : formatDateTime(completedAt, "Date")
+                return isEmptyOrNull(completedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>`
+                    : formatDateTime(completedAt, "Date")
             });
 
             // Set Modal Footer and Other Fields
@@ -256,12 +304,12 @@ const viewManpowerRequest = (requisitionID) => {
     });
 }
 
-
 /** Reset Update Request Status Form if its modal is going to be hide */
 onHideModal('#viewManpowerRequestModal', () => {
     $('#remarksField').hide();
-    resetForm('#updateManpowerRequestStatusForm')
+    resetForm('#updateManpowerRequestStatusForm');
 });
+
 
 /**
  * ==============================================================================
@@ -272,15 +320,12 @@ onHideModal('#viewManpowerRequestModal', () => {
 /** If user select reject for manpower request */
 $("#approveRequest, #rejectRequest").on('change', () => {
     const requestStatus = $(`input[name="requestStatus"]:checked`).val();
-    if(requestStatus == "Approved") {
-        $("#remarksField").hide();
-    }
+    if(requestStatus == "Approved") $("#remarksField").hide();
     if(requestStatus == "Rejected") $("#remarksField").show();
 
     ifSelectorExist('#updateBtn', () => enableElement('#updateBtn'));
     ifSelectorExist('#submitBtn', () => enableElement('#submitBtn'));
 });
-
 
 /** Validate Manpower Request */
 validateForm('#updateManpowerRequestStatusForm', {
@@ -302,7 +347,6 @@ validateForm('#updateManpowerRequestStatusForm', {
     },
     submitHandler: () => updateManpowerRequestStatus()
 });
-
 
 /** Update Manpower Request Status */
 const updateManpowerRequestStatus = () => {
@@ -329,6 +373,9 @@ const updateManpowerRequestStatus = () => {
 
                 // Hide the modal
                 hideModal('#viewManpowerRequestModal');
+
+                // Reload Manpower Request Analytics
+                manpowerRequestAnalytics();
 
                 // Show success alert
                 toastr.success('A manpower request is successfully updated');

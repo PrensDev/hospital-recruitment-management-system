@@ -143,16 +143,17 @@ validateForm('#addManpowerRequestForm', {
 /** Submit Manpower Request */
 onClick('#confirmAddManpowerRequestBtn', () => {
     const formData = generateFormData('#addManpowerRequestForm');
+    const get = (n) => { return formData.get(n) }
     
     const data = {
-        position_id: formData.get('vacantPosition'),
-        employment_type: formData.get("employmentType"),
-        request_nature: formData.get("requestNature"),
-        staffs_needed: parseInt(formData.get("staffsNeeded")),
-        min_monthly_salary: isChecked('#setSalary') ? null : parseFloat(formData.get("minSalary")),
-        max_monthly_salary: isChecked('#setSalary') ? null : parseFloat(formData.get("maxSalary")),
-        content: formData.get("requestDescription"),
-        deadline: isChecked('#setDeadlline') ? null : formatDateTime(formData.get("deadline"))
+        position_id: get('vacantPosition'),
+        employment_type: get("employmentType"),
+        request_nature: get("requestNature"),
+        staffs_needed: parseInt(get("staffsNeeded")),
+        min_monthly_salary: isChecked('#setSalary') ? null : parseFloat(get("minSalary")),
+        max_monthly_salary: isChecked('#setSalary') ? null : parseFloat(get("maxSalary")),
+        content: get("requestDescription"),
+        deadline: isChecked('#setDeadlline') ? null : formatDateTime(get("deadline"))
     }
 
     POST_ajax(`${ D_API_ROUTE }requisitions`, data, {
@@ -178,7 +179,6 @@ onClick('#confirmAddManpowerRequestBtn', () => {
  * VIEW ALL MANPOWER REQUESTS
  * ==============================================================================
  */
-
 
 /** ManPower Requests DataTable */
 initDataTable('#manpowerRequestDT', {
@@ -333,10 +333,38 @@ initDataTable('#manpowerRequestDT', {
 
 /**
  * ==============================================================================
- * VIEW MANPOWER REQUEST DETAILS
+ * MANPOWER REQUESTS ANALYTICS
  * ==============================================================================
  */
 
+/** Manpower Requests Analytics */
+const manpowerRequestAnalytics = () => GET_ajax(`${ D_API_ROUTE }requisitions/analytics`, {
+    success: result => {
+        
+        // Set Total Mapower Requests Count
+        setContent('#totalManpowerRequestsCount', formatNumber(result.total));
+
+        // Set Completed Requests
+        setContent('#completedRequestsCount', formatNumber(result.completed));
+
+        // Set Approved Requests
+        setContent('#approvedRequestsCount', formatNumber(result.approved));
+
+        // Set Rejected Requests
+        setContent('#rejectedRequestsCount', formatNumber(result.rejected));
+    },
+    error: () => toastr.error('There was an error in getting manpower request analytics')
+});
+
+/** Get Manpower Requests Analytics */
+ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
+
+
+/**
+ * ==============================================================================
+ * VIEW MANPOWER REQUEST DETAILS
+ * ==============================================================================
+ */
 
 /** View Manpower Request */
 const viewManpowerRequest = (requisitionID) => {
@@ -358,13 +386,13 @@ const viewManpowerRequest = (requisitionID) => {
             setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
             
             // Set Date Requested
-            setContent('#dateRequested', formatDateTime(result.created_at, "Date"));
+            setContent('#dateRequested', formatDateTime(result.created_at, "DateTime"));
             
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
                 if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No data</div>`
-                else return formatDateTime(result.deadline, "Date")
+                else return formatDateTime(result.deadline, "DateTime")
             });
 
             // Set Requested Position
@@ -434,7 +462,7 @@ const viewManpowerRequest = (requisitionID) => {
                 const completedAt = result.completed_at;
                 return isEmptyOrNull(completedAt) 
                     ? `<div class="text-secondary font-italic">No status</div>` 
-                    : formatDateTime(completedAt, "Date")
+                    : formatDateTime(completedAt, "DateTime")
             });
 
             // Set Modal Footer
@@ -467,7 +495,6 @@ const viewManpowerRequest = (requisitionID) => {
  * EDIT MANPOWER REQUEST
  * ==============================================================================
  */
-
 
 /** If Edit Manpower Request Form Exists */
 ifSelectorExist('#editManpowerRequestForm', () => {
@@ -586,7 +613,6 @@ ifSelectorExist('#editManpowerRequestForm', () => {
     });
 });
 
-
 /** Validate Edit Manpower Request Form */
 validateForm('#editManpowerRequestForm', {
     rules: {
@@ -669,7 +695,6 @@ validateForm('#editManpowerRequestForm', {
     }
 });
 
-
 /** Submit Manpower Request */
 onClick('#confirmEditManpowerRequestBtn', () => {
     const formData = generateFormData('#editManpowerRequestForm');
@@ -712,17 +737,14 @@ onClick('#confirmEditManpowerRequestBtn', () => {
  * ==============================================================================
  */
 
-
 /** Cancel Manpower Request */
 const cancelManpowerRequest = (requisitionID) => {
     setValue('#requisitionIDForCancel', requisitionID);
     showModal('#cancelManpowerRequestModal');
 }
 
-
 /** On Cancel Manpower Request Modal is going to be hidden */
 onHideModal('#cancelManpowerRequestModal', () => resetForm('#cancelManpowerRequestForm'));
-
 
 /** Validate Cancel Manpower Request Form */
 validateForm('#cancelManpowerRequestForm', {
@@ -738,6 +760,7 @@ validateForm('#cancelManpowerRequestForm', {
                 if(result) {
                     hideModal('#cancelManpowerRequestModal');
                     reloadDataTable('#manpowerRequestDT');
+                    manpowerRequestAnalytics();
                     toastr.info('A manpower request is successfully canceled');
                 }
             },
@@ -756,20 +779,16 @@ validateForm('#cancelManpowerRequestForm', {
  * ==============================================================================
  */
 
-
-
 /** Delete Manpower Request */
 const deleteManpowerRequest = (requisitionID) => {
     setValue('#requisitionIDForDelete', requisitionID);
     showModal('#deleteManpowerRequestModal');
 }
 
-
-/** On Cancel Manpower Request Modal is going to be hidden */
+/** On Delete Manpower Request Modal is going to be hidden */
 onHideModal('#deleteManpowerRequestModal', () => resetForm('#deleteManpowerRequestForm'));
 
-
-/** Validate Cancel Manpower Request Form */
+/** Validate Delete Manpower Request Form */
 validateForm('#deleteManpowerRequestForm', {
     rules: { requisitionID: { required: true }},
     messages: { requisitionID: { required: 'Requisition ID should be here' }},
@@ -783,6 +802,7 @@ validateForm('#deleteManpowerRequestForm', {
                 if(result) {
                     hideModal('#deleteManpowerRequestModal');
                     reloadDataTable('#manpowerRequestDT');
+                    manpowerRequestAnalytics();
                     toastr.info('A manpower request is successfully deleted');
                 }
             },

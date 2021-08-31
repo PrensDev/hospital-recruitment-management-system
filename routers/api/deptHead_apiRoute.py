@@ -100,6 +100,43 @@ def get_all_requisitions(
         print(e)
 
 
+# Manpower Request Analytics
+@router.get("/requisitions/analytics")
+def requisition_analytics(
+    db: Session = Depends(get_db), 
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        query = db.query(Requisition)
+        total = query.filter(Requisition.requested_by == user_data.user_id).count()
+        for_review_count = query.filter(
+            Requisition.request_status == "For Review",
+            Requisition.requested_by == user_data.user_id
+        ).count()
+        approved = query.filter(
+            Requisition.request_status == "Approved",
+            Requisition.requested_by == user_data.user_id
+        ).count()
+        rejected = query.filter(
+            Requisition.request_status == "Rejected",
+            Requisition.requested_by == user_data.user_id
+        ).count()
+        completed = query.filter(
+            Requisition.request_status == "Completed",
+            Requisition.requested_by == user_data.user_id
+        ).count()
+        return {
+            "total": total,
+            "for_review": for_review_count,
+            "approved": approved,
+            "rejected": rejected,
+            "completed": completed
+        }
+    except Exception as e:
+        print(e)
+
+
 # Get One Manpower Request
 @router.get("/requisitions/{requisition_id}", response_model = db_schemas.ShowManpowerRequest)
 def get_one_requisition(

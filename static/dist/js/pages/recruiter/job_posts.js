@@ -4,7 +4,6 @@
  * ==============================================================================
  */
 
-
 /** Load Primary Input */
 ifSelectorExist('#createJobPostForm', () => {
     
@@ -144,10 +143,10 @@ ifSelectorExist('#createJobPostForm', () => {
     })
 });
 
-
 /** Set Expriration Date On Change */
-$('#expirationDate').on('change', () => isChecked('#expirationDate') ? showElement('#openUntilField') : hideElement('#openUntilField'))
-
+$('#expirationDate').on('change', () => isChecked('#expirationDate') 
+    ? showElement('#openUntilField') 
+    : hideElement('#openUntilField'))
 
 /** Validate Add Job Post Form */
 validateForm('#createJobPostForm', {
@@ -180,7 +179,6 @@ validateForm('#createJobPostForm', {
         return false;
     }
 });
-
 
 /** Submit Job Post */
 onClick('#confirmPostNewJobPostBtn', () => {
@@ -252,7 +250,9 @@ initDataTable('#jobPostsDT', {
             data: null,
             render: data => {
                 const applicants = data.applicants.length;
-                return applicants == 0 ? 'No applicants yet' : `${ applicants } applicant${ applicants > 1 ? 's' : '' }`
+                return applicants == 0 
+                    ? `<div class="text-secondary font-italic">No applicants yet</div>` 
+                    : `${ applicants } applicant${ applicants > 1 ? 's' : '' }`
             }
         },
 
@@ -272,7 +272,7 @@ initDataTable('#jobPostsDT', {
             }
         },
 
-        // Until at
+        // Open until
         {
             data: null,
             class: 'text-nowrap',
@@ -280,7 +280,7 @@ initDataTable('#jobPostsDT', {
                 const expirationDate = data.expiration_date;
 
                 return isEmptyOrNull(expirationDate)
-                    ? `<div>No expiration date</div>`
+                    ? `<div class="text-secondary font-italic">No expiration</div>`
                     : `
                         <div>${ formatDateTime(expirationDate, "MMM. D, YYYY") }</div>
                         <div class="small text-secondary">${ fromNow(expirationDate) }</div>
@@ -360,7 +360,7 @@ initDataTable('#jobPostsDT', {
 const viewJobPostDetails = (jobPostID) => {
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
-            console.log(result)
+            // console.log(result)
 
             const manpowerRequest = result.manpower_request;
 
@@ -387,14 +387,12 @@ const viewJobPostDetails = (jobPostID) => {
             const minSalary = manpowerRequest.min_monthly_salary;
             const maxSalary = manpowerRequest.max_monthly_salary;
 
-            const noSalaryRange = isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary)
-
-            if(noSalaryRange || !result.salary_is_visible) {
+            if((isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary)) || !result.salary_is_visible) {
                 hideElement('#salaryRangeDisplay');
                 setContent('#salaryRange', '');
             } else {
                 showElement('#salaryRangeDisplay');
-                setContent('#salaryRange', `P ${ minSalary } - P ${ maxSalary }`);
+                setContent('#salaryRange', `${ formatCurrency(minSalary) } - ${ formatCurrency(maxSalary) }`);
             }
 
             // Set Open Until
@@ -432,10 +430,8 @@ const viewJobPostDetails = (jobPostID) => {
  * ==============================================================================
 */
 
-
 /** Edit Job Post */
 const editJobPost = (jobPostID) => location.assign(`${ R_WEB_ROUTE }edit-job-post/${ jobPostID }`)
-
 
 /** If Edit Job Post Form Exists */
 ifSelectorExist('#editJobPostForm', () => {
@@ -457,7 +453,7 @@ ifSelectorExist('#editJobPostForm', () => {
     /** Get Job Post Information */
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
-            console.log(result)
+            // console.log(result)
 
             const manpowerRequest = result.manpower_request;
 
@@ -484,21 +480,24 @@ ifSelectorExist('#editJobPostForm', () => {
 
             // Set Salary Range
             setContent('#salaryRangeForSummary', () => {
-                if(isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)) {
-                    hideElement('#salaryRangeField');
-                    return 'Unset';
-                } else {
-                    return `P ${minSalary} - P ${maxSalary}`;
-                }
+                return isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)
+                    ? () => {
+                        hideElement('#salaryRangeField');
+                        return `<div class="text-secondary font-italic">Unset</div>`
+                    }
+                    : `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
             });
 
             // Set Deadline
             setContent('#deadlineForSummary', () => {
                 const deadline = manpowerRequest.deadline;
-                return isEmptyOrNull(deadline) ? 'Unset' : `
-                    <div>${ formatDateTime(deadline, "Full Date") }</div>
-                    <div class="small text-secondary">${ fromNow(deadline) }</div>
-                `
+                return isEmptyOrNull(deadline) 
+                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    : `
+                        <div>${ formatDateTime(deadline, "Full Date") }</div>
+                        <div>${ formatDateTime(deadline, "Time") }</div>
+                        <div class="small text-secondary">${ fromNow(deadline) }</div>
+                    `
             });
 
 
@@ -518,12 +517,12 @@ ifSelectorExist('#editJobPostForm', () => {
             setContent('#requestorDepartment', requestedBy.position.name);
 
             // Set Date Requested
-            setContent('#dateRequested', formatDateTime(manpowerRequest, "Date"));
+            setContent('#dateRequested', formatDateTime(manpowerRequest, "DateTime"));
 
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = manpowerRequest.deadline;
-                return isEmptyOrNull(deadline) ? 'Unset' : formatDateTime(deadline, "Date");
+                return isEmptyOrNull(deadline) ? 'Unset' : formatDateTime(deadline, "DateTime");
             });
 
             // Set Requested Position
@@ -539,15 +538,13 @@ ifSelectorExist('#editJobPostForm', () => {
             setContent('#employmentType', manpowerRequest.employment_type);
 
             // Set Request Nature
-            setContent('#requestNaure', manpowerRequest.request_nature);
+            setContent('#requestNature', manpowerRequest.request_nature);
 
             // Set Suggested Salary
             setContent('#suggestedSalary', () => {
-                if(isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)) {
-                    return 'Unset';
-                } else {
-                    return `P ${minSalary} - P ${maxSalary}`;
-                }
+                return isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)
+                    ? `<div class="text-secondary font-italic">Unset</div>`
+                    : `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
             });
 
             // Set Request Description
@@ -556,26 +553,35 @@ ifSelectorExist('#editJobPostForm', () => {
             // Set Approved By
             setContent('#approvedBy', () => {
                 const approvedBy = manpowerRequest.manpower_request_reviewed_by;
-
-                const approvedByFullName = formatName("F M. L, S", {
-                    firstName: approvedBy.first_name,
-                    middleName: approvedBy.middle_name,
-                    lastName: approvedBy.last_name,
-                    suffixName: approvedBy.suffix_name
-                });
-
-                return `
-                    <div>${ approvedByFullName }</div>
-                `
+                return isEmptyOrNull(approvedBy)
+                    ? `<div class="text-secondary font-italic">Not yet approved</div>`
+                    : () => {
+                        if(result.request_status === "Rejected") {
+                            return `<div class="text-danger">This request has been rejected</div>`
+                        } else {
+                            const approvedByFullName = formatName("L, F M., S", {
+                                firstName: approvedBy.first_name,
+                                middleName: approvedBy.middle_name,
+                                lastName: approvedBy.last_name,
+                                suffixName: approvedBy.suffix_name
+                            });
+                            return `
+                                <div>${ approvedByFullName }</div>
+                                <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
+                            `
+                        }
+                    }
             });
 
             // Set Approved At
-            setContent('#approvedAt', formatDateTime(manpowerRequest.reviewed_at, "Date"));
+            setContent('#approvedAt', formatDateTime(manpowerRequest.reviewed_at, "DateTime"));
 
             // Set Completed At
             setContent('#completedAt', () => {
                 const completedAt = manpowerRequest.completed_at;
-                isEmptyOrNull(completedAt) ? 'Not yet completed' : formatDateTime(completedAt, "Date");
+                return isEmptyOrNull(completedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>`
+                    : formatDateTime(completedAt, "Date");
             });
 
 
@@ -613,7 +619,6 @@ ifSelectorExist('#editJobPostForm', () => {
     })
 });
 
-
 /** Validate Edit Job Post */
 validateForm('#editJobPostForm', {
     rules: {
@@ -624,7 +629,8 @@ validateForm('#editJobPostForm', {
             required: true
         },
         openUntil: {
-            required: true
+            required: true,
+            afterToday: true
         }
     },
     messages: {
@@ -635,7 +641,8 @@ validateForm('#editJobPostForm', {
             required: "Job Description is required"
         },
         openUntil: {
-            required: "Please select a date"
+            required: "Please select a date",
+            afterToday: "Date and Time must be in the future"
         }
     },
     submitHandler: () => {
@@ -643,7 +650,6 @@ validateForm('#editJobPostForm', {
         return false;
     }
 });
-
 
 /** Update Job Post */
 onClick('#confirmUpdateJobPostBtn', () => {
@@ -703,13 +709,14 @@ const viewManpowerRequestDetails = (requisitionID) => {
             setContent('#requestorDepartment',`${ requestedBy.position.name }, ${ requestedBy.position.department.name  }`);
             
             // Set Date Requested
-            setContent('#dateRequested', formatDateTime(result.created_at, "Date"));
+            setContent('#dateRequested', formatDateTime(result.created_at, "DateTime"));
             
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
-                if(isEmptyOrNull(deadline)) return "No deadline"
-                else return formatDateTime(result.deadline, "Date")
+                return isEmptyOrNull(deadline)
+                    ? `<div class="text-secondary font-italic">No deadline</div>` 
+                    : formatDateTime(result.deadline, "DateTime")
             });
 
             // Set Requested Position
@@ -722,10 +729,7 @@ const viewManpowerRequestDetails = (requisitionID) => {
             });
 
             // Set Employment Type
-            setContent('#employmentType', result.employment_type);
-
-            // Set Employment Type
-            setContent('#employmentType', result.employment_type);
+            setContent('#typeOfEmployment', result.employment_type);
 
             // Set Request Nature
             setContent('#requestNature', result.request_nature);
@@ -734,8 +738,9 @@ const viewManpowerRequestDetails = (requisitionID) => {
             setContent('#suggestedSalary', () => {
                 const minMonthlySalary = result.min_monthly_salary;
                 const maxMonthlySalary = result.max_monthly_salary;
-                const hasNoSalaryRange = isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary);
-                return hasNoSalaryRange ? 'Unset' : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
+                return isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary) 
+                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
             });
 
             // Set Request Description
@@ -745,7 +750,7 @@ const viewManpowerRequestDetails = (requisitionID) => {
             setContent('#approvedBy', () => {
                 const approvedBy = result.manpower_request_reviewed_by;
                 return isEmptyOrNull(approvedBy)
-                    ? "Not yet approved"
+                    ? `<div class="text-secondary font-italic">Not yet approved</div>` 
                     : () => {
                         const approvedByFullName = formatName("L, F M., S", {
                             firstName: approvedBy.first_name,
@@ -763,13 +768,17 @@ const viewManpowerRequestDetails = (requisitionID) => {
             // Set Approved At
             setContent('#approvedAt', () => {
                 const approvedAt = result.reviewed_at;
-                return isEmptyOrNull(approvedAt) ? "No status" : formatDateTime(approvedAt, "Date")
+                return isEmptyOrNull(approvedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    : formatDateTime(approvedAt, "DateTime")
             });
 
             // Set Approved At
             setContent('#completedAt', () => {
                 const completedAt = result.completed_at;
-                return isEmptyOrNull(completedAt) ? "No status" : formatDateTime(completedAt, "Date")
+                return isEmptyOrNull(completedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    : formatDateTime(completedAt, "DateTime")
             });
 
             // Set Modal Footer

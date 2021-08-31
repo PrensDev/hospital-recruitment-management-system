@@ -31,7 +31,7 @@
         <div class="form-row">
 
             <!-- Create Job Post Form -->
-            <div class="col-md-8">
+            <div class="col-lg-8">
                 <form class="card card-primary card-outline" id="editJobPostForm">
     
                     <div class="card-header align-items-center">
@@ -62,19 +62,23 @@
                             </div>
                         </div>
 
-                        <!-- Options -->
                         <div class="form-row">
 
-                            <!-- Make Salary Range Visible -->
-                            <div class="col">
+                            <!-- Options -->
+                            <div class="col-lg-6">
                                 <label>Options</label>
+
                                 <div class="form-group">
+
+                                    <!-- Make Salary Range Visible -->
                                     <div class="mb-2" id="salaryRangeField">
                                         <div class="icheck-primary d-inline">
                                             <input type="checkbox" id="salaryRangeIsVisible" name="salaryRangeIsVisible">
                                             <label for="salaryRangeIsVisible">Make Salary Range Visible</label>
                                         </div>
                                     </div>
+                                    
+                                    <!-- Set Expiration Date -->
                                     <div class="mb-2">
                                         <div class="icheck-primary d-inline">
                                             <input type="checkbox" id="expirationDate">
@@ -85,11 +89,11 @@
                             </div>
                             
                             <!-- Open until -->
-                            <div class="col" id="openUntilField" style="display: none">
+                            <div class="col-lg-6" id="openUntilField" style="display: none">
                                 <div class="form-group">
                                     <label for="openUntil">Open until</label>
                                     <input 
-                                        type="date" 
+                                        type="datetime-local" 
                                         class="form-control"
                                         id="openUntil"
                                         name="openUntil"
@@ -113,7 +117,7 @@
             </div>
             
             <!-- Job Post Details & Manpower Request -->
-            <div class="col-md-4">
+            <div class="col-lg-4">
 
                 <!-- Job Post Details -->
                 <div class="card card-primary card-outline">
