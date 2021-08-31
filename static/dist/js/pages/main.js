@@ -259,8 +259,7 @@ const onChange = (selector, handler = () => {}) => onEvent(selector, 'change', (
 /** Is checked */
 const isChecked = ( selector,  handlerIfChecked = () => {},  handlerIfNotChecked = () => {} ) => {
     return ifSelectorExist(selector, () => {
-        const checkStatus = $(selector).prop('checked');
-        checkStatus ? handlerIfChecked() : handlerIfNotChecked();
+        const checkStatus = $(selector).is(':checked');
         return checkStatus;
     });
 }

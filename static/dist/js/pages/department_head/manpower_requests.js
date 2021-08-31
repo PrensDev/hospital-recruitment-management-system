@@ -150,10 +150,10 @@ onClick('#confirmAddManpowerRequestBtn', () => {
         employment_type: get("employmentType"),
         request_nature: get("requestNature"),
         staffs_needed: parseInt(get("staffsNeeded")),
-        min_monthly_salary: isChecked('#setSalary') ? null : parseFloat(get("minSalary")),
-        max_monthly_salary: isChecked('#setSalary') ? null : parseFloat(get("maxSalary")),
+        min_monthly_salary: isChecked('#setSalaryRange') ? parseFloat(get("minSalary")) : null,
+        max_monthly_salary: isChecked('#setSalaryRange') ? parseFloat(get("maxSalary")) : null,
         content: get("requestDescription"),
-        deadline: isChecked('#setDeadlline') ? null : formatDateTime(get("deadline"))
+        deadline: isChecked('#setDeadline') ? formatDateTime(get("deadline")) : null
     }
 
     POST_ajax(`${ D_API_ROUTE }requisitions`, data, {
