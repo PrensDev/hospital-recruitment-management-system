@@ -35,6 +35,7 @@ initDataTable('#applicantsDT', {
         // Date Applied
         {
             data: null,
+            class: 'text-nowrap',
             render: data => {
                 const dateApplied = data.created_at;
                 return `
@@ -117,7 +118,6 @@ initDataTable('#applicantsDT', {
  * VIEW APPLICANT DETAILS
  * ==============================================================================
 */
-
 
 /** View Applicant Details */
 const viewApplicantDetails = (applicantID) => {
@@ -250,6 +250,7 @@ ifSelectorExist('#applicantsPerJobDT', () => {
             // Date Applied
             {
                 data: null,
+                class: 'text-nowrap',
                 render: data => {
                     const dateApplied = data.created_at;
                     return `
@@ -330,10 +331,46 @@ ifSelectorExist('#applicantsPerJobDT', () => {
 
 /**
  * ==============================================================================
- * APPLICANT EVALUATION
+ * APPLICANTS PER JOB ANALYTICS
  * ==============================================================================
 */
 
+
+// Applicants Per Job Analytics
+const applicantPerJobAnalytics = () => {
+    
+    const jobPostID = window.location.pathname.split("/")[3]
+
+    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/analytics`, {
+        success: result => {
+
+            // Set Total Applicants
+            setContent('#totalApplicantsCount', formatNumber(result.total));
+
+            // Set For Evaluation Applicants
+            setContent('#forEvaluationCount', formatNumber(result.for_evaluation));
+
+            // Set For Screening 
+            setContent('#forScreeningCount', formatNumber(result.for_screening));
+
+            // Set For Interview
+            setContent('#forInterviewCount', formatNumber(result.for_interview));
+
+            // Set Rejected Applicants
+            setContent('#rejectedApplicantsCount', formatNumber(result.rejected.total));
+        },
+        error: () => toastr.error('There was an error in getting applciants analytics')
+    });
+}
+
+ifSelectorExist('#applicantsPerJobAnalytics', () => applicantPerJobAnalytics());
+
+
+/**
+ * ==============================================================================
+ * APPLICANT EVALUATION
+ * ==============================================================================
+*/
 
 /** If user select reject for manpower request */
 $("#approveForScreening, #rejectFromEvaluation").on('change', () => {
@@ -344,14 +381,12 @@ $("#approveForScreening, #rejectFromEvaluation").on('change', () => {
     ifSelectorExist('#submitBtn', () => enableElement('#submitBtn'));
 });
 
-
 /** On Applicant details modal is going to be hidden  */
 onHideModal('#applicantDetailsModal', () => {
     resetForm('#applicantEvaluationForm');
     hideElement("#remarksField");
     disableElement('#submitBtn');
 });
-
 
 /** Validate Applicant Evaluation Form */
 validateForm('#applicantEvaluationForm', {
@@ -380,7 +415,6 @@ validateForm('#applicantEvaluationForm', {
     submitHandler: () => evaluateApplicant()
 });
 
-
 /** Evaluate Applicant */
 const evaluateApplicant = () => {
     const formData = generateFormData('#applicantEvaluationForm');
@@ -394,16 +428,18 @@ const evaluateApplicant = () => {
         remarks: remarks
     }
 
-    const applicantID = get('applicantID')
+    const applicantID = get('applicantID');
 
-    console.log(data);
+    // console.log(data);
 
     PUT_ajax(`${ R_API_ROUTE }applicants/${ applicantID }`, data, {
         success: result => {
             if(result) {
                 hideModal('#applicantDetailsModal');
                 reloadDataTable('#applicantsPerJobDT');
+                applicantPerJobAnalytics();
                 toastr.success('An applicant is successfully evaluated');
+
             }
         },
         error: () => {

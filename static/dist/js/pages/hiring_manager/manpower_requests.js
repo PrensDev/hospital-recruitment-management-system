@@ -251,6 +251,7 @@ const viewManpowerRequest = (requisitionID) => {
             var modalFooterBtns;
             
             if(requestStatus === "For Review") {
+                showElement('#requestApprovalField');
                 modalFooterBtns = `
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button 
@@ -263,37 +264,41 @@ const viewManpowerRequest = (requisitionID) => {
                         <i class="fas fa-check ml-1"></i>
                     </button>
                 `;
-            } else if(requestStatus === "Approved") {
-                $('#approveRequest').prop('checked', true);
-                modalFooterBtns = `
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button 
-                        type="submit" 
-                        class="btn btn-info"
-                        id="updateBtn"
-                        disabled
-                    >
-                        <span>Update</span>
-                        <i class="fas fa-check ml-1"></i>
-                    </button>
-                `
-            } else if(requestStatus === "Rejected") {
-                $('#rejectRequest').prop('checked', true);
-                $('#remarksField').show();
-                setValue('#remarks', result.remarks);
-                modalFooterBtns = `
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button 
-                        type="submit" 
-                        class="btn btn-info"
-                        id="updateBtn"
-                        disabled
-                    >
-                        <span>Update</span>
-                        <i class="fas fa-check ml-1"></i>
-                    </button>
-                `
+            } else {
+                hideElement('#requestApprovalField');
+                modalFooterBtns = `<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>`;
             }
+            // else if(requestStatus === "Approved") {
+            //     $('#approveRequest').prop('checked', true);
+            //     modalFooterBtns = `
+            //         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            //         <button 
+            //             type="submit" 
+            //             class="btn btn-info"
+            //             id="updateBtn"
+            //             disabled
+            //         >
+            //             <span>Update</span>
+            //             <i class="fas fa-check ml-1"></i>
+            //         </button>
+            //     `
+            // } else if(requestStatus === "Rejected") {
+            //     $('#rejectRequest').prop('checked', true);
+            //     $('#remarksField').show();
+            //     setValue('#remarks', result.remarks);
+            //     modalFooterBtns = `
+            //         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            //         <button 
+            //             type="submit" 
+            //             class="btn btn-info"
+            //             id="updateBtn"
+            //             disabled
+            //         >
+            //             <span>Update</span>
+            //             <i class="fas fa-check ml-1"></i>
+            //         </button>
+            //     `
+            // }
             
             setContent('#viewManpowerRequestModalFooter', modalFooterBtns);
 
@@ -377,8 +382,11 @@ const updateManpowerRequestStatus = () => {
                 // Reload Manpower Request Analytics
                 manpowerRequestAnalytics();
 
-                // Show success alert
-                toastr.success('A manpower request is successfully updated');
+                // Show alert
+                if(requestStatus == 'Approved')
+                    toastr.success('A manpower request has been approved successfully');
+                else if(requestStatus == 'Rejected')
+                    toastr.info('A manpower request has been rejected successfully');
             }
         },
         error: () => toastr.error('There was a problem while updating a manpower request')

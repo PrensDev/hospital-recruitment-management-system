@@ -107,6 +107,23 @@ def get_all_job_posts(
         print(e)
 
 
+# Job Posts Analytics
+@router.get("/job-posts/analytics")
+def job_posts_analytics(
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        query = db.query(JobPost)
+        total = query.count()
+        return {
+            "total": total
+        }
+    except Exception as e:
+        print(e)   
+
+
 # Get One Job Posts
 @router.get("/job-posts/{job_post_id}", response_model = db_schemas.ShowJobPost)
 def get_one_job_post(
@@ -196,6 +213,23 @@ def get_all_applicants(
         print(e)
 
 
+# Applicants Analytics
+@router.get("/applicants/analytics")
+def applicants_analytics(
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        query = db.query(Applicant)
+        total = query.count()
+        return {
+            "total": total
+        }
+    except Exception as e:
+        print(e)
+
+
 # Get All Applicants Per Job
 @router.get("/job-posts/{job_post_id}/applicants", response_model = List[db_schemas.ShowApplicantInfo])
 def get_all_applicants_per_job(
@@ -206,6 +240,63 @@ def get_all_applicants_per_job(
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(Applicant.job_post_id == job_post_id).all()
+    except Exception as e:
+        print(e)
+
+
+# Applicants Per Job Analytics
+@router.get("/job-posts/{job_post_id}/applicants/analytics")
+def applicants_per_job_analytics(
+    job_post_id,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        query = db.query(Applicant)
+        total = query.filter(Applicant.job_post_id == job_post_id).count()
+        for_evaluation = query.filter(
+            Applicant.status == "For evaluation",
+            Applicant.job_post_id == job_post_id
+        ).count()
+        for_screening = query.filter(
+            Applicant.status == "For screening",
+            Applicant.job_post_id == job_post_id
+        ).count()
+        for_interview = query.filter(
+            Applicant.status == "For interview",
+            Applicant.job_post_id == job_post_id
+        ).count()
+        rejected_from_evalution = query.filter(
+            Applicant.status == "Rejected from evaluation",
+            Applicant.job_post_id == job_post_id
+        ).count()
+        rejected_from_screening = query.filter(
+            Applicant.status == "Rejected from screening",
+            Applicant.job_post_id == job_post_id
+        ).count()
+        rejected_from_intreview = query.filter(
+            Applicant.status == "Rejected from interview",
+            Applicant.job_post_id == job_post_id
+        ).count()
+        hired = query.filter(
+            Applicant.status == "Hired",
+            Applicant.job_post_id == job_post_id
+        ).count()
+        total_rejected = rejected_from_evalution + rejected_from_screening + rejected_from_intreview
+        return {
+            "total": total,
+            "for_evaluation": for_evaluation,
+            "for_screening": for_screening,
+            "for_interview": for_interview,
+            "hired": hired,
+            "rejected": {
+                "total": total_rejected,
+                "from_evaluation": rejected_from_evalution,
+                "from_screening": rejected_from_screening,
+                "from_interview": rejected_from_intreview
+            }
+        }
     except Exception as e:
         print(e)
 

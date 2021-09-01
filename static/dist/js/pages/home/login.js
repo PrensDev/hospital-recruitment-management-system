@@ -46,7 +46,10 @@ loginAJAX = () => {
                     "showDuration": "3000"
                 }
                 toastr.warning(result.message);
-                setContent('#loginBtn', 'Log in');
+                setContent('#loginBtn', `
+                    <span>Log in</span>
+                    <i class="fas fa-sign-in-alt ml-1"></i>
+                `);
                 enableElement('#loginBtn');
             } else {
                 localStorage.setItem("access_token", result.access_token);

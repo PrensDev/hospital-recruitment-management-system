@@ -104,52 +104,56 @@
                     </table>
                 </div>
 
-                <!-- Requisition ID -->
-                <input type="hidden" id="requisitionID" name="requisitionID">
+                <div id="requestApprovalField">
 
-                <!-- Reject or Approve -->
-                <label class="mt-3">Select decision for this request</label>
-                <div class="form-group">
-                    <div class="d-flex">
-                        <div class="custom-control custom-radio">
-                            <div class="icheck-danger d-inline">
-                                <input 
-                                    type="radio" 
-                                    name="requestStatus" 
-                                    id="rejectRequest"
-                                    value="Rejected"
-                                >
-                                <label for="rejectRequest">Reject</label>
-                            </div>
-                        </div>
-                        <div class="custom-control custom-radio">
-                            <div class="icheck-success d-inline">
-                                <input 
-                                    type="radio" 
-                                    name="requestStatus" 
-                                    id="approveRequest"
-                                    value="Approved"
-                                >
-                                <label for="approveRequest">Approve</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Textarea for Reason of Rejecting Request -->
-                <div class="mt-4" id="remarksField" style="display:none">
+                    <!-- Requisition ID -->
+                    <input type="hidden" id="requisitionID" name="requisitionID">
+    
+                    <!-- Reject or Approve -->
+                    <label class="mt-3">Select decision for this request</label>
                     <div class="form-group">
-                        <label for="reason">Please include reason for rejecting request<span class="text-danger"> *</span></label>
-                        <textarea 
-                            type="text" 
-                            name="remarks" 
-                            id="remarks" 
-                            class="form-control"
-                            rows=5
-                            placeholder="Type reason for rejecting request here"
-                        ></textarea>
+                        <div class="d-flex">
+                            <div class="custom-control custom-radio">
+                                <div class="icheck-danger d-inline">
+                                    <input 
+                                        type="radio" 
+                                        name="requestStatus" 
+                                        id="rejectRequest"
+                                        value="Rejected"
+                                    >
+                                    <label for="rejectRequest">Reject</label>
+                                </div>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <div class="icheck-success d-inline">
+                                    <input 
+                                        type="radio" 
+                                        name="requestStatus" 
+                                        id="approveRequest"
+                                        value="Approved"
+                                    >
+                                    <label for="approveRequest">Approve</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Textarea for Reason of Rejecting Request -->
+                    <div class="mt-4" id="remarksField" style="display:none">
+                        <div class="form-group">
+                            <label for="reason">Please include reason for rejecting request<span class="text-danger"> *</span></label>
+                            <textarea 
+                                type="text" 
+                                name="remarks" 
+                                id="remarks" 
+                                class="form-control"
+                                rows=5
+                                placeholder="Type reason for rejecting request here"
+                            ></textarea>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="modal-footer" id="viewManpowerRequestModalFooter"></div>

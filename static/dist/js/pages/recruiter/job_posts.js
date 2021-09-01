@@ -634,7 +634,7 @@ ifSelectorExist('#editJobPostForm', () => {
             if(!isEmptyOrNull(result.expiration_date)) {
                 checkElement('#expirationDate');
                 showElement('#openUntilField');
-                setValue('#openUntil', formatDateTime(result.expiration_date, "YYYY-MM-DD"));
+                setValue('#openUntil', result.expiration_date);
             }
 
         },

@@ -3,7 +3,7 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    <!-- Job Post Summary -->
     <section class="content-header">
         <div class="container-fluid">
             <div class="card card-primary card-outline">
@@ -45,14 +45,88 @@
     <section class="content">
         <div class="container-fluid">
 
+            <!-- Info Boxes -->
+            <div class="row" id="applicantsPerJobAnalytics">
+    
+                <!-- Total Applicants -->
+                <div class="col-md-4">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-primary"><i class="fas fa-users"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">Total Applicants</span>
+                            <span class="info-box-number" id="totalApplicantsCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- For Evauation -->
+                <div class="col-md-4">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-warning"><i class="fas fa-redo"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">For Evaluation</span>
+                            <span class="info-box-number" id="forEvalutationCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hired Appplicants -->
+                <div class="col-md-4">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-success"><i class="fas fa-check"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">Hired Applicants</span>
+                            <span class="info-box-number" id="hiredApplicantsCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- For Screening -->
+                <div class="col-md-4">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-secondary"><i class="fas fa-search"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">For Screening</span>
+                            <span class="info-box-number" id="forScreeningCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- For Interview -->
+                <div class="col-md-4">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-info"><i class="fas fa-user-tie"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">For Interview</span>
+                            <span class="info-box-number" id="forInterviewCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rejected -->
+                <div class="col-md-4">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-danger"><i class="fas fa-user-times"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">Rejected</span>
+                            <span class="info-box-number" id="rejectedApplicantsCount">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Card -->
             <div class="card card-primary card-outline">
 
                 <!-- Card Header -->
-                <div class=" p-3 d-flex justify-content-between">
-                    <div>
-                        <h3 class="card-title">Lists of Applicants</h3>
-                    </div>
+                <div class="card-header">
+                    <div class="card-title">List of Applicants</div>
                 </div>
 
                 <!-- Card Body -->
