@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, check_priviledge
 from schemas import db_schemas
+from datetime import date
+from sqlalchemy import or_
 
 import models
 
@@ -67,6 +69,25 @@ def get_all_approved_requisitions(
         print(e)
 
 
+# Requisition Analytics
+@router.get("/requisitions/analytics")
+def requisition_analytics(
+    db: Session = Depends(get_db), 
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        query = db.query(Requisition)
+        approved_request = query.filter(Requisition.request_status == "Approved").count()
+        with_job_post = query.join(JobPost).filter(Requisition.request_status == "Approved").filter(JobPost.requisition_id == Requisition.requisition_id).count()
+        return {
+            "approved_requests": approved_request,
+            "with_job_post": with_job_post
+        }
+    except Exception as e:
+        print(e)
+
+
 # Get One Approved Requisition
 @router.get("/requisitions/{requisition_id}", response_model = db_schemas.ShowManpowerRequest)
 def get_one_approved_requisitions(
@@ -102,7 +123,7 @@ def get_all_job_posts(
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        return db.query(JobPost).filter(JobPost.posted_by == user_data.user_id).all()
+        return db.query(JobPost).filter(JobPost.posted_by == user_data.user_id).order_by(JobPost.created_at).all()
     except Exception as e:
         print(e)
 
@@ -117,8 +138,15 @@ def job_posts_analytics(
         check_priviledge(user_data, AUTHORIZED_USER)
         query = db.query(JobPost)
         total = query.count()
+        on_going = query.filter(or_(
+            JobPost.expiration_date >= date.today(), 
+            JobPost.expiration_date == None
+        )).count()
+        ended = query.filter(JobPost.expiration_date < date.today()).count()
         return {
-            "total": total
+            "total": total,
+            "on_going": on_going,
+            "ended": ended
         }
     except Exception as e:
         print(e)   
@@ -223,8 +251,26 @@ def applicants_analytics(
         check_priviledge(user_data, AUTHORIZED_USER)
         query = db.query(Applicant)
         total = query.count()
+        for_evaluation = query.filter(Applicant.status == "For evaluation").count()
+        for_screening = query.filter(Applicant.status == "For screening").count()
+        for_interview = query.filter(Applicant.status == "For interview").count()
+        hired = query.filter(Applicant.status == "Hired").count()
+        rejected_from_evaluation = query.filter(Applicant.status == "Rejected from evaluation").count()
+        rejected_from_screening = query.filter(Applicant.status == "Rejected from screening").count()
+        rejected_from_interview = query.filter(Applicant.status == "Rejected from interview").count()
+        total_rejected = rejected_from_evaluation + rejected_from_screening + rejected_from_interview
         return {
-            "total": total
+            "total": total,
+            "for_evaluation": for_evaluation,
+            "for_screening": for_screening,
+            "for_interview": for_interview,
+            "hired": hired,
+            "rejected": {
+                "total": total_rejected,
+                "from_evaluation": rejected_from_evaluation,
+                "from_screening": rejected_from_screening,
+                "from_interview": rejected_from_interview
+            }
         }
     except Exception as e:
         print(e)

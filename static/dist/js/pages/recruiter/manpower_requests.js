@@ -138,6 +138,31 @@ initDataTable('#manpowerRequestDT', {
 
 /**
  * ==============================================================================
+ * MANPOWER REQUESTS ANALYTICS
+ * ==============================================================================
+ */
+
+// Manpower Request Analytics
+const manpowerRequestAnalytics = () => {
+    GET_ajax(`${ R_API_ROUTE }requisitions/analytics`, {
+        success: result => {
+            // console.log(result)
+
+            // Set Approved Requests Count
+            setContent('#approvedRequestsCount', formatNumber(result.approved_requests));
+
+            // Set With Job Post Count
+            setContent('#withJobPostsCount', formatNumber(result.with_job_post));
+        },
+        error: () => toastr.error('There was an error in getting manpower request analytics')
+    });
+}
+
+ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
+
+
+/**
+ * ==============================================================================
  * VIEW MANPOWER REQUEST DETAILS
  * ==============================================================================
  */
@@ -258,4 +283,4 @@ const viewManpowerRequest = (requisitionID) => {
 }
 
 /** Create Job Post */
-const createJobPost = (requisitionID) => location.assign(`${ R_WEB_ROUTE }add-job-post/${ requisitionID }`)
+const createJobPost = (requisitionID) => location.assign(`${ R_WEB_ROUTE }add-job-post/${ requisitionID }`);

@@ -57,7 +57,7 @@ initDataTable('#applicantsDT', {
                     `);
                 } else if(status === "For screening") {
                     return dtBadge('secondary', `
-                        <i class="fas fa-user mr-1"></i>
+                        <i class="fas fa-search mr-1"></i>
                         <span>${ status }</span>
                     `);
                 } else if(status === "For interview") {
@@ -111,6 +111,39 @@ initDataTable('#applicantsDT', {
         }
     ]
 });
+
+
+/**
+ * ==============================================================================
+ * APPLICANTS ANALYTICS
+ * ==============================================================================
+*/
+
+// Applicants Analytics
+const applicantsAnalytics = () => {
+    GET_ajax(`${ R_API_ROUTE }applicants/analytics`, {
+        success: result => {
+
+            // Set Total Applicants
+            setContent('#totalApplicantsCount', formatNumber(result.total));
+
+            // Set For Evaluation Applicants
+            setContent('#forEvaluationCount', formatNumber(result.for_evaluation));
+
+            // Set For Screening 
+            setContent('#forScreeningCount', formatNumber(result.for_screening));
+
+            // Set For Interview
+            setContent('#forInterviewCount', formatNumber(result.for_interview));
+
+            // Set Rejected Applicants
+            setContent('#rejectedApplicantsCount', formatNumber(result.rejected.total));
+        },
+        error: () => toastr.error('There was an error in getting applciants analytics')
+    });
+}
+
+ifSelectorExist('#applicantsAnalytics', () => applicantsAnalytics());
 
 
 /**
@@ -337,7 +370,7 @@ ifSelectorExist('#applicantsPerJobDT', () => {
 
 
 // Applicants Per Job Analytics
-const applicantPerJobAnalytics = () => {
+const applicantsPerJobAnalytics = () => {
     
     const jobPostID = window.location.pathname.split("/")[3]
 
@@ -363,7 +396,7 @@ const applicantPerJobAnalytics = () => {
     });
 }
 
-ifSelectorExist('#applicantsPerJobAnalytics', () => applicantPerJobAnalytics());
+ifSelectorExist('#applicantsPerJobAnalytics', () => applicantsPerJobAnalytics());
 
 
 /**
@@ -437,7 +470,7 @@ const evaluateApplicant = () => {
             if(result) {
                 hideModal('#applicantDetailsModal');
                 reloadDataTable('#applicantsPerJobDT');
-                applicantPerJobAnalytics();
+                applicantsPerJobAnalytics();
                 toastr.success('An applicant is successfully evaluated');
 
             }

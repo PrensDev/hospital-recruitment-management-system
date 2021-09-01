@@ -375,6 +375,33 @@ initDataTable('#jobPostsDT', {
 
 /**
  * ==============================================================================
+ * JOB POSTS ANALYTICS
+ * ==============================================================================
+ */
+
+// Job Post Analytics
+const jobPostsAnalytics = () => {
+    GET_ajax(`${ R_API_ROUTE }job-posts/analytics`, {
+        success: result => {
+
+            // Set Total Job Posts Count
+            setContent('#totalJobPostsCount', formatNumber(result.total));
+
+            // Set On Going Job Posts Count
+            setContent('#ongoingJobPostsCount', formatNumber(result.on_going));
+
+            // Set Ended Job Posts Count
+            setContent('#endedJobPostsCount', formatNumber(result.ended));
+        },
+        error: toastr.error('There was an error while getting job post analytics')
+    });
+}
+
+ifSelectorExist('#jobPostsAnalytics', () => jobPostsAnalytics())
+
+
+/**
+ * ==============================================================================
  * VIEW JOB POST DETAILS
  * ==============================================================================
 */

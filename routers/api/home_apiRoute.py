@@ -8,6 +8,8 @@ from database import get_db
 from schemas import db_schemas
 from datetime import date
 from sqlalchemy import or_
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from dotenv import dotenv_values
 import shutil
 import uuid
 import models
@@ -23,6 +25,23 @@ JobPost = models.JobPost
 Requisition = models.Requisition
 Position = models.Position
 Applicant = models.Applicant
+
+
+# Dotenv
+env = dotenv_values(".env")
+
+
+# Conf
+conf = ConnectionConfig(
+    MAIL_USERNAME = env['MAIL_EMAIL'],
+    MAIL_PASSWORD = env['MAIL_PASSWORD'],
+    MAIL_FROM = env['MAIL_EMAIL'],
+    MAIL_PORT = 587,
+    MAIL_SERVER = env['MAIL_SERVER'],
+    MAIL_TLS = True,
+    MAIL_SSL = False,
+    USE_CREDENTIALS = True
+)
 
 
 # ====================================================================
@@ -75,7 +94,7 @@ def get_one_job_post(job_post_id: str, db: Session = Depends(get_db)):
 
 # Upload Resume
 @router.post("/upload/resume")
-def upload_resume(file: UploadFile = File(...)):
+async def upload_resume(file: UploadFile = File(...)):
     try:
         orig_filename = f"{file.filename}"
         file_extension = orig_filename.split('.')[-1]
@@ -95,7 +114,7 @@ def upload_resume(file: UploadFile = File(...)):
 
 #  Apply for a job
 @router.post("/apply")
-def apply(req: db_schemas.Applicant, db: Session = Depends(get_db)):
+async def apply(req: db_schemas.Applicant, db: Session = Depends(get_db)):
     try:
         new_applicant = Applicant(
             job_post_id = req.job_post_id,
@@ -110,6 +129,23 @@ def apply(req: db_schemas.Applicant, db: Session = Depends(get_db)):
         db.add(new_applicant)
         db.commit()
         db.refresh(new_applicant)
+
+        messageBody = f"""
+            <h1>Hello {req.first_name}!</h1>
+            <div>This is a test mail from Hospital Management System</div>
+        """
+
+        message = MessageSchema(
+            subject = "Job Application",
+            recipients = [req.email],
+            body = messageBody,
+            subtype = "html"
+        )
+
+        fm = FastMail(conf)
+
+        await fm.send_message(message)
+
         return {
             "data": new_applicant,
             "message": "A new applicant has been added"

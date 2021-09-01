@@ -9,7 +9,7 @@ SQLALCHEMY_DATABASE_URL = "mysql+mysqlconnector://root@localhost/hospital_db"
 
 
 # Engine
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_size=20, max_overflow=0)
 
 
 # Session Local

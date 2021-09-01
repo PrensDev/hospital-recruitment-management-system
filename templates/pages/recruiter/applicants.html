@@ -31,37 +31,77 @@
     <section class="content">
         <div class="container-fluid">
 
-            <!-- Info Boxes -->
-            <div class="row">
-                <div class="col-md-4 col-12">
+            <!-- Applicants Analytics -->
+            <div class="row" id="applicantsAnalytics">
+    
+                <!-- Total Applicants -->
+                <div class="col-md-4">
                     <div class="info-box">
-                        <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
+                        <span class="info-box-icon bg-primary"><i class="fas fa-users"></i></span>
         
                         <div class="info-box-content">
                             <span class="info-box-text">Total Applicants</span>
-                            <span class="info-box-number">410</span>
+                            <span class="info-box-number" id="totalApplicantsCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- For Evauation -->
+                <div class="col-md-4">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-warning"><i class="fas fa-redo"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">For Evaluation</span>
+                            <span class="info-box-number" id="forEvaluationCount">0</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-4 col-12">
+                <!-- Hired Appplicants -->
+                <div class="col-md-4">
                     <div class="info-box">
-                        <span class="info-box-icon bg-warning"><i class="fas fa-user-check"></i></span>
+                        <span class="info-box-icon bg-success"><i class="fas fa-check"></i></span>
         
                         <div class="info-box-content">
-                            <span class="info-box-text">Total Shortlisted Applicants</span>
-                            <span class="info-box-number">410</span>
+                            <span class="info-box-text">Hired Applicants</span>
+                            <span class="info-box-number" id="hiredApplicantsCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- For Screening -->
+                <div class="col-md-4">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-secondary"><i class="fas fa-search"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">For Screening</span>
+                            <span class="info-box-number" id="forScreeningCount">0</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-4 col-12">
+                <!-- For Interview -->
+                <div class="col-md-4">
                     <div class="info-box">
-                        <span class="info-box-icon bg-danger"><i class="fas fa-user-slash"></i></span>
+                        <span class="info-box-icon bg-info"><i class="fas fa-user-tie"></i></span>
         
                         <div class="info-box-content">
-                            <span class="info-box-text">Total Rejected Applicants</span>
-                            <span class="info-box-number">410</span>
+                            <span class="info-box-text">For Interview</span>
+                            <span class="info-box-number" id="forInterviewCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rejected -->
+                <div class="col-md-4">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-danger"><i class="fas fa-user-times"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">Rejected</span>
+                            <span class="info-box-number" id="rejectedApplicantsCount">0</span>
                         </div>
                     </div>
                 </div>

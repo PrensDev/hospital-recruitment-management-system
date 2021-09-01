@@ -137,7 +137,7 @@ ifSelectorExist('#availableJobDetails', () => {
                         <div>${ formatDateTime(expiresAt, "Date") }</div>
                         <div class="small text-secondary">${ fromNow(expiresAt) }</div>
                     `
-            })
+            });
         },
         error: () => toastr.error('There was an error in getting job details')
     });

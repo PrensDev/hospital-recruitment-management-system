@@ -31,41 +31,38 @@
     <section class="content">
         <div class="container-fluid">
 
-            <!-- Info Boxes -->
-            <div class="row">
+            <!-- Job Posts Analytics -->
+            <div class="row" id="jobPostsAnalytics">
+
+                <!-- Total Job Posts -->
                 <div class="col-md-4 col-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-info"><i class="fas fa-briefcase"></i></span>
-        
+                        <span class="info-box-icon bg-primary"><i class="fas fa-briefcase"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Total Job Posts</span>
-                            <span class="info-box-number">1,410</span>
+                            <span class="info-box-number" id="totalJobPostsCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- On going Job Posts -->
+                <div class="col-md-4 col-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-info"><i class="fas fa-search"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Ongoing Job Posts</span>
+                            <span class="info-box-number" id="ongoingJobPostsCount">0</span>
                         </div>
                     </div>
                 </div>
 
+                <!-- Ended Job Post -->
                 <div class="col-md-4 col-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-success"><i class="fas fa-check-double"></i></span>
-        
+                        <span class="info-box-icon bg-danger"><i class="fas fa-check-double"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">
-                                Total Ended Job Recruitment
-                            </span>
-                            <span class="info-box-number">93,139</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-warning"><i class="fas fa-file-signature"></i></span>
-        
-                        <div class="info-box-content">
-                            <span class="info-box-text">
-                                Total Ongoing Job Recruitment
-                            </span>
-                            <span class="info-box-number">93,139</span>
+                            <span class="info-box-text">Ended Job Posts</span>
+                            <span class="info-box-number" id="endedJobPostsCount">0</span>
                         </div>
                     </div>
                 </div>
