@@ -52,12 +52,15 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="jobDescription">Job Description<span class="text-danger"> *</span></label>
-                                    <textarea
-                                        name="jobDescription" 
-                                        id="jobDescription" 
-                                        class="form-control"
-                                        placeholder="Enter job description here..."
-                                    ></textarea>
+                                    <div>
+                                        <textarea
+                                            name="jobDescription" 
+                                            id="jobDescription" 
+                                            class="form-control"
+                                            placeholder="Enter job description here..."
+                                        ></textarea>
+                                    </div>
+                                    <div class="small text-danger" id="jobDescriptionInvalidFeedback" style="display: none">Job description is required</div>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +107,7 @@
                     <div class="card-footer">
                         <div class="float-right">
                             <button type="button" class="btn btn-default" onclick="history.back()">Cancel</button>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" id="postBtn" disabled>
                                 <span>Post</span>
                                 <i class="fas fa-pen ml-1"></i>
                             </button>
@@ -130,32 +133,32 @@
                             <tr>
                                 <td>
                                     <h6 class="mb-1">Vacant Position</h6>
-                                    <div id="vacantPosition"></div>
+                                    <div id="vacantPositionForSummary"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h6 class="mb-1">Staffs Needed</h6>
-                                    <div id="staffsNeeded"></div>
+                                    <div id="staffsNeededForSummary"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h6 class="mb-1">Employment Type</h6>
-                                    <div id="employmentType"></div>
+                                    <div id="employmentTypeForSummary"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h6 class="mb-1">Salary Range</h6>
-                                    <div id="salaryRange"></div>
-                                    <div id="salaryRangeStatus"></div>
+                                    <div id="salaryRangeForSummary"></div>
+                                    <div id="salaryRangeStatusForSummary"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h6 class="mb-1">Deadline</h6>
-                                    <div id="deadline"></div>
+                                    <div id="deadlineForSummary"></div>
                                 </td>
                             </tr>
                             <tr>

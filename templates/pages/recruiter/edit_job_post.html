@@ -52,12 +52,15 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="jobDescription">Job Description <span class="text-danger">*</span></label>
-                                    <textarea
-                                        name="jobDescription" 
-                                        id="jobDescription" 
-                                        class="form-control"
-                                        placeholder="Enter job description here..."
-                                    ></textarea>
+                                    <div>
+                                        <textarea
+                                            name="jobDescription" 
+                                            id="jobDescription" 
+                                            class="form-control"
+                                            placeholder="Enter job description here..."
+                                        ></textarea>
+                                    </div>
+                                    <div class="small text-danger" id="jobDescriptionInvalidFeedback" style="display: none">Job description is required</div>
                                 </div>
                             </div>
                         </div>
@@ -107,7 +110,7 @@
                     <div class="card-footer">
                         <div class="float-right">
                             <button type="button" class="btn btn-default" onclick="history.back()">Cancel</button>
-                            <button type="submit" class="btn btn-info">
+                            <button type="submit" class="btn btn-info" id="saveBtn">
                                 <span>Save</span>
                                 <i class="fas fa-check ml-1"></i>
                             </button>

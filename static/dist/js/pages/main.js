@@ -352,15 +352,19 @@ const DELETE_ajax = (url = '', options = {success: () => {}, error: () => consol
 $(() => {
     if(localStorage.getItem('sessioned_alert')) {
         const alertTheme = localStorage.getItem('sessioned_alert_theme');
-        const alertMessage = localStorage.getItem('sessioned_alert_message')
+        const alertMessage = localStorage.getItem('sessioned_alert_message');
 
-        if(alertTheme === 'success') toastr.success(alertMessage);
-        if(alertTheme === 'warning') toastr.warning(alertMessage);
-        if(alertTheme === 'error') toastr.error(alertMessage);
+        setTimeout(() => {
+            if(alertTheme === 'success') toastr.success(alertMessage);
+            if(alertTheme === 'warning') toastr.warning(alertMessage);
+            if(alertTheme === 'error')   toastr.error(alertMessage);
+        }, 1000)
 
-        localStorage.removeItem('sessioned_alert');
-        localStorage.removeItem('sessioned_alert_theme');
-        localStorage.removeItem('sessioned_alert_message');
+        setTimeout(() => {
+            localStorage.removeItem('sessioned_alert');
+            localStorage.removeItem('sessioned_alert_theme');
+            localStorage.removeItem('sessioned_alert_message');
+        }, 1500);
     }
 })
 

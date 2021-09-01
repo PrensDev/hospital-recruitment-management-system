@@ -126,7 +126,7 @@
                         </div>
 
                         <!-- Deadline -->
-                        <div class="col-md-4" id="deadlineField" style="display: none">
+                        <div class="col-lg-4" id="deadlineField" style="display: none">
                             <div class="form-group">
                                 <label for="deadline">Deadline</label>
                                 <div class="input-group">
@@ -146,7 +146,7 @@
                             </div>
                         </div>
     
-                        <div class="col-md-8" id="salaryRangeField" style="display: none">
+                        <div class="col-lg-8" id="salaryRangeField" style="display: none">
                             <div class="form-row">
 
                                 <!-- Minimum Salary -->
@@ -202,12 +202,15 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="requestDescription">Request Description<span class="text-danger"> *</span></label>
-                                <textarea
-                                    name="requestDescription" 
-                                    id="requestDescription" 
-                                    class="form-control"
-                                    placeholder="Enter job description here..."
-                                ></textarea>
+                                <div>
+                                    <textarea
+                                        name="requestDescription" 
+                                        id="requestDescription" 
+                                        class="form-control"
+                                        placeholder="Enter job description here..."
+                                    ></textarea>
+                                </div>
+                                <div class="small text-danger" id="requestDescriptionInvalidFeedback" style="display: none">Request description is required</div>
                             </div>
                         </div>
                     </div>
@@ -217,7 +220,7 @@
                 <div class="card-footer">
                     <div class="float-right">
                         <button type="button" class="btn btn-default" onclick="history.back()">Cancel</button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
                             <span>Submit</span>
                             <i class="fas fa-check ml-1"></i>
                         </button>

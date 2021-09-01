@@ -19,53 +19,56 @@ ifSelectorExist('#createJobPostForm', () => {
     });
 
     // Get the requisition ID from the URL
-    const requisitionID = window.location.pathname.split("/")[3];
+    const requisitionID = window.location.pathname.split('/')[3];
 
     /** Get Manpower Request Information */
     GET_ajax(`${ R_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
             // console.log(result)
 
+            const minSalary = result.min_monthly_salary;
+            const maxSalary = result.max_monthly_salary;
+
+            /** MANPOWER REQUEST SUMMARY */
+
             // Set Value for Requisition ID
             setValue('#requisitionID', result.requisition_id);
 
             // Set Content
-            setContent('#vacantPosition', result.vacant_position.name);
+            setContent('#vacantPositionForSummary', result.vacant_position.name);
 
             // Set Staffs Needed
-            setContent('#staffsNeeded', () => {
+            setContent('#staffsNeededForSummary', () => {
                 const staffsNeeded = result.staffs_needed;
                 return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' }`
             });
 
             // Set Employment Type
-            setContent('#employmentType', result.employment_type);
+            setContent('#employmentTypeForSummary', result.employment_type);
 
             // Set Salary Range
-            setContent('#salaryRange', () => {
-                const minSalary = result.min_monthly_salary;
-                const maxSalary = result.max_monthly_salary;
-
+            setContent('#salaryRangeForSummary', () => {
                 if(isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)) {
                     hideElement('#salaryRangeField');
-                    return 'Unset';
+                    return `<div class="text-secondary font-italic">Unset</div>`;
                 } else {
-                    return `P ${minSalary} - P ${maxSalary}`;
+                    return `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
                 }
             });
 
             // Set Deadline
-            setContent('#deadline', () => {
+            setContent('#deadlineForSummary', () => {
                 const deadline = result.deadline;
                 return `
-                    <div>${ formatDateTime(deadline, "Date") }</div>
+                    <div>${ formatDateTime(deadline, "Full Date") }</div>
+                    <div>${ formatDateTime(deadline, "Time") }</div>
                     <div class="small text-secondary">${ fromNow(deadline) }</div>
                 `
             });
 
             /** FOR MANPOWER REQUEST MODAL */
 
-            const requestedBy = manpowerRequest.manpower_request_by;
+            const requestedBy = result.manpower_request_by;
 
             // Set Requestor Name
             setContent('#requestorName', formatName('F M. L, S', {
@@ -76,71 +79,91 @@ ifSelectorExist('#createJobPostForm', () => {
             }));
 
             // Set Requestor Department
-            setContent('#requestorDepartment', requestedBy.position.name);
+            setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
 
             // Set Date Requested
-            setContent('#dateRequested', formatDateTime(manpowerRequest, "Date"));
+            setContent('#dateRequested', formatDateTime(result.created_at, "DateTime"));
 
             // Set Deadline
             setContent('#deadline', () => {
-                const deadline = manpowerRequest.deadline;
-                return isEmptyOrNull(deadline) ? 'Unset' : formatDateTime(deadline, "Date");
+                const deadline = result.deadline;
+                return isEmptyOrNull(deadline) ? 'Unset' : formatDateTime(deadline, "DateTime");
             });
 
             // Set Requested Position
-            setContent('#requestedPosition', manpowerRequest.vacant_position.name);
+            setContent('#requestedPosition', result.vacant_position.name);
 
             // Set Staffs Needed
             setContent('#noOfStaffsNeeded', () => {
-                const staffsNeeded = manpowerRequest.staffs_needed;
+                const staffsNeeded = result.staffs_needed;
                 return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' }`;
             });
 
             // Set Employment Type
-            setContent('#employmentType', manpowerRequest.employment_type);
+            setContent('#employmentType', result.employment_type);
 
             // Set Request Nature
-            setContent('#requestNaure', manpowerRequest.request_nature);
+            setContent('#requestNature', result.request_nature);
 
             // Set Suggested Salary
             setContent('#suggestedSalary', () => {
-                if(isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)) {
-                    return 'Unset';
-                } else {
-                    return `P ${minSalary} - P ${maxSalary}`;
-                }
+                return isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)
+                    ? `<div class="text-secondary font-italic"></div>`
+                    : `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}/month`
             });
 
             // Set Request Description
-            setContent('#requestDescription', manpowerRequest.content);
+            setContent('#requestDescription', result.content);
 
             // Set Approved By
             setContent('#approvedBy', () => {
-                const approvedBy = manpowerRequest.manpower_request_reviewed_by;
-
-                const approvedByFullName = formatName("F M. L, S", {
-                    firstName: approvedBy.first_name,
-                    middleName: approvedBy.middle_name,
-                    lastName: approvedBy.last_name,
-                    suffixName: approvedBy.suffix_name
-                });
-
-                return `
-                    <div>${ approvedByFullName }</div>
-                `
+                const approvedBy = result.manpower_request_reviewed_by;
+                return isEmptyOrNull(approvedBy)
+                    ? `<div class="text-secondary font-italic">Not yet approved</div>`
+                    : () => {
+                        if(result.request_status === "Rejected") {
+                            return `<div class="text-danger">This request has been rejected</div>`
+                        } else {
+                            const approvedByFullName = formatName("L, F M., S", {
+                                firstName: approvedBy.first_name,
+                                middleName: approvedBy.middle_name,
+                                lastName: approvedBy.last_name,
+                                suffixName: approvedBy.suffix_name
+                            });
+                            return `
+                                <div>${ approvedByFullName }</div>
+                                <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
+                            `
+                        }
+                    }
             });
 
             // Set Approved At
-            setContent('#approvedAt', formatDateTime(manpowerRequest.reviewed_at, "Date"));
+            setContent('#approvedAt', formatDateTime(result.reviewed_at, "DateTime"));
 
             // Set Completed At
             setContent('#completedAt', () => {
-                const completedAt = manpowerRequest.completed_at;
-                isEmptyOrNull(completedAt) ? 'Not yet completed' : formatDateTime(completedAt, "Date");
+                const completedAt = result.completed_at;
+                return isEmptyOrNull(completedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    : formatDateTime(completedAt, "DateTime");
             });
         },
         error: () => toastr.error('There was an error in getting requisition details')
-    })
+    });
+    
+    /** Validate Summernote */
+    $('#jobDescription').summernote().on('summernote.change', () => {
+        if($('#jobDescription').summernote('isEmpty')) {
+            $('#jobDescription').next().addClass('border-danger');
+            showElement('#jobDescriptionInvalidFeedback');
+            disableElement('#postBtn');
+        } else {
+            $('#jobDescription').next().removeClass('border-danger');
+            hideElement('#jobDescriptionInvalidFeedback');
+            enableElement('#postBtn');
+        }
+    });
 });
 
 /** Set Expriration Date On Change */
@@ -155,7 +178,7 @@ validateForm('#createJobPostForm', {
             required: true
         },
         jobDescription: {
-            required: true
+            required: true,
         },
         openUntil: {
             required: true,
@@ -167,7 +190,7 @@ validateForm('#createJobPostForm', {
             required: 'This field must have value'
         },
         jobDescription: {
-            required: 'Job Description is required'
+            required: 'Job Description is required',
         },
         openUntil: {
             required: 'Please select a date',
@@ -616,7 +639,20 @@ ifSelectorExist('#editJobPostForm', () => {
 
         },
         error: () => toastr.error('There was an error in getting job post details')
-    })
+    });
+    
+    /** Validate Summernote */
+    $('#jobDescription').summernote().on('summernote.change', () => {
+        if($('#jobDescription').summernote('isEmpty')) {
+            $('#jobDescription').next().addClass('border-danger');
+            showElement('#jobDescriptionInvalidFeedback');
+            disableElement('#saveBtn');
+        } else {
+            $('#jobDescription').next().removeClass('border-danger');
+            hideElement('#jobDescriptionInvalidFeedback');
+            enableElement('#saveBtn');
+        }
+    });
 });
 
 /** Validate Edit Job Post */

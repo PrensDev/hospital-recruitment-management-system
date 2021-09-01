@@ -52,6 +52,20 @@ ifSelectorExist('#addManpowerRequestForm', () => {
         ]
     });
 
+    
+    /** Validate Summernote */
+    $('#requestDescription').summernote().on('summernote.change', () => {
+        if($('#requestDescription').summernote('isEmpty')) {
+            $('#requestDescription').next().addClass('border-danger');
+            showElement('#requestDescriptionInvalidFeedback');
+            disableElement('#submitBtn');
+        } else {
+            $('#requestDescription').next().removeClass('border-danger');
+            hideElement('#requestDescriptionInvalidFeedback');
+            enableElement('#submitBtn');
+        }
+    });
+
 });
 
 /** On Set Salary Range Change */
@@ -610,6 +624,19 @@ ifSelectorExist('#editManpowerRequestForm', () => {
 
         },
         error: () => toastr.error('There was an error in getting manpower request information')
+    });
+
+     /** Validate Summernote */
+     $('#requestDescription').summernote().on('summernote.change', () => {
+        if($('#requestDescription').summernote('isEmpty')) {
+            $('#requestDescription').next().addClass('border-danger');
+            showElement('#requestDescriptionInvalidFeedback');
+            disableElement('#saveBtn');
+        } else {
+            $('#requestDescription').next().removeClass('border-danger');
+            hideElement('#requestDescriptionInvalidFeedback');
+            enableElement('#saveBtn');
+        }
     });
 });
 
