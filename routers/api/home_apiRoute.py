@@ -10,7 +10,6 @@ from datetime import date
 from sqlalchemy import or_
 import shutil
 import uuid
-
 import models
 
 # Router Instance
@@ -19,6 +18,7 @@ router = APIRouter(
     tags = ["Home API"]
 )
 
+# Models
 JobPost = models.JobPost
 Requisition = models.Requisition
 Position = models.Position
@@ -50,7 +50,7 @@ def get_all_job_posts(db: Session = Depends(get_db)):
 @router.post("/job-posts/search", response_model = List[db_schemas.ShowJobPostForApplicants])
 def search_job_post(req: db_schemas.Search, db: Session = Depends(get_db)):
     try:
-        return db.query(JobPost).filter(Position.name.contains(req.query)).all()
+        return db.query(JobPost).join(Requisition).join(Position).filter(Position.name.contains(req.query)).all()
     except Exception as e:
         print(e)
 

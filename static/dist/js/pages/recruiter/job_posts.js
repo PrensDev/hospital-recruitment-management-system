@@ -705,7 +705,7 @@ onClick('#confirmUpdateJobPostBtn', () => {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({
-                    theme: 'success',
+                    theme: 'info',
                     message: 'A posted job is successfully updated',
                     redirectURL: `${ R_WEB_ROUTE }job-posts`
                 });

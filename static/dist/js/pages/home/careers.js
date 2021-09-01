@@ -1,3 +1,97 @@
+/**
+ * ==============================================================================
+ * GET ALL AVAILABLE JOBS
+ * ==============================================================================
+ */
+
+/** Get All Jobs */
+ifSelectorExist('#availableJobList', () => {
+    $.ajax({
+        url: `${ BASE_URL_API }home/job-posts`,
+        type: 'GET',
+        success: result => {
+            // console.log(result)
+            
+            let jobList = '';
+
+            if(result.length > 0) {
+                result.forEach(r => {
+                    const manpowerRequest = r.manpower_request;
+    
+                    const salaryRange = r.salary_is_visible 
+                        ? `<div>
+                                <i style="width: 2rem" class="fas fa-money-bill-wave text-success"></i>
+                                <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
+                            </div>`
+                        : '';
+    
+                    const expirationDate = isEmptyOrNull(r.expiration_date) 
+                        ? `<div>
+                                <i style="width: 2rem" class="fas fa-clock text-danger"></i>
+                                <span>Still open for all applicants</span>
+                            </div>` 
+                        : `<div>
+                                <i style="width: 2rem" class="fas fa-clock text-danger"></i>
+                                <span>Open until August 31, 2021</span>
+                            </div>`
+    
+                    jobList += `
+                        <div class="col-md-6 col-12 mb-3">
+                            <div class="card card-primary card-outline h-100">
+                                <div class="card-body d-flex flex-column justify-content-between h-100">
+    
+                                    <div>
+                                        <div class="mb-3">
+                                            <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="h5 text-primary mb-0">${ manpowerRequest.vacant_position.name }</a>
+                                            <div class="small text-muted">
+                                                <span>Posted ${ formatDateTime(r.created_at, "Date") }</span>
+                                                <span class="mx-1">&middot;</span>
+                                                <span>${ fromNow(r.created_at) }</span>
+                                            </div>
+                                        </div>
+    
+                                        <div class="mb-3">
+                                            <div>
+                                                <i style="width: 2rem" class="fas fa-user-tie text-success"></i>
+                                                <span>${ manpowerRequest.employment_type }</span>
+                                            </div>
+                                            ${ salaryRange }
+                                            ${ expirationDate }
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-right">
+                                        <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="btn btn-secondary">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                jobList = `
+                    <div class="col-12">
+                        <div class="py-5 text-center">
+                            <h3>Oops! We are full</h3>
+                            <div>Sorry, but we don't have vacant job for now</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            setContent('#availableJobList', jobList);
+        },
+        error: () => toastr.error('There was an error in getting all job posts')
+    })
+});
+
+
+/**
+ * ==============================================================================
+ * GET AVAILABLE JOB DETAILS
+ * ==============================================================================
+ */
+
 /** Get Available Jobs Details */
 ifSelectorExist('#availableJobDetails', () => {
     const jobPostID = window.location.pathname.split('/')[2];
@@ -49,6 +143,12 @@ ifSelectorExist('#availableJobDetails', () => {
     });
 });
 
+
+/**
+ * ==============================================================================
+ * JOB APPLICATION
+ * ==============================================================================
+ */
 
 /** Validate Application Form */
 validateForm('#applicationForm', {
@@ -120,7 +220,6 @@ validateForm('#applicationForm', {
     }
 });
 
-
 /** If Confirm Application Modal is going to be hidden */
 onHideModal('#confirmApplicationModal', () => {
     uncheckElement('#confirmReview');
@@ -128,31 +227,12 @@ onHideModal('#confirmApplicationModal', () => {
     setContent('#applicantFullName', '');
     setContent('#applicantContactNumber', '');
     setContent('#applicantEmail', '');
-})
-
-
-/**  */
-// onChange('#contactNumber', () => {
-//     const contactNumber = $('#contactNumber');
-//     if(!isEmptyOrNull(contactNumber.val())) {
-//         if(contactNumber.inputmask("isComplete")) {
-//             contactNumber.remmoveClass('is-invalid');
-//             hideElement('#contactNumber-error');
-//             setContent('#contactNumber-error', '');
-//         } else {
-//             contactNumber.addClass('is-invalid');
-//             showElement('#contactNumber-error');
-//             setContent('#contactNumber-error', 'Please fill up all the blanks');
-//         }
-//     }
-// })
-
+});
 
 /** If confirm review checkbox has been checked */
 onChange('#confirmReview', () => isChecked('#confirmReview') ? enableElement('#submitApplicationBtn') : disableElement('#submitApplicationBtn'));
 
-
-/** If submit application bbutton is click */
+/** If submit application button is click */
 onClick('#submitApplicationBtn', () => {
     const formData = generateFormData('#applicationForm');
     const get = (name) => { return formData.get(name) }
@@ -161,6 +241,7 @@ onClick('#submitApplicationBtn', () => {
     const fd = new FormData();
     fd.append('file', resume);
 
+    // Upload resume
     $.ajax({
         url: `${ BASE_URL_API }home/upload/resume`,
         type: 'POST',
@@ -179,6 +260,7 @@ onClick('#submitApplicationBtn', () => {
                 resume: result.new_file
             }
 
+            // Record Applicant's Data
             $.ajax({
                 url: `${ BASE_URL_API }home/apply`,
                 type: 'POST',
@@ -202,101 +284,30 @@ onClick('#submitApplicationBtn', () => {
         },
         error: () => console.error('There was an error while uploading yung resume')
     });
-})
-
-
-/** Get All Jobs */
-ifSelectorExist('#availableJobList', () => {
-    $.ajax({
-        url: `${ BASE_URL_API }home/job-posts`,
-        type: 'GET',
-        success: result => {
-            console.log(result)
-            
-            let jobList = '';
-
-            result.forEach(r => {
-                const manpowerRequest = r.manpower_request;
-
-                const salaryRange = r.salary_is_visible 
-                    ? `
-                        <div>
-                            <i style="width: 2rem" class="fas fa-money-bill-wave text-success"></i>
-                            <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
-                        </div>
-                    `
-                    : '';
-
-                const expirationDate = isEmptyOrNull(r.expiration_date) 
-                    ? `
-                        <div>
-                            <i style="width: 2rem" class="fas fa-clock text-danger"></i>
-                            <span>Still open for all applicants</span>
-                        </div>
-                    ` 
-                    : `
-                        <div>
-                            <i style="width: 2rem" class="fas fa-clock text-danger"></i>
-                            <span>Open until August 31, 2021</span>
-                        </div>
-                    `
-
-                jobList += `
-                    <div class="col-md-6 col-12 mb-3">
-                        <div class="card card-primary card-outline h-100">
-                            <div class="card-body d-flex flex-column justify-content-between h-100">
-
-                                <div>
-                                    <div class="mb-3">
-                                        <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="h5 text-primary mb-0">${ manpowerRequest.vacant_position.name }</a>
-                                        <div class="small text-muted">
-                                            <span>Posted ${ formatDateTime(r.created_at, "Date") }</span>
-                                            <span class="mx-1">&middot;</span>
-                                            <span>${ fromNow(r.created_at) }</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <div>
-                                            <i style="width: 2rem" class="fas fa-user-tie text-success"></i>
-                                            <span>${ manpowerRequest.employment_type }</span>
-                                        </div>
-                                        ${ salaryRange }
-                                        ${ expirationDate }
-                                    </div>
-                                </div>
-                                
-                                <div class="text-right">
-                                    <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="btn btn-secondary">View Details</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            setContent('#availableJobList', jobList);
-        },
-        error: () => toastr.error('There was an error in getting all job posts')
-    })
 });
 
+
+/**
+ * ==============================================================================
+ * SEARCH JOB
+ * ==============================================================================
+ */
 
 /** Validate Form Search */
 validateForm('#searchJobForm', {
     submitHandler: () => {
         const formData = generateFormData('#searchJobForm');
         const searchQuery = formData.get('searchQuery');
-        if(!isEmptyOrNull(searchQuery)) location.assign(`${ BASE_URL_WEB }careers/?query=${ searchQuery }`);
+        isEmptyOrNull(searchQuery) 
+            ? location.assign(`${ BASE_URL_WEB }careers`)
+            : location.assign(`${ BASE_URL_WEB }careers/?query=${ searchQuery }`)
         return false;
     }
 });
 
-
 /** For Search Result */
 ifSelectorExist('#searchResultList', () => {
     const urlParams = new URLSearchParams(window.location.search);
-
     const query = urlParams.get('query');
 
     setValue('#searchQuery', query);
@@ -312,32 +323,26 @@ ifSelectorExist('#searchResultList', () => {
 
             let jobList = '';
 
-            if(result.length > 1) {
+            if(result.length > 0) {
                 result.forEach(r => {
                     const manpowerRequest = r.manpower_request;
     
                     const salaryRange = r.salary_is_visible 
-                        ? `
-                            <div>
+                        ? `<div>
                                 <i style="width: 2rem" class="fas fa-money-bill-wave text-success"></i>
-                                <span>P 20000 - P 50000</span>
-                            </div>
-                        `
+                                <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
+                            </div>`
                         : '';
     
                     const expirationDate = isEmptyOrNull(r.expiration_date) 
-                        ? `
-                            <div>
+                        ? `<div>
                                 <i style="width: 2rem" class="fas fa-clock text-danger"></i>
                                 <span>Still open for all applicants</span>
-                            </div>
-                        ` 
-                        : `
-                            <div>
+                            </div>` 
+                        : `<div>
                                 <i style="width: 2rem" class="fas fa-clock text-danger"></i>
                                 <span>Open until August 31, 2021</span>
-                            </div>
-                        `
+                            </div>`
     
                     jobList += `
                         <div class="col-md-6 col-12 mb-3">
@@ -383,8 +388,9 @@ ifSelectorExist('#searchResultList', () => {
                 `
             }
 
+            // Set Search Result List
             setContent('#searchResultList', jobList);
         },
         error: () => toastr.error('There was an error in getting search results')
-    })
+    });
 });
