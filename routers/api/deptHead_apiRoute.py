@@ -57,7 +57,7 @@ REQUISITION_NOT_FOUND_RESPONSE = {"message": "Manpower request was not found"}
 
 # Create Manpower Request
 @router.post("/requisitions", status_code = 201)
-def create_manpower_request(
+async def create_manpower_request(
     req: db_schemas.CreateManpowerRequest,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
@@ -89,7 +89,7 @@ def create_manpower_request(
 
 # Get All Manpower Request
 @router.get("/requisitions", response_model = List[db_schemas.ShowManpowerRequest])
-def get_all_requisitions(
+async def get_all_requisitions(
     db: Session = Depends(get_db), 
     user_data: db_schemas.User = Depends(get_user)
 ):
@@ -102,7 +102,7 @@ def get_all_requisitions(
 
 # Manpower Request Analytics
 @router.get("/requisitions/analytics")
-def requisition_analytics(
+async def requisition_analytics(
     db: Session = Depends(get_db), 
     user_data: db_schemas.User = Depends(get_user)
 ):
@@ -139,7 +139,7 @@ def requisition_analytics(
 
 # Get One Manpower Request
 @router.get("/requisitions/{requisition_id}", response_model = db_schemas.ShowManpowerRequest)
-def get_one_requisition(
+async def get_one_requisition(
     requisition_id: str,
     db: Session = Depends(get_db), 
     user_data: db_schemas.User = Depends(get_user)
@@ -157,7 +157,7 @@ def get_one_requisition(
 
 # Update Manpower Request
 @router.put("/requisitions/{requisition_id}", status_code = 202)
-def update_requisition(
+async def update_requisition(
     requisition_id: str,
     req: db_schemas.CreateManpowerRequest,
     db: Session = Depends(get_db),
@@ -178,7 +178,7 @@ def update_requisition(
 
 # Delete Manpower Request
 @router.delete("/requisitions/{requisition_id}")
-def delete_requisition(
+async def delete_requisition(
     requisition_id: str,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
@@ -203,7 +203,7 @@ def delete_requisition(
 
 # Department Positions
 @router.get("/department/positions", response_model = db_schemas.ShowDepartmentPosition)
-def department_positions(
+async def department_positions(
     db: Session = Depends(get_db), 
     user_data: db_schemas.User = Depends(get_user)
 ):

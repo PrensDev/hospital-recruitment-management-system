@@ -29,7 +29,7 @@ templates = Jinja2Templates(directory = "templates")
 
 # Index
 @router.get("/login", response_class=HTMLResponse)
-def index(req: Request):
+async def index(req: Request):
     try:
         access_token_cookie = req.cookies.get('access_token')
         if not access_token_cookie:
@@ -45,7 +45,7 @@ def index(req: Request):
 
 # User Redirect
 @router.get("/redirect")
-def redirect(req: Request, user_data: dict = Depends(get_token)):
+async def redirect(req: Request, user_data: dict = Depends(get_token)):
     if(user_data["user_type"] == "Department Head"):
         return RedirectResponse("/d")
     elif(user_data["user_type"] == "Hiring Manager"):
@@ -63,7 +63,7 @@ def redirect(req: Request, user_data: dict = Depends(get_token)):
 
 # Careers
 @router.get("/careers")
-def careers(req: Request):
+async def careers(req: Request):
     try:
         return templates.TemplateResponse("pages/home/careers.html", {
             "request": req,
@@ -73,7 +73,7 @@ def careers(req: Request):
         print(e)
 
 @router.get("/careers/")
-def search(req: Request, query: Optional[str]):
+async def search(req: Request, query: Optional[str]):
     try:
         if not query:
             return errTemplate.page_not_found(req)
@@ -88,7 +88,7 @@ def search(req: Request, query: Optional[str]):
 
 # Available Job Details
 @router.get("/careers/{job_post_id}")
-def available_job_details(job_post_id: str, req: Request, db: Session = Depends(get_db)):
+async def available_job_details(job_post_id: str, req: Request, db: Session = Depends(get_db)):
     try:
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
         if not job_post:

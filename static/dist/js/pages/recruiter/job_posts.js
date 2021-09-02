@@ -285,13 +285,12 @@ initDataTable('#jobPostsDT', {
             render: data => {
                 const expirationDate = data.expiration_date;
 
-                if(isAfterToday(expirationDate) || isEmptyOrNull(expirationDate)) {
+                if(isAfterToday(expirationDate) || isEmptyOrNull(expirationDate))
                     return dtBadge('info', 'On Going');
-                } else if(isBeforeToday(expirationDate)) {
+                else if(isBeforeToday(expirationDate))
                     return dtBadge('danger', 'Ended');
-                } else {
+                else
                     return dtBadge('warning', 'Last day today');
-                }
             }
         },
 
@@ -393,7 +392,7 @@ const jobPostsAnalytics = () => {
             // Set Ended Job Posts Count
             setContent('#endedJobPostsCount', formatNumber(result.ended));
         },
-        error: toastr.error('There was an error while getting job post analytics')
+        error: () => toastr.error('There was an error while getting job post analytics')
     });
 }
 

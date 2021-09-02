@@ -201,12 +201,49 @@ const viewApplicantDetails = (applicantID) => {
 
 /**
  * ==============================================================================
- * VIEW APPLICANTS PER JOB POST
+ * APPLICANTS PER JOB ANALYTICS
  * ==============================================================================
 */
 
-/** For Applicants Per Jobs Page */
-ifSelectorExist('#applicantsPerJobDT', () => {
+// Applicants Per Job Analytics
+const applicantsPerJobAnalytics = () => {
+    
+    const jobPostID = window.location.pathname.split("/")[3]
+
+    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/analytics`, {
+        success: result => {
+
+            // Show Count or Hide Element
+            const a = (s, c) => c > 0 ? setContent(s, formatNumber(c)) : hideElement(s);
+
+            // Set Total Applicants
+            a('#totalApplicantsCount', result.total);
+
+            // Set For Evaluation Count
+            a('#forEvaluationCount', result.for_evaluation);
+
+            // Set Evaluated Applicants Count
+            const evaluatedCount = result.for_screening + result.for_interview + result.hired;
+            a('#evaluatedCount', evaluatedCount);
+
+            // Set Rejected Applicants Count
+            a('#rejectedCount', result.rejected.total);
+        },
+        error: () => toastr.error('There was an error in getting applciants analytics')
+    });
+}
+
+ifSelectorExist('#applicantsMenu', () => applicantsPerJobAnalytics());
+
+
+/**
+ * ==============================================================================
+ * APPLICANTS FOR EVALUATION
+ * ==============================================================================
+*/
+
+/** Applicants For Evaluation DataTable */
+ifSelectorExist('#applicantsForEvaluationDT', () => {
 
     const jobPostID = window.location.pathname.split("/")[3]
 
@@ -253,9 +290,9 @@ ifSelectorExist('#applicantsPerJobDT', () => {
     });
 
     // Initialize Applicant Per Job DataTable
-    initDataTable('#applicantsPerJobDT', {
+    initDataTable('#applicantsForEvaluationDT', {
         // debugMode: true,
-        url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants`,
+        url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/for-evaluation`,
         columns: [
             
             // Created at (Hidden for default sorting)
@@ -287,49 +324,9 @@ ifSelectorExist('#applicantsPerJobDT', () => {
                 render: data => {
                     const dateApplied = data.created_at;
                     return `
-                        <div>${ formatDateTime(dateApplied, "Date") }</div>
+                        <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
                         <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
                     `
-                }
-            },
-
-            // Status
-            {
-                data: null,
-                render: data => {
-                    const status = data.status;
-                    if(status === "For evaluation") {
-                        return dtBadge('warning', `
-                            <i class="fas fa-redo mr-1"></i>
-                            <span>${ status }</span>
-                        `);
-                    } else if(status === "For screening") {
-                        return dtBadge('secondary', `
-                            <i class="fas fa-user mr-1"></i>
-                            <span>${ status }</span>
-                        `);
-                    } else if(status === "For interview") {
-                        return dtBadge('info', `
-                            <i class="fas fa-file-alt mr-1"></i>
-                            <span>${ status }</span>
-                        `);
-                    } else if(status === "Hired") {
-                        return dtBadge('success', `
-                            <i class="fas fa-check mr-1"></i>
-                            <span>${ status }</span>
-                        `);
-                    } else if(
-                        status === "Rejected from evaluation" || 
-                        status === "Rejected from screnning"  || 
-                        status === "Rejected from interview"
-                    ) {
-                        return dtBadge('danger', `
-                            <i class="fas fa-times mr-1"></i>
-                            <span>${ status }</span>
-                        `);
-                    } else {
-                        return dtBadge('light', `<span>Invalid data</span>`);
-                    }
                 }
             },
 
@@ -358,45 +355,252 @@ ifSelectorExist('#applicantsPerJobDT', () => {
                 }
             }
         ]
-    })
+    });
 });
 
 
 /**
  * ==============================================================================
- * APPLICANTS PER JOB ANALYTICS
+ * EVALUATED APPLICANTS
  * ==============================================================================
 */
 
+/** Applicants For Evaluation DataTable */
+ifSelectorExist('#evaluatedApplicantsDT', () => {
 
-// Applicants Per Job Analytics
-const applicantsPerJobAnalytics = () => {
-    
     const jobPostID = window.location.pathname.split("/")[3]
 
-    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/analytics`, {
+    // Get Job Post Details
+    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
+            // console.log(result);
 
-            // Set Total Applicants
-            setContent('#totalApplicantsCount', formatNumber(result.total));
+            const manpowerRequest = result.manpower_request
 
-            // Set For Evaluation Applicants
-            setContent('#forEvaluationCount', formatNumber(result.for_evaluation));
+            // Set Job Post Position
+            setContent('#position', manpowerRequest.vacant_position.name);
 
-            // Set For Screening 
-            setContent('#forScreeningCount', formatNumber(result.for_screening));
+            // Set Job Post Status
+            setContent('#jobPostStatus', () => {
+                const expiresAt = result.expiration_date;
+                if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
+                    return dtBadge('info', 'On Going');
+                else if(isBeforeToday(expiresAt))
+                    return dtBadge('danger', 'Ended');
+                else
+                    return dtBadge('warning', 'Last day today');
+            });
 
-            // Set For Interview
-            setContent('#forInterviewCount', formatNumber(result.for_interview));
+            //  Set Job Posted At
+            setContent('#jobPostedAt',`Posted ${ formatDateTime(result.created_at, 'Date') }`);
 
-            // Set Rejected Applicants
-            setContent('#rejectedApplicantsCount', formatNumber(result.rejected.total));
+            // Set Staff needed
+            setContent('#staffsNeeded', () => {
+                const staffsNeeded = manpowerRequest.staffs_needed;
+                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' } `;
+            });
+            
+            // Set Employment Type
+            setContent('#employmentType', manpowerRequest.employment_type);
+
+            // Set Deadline
+            setContent('#deadline', () => {
+                const deadline = manpowerRequest.deadline;
+                return isEmptyOrNull(deadline) ? 'No deadline' : `Until ${ formatDateTime(deadline, "Date") }`
+            })
         },
-        error: () => toastr.error('There was an error in getting applciants analytics')
+        error: () => toastr.error('There was an error in getting job post details')
     });
-}
 
-ifSelectorExist('#applicantsPerJobAnalytics', () => applicantsPerJobAnalytics());
+    // Initialize Applicant Per Job DataTable
+    initDataTable('#evaluatedApplicantsDT', {
+        // debugMode: true,
+        url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/evaluated`,
+        columns: [
+            
+            // Created at (Hidden for default sorting)
+            { data: 'created_at', visible: false },
+
+            // Applicant
+            {
+                data: null,
+                render: data => {
+                    return formatName('F M. L, S', {
+                        firstName: data.first_name,
+                        middleName: data.middle_name,
+                        lastName: data.last_name,
+                        suffixName: data.suffix_name,
+                    })
+                }
+            },
+
+            // Contact Number
+            { data: 'contact_number' },
+
+            // Email
+            { data: 'email' },
+
+            // Date Applied
+            {
+                data: null,
+                class: 'text-nowrap',
+                render: data => {
+                    const dateApplied = data.created_at;
+                    return `
+                        <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
+                        <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                    `
+                }
+            },
+
+            // User Actions
+            {
+                data: null,
+                render: data => {
+                    return `
+                        <div class="text-center dropdown">
+                            <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </div>
+
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <div 
+                                    class="dropdown-item d-flex" 
+                                    role="button" 
+                                    onclick="viewApplicantDetails('${ data.applicant_id }')"
+                                >
+                                    <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                    <div>View Details</div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                }
+            }
+        ]
+    });
+});
+
+
+/**
+ * ==============================================================================
+ * APPLICANTS REJECTED FROM EVALUATION
+ * ==============================================================================
+*/
+
+/** Applicants For Evaluation DataTable */
+ifSelectorExist('#rejectedApplicantsDT', () => {
+
+    const jobPostID = window.location.pathname.split("/")[3]
+
+    // Get Job Post Details
+    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
+        success: result => {
+            const manpowerRequest = result.manpower_request
+
+            // Set Job Post Position
+            setContent('#position', manpowerRequest.vacant_position.name);
+
+            // Set Job Post Status
+            setContent('#jobPostStatus', () => {
+                const expiresAt = result.expiration_date;
+                if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
+                    return dtBadge('info', 'On Going');
+                else if(isBeforeToday(expiresAt))
+                    return dtBadge('danger', 'Ended');
+                else
+                    return dtBadge('warning', 'Last day today');
+            });
+
+            //  Set Job Posted At
+            setContent('#jobPostedAt',`Posted ${ formatDateTime(result.created_at, 'Date') }`);
+
+            // Set Staff needed
+            setContent('#staffsNeeded', () => {
+                const staffsNeeded = manpowerRequest.staffs_needed;
+                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' } `;
+            });
+            
+            // Set Employment Type
+            setContent('#employmentType', manpowerRequest.employment_type);
+
+            // Set Deadline
+            setContent('#deadline', () => {
+                const deadline = manpowerRequest.deadline;
+                return isEmptyOrNull(deadline) ? 'No deadline' : `Until ${ formatDateTime(deadline, "Date") }`
+            })
+        },
+        error: () => toastr.error('There was an error in getting job post details')
+    });
+
+    // Initialize Applicant Per Job DataTable
+    initDataTable('#rejectedApplicantsDT', {
+        // debugMode: true,
+        url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/rejected`,
+        columns: [
+            
+            // Created at (Hidden for default sorting)
+            { data: 'created_at', visible: false },
+
+            // Applicant
+            {
+                data: null,
+                render: data => {
+                    return formatName('F M. L, S', {
+                        firstName: data.first_name,
+                        middleName: data.middle_name,
+                        lastName: data.last_name,
+                        suffixName: data.suffix_name,
+                    })
+                }
+            },
+
+            // Contact Number
+            { data: 'contact_number' },
+
+            // Email
+            { data: 'email' },
+
+            // Date Applied
+            {
+                data: null,
+                class: 'text-nowrap',
+                render: data => {
+                    const dateApplied = data.created_at;
+                    return `
+                        <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
+                        <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                    `
+                }
+            },
+
+            // User Actions
+            {
+                data: null,
+                render: data => {
+                    return `
+                        <div class="text-center dropdown">
+                            <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </div>
+
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <div 
+                                    class="dropdown-item d-flex" 
+                                    role="button" 
+                                    onclick="viewApplicantDetails('${ data.applicant_id }')"
+                                >
+                                    <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                    <div>View Details</div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                }
+            }
+        ]
+    });
+});
 
 
 /**
@@ -410,7 +614,6 @@ $("#approveForScreening, #rejectFromEvaluation").on('change', () => {
     const requestStatus = $(`input[name="applicantStatus"]:checked`).val();
     if(requestStatus == "For screening") hideElement("#remarksField");
     if(requestStatus == "Rejected from evaluation") showElement("#remarksField");
-
     ifSelectorExist('#submitBtn', () => enableElement('#submitBtn'));
 });
 

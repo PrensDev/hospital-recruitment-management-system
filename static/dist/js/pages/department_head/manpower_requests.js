@@ -123,7 +123,7 @@ validateForm('#addManpowerRequestForm', {
         },
         staffsNeeded: {
             min: 'The number of staffs must at least 1',
-            required: 'No. of vacany is required'
+            required: 'Number of staffs is required'
         },
         employmentType: {
             required: 'Employment type is required'
@@ -691,7 +691,7 @@ validateForm('#editManpowerRequestForm', {
         },
         staffsNeeded: {
             min: 'The number of staffs must at least 1',
-            required: 'No. of vacany is required'
+            required: 'Number of staffs is required'
         },
         employmentType: {
             required: 'Employment type is required'

@@ -31,8 +31,8 @@ Applicant = models.Applicant
 env = dotenv_values(".env")
 
 
-# Conf
-conf = ConnectionConfig(
+# Mail Configuration
+mail_config = ConnectionConfig(
     MAIL_USERNAME = env['MAIL_EMAIL'],
     MAIL_PASSWORD = env['MAIL_PASSWORD'],
     MAIL_FROM = env['MAIL_EMAIL'],
@@ -55,7 +55,7 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
 
 # Get All Job Posts
 @router.get("/job-posts", response_model = List[db_schemas.ShowJobPostForApplicants])
-def get_all_job_posts(db: Session = Depends(get_db)):
+async def get_all_job_posts(db: Session = Depends(get_db)):
     try:
         return db.query(JobPost).filter(or_(
             JobPost.expiration_date > date.today(), 
@@ -67,7 +67,7 @@ def get_all_job_posts(db: Session = Depends(get_db)):
 
 # Search Job Post
 @router.post("/job-posts/search", response_model = List[db_schemas.ShowJobPostForApplicants])
-def search_job_post(req: db_schemas.Search, db: Session = Depends(get_db)):
+async def search_job_post(req: db_schemas.Search, db: Session = Depends(get_db)):
     try:
         return db.query(JobPost).join(Requisition).join(Position).filter(Position.name.contains(req.query)).all()
     except Exception as e:
@@ -76,7 +76,7 @@ def search_job_post(req: db_schemas.Search, db: Session = Depends(get_db)):
 
 # Get One Job Post
 @router.get("/job-posts/{job_post_id}", response_model = db_schemas.ShowJobPostForApplicants)
-def get_one_job_post(job_post_id: str, db: Session = Depends(get_db)):
+async def get_one_job_post(job_post_id: str, db: Session = Depends(get_db)):
     try:
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
         if not job_post:
@@ -142,7 +142,7 @@ async def apply(req: db_schemas.Applicant, db: Session = Depends(get_db)):
             subtype = "html"
         )
 
-        fm = FastMail(conf)
+        fm = FastMail(mail_config)
 
         await fm.send_message(message)
 

@@ -122,11 +122,10 @@ ifSelectorExist('#availableJobDetails', () => {
             setContent('#employmentType', manpowerRequest.employment_type);
 
             // Set Salary Range
-            if(result.salary_is_visible) {
+            if(result.salary_is_visible)
                 setContent('#salaryRange', `${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }`)
-            } else {
+            else
                 hideElement('#salaryRangeDisplay')
-            }
 
             // Set Open Until
             setContent('#openUntil', () => {
@@ -234,6 +233,12 @@ onChange('#confirmReview', () => isChecked('#confirmReview') ? enableElement('#s
 
 /** If submit application button is click */
 onClick('#submitApplicationBtn', () => {
+    
+    // Set button in loading state
+    btnToLoadingState('#submitApplicationBtn');
+    disableElement('#cancelApplicationBtn');
+    disableElement('#confirmReview');
+
     const formData = generateFormData('#applicationForm');
     const get = (name) => { return formData.get(name) }
 
@@ -269,20 +274,68 @@ onClick('#submitApplicationBtn', () => {
                 data: JSON.stringify(data),
                 success: result2 => {
                     if(result2) {
+
+                        // Hide Confirm Application Modal
                         hideModal('#confirmApplicationModal');
+
+                        // Set buttons to unload state
+                        btnToUnloadState('#submitApplicationBtn', `
+                            <span>Submit</span>
+                            <i class="fas fa-file-export ml-1"></i>
+                        `);
+                        disableElement('#cancelApplicationBtn');
+                        disableElement('#confirmReview');
+
+                        // Reset Form
                         resetForm('#applicationForm');
+
+                        // Uncheck Confirm Review
                         uncheckElement('#confirmReview');
-                        toastr.success('Your application is successfully submitted');
+
+                        // Show Success Alert
+                        toastr.success('Your application is successfully submitted. Please check your email.');
                     }
                 },
                 error: () => {
+                    
+                    // Hide Confirm Application Modal
                     hideModal('#confirmApplicationModal');
+
+                    // Set buttons to unload state
+                    btnToUnloadState('#submitApplicationBtn', `
+                        <span>Submit</span>
+                        <i class="fas fa-file-export ml-1"></i>
+                    `);
+                    enableElement('#cancelApplicationBtn');
+                    enableElement('#confirmReview');
+
+                    // Uncheck Confirm Review
                     uncheckElement('#confirmReview');
+
+                    // Show Error Alert
                     toastr.error('There was a problem in submitting your application')
                 }
             });
         },
-        error: () => console.error('There was an error while uploading yung resume')
+        error: () => {
+
+            // Hide Confirm Application Modal
+            hideModal('#confirmApplicationModal');
+
+            // Set buttons to unload state
+            btnToUnloadState('#submitApplicationBtn', `
+                <span>Submit</span>
+                <i class="fas fa-file-export ml-1"></i>
+            `);
+            enableElement('#cancelApplicationBtn');
+            enableElement('#confirmReview');
+
+            // Uncheck Confirm Review
+            uncheckElement('#confirmReview');
+
+            // Show error alert
+            toastr.error('There was a problem in uploading your resume')
+        }
     });
 });
 

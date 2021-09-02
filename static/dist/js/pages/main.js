@@ -302,6 +302,25 @@ const formatCurrency = (money) => {
 }
 
 
+/** Button To Loading State */
+const btnToLoadingState = (selector) => {
+    disableElement(selector);
+    setContent(selector, `<div class="spinner-border spinner-border-sm mx-3">`);
+}
+
+/** Button To Unload State */
+const btnToUnloadState = (selector, originalContent) => {
+    enableElement(selector);
+    setContent(selector, originalContent);
+}
+
+
+/**
+ * ====================================================================================
+ * * AJAX METHODS
+ * ====================================================================================
+ */
+
 /** GET AJAX */
 const GET_ajax = (url = '', options = {success: () => {}, error: () => console.error('GET_ajax failed')}) => $.ajax({
     url: url,
@@ -345,7 +364,9 @@ const DELETE_ajax = (url = '', options = {success: () => {}, error: () => consol
     headers: AJAX_HEADERS,
     success: options.success,
     error: options.error
-})
+});
+
+
 
 
 /** Check if there are sessioned alert */

@@ -26,7 +26,7 @@ AUTHORIZED_USER = "Hiring Manager"
 
 # Department Head Dashboard
 @router.get("", response_class=HTMLResponse)
-def dashboard(req: Request, user_data: dict = Depends(get_token)):
+async def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
             "request": req,
@@ -40,7 +40,7 @@ def dashboard(req: Request, user_data: dict = Depends(get_token)):
 
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
-def dashboard(req: Request, user_data: dict = Depends(get_token)):
+async def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
             "request": req,
@@ -54,7 +54,7 @@ def dashboard(req: Request, user_data: dict = Depends(get_token)):
 
 # Applicants
 @router.get("/applicants", response_class=HTMLResponse)
-def dashboard(req: Request, user_data: dict = Depends(get_token)):
+async def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "applicants.html", {
             "request": req,

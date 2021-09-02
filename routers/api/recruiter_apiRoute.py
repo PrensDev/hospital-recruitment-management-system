@@ -130,7 +130,7 @@ def get_all_job_posts(
 
 # Job Posts Analytics
 @router.get("/job-posts/analytics")
-def job_posts_analytics(
+async def job_posts_analytics(
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
 ):
@@ -154,7 +154,7 @@ def job_posts_analytics(
 
 # Get One Job Posts
 @router.get("/job-posts/{job_post_id}", response_model = db_schemas.ShowJobPost)
-def get_one_job_post(
+async def get_one_job_post(
     job_post_id,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
@@ -172,7 +172,7 @@ def get_one_job_post(
 
 # Post Vacant Job
 @router.post("/job-posts", status_code = 201)
-def post_vacant_job(
+async def post_vacant_job(
     req: db_schemas.CreateJobPost,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
@@ -199,7 +199,7 @@ def post_vacant_job(
 
 # Update Job Post
 @router.put("/job-posts/{job_post_id}")
-def update_job_post(
+async def update_job_post(
     job_post_id: str,
     req: db_schemas.JobPost,
     db: Session = Depends(get_db),
@@ -230,7 +230,7 @@ APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
 
 # Get All Applicants
 @router.get("/applicants", response_model = List[db_schemas.ShowApplicantInfo])
-def get_all_applicants(
+async def get_all_applicants(
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
 ):
@@ -243,7 +243,7 @@ def get_all_applicants(
 
 # Applicants Analytics
 @router.get("/applicants/analytics")
-def applicants_analytics(
+async def applicants_analytics(
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
 ):
@@ -278,7 +278,7 @@ def applicants_analytics(
 
 # Get All Applicants Per Job
 @router.get("/job-posts/{job_post_id}/applicants", response_model = List[db_schemas.ShowApplicantInfo])
-def get_all_applicants_per_job(
+async def get_all_applicants_per_job(
     job_post_id,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
@@ -292,7 +292,7 @@ def get_all_applicants_per_job(
 
 # Applicants Per Job Analytics
 @router.get("/job-posts/{job_post_id}/applicants/analytics")
-def applicants_per_job_analytics(
+async def applicants_per_job_analytics(
     job_post_id,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
@@ -347,9 +347,64 @@ def applicants_per_job_analytics(
         print(e)
 
 
+# Get All Applicants Per (For evaluation)
+@router.get("/job-posts/{job_post_id}/applicants/for-evaluation", response_model = List[db_schemas.ShowApplicantInfo])
+async def for_evaluation_applicants(
+    job_post_id,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        return db.query(Applicant).filter(
+            Applicant.job_post_id == job_post_id,
+            Applicant.status == 'For evaluation'
+        ).all()
+    except Exception as e:
+        print(e)
+
+
+# Get All Applicants Per Job (Evaluated)
+@router.get("/job-posts/{job_post_id}/applicants/evaluated", response_model = List[db_schemas.ShowApplicantInfo])
+async def evaluated_applicants(
+    job_post_id,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        return db.query(Applicant).filter(
+            Applicant.job_post_id == job_post_id,
+            or_(
+                Applicant.status == 'For screening',
+                Applicant.status == 'For interview',
+                Applicant.status == 'Hired',
+            )
+        ).all()
+    except Exception as e:
+        print(e)
+
+
+# Get All Applicants Per Job (Rejected)
+@router.get("/job-posts/{job_post_id}/applicants/rejected", response_model = List[db_schemas.ShowApplicantInfo])
+async def rejected_applicants(
+    job_post_id,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        return db.query(Applicant).filter(
+            Applicant.job_post_id == job_post_id,
+            Applicant.status == 'Rejected from evaluation'
+        ).all()
+    except Exception as e:
+        print(e)
+
+
 # Get One Applicant
 @router.get("/applicants/{applicant_id}", response_model = db_schemas.ShowApplicantInfo)
-def get_one_applicant(
+async def get_one_applicant(
     applicant_id,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
@@ -367,7 +422,7 @@ def get_one_applicant(
 
 # Evaluate Applicant
 @router.put("/applicants/{applicant_id}", status_code = 202)
-def evaluate_applicant(
+async def evaluate_applicant(
     applicant_id,
     req: db_schemas.ApplicantEvaluation,
     db: Session = Depends(get_db),
