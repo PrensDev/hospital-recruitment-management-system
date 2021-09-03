@@ -216,9 +216,6 @@ const viewApplicantDetails = (applicantID) => {
 
 /** Set Job Post Summary */
 ifSelectorExist('#jobPostSummary', () => {
-
-    const jobPostID = window.location.pathname.split("/")[3];
-
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
             // console.log(result);
@@ -255,11 +252,13 @@ ifSelectorExist('#jobPostSummary', () => {
             setContent('#deadline', () => {
                 const deadline = manpowerRequest.deadline;
                 return isEmptyOrNull(deadline) ? 'No deadline' : `Until ${ formatDateTime(deadline, "Date") }`
-            })
+            });
+            
+            $('#jobPostSummaryLoader').remove();
+            showElement('#jobPostSummary');
         },
         error: () => toastr.error('There was an error in getting job post details')
     });
-
 });
 
 
@@ -531,7 +530,7 @@ initDataTable('#rejectedApplicantsDT', {
  * ==============================================================================
 */
 
-/** If user select reject for manpower request */
+/** If user select reject for evaluation */
 $("#approveForScreening, #rejectFromEvaluation").on('change', () => {
     const requestStatus = $(`input[name="applicantStatus"]:checked`).val();
     if(requestStatus == "For screening") hideElement("#remarksField");
@@ -567,7 +566,7 @@ validateForm('#applicantEvaluationForm', {
             required: "Please select a status for this applicant"
         },
         remarks: {
-            required: "Please insert remarks here"
+            required: "You must insert remarks here for rejected this applicant from evaluation"
         }
     },
     submitHandler: () => evaluateApplicant()
@@ -579,9 +578,13 @@ const evaluateApplicant = () => {
     const get = (name) => { return formData.get(name) }
 
     const applicantStatus = get('applicantStatus');
-    const remarks = applicantStatus === 'Rejected from evaluation' ? get('remarks') : null;
+    const isRejected = applicantStatus === 'Rejected from evaluation' 
+
+    const evaluatedAt = isRejected ? null : formatDateTime(moment());
+    const remarks = isRejected ? get('remarks') : null;
 
     const data = {
+        evaluated_at: evaluatedAt,
         status: applicantStatus,
         remarks: remarks
     }
@@ -609,3 +612,4 @@ const evaluateApplicant = () => {
         }
     })
 }
+

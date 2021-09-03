@@ -14,7 +14,7 @@ GET_ajax(`${ R_API_ROUTE }info`, {
             suffixName: result.suffix_name
         }));
 
-        hideElement('#userFullNameLoader');
+        $('#userFullNameLoader').remove();
         showElement('#userFullNameDisplay');
     },
     error: () => toastr.error('There was an error while getting your information')

@@ -232,5 +232,13 @@ class Search(BaseModel):
 
 # Applicant Evaluation
 class ApplicantEvaluation(BaseModel):
+    evaluated_at: Optional[datetime]
+    status: str
+    remarks: Optional[str]
+
+
+# Applicant Screening
+class ApplicantScreening(BaseModel):
+    screened_at: Optional[datetime]
     status: str
     remarks: Optional[str]

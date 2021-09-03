@@ -420,7 +420,7 @@ async def get_one_applicant(
         print(e)
 
 
-# Evaluate Applicant
+# Evaluate Applicant Status
 @router.put("/applicants/{applicant_id}", status_code = 202)
 async def evaluate_applicant(
     applicant_id,
@@ -436,6 +436,7 @@ async def evaluate_applicant(
         else:
             applicant.update({
                 "evaluated_by": user_data.user_id,
+                "evaluated_at": req.evaluated_at,
                 "status": req.status,
                 "remarks": req.remarks
             })

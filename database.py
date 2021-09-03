@@ -9,7 +9,7 @@ SQLALCHEMY_DATABASE_URL = "mysql+mysqlconnector://root@localhost/hospital_db"
 
 
 # Engine
-engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_size=20, max_overflow=0)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_size=25, max_overflow=5)
 
 
 # Session Local
@@ -26,4 +26,6 @@ def get_db():
     try:
         yield db
     except:
+        db.close()
+    finally:
         db.close()

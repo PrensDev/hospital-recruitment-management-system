@@ -383,9 +383,17 @@ class Applicant(Base):
         ForeignKey("users.user_id"),
         nullable = True
     )
+    evaluated_at = Column(
+        DateTime,
+        nullable = True
+    )
     screened_by = Column(
         String(36),
         ForeignKey("users.user_id"),
+        nullable = True
+    )
+    screened_at = Column(
+        DateTime,
         nullable = True
     )
     remarks = Column(

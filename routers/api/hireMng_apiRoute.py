@@ -141,6 +141,10 @@ async def update_requisition(
 # ====================================================================
 
 
+# Job Post Not Found Response
+JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post Not Found"}
+
+
 # Job Posts
 @router.get("/job-posts", response_model=List[db_schemas.ShowJobPost])
 async def get_all_job_posts(
@@ -369,3 +373,28 @@ async def evaluated_applicants(
     except Exception as e:
         print(e)
 
+
+# Screen Applicant
+@router.put("/applicants/{applicant_id}/screen", status_code = 202)
+async def update_applicant_status(
+    applicant_id,
+    req: db_schemas.ApplicantScreening,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
+        if not applicant.first():
+            raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
+        else:
+            applicant.update({
+                "screened_by": user_data.user_id,
+                "screened_at": req.screened_at,
+                "status": req.status,
+                "remarks": req.remarks
+            })
+            db.commit()
+            return {"message": "Update success"}
+    except Exception as e:
+        print(e)
