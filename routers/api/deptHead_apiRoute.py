@@ -1,9 +1,8 @@
 # Import Packages
 from typing import List
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.functions import user
 from database import get_db
 from oauth2 import get_user, check_priviledge
 from schemas import db_schemas
@@ -12,10 +11,10 @@ import models
 
 
 # Models
-User = models.User
-Position = models.Position
+User        = models.User
+Position    = models.Position
 Requisition = models.Requisition
-Department = models.Department
+Department  = models.Department
 
 
 # Router Instance

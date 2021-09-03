@@ -1,4 +1,4 @@
-{% extends "pages/recruiter/_layout.html" %} 
+{% extends "pages/hiring_manager/_layout.html" %} 
 
 
 {% block content %}
@@ -76,21 +76,30 @@
                                 <div class="card-body p-0">
                                     <ul class="nav nav-pills flex-column" id="applicantsMenu">
         
-                                        <!-- For evaluation link -->
+                                        <!-- For screening link -->
                                         <li class="nav-item">
                                             <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-evaluation" class="nav-link">
                                                 <i class="fas fa-redo" style="width: 1.5rem"></i>
-                                                <span>For evaluation</span>
-                                                <span class="badge bg-warning float-right" id="forEvaluationCount">0</span>
+                                                <span>For screening</span>
+                                                <span class="badge bg-warning float-right" id="forScreeningCount">0</span>
                                             </a>
                                         </li>
         
-                                        <!-- Evaluated link -->
+                                        <!-- For interview link -->
+                                        <li class="nav-item">
+                                            <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/evaluated" class="nav-link">
+                                                <i class="fas fa-user-tie" style="width: 1.5rem"></i>
+                                                <span>For interview</span>
+                                                <span class="badge bg-info float-right" id="forInterviewCount">0</span>
+                                            </a>
+                                        </li>
+
+                                        <!-- Hired link -->
                                         <li class="nav-item">
                                             <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/evaluated" class="nav-link">
                                                 <i class="fas fa-check" style="width: 1.5rem"></i>
-                                                <span>Evaluated</span>
-                                                <span class="badge bg-success float-right" id="evaluatedCount">0</span>
+                                                <span>Hired</span>
+                                                <span class="badge bg-success float-right" id="hiredCount">0</span>
                                             </a>
                                         </li>
         
@@ -98,7 +107,7 @@
                                         <li class="nav-item">
                                             <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/rejected" class="nav-link">
                                                 <i class="fas fa-times" style="width: 1.5rem"></i>
-                                                <span>Rejected from evaluation</span>
+                                                <span>Rejected applicants</span>
                                                 <span class="badge bg-danger float-right" id="rejectedCount">0</span>
                                             </a>
                                         </li>
@@ -129,5 +138,5 @@
 
 
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/recruiter/applicants.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/pages/hiring_manager/applicants.js')}}"></script>
 {% endblock %}

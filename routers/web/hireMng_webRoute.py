@@ -1,9 +1,17 @@
 # Import Packages
+from database import get_db
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from routers.web import errPages_templates as errTemplate
+from sqlalchemy.orm import Session
 from jwt_token import get_token
+import models
+
+
+# Models
+Requisition = models.Requisition
+JobPost = models.JobPost
 
 # Router
 router = APIRouter(
@@ -38,6 +46,12 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
         return errTemplate.page_not_found(req)
 
 
+
+# ===========================================================
+# MANPOWER REQUESTS
+# ===========================================================
+
+
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
 async def render(req: Request, user_data: dict = Depends(get_token)):
@@ -52,6 +66,30 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
         return errTemplate.page_not_found(req)
 
 
+# ===========================================================
+# JOB POSTS
+# ===========================================================
+
+
+# Job Posts
+@router.get("/job-posts", response_class=HTMLResponse)
+async def render(req: Request, user_data: dict = Depends(get_token)):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        return templates.TemplateResponse(TEMPLATES_PATH + "job_posts.html", {
+            "request": req,
+            "page_title": "Job Posts",
+            "sub_title": "Manage applicants per job post here",
+            "active_navlink": "Job Posts"
+        })
+    else:
+        return errTemplate.page_not_found(req)
+
+
+# ===========================================================
+# APPLICANTS
+# ===========================================================
+
+
 # Applicants
 @router.get("/applicants", response_class=HTMLResponse)
 async def render(req: Request, user_data: dict = Depends(get_token)):
@@ -62,5 +100,53 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "sub_title": "Applicants to manage potential candidates",
             "active_navlink": "Applicants"
         })    
+    else:
+        return errTemplate.page_not_found(req)
+
+
+# Applicants Per Job Post
+@router.get("/job-posts/{job_post_id}/applicants", response_class=HTMLResponse)
+async def render(
+    job_post_id: str, 
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        if not job_post_id:
+            return errTemplate.page_not_found(req)
+        else:
+            job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+            if not job_post:
+                return errTemplate.page_not_found(req)
+            else:
+                return RedirectResponse(f"/h/job-posts/{job_post_id}/applicants/for-screening")
+    else:
+        return errTemplate.page_not_found(req)
+
+
+# Applicants Per Job Post (for screening)
+@router.get("/job-posts/{job_post_id}/applicants/for-screening", response_class=HTMLResponse)
+async def render(
+    job_post_id: str, 
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        if not job_post_id:
+            return errTemplate.page_not_found(req)
+        else:
+            job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+            if not job_post:
+                return errTemplate.page_not_found(req)
+            else:
+                return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/for_screening.html", {
+                    "request": req,
+                    "page_title": "Applicants - For evaluation",
+                    "sub_title": "Applicants to manage potential candidates",
+                    "active_navlink": "Applicants",
+                    "job_post_id": f"{job_post_id}"
+                })
     else:
         return errTemplate.page_not_found(req)

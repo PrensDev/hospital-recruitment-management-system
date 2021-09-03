@@ -51,6 +51,11 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
         return errTemplate.page_not_found(req)
 
 
+# ===========================================================
+# MANPOWWER REQUESTS
+# ===========================================================
+
+
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
 async def render(req: Request, user_data: dict = Depends(get_token)):
@@ -63,6 +68,12 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
         })
     else:
         return errTemplate.page_not_found(req)
+
+
+
+# ===========================================================
+# JOB POSTS
+# ===========================================================
 
 
 # Job Posts
@@ -127,6 +138,11 @@ async def render(
             })
     else:
         return errTemplate.page_not_found(req)
+
+
+# ===========================================================
+# APPLICANTS
+# ===========================================================
 
 
 # Applicants

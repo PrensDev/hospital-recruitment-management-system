@@ -368,9 +368,7 @@ const updateManpowerRequestStatus = () => {
         reviewed_at: moment().format()
     }
 
-    const requisitionID = formData.get('requisitionID');
-
-    PUT_ajax(`${ H_API_ROUTE }requisitions/${ requisitionID }`, data, {
+    PUT_ajax(`${ H_API_ROUTE }requisitions/${ formData.get('requisitionID') }`, data, {
         success: result => {
             if(result) {
                 // Reload the DataTable

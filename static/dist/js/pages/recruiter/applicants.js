@@ -201,6 +201,60 @@ const viewApplicantDetails = (applicantID) => {
 
 /**
  * ==============================================================================
+ * JOB POST SUMMARY
+ * ==============================================================================
+*/
+
+/** Set Job Post Summary */
+ifSelectorExist('#jobPostSummary', () => {
+
+    const jobPostID = window.location.pathname.split("/")[3];
+
+    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
+        success: result => {
+            // console.log(result);
+
+            const manpowerRequest = result.manpower_request
+
+            // Set Job Post Position
+            setContent('#position', manpowerRequest.vacant_position.name);
+
+            // Set Job Post Status
+            setContent('#jobPostStatus', () => {
+                const expiresAt = result.expiration_date;
+                if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
+                    return dtBadge('info', 'On Going');
+                else if(isBeforeToday(expiresAt))
+                    return dtBadge('danger', 'Ended');
+                else
+                    return dtBadge('warning', 'Last day today');
+            });
+
+            //  Set Job Posted At
+            setContent('#jobPostedAt',`Posted ${ formatDateTime(result.created_at, 'Date') }`);
+
+            // Set Staff needed
+            setContent('#staffsNeeded', () => {
+                const staffsNeeded = manpowerRequest.staffs_needed;
+                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' } `;
+            });
+            
+            // Set Employment Type
+            setContent('#employmentType', manpowerRequest.employment_type);
+
+            // Set Deadline
+            setContent('#deadline', () => {
+                const deadline = manpowerRequest.deadline;
+                return isEmptyOrNull(deadline) ? 'No deadline' : `Until ${ formatDateTime(deadline, "Date") }`
+            })
+        },
+        error: () => toastr.error('There was an error in getting job post details')
+    });
+
+});
+
+/**
+ * ==============================================================================
  * APPLICANTS PER JOB ANALYTICS
  * ==============================================================================
 */
@@ -246,48 +300,6 @@ ifSelectorExist('#applicantsMenu', () => applicantsPerJobAnalytics());
 ifSelectorExist('#applicantsForEvaluationDT', () => {
 
     const jobPostID = window.location.pathname.split("/")[3]
-
-    // Get Job Post Details
-    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
-        success: result => {
-            // console.log(result);
-
-            const manpowerRequest = result.manpower_request
-
-            // Set Job Post Position
-            setContent('#position', manpowerRequest.vacant_position.name);
-
-            // Set Job Post Status
-            setContent('#jobPostStatus', () => {
-                const expiresAt = result.expiration_date;
-                if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
-                    return dtBadge('info', 'On Going');
-                else if(isBeforeToday(expiresAt))
-                    return dtBadge('danger', 'Ended');
-                else
-                    return dtBadge('warning', 'Last day today');
-            });
-
-            //  Set Job Posted At
-            setContent('#jobPostedAt',`Posted ${ formatDateTime(result.created_at, 'Date') }`);
-
-            // Set Staff needed
-            setContent('#staffsNeeded', () => {
-                const staffsNeeded = manpowerRequest.staffs_needed;
-                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' } `;
-            });
-            
-            // Set Employment Type
-            setContent('#employmentType', manpowerRequest.employment_type);
-
-            // Set Deadline
-            setContent('#deadline', () => {
-                const deadline = manpowerRequest.deadline;
-                return isEmptyOrNull(deadline) ? 'No deadline' : `Until ${ formatDateTime(deadline, "Date") }`
-            })
-        },
-        error: () => toastr.error('There was an error in getting job post details')
-    });
 
     // Initialize Applicant Per Job DataTable
     initDataTable('#applicantsForEvaluationDT', {
@@ -370,48 +382,6 @@ ifSelectorExist('#evaluatedApplicantsDT', () => {
 
     const jobPostID = window.location.pathname.split("/")[3]
 
-    // Get Job Post Details
-    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
-        success: result => {
-            // console.log(result);
-
-            const manpowerRequest = result.manpower_request
-
-            // Set Job Post Position
-            setContent('#position', manpowerRequest.vacant_position.name);
-
-            // Set Job Post Status
-            setContent('#jobPostStatus', () => {
-                const expiresAt = result.expiration_date;
-                if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
-                    return dtBadge('info', 'On Going');
-                else if(isBeforeToday(expiresAt))
-                    return dtBadge('danger', 'Ended');
-                else
-                    return dtBadge('warning', 'Last day today');
-            });
-
-            //  Set Job Posted At
-            setContent('#jobPostedAt',`Posted ${ formatDateTime(result.created_at, 'Date') }`);
-
-            // Set Staff needed
-            setContent('#staffsNeeded', () => {
-                const staffsNeeded = manpowerRequest.staffs_needed;
-                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' } `;
-            });
-            
-            // Set Employment Type
-            setContent('#employmentType', manpowerRequest.employment_type);
-
-            // Set Deadline
-            setContent('#deadline', () => {
-                const deadline = manpowerRequest.deadline;
-                return isEmptyOrNull(deadline) ? 'No deadline' : `Until ${ formatDateTime(deadline, "Date") }`
-            })
-        },
-        error: () => toastr.error('There was an error in getting job post details')
-    });
-
     // Initialize Applicant Per Job DataTable
     initDataTable('#evaluatedApplicantsDT', {
         // debugMode: true,
@@ -492,46 +462,6 @@ ifSelectorExist('#evaluatedApplicantsDT', () => {
 ifSelectorExist('#rejectedApplicantsDT', () => {
 
     const jobPostID = window.location.pathname.split("/")[3]
-
-    // Get Job Post Details
-    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
-        success: result => {
-            const manpowerRequest = result.manpower_request
-
-            // Set Job Post Position
-            setContent('#position', manpowerRequest.vacant_position.name);
-
-            // Set Job Post Status
-            setContent('#jobPostStatus', () => {
-                const expiresAt = result.expiration_date;
-                if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
-                    return dtBadge('info', 'On Going');
-                else if(isBeforeToday(expiresAt))
-                    return dtBadge('danger', 'Ended');
-                else
-                    return dtBadge('warning', 'Last day today');
-            });
-
-            //  Set Job Posted At
-            setContent('#jobPostedAt',`Posted ${ formatDateTime(result.created_at, 'Date') }`);
-
-            // Set Staff needed
-            setContent('#staffsNeeded', () => {
-                const staffsNeeded = manpowerRequest.staffs_needed;
-                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' } `;
-            });
-            
-            // Set Employment Type
-            setContent('#employmentType', manpowerRequest.employment_type);
-
-            // Set Deadline
-            setContent('#deadline', () => {
-                const deadline = manpowerRequest.deadline;
-                return isEmptyOrNull(deadline) ? 'No deadline' : `Until ${ formatDateTime(deadline, "Date") }`
-            })
-        },
-        error: () => toastr.error('There was an error in getting job post details')
-    });
 
     // Initialize Applicant Per Job DataTable
     initDataTable('#rejectedApplicantsDT', {
@@ -664,18 +594,21 @@ const evaluateApplicant = () => {
         remarks: remarks
     }
 
-    const applicantID = get('applicantID');
-
-    // console.log(data);
-
-    PUT_ajax(`${ R_API_ROUTE }applicants/${ applicantID }`, data, {
+    PUT_ajax(`${ R_API_ROUTE }applicants/${ get('applicantID') }`, data, {
         success: result => {
             if(result) {
-                hideModal('#applicantDetailsModal');
-                reloadDataTable('#applicantsPerJobDT');
-                applicantsPerJobAnalytics();
-                toastr.success('An applicant is successfully evaluated');
 
+                // Hide Applicant Details Modal
+                hideModal('#applicantDetailsModal');
+
+                // Reload Applicants Per Job Analytics
+                applicantsPerJobAnalytics();
+
+                // Reload DataTable
+                reloadDataTable('#applicantsForEvaluationDT');
+
+                // Show Info Alert
+                toastr.info('An applicant is successfully evaluated');
             }
         },
         error: () => {
