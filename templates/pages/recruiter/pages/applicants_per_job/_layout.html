@@ -81,7 +81,11 @@
                                             <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-evaluation" class="nav-link">
                                                 <i class="fas fa-redo" style="width: 1.5rem"></i>
                                                 <span>For evaluation</span>
-                                                <span class="badge bg-warning float-right" id="forEvaluationCount">0</span>
+                                                <span 
+                                                    class="badge bg-warning float-right" 
+                                                    id="forEvaluationCount" 
+                                                    style="display: none"
+                                                >0</span>
                                             </a>
                                         </li>
         
@@ -90,7 +94,11 @@
                                             <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/evaluated" class="nav-link">
                                                 <i class="fas fa-check" style="width: 1.5rem"></i>
                                                 <span>Evaluated</span>
-                                                <span class="badge bg-success float-right" id="evaluatedCount">0</span>
+                                                <span 
+                                                    class="badge bg-success float-right" 
+                                                    id="evaluatedCount" 
+                                                    style="display: none"
+                                                >0</span>
                                             </a>
                                         </li>
         
@@ -99,7 +107,11 @@
                                             <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/rejected" class="nav-link">
                                                 <i class="fas fa-times" style="width: 1.5rem"></i>
                                                 <span>Rejected from evaluation</span>
-                                                <span class="badge bg-danger float-right" id="rejectedCount">0</span>
+                                                <span 
+                                                    class="badge bg-danger float-right" 
+                                                    id="rejectedCount" 
+                                                    style="display: none"
+                                                >0</span>
                                             </a>
                                         </li>
         

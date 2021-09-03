@@ -4,7 +4,7 @@
 {% block dataTable %}
     <div class="card card-primary card-outline">
         <div class="card-header align-items-center">
-            <div class="card-title">List of Applicants for Evaluation</div>
+            <div class="card-title">List of Applicants for Interview</div>
 
             <div class="card-tools">
                 <button type="button" class="btn btn-sm btn-tool" data-card-widget="maximize">
@@ -16,7 +16,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table 
-                    id="applicantsForEvaluationDT" 
+                    id="applicantsForInterviewDT" 
                     class="table table-bordered table-hover w-100" 
                     width="100" 
                     cellspacing="0"
@@ -36,4 +36,9 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+
+{% block page_modals %}
+    {% include 'pages/recruiter/modals/applicants_for_interview_modal.html' %}
 {% endblock %}

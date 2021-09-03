@@ -1,5 +1,14 @@
 /**
  * ==============================================================================
+ * CONSTANTS
+ * ==============================================================================
+*/
+
+const jobPostID = window.location.pathname.split("/")[3];
+
+
+/**
+ * ==============================================================================
  * VIEW ALL APPLICANTS
  * ==============================================================================
 */
@@ -253,6 +262,7 @@ ifSelectorExist('#jobPostSummary', () => {
 
 });
 
+
 /**
  * ==============================================================================
  * APPLICANTS PER JOB ANALYTICS
@@ -261,14 +271,14 @@ ifSelectorExist('#jobPostSummary', () => {
 
 // Applicants Per Job Analytics
 const applicantsPerJobAnalytics = () => {
-    
-    const jobPostID = window.location.pathname.split("/")[3]
-
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/analytics`, {
         success: result => {
 
             // Show Count or Hide Element
-            const a = (s, c) => c > 0 ? setContent(s, formatNumber(c)) : hideElement(s);
+            const a = (s, c) => { if(c > 0) {
+                setContent(s, formatNumber(c))
+                showElement(s);
+            }}
 
             // Set Total Applicants
             a('#totalApplicantsCount', result.total);
@@ -296,78 +306,72 @@ ifSelectorExist('#applicantsMenu', () => applicantsPerJobAnalytics());
  * ==============================================================================
 */
 
-/** Applicants For Evaluation DataTable */
-ifSelectorExist('#applicantsForEvaluationDT', () => {
+/** Applicants for Evaluation DataTable */
+initDataTable('#applicantsForEvaluationDT', {
+    // debugMode: true,
+    url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/for-evaluation`,
+    columns: [
+        
+        // Created at (Hidden for default sorting)
+        { data: 'created_at', visible: false },
 
-    const jobPostID = window.location.pathname.split("/")[3]
+        // Applicant
+        {
+            data: null,
+            render: data => {
+                return formatName('F M. L, S', {
+                    firstName: data.first_name,
+                    middleName: data.middle_name,
+                    lastName: data.last_name,
+                    suffixName: data.suffix_name,
+                })
+            }
+        },
 
-    // Initialize Applicant Per Job DataTable
-    initDataTable('#applicantsForEvaluationDT', {
-        // debugMode: true,
-        url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/for-evaluation`,
-        columns: [
-            
-            // Created at (Hidden for default sorting)
-            { data: 'created_at', visible: false },
+        // Contact Number
+        { data: 'contact_number' },
 
-            // Applicant
-            {
-                data: null,
-                render: data => {
-                    return formatName('F M. L, S', {
-                        firstName: data.first_name,
-                        middleName: data.middle_name,
-                        lastName: data.last_name,
-                        suffixName: data.suffix_name,
-                    })
-                }
-            },
+        // Email
+        { data: 'email' },
 
-            // Contact Number
-            { data: 'contact_number' },
+        // Date Applied
+        {
+            data: null,
+            class: 'text-nowrap',
+            render: data => {
+                const dateApplied = data.created_at;
+                return `
+                    <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
+                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                `
+            }
+        },
 
-            // Email
-            { data: 'email' },
+        // User Actions
+        {
+            data: null,
+            render: data => {
+                return `
+                    <div class="text-center dropdown">
+                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
 
-            // Date Applied
-            {
-                data: null,
-                class: 'text-nowrap',
-                render: data => {
-                    const dateApplied = data.created_at;
-                    return `
-                        <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                        <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
-                    `
-                }
-            },
-
-            // User Actions
-            {
-                data: null,
-                render: data => {
-                    return `
-                        <div class="text-center dropdown">
-                            <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div 
-                                    class="dropdown-item d-flex" 
-                                    role="button" 
-                                    onclick="viewApplicantDetails('${ data.applicant_id }')"
-                                >
-                                    <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                    <div>View Details</div>
-                                </div>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div 
+                                class="dropdown-item d-flex" 
+                                role="button" 
+                                onclick="viewApplicantDetails('${ data.applicant_id }')"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                <div>View Details</div>
                             </div>
                         </div>
-                    `
-                }
+                    </div>
+                `
             }
-        ]
-    });
+        }
+    ]
 });
 
 
@@ -378,77 +382,71 @@ ifSelectorExist('#applicantsForEvaluationDT', () => {
 */
 
 /** Applicants For Evaluation DataTable */
-ifSelectorExist('#evaluatedApplicantsDT', () => {
+initDataTable('#evaluatedApplicantsDT', {
+    // debugMode: true,
+    url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/evaluated`,
+    columns: [
+        
+        // Created at (Hidden for default sorting)
+        { data: 'created_at', visible: false },
 
-    const jobPostID = window.location.pathname.split("/")[3]
+        // Applicant
+        {
+            data: null,
+            render: data => {
+                return formatName('F M. L, S', {
+                    firstName: data.first_name,
+                    middleName: data.middle_name,
+                    lastName: data.last_name,
+                    suffixName: data.suffix_name,
+                })
+            }
+        },
 
-    // Initialize Applicant Per Job DataTable
-    initDataTable('#evaluatedApplicantsDT', {
-        // debugMode: true,
-        url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/evaluated`,
-        columns: [
-            
-            // Created at (Hidden for default sorting)
-            { data: 'created_at', visible: false },
+        // Contact Number
+        { data: 'contact_number' },
 
-            // Applicant
-            {
-                data: null,
-                render: data => {
-                    return formatName('F M. L, S', {
-                        firstName: data.first_name,
-                        middleName: data.middle_name,
-                        lastName: data.last_name,
-                        suffixName: data.suffix_name,
-                    })
-                }
-            },
+        // Email
+        { data: 'email' },
 
-            // Contact Number
-            { data: 'contact_number' },
+        // Date Applied
+        {
+            data: null,
+            class: 'text-nowrap',
+            render: data => {
+                const dateApplied = data.created_at;
+                return `
+                    <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
+                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                `
+            }
+        },
 
-            // Email
-            { data: 'email' },
+        // User Actions
+        {
+            data: null,
+            render: data => {
+                return `
+                    <div class="text-center dropdown">
+                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
 
-            // Date Applied
-            {
-                data: null,
-                class: 'text-nowrap',
-                render: data => {
-                    const dateApplied = data.created_at;
-                    return `
-                        <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                        <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
-                    `
-                }
-            },
-
-            // User Actions
-            {
-                data: null,
-                render: data => {
-                    return `
-                        <div class="text-center dropdown">
-                            <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div 
-                                    class="dropdown-item d-flex" 
-                                    role="button" 
-                                    onclick="viewApplicantDetails('${ data.applicant_id }')"
-                                >
-                                    <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                    <div>View Details</div>
-                                </div>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div 
+                                class="dropdown-item d-flex" 
+                                role="button" 
+                                onclick="viewApplicantDetails('${ data.applicant_id }')"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                <div>View Details</div>
                             </div>
                         </div>
-                    `
-                }
+                    </div>
+                `
             }
-        ]
-    });
+        }
+    ]
 });
 
 
@@ -459,77 +457,71 @@ ifSelectorExist('#evaluatedApplicantsDT', () => {
 */
 
 /** Applicants For Evaluation DataTable */
-ifSelectorExist('#rejectedApplicantsDT', () => {
+initDataTable('#rejectedApplicantsDT', {
+    // debugMode: true,
+    url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/rejected`,
+    columns: [
+        
+        // Created at (Hidden for default sorting)
+        { data: 'created_at', visible: false },
 
-    const jobPostID = window.location.pathname.split("/")[3]
+        // Applicant
+        {
+            data: null,
+            render: data => {
+                return formatName('F M. L, S', {
+                    firstName: data.first_name,
+                    middleName: data.middle_name,
+                    lastName: data.last_name,
+                    suffixName: data.suffix_name,
+                })
+            }
+        },
 
-    // Initialize Applicant Per Job DataTable
-    initDataTable('#rejectedApplicantsDT', {
-        // debugMode: true,
-        url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/rejected`,
-        columns: [
-            
-            // Created at (Hidden for default sorting)
-            { data: 'created_at', visible: false },
+        // Contact Number
+        { data: 'contact_number' },
 
-            // Applicant
-            {
-                data: null,
-                render: data => {
-                    return formatName('F M. L, S', {
-                        firstName: data.first_name,
-                        middleName: data.middle_name,
-                        lastName: data.last_name,
-                        suffixName: data.suffix_name,
-                    })
-                }
-            },
+        // Email
+        { data: 'email' },
 
-            // Contact Number
-            { data: 'contact_number' },
+        // Date Applied
+        {
+            data: null,
+            class: 'text-nowrap',
+            render: data => {
+                const dateApplied = data.created_at;
+                return `
+                    <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
+                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                `
+            }
+        },
 
-            // Email
-            { data: 'email' },
+        // User Actions
+        {
+            data: null,
+            render: data => {
+                return `
+                    <div class="text-center dropdown">
+                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
 
-            // Date Applied
-            {
-                data: null,
-                class: 'text-nowrap',
-                render: data => {
-                    const dateApplied = data.created_at;
-                    return `
-                        <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                        <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
-                    `
-                }
-            },
-
-            // User Actions
-            {
-                data: null,
-                render: data => {
-                    return `
-                        <div class="text-center dropdown">
-                            <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div 
-                                    class="dropdown-item d-flex" 
-                                    role="button" 
-                                    onclick="viewApplicantDetails('${ data.applicant_id }')"
-                                >
-                                    <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                    <div>View Details</div>
-                                </div>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div 
+                                class="dropdown-item d-flex" 
+                                role="button" 
+                                onclick="viewApplicantDetails('${ data.applicant_id }')"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                <div>View Details</div>
                             </div>
                         </div>
-                    `
-                }
+                    </div>
+                `
             }
-        ]
-    });
+        }
+    ]
 });
 
 

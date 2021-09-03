@@ -14,6 +14,9 @@ GET_ajax(`${ D_API_ROUTE }info`, {
             lastName: result.last_name,
             suffixName: result.suffix_name
         }));
+
+        hideElement('#userFullNameLoader');
+        showElement('#userFullNameDisplay');
     },
     error: () => toastr.error('There was an error while getting your information')
 });

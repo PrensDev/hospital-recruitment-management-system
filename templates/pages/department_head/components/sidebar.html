@@ -7,8 +7,14 @@
         <!-- <div class="image">
         <img src="../../dist/img/user2-160x160.jpg" class="img-circle border" alt="User Image">
         </div> -->
+
+        <div class="text-center" style="width: 100%" id="userFullNameLoader">
+            <div class="spinner-border text-primary spinner-border-sm" role="status">
+                <span class="sr-only">Loading ...</span>
+            </div>
+        </div>
         
-        <div class="info mr-1">
+        <div class="info mr-1" id="userFullNameDisplay" style="display: none">
             <a href="#" class="d-block text-truncate">
                 <div id="userFullName"></div>
                 <div class="small text-secondary" id="userPosition"></div>

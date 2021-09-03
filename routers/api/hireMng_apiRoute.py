@@ -201,6 +201,9 @@ async def get_one_job_post(
 # APPLICANTS
 # ====================================================================
 
+# Applicants Not Found Response
+APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant Not Found"}
+
 
 # Get All Applicants Per Job
 @router.get("/job-posts/{job_post_id}/applicants", response_model = List[db_schemas.ShowApplicantInfo])
@@ -214,6 +217,29 @@ async def get_all_applicants_per_job(
         return db.query(Applicant).filter(Applicant.job_post_id == job_post_id).all()
     except Exception as e:
         print(e)
+
+
+# Get One Applicant
+@router.get("/applicants/{applicant_id}", response_model = db_schemas.ShowApplicantInfo)
+async def get_one_applicant(
+    applicant_id,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id).first()
+        if not applicant:
+            return APPLICANT_NOT_FOUND_RESPONSE
+        else:
+            return applicant
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# APPLICANTS PER JOB
+# ====================================================================
 
 
 # Applicants Per Job Analytics
@@ -342,3 +368,4 @@ async def evaluated_applicants(
         ).all()
     except Exception as e:
         print(e)
+
