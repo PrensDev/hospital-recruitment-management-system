@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 02, 2021 at 03:56 PM
+-- Generation Time: Sep 03, 2021 at 06:18 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.4.22
 
@@ -39,7 +39,9 @@ CREATE TABLE `applicants` (
   `email` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL,
   `evaluated_by` varchar(36) DEFAULT NULL,
+  `evaluated_at` datetime DEFAULT NULL,
   `screened_by` varchar(36) DEFAULT NULL,
+  `screened_at` datetime DEFAULT NULL,
   `remarks` text DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL
@@ -49,25 +51,25 @@ CREATE TABLE `applicants` (
 -- Dumping data for table `applicants`
 --
 
-INSERT INTO `applicants` (`applicant_id`, `job_post_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `resume`, `contact_number`, `email`, `status`, `evaluated_by`, `screened_by`, `remarks`, `created_at`, `updated_at`) VALUES
-('3ddb8b0e-0b9d-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Aric', '', 'Swaniawski', '', '5ba73bc237e64a09ac783f9c1fc584e2.pdf', '09123456789', 'aric.swaniawski@ethereal.email', 'For evaluation', NULL, NULL, NULL, '2021-09-02 11:24:11', '2021-09-02 11:24:11'),
-('40dbfd77-0bb5-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', '7e4b40267949418ca5d8460b4d220adf.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, '2021-09-02 14:16:04', '2021-09-02 14:16:04'),
-('50cfe18b-0ba5-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Mat Troi', '', 'Huyen', '', '269c07a4e464477eb4524877cec09c0e.pdf', '0912345679', 'mattroihuyen@gmail.com', 'For evaluation', NULL, NULL, NULL, '2021-09-02 12:21:59', '2021-09-02 12:21:59'),
-('6b92c6ed-0bb1-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', '34e8d70e09f946c692dc19a2e241a121.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, '2021-09-02 13:48:38', '2021-09-02 13:48:38'),
-('7a68f39c-0b9e-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Mat Troi', '', 'Huyen', '', '2c4f076779354ef5919810e516c6ee3b.pdf', '0906543210', 'mattroihuyen@gmail.com', 'For evaluation', NULL, NULL, NULL, '2021-09-02 11:33:02', '2021-09-02 11:33:02'),
-('8323a74a-0665-11ec-a443-d8c497916dda', '49b28e24-036b-11ec-9258-d8c497916dda', 'Michelle', NULL, 'Bancifra', '', 'resume.pdf', '+639999999999', 'michellebancifra@email.com', 'Rejected from evaluation', 'f87dd92a-ff0c-11eb-9644-d8c497916dda', NULL, 'Not enough information is provided', '2021-08-26 20:02:40', '2021-08-28 10:26:55'),
-('8368f9ae-08b7-11ec-be32-d8c497916dda', 'cc2f2dfc-07b6-11ec-92bc-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', 'resume.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, '2021-08-29 18:54:41', '2021-08-29 18:54:41'),
-('9361f10b-0b9a-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Harold', '', 'Little', '', 'dbb457714883471197bfab5e839bd6ec.pdf', '09123456789', 'harold.little80@ethereal.email', 'For evaluation', NULL, NULL, NULL, '2021-09-02 11:05:06', '2021-09-02 11:05:06'),
-('9bfaabd4-0b58-11ec-a668-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Berenice', '', 'Boehm', '', '53c6053556194a70893cbcd0c11c9486.pdf', '09999999999', 'berenice.boehm41@ethereal.email', 'For evaluation', NULL, NULL, NULL, '2021-09-02 03:12:48', '2021-09-02 03:12:48'),
-('a3c97907-08df-11ec-be32-d8c497916dda', 'cc2f2dfc-07b6-11ec-92bc-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', '8152ba5543424236b4b0cc26016c2ea7.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, '2021-08-29 23:41:56', '2021-08-29 23:41:56'),
-('a75f5816-0bb2-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Joana Monique', 'Padrogane', 'Torres', '', '2e0b60ba90f34cbaba3e6cac8524d0af.pdf', '+639999999999', 'jamsphone0924@gmail.com', 'For evaluation', NULL, NULL, NULL, '2021-09-02 13:57:28', '2021-09-02 13:57:28'),
-('ad4aeed9-063b-11ec-a443-d8c497916dda', '49b28e24-036b-11ec-9258-d8c497916dda', 'Mark Angel', NULL, 'Monterde', '', 'resume.pdf', '+639999999999', 'markangel@email.com', 'For screening', 'f87dd92a-ff0c-11eb-9644-d8c497916dda', NULL, NULL, '2021-08-26 15:03:12', '2021-08-28 10:27:12'),
-('bbea6a34-0bb5-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', 'c224a1c205194155b0223e0ce1c2ab19.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, '2021-09-02 14:19:31', '2021-09-02 14:19:31'),
-('bd471e7f-07a7-11ec-92bc-d8c497916dda', 'ba6c45a5-04f6-11ec-bebb-d8c497916dda', 'Maria', 'Dela Paz', 'Mercedez', '', 'resume.pdf', '09123456789', 'mariamercedez@email.com', 'For evaluation', NULL, NULL, NULL, '2021-08-28 10:29:15', '2021-08-28 10:29:15'),
-('e8b15811-08ea-11ec-be32-d8c497916dda', 'cc2f2dfc-07b6-11ec-92bc-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', 'e00b84c2afad4e81b7f822270dd05c18.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, '2021-08-30 01:02:36', '2021-08-30 01:02:36'),
-('ea247d58-0ba2-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Mat Troi', '', 'Huyen', '', 'b607828354ba4fccb8125a68eefe7e5c.pdf', '094565656334', 'mattroihuyen@gmail.com', 'For evaluation', NULL, NULL, NULL, '2021-09-02 12:04:48', '2021-09-02 12:04:48'),
-('ed952c62-07a7-11ec-92bc-d8c497916dda', '49b28e24-036b-11ec-9258-d8c497916dda', 'Juan', '', 'Dela Cruz', 'Jr.', 'resume.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, '2021-08-28 10:30:36', '2021-08-28 10:30:36'),
-('f3c868b5-0b1a-11ec-a668-d8c497916dda', '49b28e24-036b-11ec-9258-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', 'eaf1c5f4b4224dab87691842f2d45091.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, '2021-09-01 19:51:27', '2021-09-01 19:51:27');
+INSERT INTO `applicants` (`applicant_id`, `job_post_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `resume`, `contact_number`, `email`, `status`, `evaluated_by`, `evaluated_at`, `screened_by`, `screened_at`, `remarks`, `created_at`, `updated_at`) VALUES
+('3ddb8b0e-0b9d-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Aric', '', 'Swaniawski', '', '5ba73bc237e64a09ac783f9c1fc584e2.pdf', '09123456789', 'aric.swaniawski@ethereal.email', 'For screening', 'f87dd92a-ff0c-11eb-9644-d8c497916dda', '2021-09-02 21:42:37', NULL, NULL, NULL, '2021-09-02 11:24:11', '2021-09-02 22:16:18'),
+('40dbfd77-0bb5-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', '7e4b40267949418ca5d8460b4d220adf.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, '2021-09-02 14:16:04', '2021-09-02 14:16:04'),
+('50cfe18b-0ba5-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Mat Troi', '', 'Huyen', '', '269c07a4e464477eb4524877cec09c0e.pdf', '0912345679', 'mattroihuyen@gmail.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, '2021-09-02 12:21:59', '2021-09-02 12:21:59'),
+('6b92c6ed-0bb1-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', '34e8d70e09f946c692dc19a2e241a121.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, '2021-09-02 13:48:38', '2021-09-02 13:48:38'),
+('7a68f39c-0b9e-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Mat Troi', '', 'Huyen', '', '2c4f076779354ef5919810e516c6ee3b.pdf', '0906543210', 'mattroihuyen@gmail.com', 'For screening', 'f87dd92a-ff0c-11eb-9644-d8c497916dda', '2021-09-02 21:42:47', NULL, NULL, NULL, '2021-09-02 11:33:02', '2021-09-02 22:16:38'),
+('8323a74a-0665-11ec-a443-d8c497916dda', '49b28e24-036b-11ec-9258-d8c497916dda', 'Michelle', NULL, 'Bancifra', '', 'resume.pdf', '+639999999999', 'michellebancifra@email.com', 'Rejected from evaluation', 'f87dd92a-ff0c-11eb-9644-d8c497916dda', '2021-09-02 21:42:54', NULL, NULL, 'Not enough information is provided', '2021-08-26 20:02:40', '2021-08-28 10:26:55'),
+('8368f9ae-08b7-11ec-be32-d8c497916dda', 'cc2f2dfc-07b6-11ec-92bc-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', 'resume.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, '2021-08-29 18:54:41', '2021-08-29 18:54:41'),
+('9361f10b-0b9a-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Harold', '', 'Little', '', 'dbb457714883471197bfab5e839bd6ec.pdf', '09123456789', 'harold.little80@ethereal.email', 'For interview', 'f87dd92a-ff0c-11eb-9644-d8c497916dda', '2021-09-02 21:43:10', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', '2021-09-03 23:52:28', NULL, '2021-09-02 11:05:06', '2021-09-03 23:52:29'),
+('9bfaabd4-0b58-11ec-a668-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Berenice', '', 'Boehm', '', '53c6053556194a70893cbcd0c11c9486.pdf', '09999999999', 'berenice.boehm41@ethereal.email', 'For interview', 'f87dd92a-ff0c-11eb-9644-d8c497916dda', '2021-09-02 21:43:15', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', '2021-09-03 23:46:18', NULL, '2021-09-02 03:12:48', '2021-09-03 23:46:18'),
+('a3c97907-08df-11ec-be32-d8c497916dda', 'cc2f2dfc-07b6-11ec-92bc-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', '8152ba5543424236b4b0cc26016c2ea7.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, '2021-08-29 23:41:56', '2021-08-29 23:41:56'),
+('a75f5816-0bb2-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Joana Monique', 'Padrogane', 'Torres', '', '2e0b60ba90f34cbaba3e6cac8524d0af.pdf', '+639999999999', 'jamsphone0924@gmail.com', 'Rejected from screening', 'f87dd92a-ff0c-11eb-9644-d8c497916dda', '2021-09-02 21:43:19', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', NULL, 'No enough information', '2021-09-02 13:57:28', '2021-09-03 23:46:55'),
+('ad4aeed9-063b-11ec-a443-d8c497916dda', '49b28e24-036b-11ec-9258-d8c497916dda', 'Mark Angel', NULL, 'Monterde', '', 'resume.pdf', '+639999999999', 'markangel@email.com', 'For screening', 'f87dd92a-ff0c-11eb-9644-d8c497916dda', '2021-09-02 21:43:23', NULL, NULL, NULL, '2021-08-26 15:03:12', '2021-08-28 10:27:12'),
+('bbea6a34-0bb5-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', 'c224a1c205194155b0223e0ce1c2ab19.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, '2021-09-02 14:19:31', '2021-09-02 14:19:31'),
+('bd471e7f-07a7-11ec-92bc-d8c497916dda', 'ba6c45a5-04f6-11ec-bebb-d8c497916dda', 'Maria', 'Dela Paz', 'Mercedez', '', 'resume.pdf', '09123456789', 'mariamercedez@email.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, '2021-08-28 10:29:15', '2021-08-28 10:29:15'),
+('e8b15811-08ea-11ec-be32-d8c497916dda', 'cc2f2dfc-07b6-11ec-92bc-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', 'e00b84c2afad4e81b7f822270dd05c18.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, '2021-08-30 01:02:36', '2021-08-30 01:02:36'),
+('ea247d58-0ba2-11ec-954d-d8c497916dda', '8c60f128-0b26-11ec-a668-d8c497916dda', 'Mat Troi', '', 'Huyen', '', 'b607828354ba4fccb8125a68eefe7e5c.pdf', '094565656334', 'mattroihuyen@gmail.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, '2021-09-02 12:04:48', '2021-09-02 12:04:48'),
+('ed952c62-07a7-11ec-92bc-d8c497916dda', '49b28e24-036b-11ec-9258-d8c497916dda', 'Juan', '', 'Dela Cruz', 'Jr.', 'resume.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, '2021-08-28 10:30:36', '2021-08-28 10:30:36'),
+('f3c868b5-0b1a-11ec-a668-d8c497916dda', '49b28e24-036b-11ec-9258-d8c497916dda', 'Juan', 'Dela', 'Cruz', '', 'eaf1c5f4b4224dab87691842f2d45091.pdf', '0987654321', 'juandelacruz@email.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, '2021-09-01 19:51:27', '2021-09-01 19:51:27');
 
 -- --------------------------------------------------------
 
