@@ -125,3 +125,13 @@ async def render(req: Request):
         "sub_title": "General Tasks to manage employees tasks and monitor performances",
         "active_navlink": "General Tasks"
     })
+
+# Task
+@router.get("/tasks", response_class=HTMLResponse)
+async def render(req: Request):
+    return templates.TemplateResponse(TEMPLATES_PATH + "tasks.html", {
+        "request": req,
+        "page_title": "Tasks",
+        "sub_title": "Manage employee tasks and monitor performances",
+        "active_navlink": "General Tasks"
+    })

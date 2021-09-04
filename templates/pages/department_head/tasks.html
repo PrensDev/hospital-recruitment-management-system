@@ -1,0 +1,253 @@
+{% extends "pages/department_head/_layout.html" %} 
+
+
+{% block content %}
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+            
+            <!-- Title -->
+            <div class="col-sm-6">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">{{ sub_title }}</p>
+            </div>
+    
+            <!-- Breadcrumb -->
+            <!-- <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Layout</a></li>
+                <li class="breadcrumb-item active">Fixed Layout</li>
+                </ol>
+            </div> -->
+    
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4">
+        
+                        <!-- Profile Image -->
+                        <div class="card card-primary card-outline">
+                            <div class="card-body box-profile">
+                
+                                <h3 class="profile-username text-center">Mat Troi Huyen</h3>
+                
+                                <p class="text-muted text-center">Recruiter</p>
+
+                                <!-- Progress Bar -->
+                                <div class="container">
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100" style="width: 57%">
+                                        </div>
+                                    </div>
+                                    <small>
+                                        57% Complete
+                                    </small>
+                                </div>
+                                <!-- / Progress Bar -->
+
+                                <hr>
+
+                                <strong><i class="fas fa-phone mr-1"></i> Contact Number</strong>
+
+                                <p class="text-muted">09127355978</p>
+
+                                <hr>
+
+                                <strong><i class="fas fa-envelope mr-1"></i> Email</strong>
+
+                                <p class="text-muted">mattroihuyen@gmail.com</p>
+
+                                <hr>
+
+                                <strong><i class="far fa-calendar-alt mr-1"></i> Date Hired</strong>
+
+                                <p class="text-muted">August 15, 2021; 12:00 PM</p>
+
+                                <a 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                class="btn btn-block btn-secondary"
+                                id="viewResumeBtn"
+                                >
+                                    <span>View Resume</span>
+                                    <i class="fas fa-file-alt ml-1"></i>
+                                </a>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-8">
+                        <!-- Card -->
+                        <div class="card card-primary card-outline">
+
+                            <!-- Card Header -->
+                            <div class=" p-3 d-flex justify-content-between">
+                                <div>
+                                    <h3 class="card-title">Lists of Tasks</h3>
+                                </div>
+                                <div>
+                                    <a href="#" class="btn btn-sm btn-primary">
+                                        <span>Add Task</span>
+                                        <i class="fas fa-plus ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                
+                                <div class="table-responsive">
+                                    <table id="generalTasksDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>Tasks</th>
+                                                <th>Deadline</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Review Resume of Applicants</td>
+                                                <td>September 1, 2021; 12:00 PM</td>
+                                                <td>
+                                                    <div class="badge badge-success p-2">
+                                                        <span>Completed</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center dropdown">
+                                                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </div>
+                        
+                                                        <div class="dropdown-menu dropdown-menu-right">
+                                                            <div 
+                                                                class="dropdown-item d-flex"
+                                                                role="button"
+                                                                onclick="viewDetails"
+                                                            >
+                                                                <div style="width: 2rem"><i class="fas fa-check mr-1"></i></div>
+                                                                <span>View Details</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Post a job accoring to approved manpower requests</td>
+                                                <td>September 1, 2021; 12:00 PM</td>
+                                                <td>
+                                                    <div class="badge badge-info p-2">
+                                                        <span>On progress</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center dropdown">
+                                                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </div>
+                        
+                                                        <div class="dropdown-menu dropdown-menu-right">
+                                                            <div 
+                                                                class="dropdown-item d-flex"
+                                                                role="button"
+                                                                onclick="markAsComplete"
+                                                            >
+                                                                <div style="width: 2rem"><i class="fas fa-check mr-1"></i></div>
+                                                                <span>Mark as Completed</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Make a report about shortlisted applicants</td>
+                                                <td>September 1, 2021; 12:00 PM</td>
+                                                <td>
+                                                    <div class="badge badge-info p-2">
+                                                        <span>On progress</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center dropdown">
+                                                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </div>
+                        
+                                                        <div class="dropdown-menu dropdown-menu-right">
+                                                            <div 
+                                                                class="dropdown-item d-flex"
+                                                                role="button"
+                                                                onclick="markAsComplete"
+                                                            >
+                                                                <div style="width: 2rem"><i class="fas fa-check mr-1"></i></div>
+                                                                <span>Mark as Completed</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Compile reports</td>
+                                                <td>September 1, 2021; 12:00 PM</td>
+                                                <td>
+                                                    <div class="badge badge-success p-2">
+                                                        <span>Completed</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center dropdown">
+                                                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </div>
+                        
+                                                        <div class="dropdown-menu dropdown-menu-right">
+                                                            <div 
+                                                                class="dropdown-item d-flex"
+                                                                role="button"
+                                                                onclick="viewDetails"
+                                                            >
+                                                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                                                <span>View Details</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            
+                            </div>
+                            <!-- /.card-body -->
+
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+    </section>
+    <!-- /. content -->
+{% endblock %}
+
+
+{% block page_scripts %}
+    <script src="{{url_for('static', path='/dist/js/pages/admin/dashboard.js')}}"></script>
+{% endblock %}
