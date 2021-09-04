@@ -2,11 +2,16 @@
  * =====================================================
  * CONSTANTS
  * =====================================================
- * */
+ */
 
 // Base URLs
 const BASE_URL_API = 'http://127.0.0.1:8000/api/';
 const BASE_URL_WEB = 'http://127.0.0.1:8000/';
+
+
+// Web File URLs
+const URL_WEB_FILES = `${ BASE_URL_WEB }static/app/files/`;
+const URL_RESUME_FILES = `${ URL_WEB_FILES }/resumes/`;
 
 
 // User Web Routes

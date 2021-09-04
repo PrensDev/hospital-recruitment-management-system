@@ -70,8 +70,6 @@ ifSelectorExist('#jobPostSummary', () => {
 // Applicants Per Job Analytics
 const applicantsPerJobAnalytics = () => {
     
-    const jobPostID = window.location.pathname.split("/")[3];
-
     GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }/applicants/analytics`, {
         success: result => {
 
@@ -131,6 +129,9 @@ const viewApplicantDetails = (applicantID) => {
 
             // Set Applicant Email
             setContent("#applicantEmail", result.email);
+
+            // Set Resume
+            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
 
             // Set Applicant Date Applied
             setContent("#applicantDateApplied", `

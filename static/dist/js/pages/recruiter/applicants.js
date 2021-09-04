@@ -81,7 +81,7 @@ initDataTable('#applicantsDT', {
                     `);
                 } else if(
                     status === "Rejected from evaluation" || 
-                    status === "Rejected from screnning"  || 
+                    status === "Rejected from screening"  || 
                     status === "Rejected from interview"
                 ) {
                     return dtBadge('danger', `
@@ -184,6 +184,9 @@ const viewApplicantDetails = (applicantID) => {
             // Set Applicant Email
             setContent("#applicantEmail", result.email);
 
+            // Set Resume Link
+            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
+
             // Set Applicant Date Applied
             setContent("#applicantDateApplied", `
                 <div>${  formatDateTime(result.created_at, "Date") }</div>
@@ -218,7 +221,6 @@ const viewApplicantDetails = (applicantID) => {
 ifSelectorExist('#jobPostSummary', () => {
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
-            // console.log(result);
 
             const manpowerRequest = result.manpower_request
 
@@ -289,8 +291,8 @@ const applicantsPerJobAnalytics = () => {
             const evaluatedCount = result.for_screening + result.for_interview + result.hired;
             a('#evaluatedCount', evaluatedCount);
 
-            // Set Rejected Applicants Count
-            a('#rejectedCount', result.rejected.total);
+            // Set Rejected From Evaluation Count
+            a('#rejectedCount', result.rejected.from_evaluation);
         },
         error: () => toastr.error('There was an error in getting applciants analytics')
     });
