@@ -231,3 +231,25 @@ async def render(
                 })
     else:
         return errTemplate.page_not_found(req)
+
+
+# ===========================================================
+# INTERVIEW QUESTIONS
+# ===========================================================
+
+# Interview Questions
+@router.get("/interview-questions", response_class=HTMLResponse)
+async def render(
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        return templates.TemplateResponse(TEMPLATES_PATH + "interview_questions.html", {
+            "request": req,
+            "page_title": "Interview Questions",
+            "sub_title": "Manage general interview questions here for all applicants",
+            "active_navlink": "Interview Questions",
+        })
+    else:
+        return errTemplate.page_not_found(req)

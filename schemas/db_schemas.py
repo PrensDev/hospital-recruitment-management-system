@@ -242,3 +242,23 @@ class ApplicantScreening(BaseModel):
     screened_at: Optional[datetime]
     status: str
     remarks: Optional[str]
+
+
+# Create Interview Question
+class CreateInterviewQuestion(BaseModel):
+    question: str
+    type: str
+
+
+# Show Interview Question
+class ShowInterviewQuestion(BaseModel):
+    interview_question_id: str
+    question: str
+    type: str
+    interview_question_added_by: UserInfo
+    interview_question_updated_by: UserInfo
+    created_at: datetime
+    updated_at: datetime
+
+    class Config():
+        orm_mode = True

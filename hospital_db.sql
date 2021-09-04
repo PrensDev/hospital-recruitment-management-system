@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 03, 2021 at 06:18 PM
+-- Generation Time: Sep 04, 2021 at 07:26 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.4.22
 
@@ -113,11 +113,57 @@ CREATE TABLE `interviewees` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `interview_questions`
+--
+
+CREATE TABLE `interview_questions` (
+  `interview_question_id` varchar(36) NOT NULL,
+  `question` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `added_by` varchar(36) NOT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `interview_questions`
+--
+
+INSERT INTO `interview_questions` (`interview_question_id`, `question`, `type`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+('2a15a519-0d9d-11ec-b347-d8c497916dda', 'Tell me about yourself.', 'General', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', '2021-09-05 00:28:40', '2021-09-05 00:28:40'),
+('6835be04-0d9d-11ec-b347-d8c497916dda', 'What are your greatest strength and weaknesses?', 'General', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', '2021-09-05 00:30:25', '2021-09-05 00:30:25'),
+('798fbca9-0d9d-11ec-b347-d8c497916dda', 'How do you handle stress and pressure?', 'General', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', '2021-09-05 00:30:54', '2021-09-05 00:30:54'),
+('9604d215-0d9d-11ec-b347-d8c497916dda', 'What are major challenges and problem did you encounter? How do you handle them?', 'General', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', '2021-09-05 00:31:41', '2021-09-05 00:31:41'),
+('a9b6a284-0d9d-11ec-b347-d8c497916dda', 'What was your biggest accomplishment (or failure)?', 'General', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', 'd23e5f3c-ff0c-11eb-9644-d8c497916dda', '2021-09-05 00:32:14', '2021-09-05 00:32:14');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `interview_schedules`
 --
 
 CREATE TABLE `interview_schedules` (
   `interview_schedule_id` varchar(36) NOT NULL,
+  `schedule` datetime NOT NULL,
+  `set_by` varchar(36) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `interview_scores`
+--
+
+CREATE TABLE `interview_scores` (
+  `interview_score_id` varchar(36) NOT NULL,
+  `interviewee_id` varchar(36) NOT NULL,
+  `interview_question_id` varchar(36) DEFAULT NULL,
+  `score` int(11) DEFAULT NULL,
+  `scored_by` varchar(36) DEFAULT NULL,
+  `remarks` text NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -282,10 +328,28 @@ ALTER TABLE `interviewees`
   ADD KEY `interview_schedule_id` (`interview_schedule_id`);
 
 --
+-- Indexes for table `interview_questions`
+--
+ALTER TABLE `interview_questions`
+  ADD PRIMARY KEY (`interview_question_id`),
+  ADD KEY `added_by` (`added_by`),
+  ADD KEY `updated_by` (`updated_by`);
+
+--
 -- Indexes for table `interview_schedules`
 --
 ALTER TABLE `interview_schedules`
-  ADD PRIMARY KEY (`interview_schedule_id`);
+  ADD PRIMARY KEY (`interview_schedule_id`),
+  ADD KEY `set_by` (`set_by`);
+
+--
+-- Indexes for table `interview_scores`
+--
+ALTER TABLE `interview_scores`
+  ADD PRIMARY KEY (`interview_score_id`),
+  ADD KEY `interviewee_id` (`interviewee_id`),
+  ADD KEY `interview_question_id` (`interview_question_id`),
+  ADD KEY `scored_by` (`scored_by`);
 
 --
 -- Indexes for table `job_posts`
@@ -337,6 +401,27 @@ ALTER TABLE `applicants`
 ALTER TABLE `interviewees`
   ADD CONSTRAINT `interviewees_ibfk_1` FOREIGN KEY (`applicant_id`) REFERENCES `applicants` (`applicant_id`),
   ADD CONSTRAINT `interviewees_ibfk_2` FOREIGN KEY (`interview_schedule_id`) REFERENCES `interview_schedules` (`interview_schedule_id`);
+
+--
+-- Constraints for table `interview_questions`
+--
+ALTER TABLE `interview_questions`
+  ADD CONSTRAINT `interview_questions_ibfk_1` FOREIGN KEY (`added_by`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `interview_questions_ibfk_2` FOREIGN KEY (`updated_by`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `interview_schedules`
+--
+ALTER TABLE `interview_schedules`
+  ADD CONSTRAINT `interview_schedules_ibfk_1` FOREIGN KEY (`set_by`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `interview_scores`
+--
+ALTER TABLE `interview_scores`
+  ADD CONSTRAINT `interview_scores_ibfk_1` FOREIGN KEY (`interviewee_id`) REFERENCES `interviewees` (`interviewee_id`),
+  ADD CONSTRAINT `interview_scores_ibfk_2` FOREIGN KEY (`interview_question_id`) REFERENCES `interview_questions` (`interview_question_id`),
+  ADD CONSTRAINT `interview_scores_ibfk_3` FOREIGN KEY (`scored_by`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `job_posts`

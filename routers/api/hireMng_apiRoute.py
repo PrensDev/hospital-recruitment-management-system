@@ -13,10 +13,11 @@ import models
 
 
 # Models
-User        = models.User
-Requisition = models.Requisition
-JobPost     = models.JobPost
-Applicant   = models.Applicant
+User                = models.User
+Requisition         = models.Requisition
+JobPost             = models.JobPost
+Applicant           = models.Applicant
+InterviewQuestion   = models.InterviewQuestion
 
 
 # Router Instance
@@ -396,5 +397,72 @@ async def update_applicant_status(
             })
             db.commit()
             return {"message": "Update success"}
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# INTERVIEW
+# ====================================================================
+
+
+# Interview Question Not Found Response
+INTERVIEW_QUESTION_NOT_FOUND_RESPONSE = {"message": "Interview Question not found"}
+
+
+# Create Interview Question
+@router.post("/interview-questions", status_code = 201)
+async def create_interview_question(
+    req: db_schemas.CreateInterviewQuestion,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        new_interview_question = InterviewQuestion(
+            question = req.question,
+            type = req.type,
+            added_by = user_data.user_id,
+            updated_by = user_data.user_id
+        )
+        db.add(new_interview_question)
+        db.commit()
+        db.refresh(new_interview_question)
+        return {
+            "data": new_interview_question,
+            "message": "A new interview question has been created"
+        }
+    except Exception as e:
+        print(e)
+
+
+# Get All General Interview Questions
+@router.get("/interview-questions/general", response_model = List[db_schemas.ShowInterviewQuestion])
+async def get_all_general_interview_questions(
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        general_questions = db.query(InterviewQuestion).filter(InterviewQuestion.type == "General").all()
+        return general_questions
+    except Exception as e:
+        print(e)
+
+
+# Get One Interview Question
+@router.get("/interview-questions/{interview_question_id}", response_model = db_schemas.ShowInterviewQuestion)
+async def get_one_interview_question(
+    interview_question_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        interview_question = db.query(InterviewQuestion).filter(InterviewQuestion.interview_question_id == interview_question_id).first()
+        if not interview_question:
+            raise HTTPException(status_code = 404, detail = INTERVIEW_QUESTION_NOT_FOUND_RESPONSE)
+        else:
+            return interview_question
     except Exception as e:
         print(e)

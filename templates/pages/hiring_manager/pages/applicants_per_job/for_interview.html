@@ -4,7 +4,7 @@
 {% block dataTable %}
     <div class="card card-primary card-outline">
         <div class="card-header align-items-center">
-            <div class="card-title">List of Applicants for Interview</div>
+            <div class="card-title">For Interview</div>
 
             <div class="card-tools">
                 <button type="button" class="btn btn-sm btn-tool" data-card-widget="maximize">
@@ -14,25 +14,143 @@
         </div>
 
         <div class="card-body">
-            <div class="table-responsive">
-                <table 
-                    id="applicantsForInterviewDT" 
-                    class="table table-bordered table-hover w-100" 
-                    width="100" 
-                    cellspacing="0"
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
+                <li class="nav-item">
+                    <a 
+                        class="nav-link active" 
+                        id="custom-content-below-applicants-tab" 
+                        data-toggle="pill" href="#custom-content-below-applicants" 
+                        role="tab" 
+                        aria-controls="custom-content-below-applicants" 
+                        aria-selected="true"
+                    >Applicants</a>
+                </li>
+                <li class="nav-item">
+                    <a 
+                        class="nav-link" 
+                        id="custom-content-below-schedules-tab" 
+                        data-toggle="pill" href="#custom-content-below-schedules" 
+                        role="tab" 
+                        aria-controls="custom-content-below-schedules" 
+                        aria-selected="false"
+                    >Schedules</a>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content py-3" id="custom-content-below-tabContent">
+
+                <!-- Applicants Pane -->
+                <div 
+                    class="tab-pane fade show active" 
+                    id="custom-content-below-applicants" 
+                    role="tabpanel"
+                    aria-labelledby="custom-content-below-applicants-tab"
                 >
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Applicant Name</th>
-                            <th>Contact number</th>
-                            <th>Email</th>
-                            <th>Date Applied</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                    <div class="table-responsive">
+                        <table 
+                            id="applicantsForInterviewDT" 
+                            class="table table-bordered table-hover w-100" 
+                            width="100" 
+                            cellspacing="0"
+                        >
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Applicant Name</th>
+                                    <th>Contact number</th>
+                                    <th>Email</th>
+                                    <th>Date Applied</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="text-center py-5">
+                                            <div class="spinner-border text-primary my-3" role="status">
+                                                <span class="sr-only">Loading ...</span>
+                                            </div>
+                                            <div>Loading ...</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Schedule Pane -->
+                <div 
+                    class="tab-pane fade" 
+                    id="custom-content-below-schedules" 
+                    role="tabpanel" 
+                    aria-labelledby="custom-content-below-schedules-tab"
+                >
+                    <div class="form-group text-right">
+                        <button class="btn btn-primary">
+                            <span>Create schedule</span>
+                            <i class="fas fa-plus ml-1"></i>
+                        </button>
+                    </div>
+
+                    <div>
+                        
+                        <div class="callout callout-info">
+                            <h5 class="mb-0">Thursday, September 30, 2021</h5>
+                            <h5 class="mb-0">09:00 AM - 12:00 PM</h5>
+                            <div class="small text-secondary">in 7 days</div>
+
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <div>4 applicants are scheduled</div>
+                                </div>
+                                <div class="col">
+                                    <div class="text-right">
+                                        <button href="#" class="btn btn-sm btn-secondary">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <h5 class="mb-0">Thursday, September 30, 2021</h5>
+                            <h5 class="mb-0">09:00 AM - 12:00 PM</h5>
+                            <div class="small text-secondary">in 7 days</div>
+
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <div>4 applicants are scheduled</div>
+                                </div>
+                                <div class="col">
+                                    <div class="text-right">
+                                        <button href="#" class="btn btn-sm btn-secondary">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <h5 class="mb-0">Thursday, September 30, 2021</h5>
+                            <h5 class="mb-0">09:00 AM - 12:00 PM</h5>
+                            <div class="small text-secondary">in 7 days</div>
+
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <div>4 applicants are scheduled</div>
+                                </div>
+                                <div class="col">
+                                    <div class="text-right">
+                                        <button href="#" class="btn btn-sm btn-secondary">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
         </div>
     </div>

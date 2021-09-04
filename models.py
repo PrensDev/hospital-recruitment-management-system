@@ -1,4 +1,5 @@
 # Import Packages
+from sqlalchemy.orm.relationships import foreign
 from sqlalchemy.sql.expression import null
 from database import Base
 from sqlalchemy import text
@@ -89,6 +90,24 @@ class User(Base):
         "Applicant",
         back_populates = "screening_done_by",
         foreign_keys = "Applicant.screened_by"
+    )
+    set_schedules = relationship(
+        "InterviewSchedule",
+        back_populates = "set_by_hiring_manager" 
+    )
+    set_scores = relationship(
+        "InterviewScore",
+        back_populates = "scored_by_hiring_manager"
+    )
+    added_interview_questions = relationship(
+        "InterviewQuestion",
+        back_populates = "interview_question_added_by",
+        foreign_keys = "InterviewQuestion.added_by"
+    )
+    updated_interview_questions = relationship(
+        "InterviewQuestion",
+        back_populates = "interview_question_updated_by",
+        foreign_keys = "InterviewQuestion.updated_by"
     )
 
 
@@ -478,9 +497,13 @@ class Interviewee(Base):
         "Applicant",
         back_populates = "interviewee_info"
     )
-    interview_schedule = relationship(
+    interviewee_schedule = relationship(
         "InterviewSchedule",
         back_populates = "interviewee"
+    )
+    interviewee_score = relationship(
+        "InterviewScore",
+        back_populates = "score_of"
     )
 
 
@@ -493,6 +516,19 @@ class InterviewSchedule(Base):
         String(36),
         primary_key = True,
         default = text('UUID()')
+    )
+    start_session = Column(
+        DateTime,
+        nullable = False
+    )
+    end_session = Column(
+        DateTime,
+        nullable = False
+    )
+    set_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = True
     )
     created_at = Column(
         DateTime,
@@ -507,5 +543,121 @@ class InterviewSchedule(Base):
     # Relationships
     interviewee = relationship(
         "Interviewee",
-        back_populates = "interview_schedule"
+        back_populates = "interviewee_schedule"
+    )
+    set_by_hiring_manager = relationship(
+        "User",
+        back_populates = "set_schedules"
+    )
+
+
+# Interview Score
+class InterviewScore(Base):
+    __tablename__ = "interview_scores"
+
+    # Columns
+    interview_score_id = Column(
+        String(36),
+        primary_key = True,
+        default = text('UUID()')
+    )
+    interviewee_id = Column(
+        String(36),
+        ForeignKey("interviewees.interviewee_id"),
+        nullable = False
+    )
+    interview_question_id = Column(
+        String(36),
+        ForeignKey("interview_questions.interview_question_id")
+    )
+    score = Column(
+        Integer,
+        nullable = True
+    )
+    scored_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = True
+    )
+    remarks = Column(
+        Text,
+        nullable = False
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()')
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationships
+    interview_question = relationship(
+        "InterviewQuestion",
+        back_populates = "interview_score"
+    )
+    scored_by_hiring_manager = relationship(
+        "User",
+        back_populates = "set_scores"
+    )
+    score_of = relationship(
+        "Interviewee",
+        back_populates = "interviewee_score"
+    )
+
+
+# Interview Question
+class InterviewQuestion(Base):
+    __tablename__ = "interview_questions"
+
+    # Columns
+    interview_question_id = Column(
+        String(36),
+        primary_key = True,
+        default = text('UUID()')
+    )
+    question = Column(
+        String(255),
+        nullable = False
+    )
+    type = Column(
+        String(255),
+        nullable = False
+    )
+    added_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = False
+    )
+    updated_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = True
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()')
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationship
+    interview_score = relationship(
+        "InterviewScore",
+        back_populates = "interview_question"
+    )
+    interview_question_added_by = relationship(
+        "User",
+        back_populates = "added_interview_questions",
+        foreign_keys = "InterviewQuestion.added_by"
+    )
+    interview_question_updated_by = relationship(
+        "User",
+        back_populates = "updated_interview_questions",
+        foreign_keys = "InterviewQuestion.updated_by"
     )
