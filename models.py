@@ -4,8 +4,8 @@ from sqlalchemy.sql.expression import null
 from database import Base
 from sqlalchemy import text
 from sqlalchemy.sql.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import String, Integer, DateTime, Float, Text, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import String, Integer, DateTime, Float, Text, Boolean, Date, Time
+from sqlalchemy.orm import backref, relation, relationship
 
 
 # User Model
@@ -54,7 +54,8 @@ class User(Base):
     )
     created_at = Column(
         DateTime,
-        default = text('NOW()')
+        default = text('NOW()'),
+        nullable = False
     )
     updated_at = Column(
         DateTime,
@@ -109,6 +110,30 @@ class User(Base):
         back_populates = "interview_question_updated_by",
         foreign_keys = "InterviewQuestion.updated_by"
     )
+    added_onboarding_employees = relationship(
+        "OnboardingEmployee",
+        back_populates = "onboarding_employee_added_by",
+        foreign_keys = "OnboardingEmployee.added_by"
+    )
+    updated_onboarding_employees = relationship(
+        "OnboardingEmployee",
+        back_populates = "onboarding_employee_updated_by",
+        foreign_keys = "OnboardingEmployee.updated_by"
+    )
+    added_onboarding_tasks = relationship(
+        "OnboardingTask",
+        back_populates = "onboarding_task_added_by",
+        foreign_keys = "OnboardingTask.added_by"
+    )
+    updated_onboarding_tasks = relationship(
+        "OnboardingTask",
+        back_populates = "onboarding_task_updated_by",
+        foreign_keys = "OnboardingTask.updated_by"
+    )
+    assigned_onboarding_employee_tasks = relationship(
+        "OnboardingEmployeeTask",
+        back_populates = "onboarding_employee_task_assigned_by"
+    )
 
 
 # Positions Model
@@ -136,7 +161,8 @@ class Position(Base):
     )
     created_at = Column(
         DateTime,
-        default = text('NOW()')
+        default = text('NOW()'),
+        nullable = False
     )
     updated_at = Column(
         DateTime,
@@ -179,7 +205,8 @@ class Department(Base):
     )
     created_at = Column(
         DateTime,
-        default = text('NOW()')
+        default = text('NOW()'),
+        nullable = False
     )
     updated_at = Column(
         DateTime,
@@ -188,7 +215,14 @@ class Department(Base):
     )
 
     # Relationsips
-    department_positions = relationship("Position", back_populates = "department")
+    department_positions = relationship(
+        "Position",
+        back_populates = "department"
+    )
+    department_onboarding_tasks = relationship(
+        "OnboardingTask",
+        back_populates = "onboarding_task_for_department"
+    )
 
 
 # Requisition Model
@@ -263,7 +297,8 @@ class Requisition(Base):
     )
     created_at = Column(
         DateTime,
-        default = text('NOW()')
+        default = text('NOW()'),
+        nullable = False
     )
     updated_at = Column(
         DateTime,
@@ -327,7 +362,8 @@ class JobPost(Base):
     )
     created_at = Column(
         DateTime,
-        default = text('NOW()')
+        default = text('NOW()'),
+        nullable = False
     )
     updated_at = Column(
         DateTime,
@@ -362,7 +398,8 @@ class Applicant(Base):
     )
     job_post_id = Column(
         String(36),
-        ForeignKey("job_posts.job_post_id")
+        ForeignKey("job_posts.job_post_id"),
+        nullable = False
     )
     first_name = Column(
         String(255),
@@ -382,7 +419,8 @@ class Applicant(Base):
     )
     resume = Column(
         String(255),
-        nullable = False
+        nullable = False,
+        unique = True
     )
     contact_number = Column(
         String(255),
@@ -415,13 +453,22 @@ class Applicant(Base):
         DateTime,
         nullable = True
     )
+    rejected_by = Column(
+        DateTime,
+        nullable = True
+    )
+    rejected_at = Column(
+        DateTime,
+        nullable = True
+    )
     remarks = Column(
         Text,
         nullable = True
     )
     created_at = Column(
         DateTime,
-        default = text('NOW()')
+        default = text('NOW()'),
+        nullable = False
     )
     updated_at = Column(
         DateTime,
@@ -436,7 +483,7 @@ class Applicant(Base):
     )
     interviewee_info = relationship(
         "Interviewee",
-        back_populates = "interviewee_applicant"
+        back_populates = "applicant_info"
     )
     evaluation_done_by = relationship(
         "User",
@@ -484,7 +531,8 @@ class Interviewee(Base):
     )
     created_at = Column(
         DateTime,
-        default = text('NOW()')
+        default = text('NOW()'),
+        nullable = False
     )
     updated_at = Column(
         DateTime,
@@ -493,7 +541,7 @@ class Interviewee(Base):
     )
 
     # Relationhips
-    interviewee_applicant = relationship(
+    applicant_info = relationship(
         "Applicant",
         back_populates = "interviewee_info"
     )
@@ -517,12 +565,16 @@ class InterviewSchedule(Base):
         primary_key = True,
         default = text('UUID()')
     )
+    scheduled_date = Column(
+        Date,
+        nullable = False
+    )
     start_session = Column(
-        DateTime,
+        Time,
         nullable = False
     )
     end_session = Column(
-        DateTime,
+        Time,
         nullable = False
     )
     set_by = Column(
@@ -532,7 +584,8 @@ class InterviewSchedule(Base):
     )
     created_at = Column(
         DateTime,
-        default = text('NOW()')
+        default = text('NOW()'),
+        nullable = False
     )
     updated_at = Column(
         DateTime,
@@ -585,7 +638,8 @@ class InterviewScore(Base):
     )
     created_at = Column(
         DateTime,
-        default = text('NOW()')
+        default = text('NOW()'),
+        nullable = False
     )
     updated_at = Column(
         DateTime,
@@ -638,7 +692,8 @@ class InterviewQuestion(Base):
     )
     created_at = Column(
         DateTime,
-        default = text('NOW()')
+        default = text('NOW()'),
+        nullable = False
     )
     updated_at = Column(
         DateTime,
@@ -660,4 +715,216 @@ class InterviewQuestion(Base):
         "User",
         back_populates = "updated_interview_questions",
         foreign_keys = "InterviewQuestion.updated_by"
+    )
+
+
+# On Boarding Employees
+class OnboardingEmployee(Base):
+    __tablename__ = "onboarding_employees"
+
+    # Columns
+    onboarding_employee_id = Column(
+        String(36),
+        primary_key = True,
+        default = text('UUID()')
+    )
+    first_name = Column(
+        String(255),
+        nullable = False
+    )
+    middle_name = Column(
+        String(255),
+        nullable = True
+    )
+    last_name = Column(
+        String(255),
+        nullable = False
+    )
+    suffix_name = Column(
+        String(255),
+        nullable = True
+    )
+    contact_number = Column(
+        String(255),
+        nullable = False
+    )
+    email = Column(
+        String(255),
+        nullable = False
+    )
+    employment_start_date = Column(
+        Date,
+        nullable = True
+    )
+    added_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = False
+    )
+    updated_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = True
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        nullable = False
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationships
+    onboarding_employee_added_by = relationship(
+        "User",
+        back_populates = "added_onboarding_employees",
+        foreign_keys = "OnboardingEmployee.added_by"
+    )
+    onboarding_employee_updated_by = relationship(
+        "User",
+        back_populates = "updated_onboarding_employees",
+        foreign_keys = "OnboardingEmployee.updated_by"
+    )
+    onboarding_employee_tasks = relationship(
+        "OnboardingEmployeeTask",
+        back_populates = "onboarding_employee"
+    )
+
+
+# Onboarding Tasks
+class OnboardingTask(Base):
+    __tablename__ = "onboarding_tasks"
+
+    # Columns
+    onboarding_task_id = Column(
+        String(36),
+        primary_key = True,
+        default = text('UUID()')
+    )
+    title = Column(
+        String(255),
+        nullable = False
+    )
+    description = Column(
+        Text,
+        nullable = False
+    )
+    type = Column(
+        String(255),
+        nullable = False
+    )
+    department_id = Column(
+        String(36),
+        ForeignKey("departments.department_id"),
+        nullable = False
+    )
+    duration = Column(
+        Integer,
+        nullable = False
+    )
+    added_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = False
+    )
+    updated_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = False
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        nullable = False
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationships
+    onboarding_task_for_department = relationship(
+        "Department",
+        back_populates = "department_onboarding_tasks"
+    )
+    onboarding_task_added_by = relationship(
+        "User",
+        back_populates = "added_onboarding_tasks",
+        foreign_keys = "OnboardingTask.added_by"
+    )
+    onboarding_task_updated_by = relationship(
+        "User",
+        back_populates = "updated_onboarding_tasks",
+        foreign_keys = "OnboardingTask.updated_by"
+    )
+    assigned_tasks = relationship(
+        "OnboardingEmployeeTask",
+        back_populates = "onboarding_task"
+    )
+
+
+# Onboarding Employee Task
+class OnboardingEmployeeTask(Base):
+    __tablename__ = "onboarding_employee_task"
+
+    # Columns
+    onboarding_employee_task_id = Column(
+        String(36),
+        primary_key = True,
+        default = text("UUID()")
+    )
+    onboarding_employee_id = Column(
+        String(36),
+        ForeignKey("onboarding_employees.onboarding_employee_id"),
+        nullable = False
+    )
+    onboarding_task_id = Column(
+        String(36),
+        ForeignKey("onboarding_tasks.onboarding_task_id"),
+        nullable = False
+    )
+    start_at = Column(
+        DateTime,
+        nullable = False
+    )
+    end_at = Column(
+        DateTime,
+        nullable = False
+    )
+    assigned_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = False
+    )
+    status = Column(
+        String(255),
+        nullable = False
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        nullable = False
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationship
+    onboarding_employee_task_assigned_by = relationship(
+        "User",
+        back_populates = "assigned_onboarding_employee_tasks"
+    )
+    onboarding_employee = relationship(
+        "OnboardingEmployee",
+        back_populates = "onboarding_employee_tasks"
+    )
+    onboarding_task = relationship(
+        "OnboardingTask",
+        back_populates = "assigned_tasks"
     )

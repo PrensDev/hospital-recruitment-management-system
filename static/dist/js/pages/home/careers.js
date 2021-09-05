@@ -100,8 +100,6 @@ ifSelectorExist('#availableJobDetails', () => {
         url: `${ BASE_URL_API }home/job-posts/${ jobPostID }`,
         type: 'GET',
         success: result => {
-            // console.log(result)
-
             const manpowerRequest = result.manpower_request;
 
             // Set Job Post ID for the form
@@ -137,6 +135,11 @@ ifSelectorExist('#availableJobDetails', () => {
                         <div class="small text-secondary">${ fromNow(expiresAt) }</div>
                     `
             });
+
+            $('#availableJobDetailsPreloader').remove();
+
+            showElement('#vacantPositionContainer');
+            showElement('#availableJobDetails');
         },
         error: () => toastr.error('There was an error in getting job details')
     });
@@ -279,12 +282,12 @@ onClick('#submitApplicationBtn', () => {
                         hideModal('#confirmApplicationModal');
 
                         // Set buttons to unload state
-                        btnToUnloadState('#submitApplicationBtn', `
+                        setContent('#submitApplicationBtn', `
                             <span>Submit</span>
                             <i class="fas fa-file-export ml-1"></i>
                         `);
-                        disableElement('#cancelApplicationBtn');
-                        disableElement('#confirmReview');
+                        enableElement('#cancelApplicationBtn');
+                        enableElement('#confirmReview');
 
                         // Reset Form
                         resetForm('#applicationForm');
@@ -302,7 +305,7 @@ onClick('#submitApplicationBtn', () => {
                     hideModal('#confirmApplicationModal');
 
                     // Set buttons to unload state
-                    btnToUnloadState('#submitApplicationBtn', `
+                    setContent('#submitApplicationBtn', `
                         <span>Submit</span>
                         <i class="fas fa-file-export ml-1"></i>
                     `);

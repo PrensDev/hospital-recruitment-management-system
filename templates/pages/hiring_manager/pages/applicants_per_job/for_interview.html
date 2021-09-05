@@ -49,37 +49,35 @@
                     role="tabpanel"
                     aria-labelledby="custom-content-below-applicants-tab"
                 >
-                    <div class="table-responsive">
-                        <table 
-                            id="applicantsForInterviewDT" 
-                            class="table table-bordered table-hover w-100" 
-                            width="100" 
-                            cellspacing="0"
-                        >
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Applicant Name</th>
-                                    <th>Contact number</th>
-                                    <th>Email</th>
-                                    <th>Date Applied</th>
-                                    <th class="text-center">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="6">
-                                        <div class="text-center py-5">
-                                            <div class="spinner-border text-primary my-3" role="status">
-                                                <span class="sr-only">Loading ...</span>
-                                            </div>
-                                            <div>Loading ...</div>
+                    <table 
+                        id="applicantsForInterviewDT" 
+                        class="table table-bordered table-hover w-100" 
+                        width="100" 
+                        cellspacing="0"
+                    >
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Applicant Name</th>
+                                <th>Contact number</th>
+                                <th>Email</th>
+                                <th>Date Applied</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6">
+                                    <div class="text-center py-5">
+                                        <div class="spinner-border text-primary my-3" role="status">
+                                            <span class="sr-only">Loading ...</span>
                                         </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                        <div>Loading ...</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Schedule Pane -->
@@ -89,14 +87,14 @@
                     role="tabpanel" 
                     aria-labelledby="custom-content-below-schedules-tab"
                 >
-                    <div class="form-group text-right">
-                        <button class="btn btn-primary">
-                            <span>Create schedule</span>
-                            <i class="fas fa-plus ml-1"></i>
-                        </button>
-                    </div>
-
                     <div>
+
+                        <div class="form-group text-right">
+                            <a class="btn btn-sm btn-primary" href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/create-interview-schedule">
+                                <span>Create schedule</span>
+                                <i class="fas fa-plus ml-1"></i>
+                            </a>
+                        </div>
                         
                         <div class="callout callout-info">
                             <h5 class="mb-0">Thursday, September 30, 2021</h5>
@@ -118,7 +116,10 @@
                         <div class="callout callout-info">
                             <h5 class="mb-0">Thursday, September 30, 2021</h5>
                             <h5 class="mb-0">09:00 AM - 12:00 PM</h5>
-                            <div class="small text-secondary">in 7 days</div>
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-primary mr-2">Today</div>
+                                <div class="small text-secondary">in 7 days</div>
+                            </div>
 
                             <div class="row mt-2">
                                 <div class="col">
@@ -135,7 +136,10 @@
                         <div class="callout callout-info">
                             <h5 class="mb-0">Thursday, September 30, 2021</h5>
                             <h5 class="mb-0">09:00 AM - 12:00 PM</h5>
-                            <div class="small text-secondary">in 7 days</div>
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-danger mr-2">Ended</div>
+                                <div class="small text-secondary">in 7 days</div>
+                            </div>
 
                             <div class="row mt-2">
                                 <div class="col">

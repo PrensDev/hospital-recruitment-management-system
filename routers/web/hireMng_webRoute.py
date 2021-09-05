@@ -179,6 +179,33 @@ async def render(
         return errTemplate.page_not_found(req)
 
 
+# Applicants Per Job Post (For Interview)
+@router.get("/job-posts/{job_post_id}/create-interview-schedule", response_class=HTMLResponse)
+async def render(
+    job_post_id: str, 
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        if not job_post_id:
+            return errTemplate.page_not_found(req)
+        else:
+            job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+            if not job_post:
+                return errTemplate.page_not_found(req)
+            else:
+                return templates.TemplateResponse(TEMPLATES_PATH + "create_schedule.html", {
+                    "request": req,
+                    "page_title": "Create Interview Schedule",
+                    "sub_title": "Create interview schedule here for applicants f",
+                    "active_navlink": "Applicants",
+                    "job_post_id": f"{job_post_id}"
+                })
+    else:
+        return errTemplate.page_not_found(req)
+
+
 # Applicants Per Job Post (Hired)
 @router.get("/job-posts/{job_post_id}/applicants/hired", response_class=HTMLResponse)
 async def render(
@@ -236,6 +263,7 @@ async def render(
 # ===========================================================
 # INTERVIEW QUESTIONS
 # ===========================================================
+
 
 # Interview Questions
 @router.get("/interview-questions", response_class=HTMLResponse)

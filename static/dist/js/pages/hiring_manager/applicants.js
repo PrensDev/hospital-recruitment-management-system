@@ -75,7 +75,7 @@ const applicantsPerJobAnalytics = () => {
 
             // Show Count or Hide Element
             const a = (s, c) => { if(c > 0) {
-                setContent(s, formatNumber(c))
+                setContent(s, formatNumber(c));
                 showElement(s);
             }}
 
@@ -186,7 +186,6 @@ const viewApplicantDetails = (applicantID) => {
 
 /** Applicants for Screening DataTable */
 initDataTable('#applicantsForScreeningDT', {
-    // debugMode: true,
     url: `${ H_API_ROUTE }job-posts/${ jobPostID }/applicants/for-screening`,
     columns: [
         
@@ -255,7 +254,7 @@ initDataTable('#applicantsForScreeningDT', {
 
 /**
  * ==============================================================================
- * SCREENED APPLICANTS
+ * SCREEN APPLICANTS
  * ==============================================================================
 */
 
@@ -364,7 +363,7 @@ const screenApplicant = () => {
 
 /** Applicants for Interview DataTable */
 initDataTable('#applicantsForInterviewDT', {
-    // debugMode: true,
+    debugMode: true,
     url: `${ H_API_ROUTE }job-posts/${ jobPostID }/applicants/for-interview`,
     columns: [
         
@@ -428,6 +427,20 @@ initDataTable('#applicantsForInterviewDT', {
             }
         }
     ]
+});
+
+
+/**
+ * ==============================================================================
+ * CREATE SCHEDULE
+ * ==============================================================================
+*/
+
+/** If Create Interview Schedule Form Exist */
+ifSelectorExist('#createInterviewScheduleForm', () => {
+    $('#selectApplicant').select2({
+        placeholder: "Please select applicant here and add",
+    });
 });
 
 

@@ -3,8 +3,17 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
-    <div class="container pt-4">
+    <div class="container" id="availableJobDetailsPreloader">
+        <div class="py-5 text-center">
+            <div class="spinner-border text-primary my-3">
+                <div class="sr-only">Loading ...</div>
+            </div>
+            <div class="text-secondary">Loading ...</div>
+        </div>
+    </div>
+    
+    <!-- Content Header -->
+    <div class="container pt-4" id="vacantPositionContainer" style="display: none">
         <h1 id="vacantPosition"></h1>
         <div class="dropdown-divider"></div>
         <div class="mb-3">
@@ -23,7 +32,7 @@
     </div>
 
     <!-- Main content -->
-    <div class="content" id="availableJobDetails">
+    <div class="content" id="availableJobDetails" style="display: none">
         <div class="container">
             <div class="row">
 
@@ -122,8 +131,8 @@
                                     </label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                          <span class="input-group-text">
-                                              <i class="fas fa-phone"></i>
+                                            <span class="input-group-text">
+                                                <i class="fas fa-phone"></i>
                                             </span>
                                         </div>
                                         <input 
@@ -224,6 +233,7 @@
             </div>
         </div>
     </div>
+        
 
 {% endblock %}
 

@@ -1,5 +1,5 @@
 # Import Package
-from datetime import datetime, date
+from datetime import datetime, date, time
 from typing import List, Optional
 from pydantic import BaseModel
 
@@ -44,9 +44,9 @@ class ShowPositionForDepartment(Position):
 # User Schema
 class User(BaseModel):
     first_name: str
-    middle_name: str
+    middle_name: Optional[str]
     last_name: str
-    suffix_name: str
+    suffix_name: Optional[str]
     position_id: str
     email: str
     password: str
@@ -56,9 +56,9 @@ class User(BaseModel):
 # User Info
 class UserInfo(BaseModel):
     first_name: str
-    middle_name: str
+    middle_name: Optional[str]
     last_name: str
-    suffix_name: str
+    suffix_name: Optional[str]
     email: str
     position: ShowPosition
 
@@ -262,3 +262,61 @@ class ShowInterviewQuestion(BaseModel):
 
     class Config():
         orm_mode = True
+
+
+# Interview Schedule
+class InterviewSchedule(BaseModel):
+    scheduled_date: date
+    start_session: time
+    end_session: time
+
+
+# Interview Schedule Info
+class InterviewScheduleInfo(InterviewSchedule):
+    class Config():
+        orm_mode = True
+
+
+# Interview Question
+class InterviewQuestion(BaseModel):
+    question: str
+    type: str
+
+
+# Interview Question Info
+class InterviewQuestionInfo(InterviewQuestion):
+    class Config():
+        orm_mode = True
+
+
+# Interview Score
+class IntervieweeScore(BaseModel):
+    interview_question: InterviewQuestionInfo
+    score: int
+    scored_by_hiring_manager: UserInfo
+    remarks: str
+
+    class Config():
+        orm_mode = True
+
+
+# Interviewee Info
+class IntervieweeInfo(BaseModel):
+    interviewee_schedule: Optional[InterviewScheduleInfo]
+    interviewee_score: List[Optional[IntervieweeScore]]
+    is_interviewed: Optional[bool]
+    interviewed_at: Optional[datetime]
+    remarks: Optional[str]
+    created_at: datetime
+    updated_at: datetime
+
+    class Config():
+        orm_mode = True
+
+
+# Show Interviewee Info
+class ShowIntervieweeInfo(ShowApplicantInfo):
+    interviewee_info: List[IntervieweeInfo]
+
+    class Config():
+        orm_mod =  True

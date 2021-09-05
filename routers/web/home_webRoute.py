@@ -72,6 +72,8 @@ async def careers(req: Request):
     except Exception as e:
         print(e)
 
+
+# Search Job
 @router.get("/careers/")
 async def search(req: Request, query: Optional[str]):
     try:

@@ -59,11 +59,14 @@ ifSelectorExist('#createJobPostForm', () => {
             // Set Deadline
             setContent('#deadlineForSummary', () => {
                 const deadline = result.deadline;
-                return `
-                    <div>${ formatDateTime(deadline, "Full Date") }</div>
-                    <div>${ formatDateTime(deadline, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(deadline) }</div>
-                `
+
+                return isEmptyOrNull(deadline)
+                    ? `<div class="text-secondary font-italic">Unset</div>`
+                    : `
+                        <div>${ formatDateTime(deadline, "Full Date") }</div>
+                        <div>${ formatDateTime(deadline, "Time") }</div>
+                        <div class="small text-secondary">${ fromNow(deadline) }</div>
+                    `
             });
 
             /** FOR MANPOWER REQUEST MODAL */

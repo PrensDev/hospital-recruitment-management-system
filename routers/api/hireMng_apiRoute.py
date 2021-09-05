@@ -17,6 +17,7 @@ User                = models.User
 Requisition         = models.Requisition
 JobPost             = models.JobPost
 Applicant           = models.Applicant
+Interviewee         = models.Interviewee
 InterviewQuestion   = models.InterviewQuestion
 
 
@@ -322,7 +323,7 @@ async def evaluated_applicants(
 
 
 # Get All Applicants Per Job (For Interview)
-@router.get("/job-posts/{job_post_id}/applicants/for-interview", response_model = List[db_schemas.ShowApplicantInfo])
+@router.get("/job-posts/{job_post_id}/applicants/for-interview", response_model = List[db_schemas.ShowIntervieweeInfo])
 async def evaluated_applicants(
     job_post_id,
     db: Session = Depends(get_db),
@@ -389,14 +390,21 @@ async def update_applicant_status(
         if not applicant.first():
             raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
         else:
-            applicant.update({
-                "screened_by": user_data.user_id,
-                "screened_at": req.screened_at,
-                "status": req.status,
-                "remarks": req.remarks
-            })
+            new_interviewee = Interviewee(applicant_id = applicant_id)
+            db.add(new_interviewee)
             db.commit()
-            return {"message": "Update success"}
+            db.refresh(new_interviewee)
+            if not new_interviewee:
+                raise HTTPException(status = 500, detail = {"error": "There was an error in adding new interviewee"})
+            else:
+                applicant.update({
+                    "screened_by": user_data.user_id,
+                    "screened_at": req.screened_at,
+                    "status": req.status,
+                    "remarks": req.remarks
+                })
+                db.commit()
+                return {"message": "Update success"}
     except Exception as e:
         print(e)
 

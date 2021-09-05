@@ -130,21 +130,21 @@ async def apply(req: db_schemas.Applicant, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_applicant)
 
-        messageBody = f"""
-            <h1>Hello {req.first_name}!</h1>
-            <div>This is a test mail from Hospital Management System</div>
-        """
+        # messageBody = f"""
+        #     <h1>Hello {req.first_name}!</h1>
+        #     <div>This is a test mail from Hospital Management System</div>
+        # """
 
-        message = MessageSchema(
-            subject = "Job Application",
-            recipients = [req.email],
-            body = messageBody,
-            subtype = "html"
-        )
+        # message = MessageSchema(
+        #     subject = "Job Application",
+        #     recipients = [req.email],
+        #     body = messageBody,
+        #     subtype = "html"
+        # )
 
-        fm = FastMail(mail_config)
+        # fm = FastMail(mail_config)
 
-        await fm.send_message(message)
+        # await fm.send_message(message)
 
         return {
             "data": new_applicant,

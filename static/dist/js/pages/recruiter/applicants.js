@@ -165,7 +165,6 @@ ifSelectorExist('#applicantsAnalytics', () => applicantsAnalytics());
 const viewApplicantDetails = (applicantID) => {
     GET_ajax(`${ R_API_ROUTE }applicants/${ applicantID }`, {
         success: result => {
-            // console.log(result);
 
             // Set Applicant ID
             setValue('#applicantID', result.applicant_id)
