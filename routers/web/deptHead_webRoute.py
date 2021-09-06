@@ -115,6 +115,16 @@ async def render(req: Request):
         "active_navlink": "Onboarding Employees"
     })
 
+# Onboarding Details
+@router.get("/add-onboarding-employee", response_class=HTMLResponse)
+async def render(req: Request):
+    return templates.TemplateResponse(TEMPLATES_PATH + "add_onboarding_employee.html", {
+        "request": req,
+        "page_title": "Add Onboarding Employees",
+        "sub_title": "Review details to add Onboarding Employees",
+        "active_navlink": "Onboarding Employees"
+    })
+
 
 # General Tasks
 @router.get("/general-tasks", response_class=HTMLResponse)

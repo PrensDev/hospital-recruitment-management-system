@@ -1,57 +1,36 @@
-{% extends "pages/home/_layout.html" %}
+{% extends "pages/department_head/_layout.html" %}
 
 
 {% block content %}
 
-    <div class="container" id="availableJobDetailsPreloader">
-        <div class="py-5 text-center">
-            <div class="spinner-border text-primary my-3">
-                <div class="sr-only">Loading ...</div>
-            </div>
-            <div class="text-secondary">Loading ...</div>
-        </div>
-    </div>
     
-    <!-- Content Header -->
-    <div class="container pt-4" id="vacantPositionContainer" style="display: none">
-        <h1 id="vacantPosition"></h1>
-        <div class="dropdown-divider"></div>
-        <div class="mb-3">
-            <div>
-                <div class="d-flex mb-3">
-                    <div>
-                        <i class="fas fa-clock mr-2 text-secondary"></i>
-                    </div>
-                    <div>
-                        <div id="datePosted"></div>
-                        <div class="small text-secondary" id="datePostedHumanized"></div>
-                    </div>
-                </div>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+            
+            <!-- Title -->
+            <div class="col-sm-6">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">{{ sub_title }}</p>
             </div>
-        </div>
-    </div>
+    
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
 
     <!-- Main content -->
-    <div class="content" id="availableJobDetails" style="display: none">
+    <div class="content" id="availableJobDetails">
         <div class="container">
             <div class="row">
 
-                <!-- Job Description and Application Form -->
-                <div class="col-lg-8 order-1 order-lg-0">
+                <!-- Onboarding Employee Details Form -->
+                <div class="col-12">
 
-                    <!-- Job Description -->
-                    <div class="mb-5">
-                        <div class="mb-3" id="jobDescription"></div>
-                    </div>
-
-                    <!-- Application form -->
-                    <form class="mb-5" id="applicationForm">
-
-                        <h3 id="applyNow">Apply Here</h3>
-
-                        <div class="dropdown-divider"></div>
-
-                        <input type="hidden" id="jobPostID" name="jobPostID">
+                    <!-- Details form -->
+                    <form class="card card-primary card-outline p-3" id="addOnboardingEmployeeForm">
+                        <h3 class="card-title">Add Onboarding</h3>
+                        <p class="text-muted">Please confirm and make sure the employee details are correct.</p>
 
                         <!-- Applicant's Name Field -->
                         <div class="form-row my-3">
@@ -68,7 +47,7 @@
                                         class="form-control" 
                                         id="firstName"
                                         name="firstName"
-                                        placeholder="Enter your first name here"
+                                        placeholder="Enter first name here"
                                     >
                                 </div>
                             </div>
@@ -82,7 +61,7 @@
                                         class="form-control" 
                                         id="middleName"
                                         name="middleName"
-                                        placeholder="Enter your middle name here"
+                                        placeholder="Enter middle name here"
                                     >
                                 </div>
                             </div>
@@ -99,7 +78,7 @@
                                         class="form-control" 
                                         id="lastName"
                                         name="lastName"
-                                        placeholder="Enter your last name here"
+                                        placeholder="Enter last name here"
                                     >
                                 </div>
                             </div>
@@ -113,7 +92,7 @@
                                         class="form-control" 
                                         id="suffixName"
                                         name="suffixName"
-                                        placeholder="Enter your suffix name here"
+                                        placeholder="Enter suffix name here"
                                     >
                                 </div>
                             </div>
@@ -140,7 +119,7 @@
                                             class="form-control" 
                                             id="contactNumber"
                                             name="contactNumber"
-                                            placeholder="Please type your contact number"
+                                            placeholder="Please type contact number"
                                         >
                                     </div>
                                 </div>
@@ -164,72 +143,27 @@
                                             class="form-control" 
                                             id="email"
                                             name="email"
-                                            placeholder="Enter your email here"
+                                            placeholder="Enter email here"
                                         >
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Resume -->
-                        <div class="form-group">
-                            <label for="resume">
-                                <span>Upload your resume here</span>
-                                <small>in PDF file format</small>
-                                <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <div class="custom-file">
-                                    <input 
-                                        type="file" 
-                                        class="custom-file-input" 
-                                        id="resume"
-                                        name="resume"
-                                    >
-                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- User Actions -->
-                        <div class="form-group text-center">
-                            <button class="btn btn-primary">Apply Now!</button>
+                        <div class="card-footer">
+                            <div class="float-right">
+                                <button type="button" class="btn btn-default" onclick="history.back()">Cancel</button>
+                                <button type="submit" class="btn btn-info" id="saveBtn">
+                                    <span>Save</span>
+                                    <i class="fas fa-check ml-1"></i>
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
 
-                <!-- JOb Details Summary -->
-                <div class="col-lg-4 order-0 order-lg-1">
-                    <div class="card card-primary card-outline mb-3">
-                        <div class="card-body">
-                            <table class="table">
-                                <tr>
-                                    <td>
-                                        <h6 class="mb-1">Employment Type</h6>
-                                        <div class="ml-3" id="employmentType"></div>
-                                    </td>
-                                </tr>
-                                <tr id="salaryRangeDisplay">
-                                    <td>
-                                        <h6 class="mb-1">Offered Salary</h6>
-                                        <div class="ml-3" id="salaryRange"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h6 class="mb-1">Open Until</h6>
-                                        <div class="ml-3" id="openUntil"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="#applyNow" class="btn btn-primary btn-block">Apply Now</a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -237,12 +171,10 @@
 
 {% endblock %}
 
-
 {% block page_modals %}
-    {% include 'pages/home/modals/apply_modal.html' %}
+    {% include "pages/department_head/modals/add_onboarding_employee_modal.html" %}
 {% endblock %}
 
-
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/home/careers.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/pages/department_head/onboarding_employees.js')}}"></script>   
 {% endblock %}
