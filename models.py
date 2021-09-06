@@ -547,7 +547,7 @@ class Interviewee(Base):
     )
     interviewee_schedule = relationship(
         "InterviewSchedule",
-        back_populates = "interviewee"
+        back_populates = "interviewees"
     )
     interviewee_score = relationship(
         "InterviewScore",
@@ -594,7 +594,7 @@ class InterviewSchedule(Base):
     )
 
     # Relationships
-    interviewee = relationship(
+    interviewees = relationship(
         "Interviewee",
         back_populates = "interviewee_schedule"
     )

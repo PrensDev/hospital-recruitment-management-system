@@ -10,8 +10,6 @@ ifSelectorExist('#addManpowerRequestForm', () => {
     /** Vacant Position For Add Select2 */
     GET_ajax(`${ D_API_ROUTE }department/positions`, {
         success: result => {
-            // console.log(result);
-
             const positions = result.department_positions;
 
             let vacantPosition = $('#vacantPosition');
@@ -137,14 +135,14 @@ validateForm('#addManpowerRequestForm', {
         },
         minSalary: {
             required: 'Please type the minimum salary here',
-            number: "Invalid value",
-            min: "Invalid value",
+            number: "Minimum salary must have a valid value",
+            min: "Minimum salary must have a valid value",
             lessThan: "This must be less than the maximum salary"
         },
         maxSalary: {
             required: 'Please type the maximum salary here',
-            number: "Invalid value",
-            min: "Invalid value",
+            number: "Maximum salary must have a valid value",
+            min: "Maximum salary must have a valid value",
             greaterThan: "This must be greater than the minimum salary"
         }
     },
@@ -705,14 +703,14 @@ validateForm('#editManpowerRequestForm', {
         },
         minSalary: {
             required: 'Please type the minimum salary here',
-            number: "Invalid value",
-            min: "Invalid value",
+            number: "Minimum salary must have a valid value",
+            min: "Minimum salary must have a valid value",
             lessThan: "This must be less than the maximum salary"
         },
         maxSalary: {
             required: 'Please type the maximum salary here',
-            number: "Invalid value",
-            min: "Invalid value",
+            number: "Maximum salary must have a valid value",
+            min: "Maximum salary must have a valid value",
             greaterThan: "This must be greater than the minimum salary"
         }
     },

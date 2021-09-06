@@ -22,7 +22,7 @@
         <div class="form-row">
 
             <!-- Create Job Post Form -->
-            <div class="col-md-8">
+            <div class="col-lg-8 order-1 order-lg-0">
                 <form class="card card-primary card-outline" id="createInterviewScheduleForm">
     
                     <div class="card-header align-items-center">
@@ -44,7 +44,12 @@
                         <!-- Date of Schedule -->
                         <div class="form-group">
                             <label for="scheduledDate">On what date?</label>
-                            <input type="date" class="form-control" id="scheduledDate">
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                id="scheduledDate" 
+                                name="scheduledDate"
+                            >
                         </div>
 
                         <!-- Session Range -->
@@ -54,7 +59,12 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="startSession">Start of Session</label>
-                                    <input type="time" class="form-control" id="startSession">
+                                    <input 
+                                        type="time" 
+                                        class="form-control" 
+                                        id="startSession"
+                                        name="startSession"
+                                    >
                                 </div>
                             </div>
 
@@ -62,7 +72,12 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="endSession">End of Session</label>
-                                    <input type="time" class="form-control" id="endSession">
+                                    <input 
+                                        type="time" 
+                                        class="form-control" 
+                                        id="endSession"
+                                        name="endSession"
+                                    >
                                 </div>
                             </div>
                         </div>
@@ -70,20 +85,16 @@
                         <!-- Add Applicant -->
                         <div class="form-group">
                             <label for="selectApplicant">Choose applicants to be interview for this schedule</label>
-                            <div class="input-group">
+                            <div class="input-group" style="width: 100%">
                                 <select 
                                     name="applicant" 
                                     id="selectApplicant"
                                     class="form-control"
                                 >
                                     <option></option>
-                                    <option value="1">Applicant 1</option>
-                                    <option value="1">Applicant 1</option>
-                                    <option value="1">Applicant 1</option>
-                                    <option value="1">Applicant 1</option>
                                 </select>
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary">
+                                    <button class="btn btn-primary" type="button" id="addApplicantBtn" disabled>
                                         <span>Add</span>
                                         <i class="fas fa-plus ml-1"></i>
                                     </button>
@@ -92,19 +103,28 @@
                         </div>
 
                         <!-- Selected Applicants -->
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-bordered table-hover" id="selectedApplicantsDT">
                             <thead>
                                 <th>Applicant</th>
-                                <th>Resume</th>
-                                <th>Actions</th>
+                                <th class="text-center">Resume</th>
+                                <th class="text-center">Actions</th>
                             </thead>
+                            <tbody id="selectedApplicantsDTBody">
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="py-5 text-center">
+                                            <h5 class="text-secondary my-3">Added applicants will be display here</h5>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
     
                     <div class="card-footer">
                         <div class="float-right">
                             <button type="button" class="btn btn-default" onclick="history.back()">Cancel</button>
-                            <button type="submit" class="btn btn-primary" id="postBtn" disabled>
+                            <button type="submit" class="btn btn-primary" id="saveBtn" disabled>
                                 <span>Save</span>
                                 <i class="fas fa-check ml-1"></i>
                             </button>
@@ -114,7 +134,7 @@
             </div>
             
             <!-- Job Post Summary -->
-            <div class="col-md-4">
+            <div class="col-lg-4 order-0 order-lg-1">
 
                 <div class="card card-primary card-outline" id="jobPostSummaryLoader">
                     <div class="card-body py-5 text-center">
@@ -164,7 +184,7 @@
 
 
 {% block page_modals %}
-    <div></div>
+    {% include "pages/hiring_manager/modals/schedule_modal.html" %}
 {% endblock %}
 
 

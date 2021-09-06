@@ -1,6 +1,6 @@
 # Import Packages
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
@@ -19,6 +19,7 @@ JobPost             = models.JobPost
 Applicant           = models.Applicant
 Interviewee         = models.Interviewee
 InterviewQuestion   = models.InterviewQuestion
+InterviewSchedule   = models.InterviewSchedule
 
 
 # Router Instance
@@ -243,6 +244,24 @@ async def get_one_applicant(
         print(e)
 
 
+# Get One Interviewee
+@router.get("/interviewee/{applicant_id}", response_model = db_schemas.ShowIntervieweeInfo)
+async def get_one_applicant(
+    applicant_id,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id).first()
+        if not applicant:
+            return APPLICANT_NOT_FOUND_RESPONSE
+        else:
+            return applicant
+    except Exception as e:
+        print(e)
+
+
 # ====================================================================
 # APPLICANTS PER JOB
 # ====================================================================
@@ -390,21 +409,14 @@ async def update_applicant_status(
         if not applicant.first():
             raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
         else:
-            new_interviewee = Interviewee(applicant_id = applicant_id)
-            db.add(new_interviewee)
+            applicant.update({
+                "screened_by": user_data.user_id,
+                "screened_at": req.screened_at,
+                "status": req.status,
+                "remarks": req.remarks
+            })
             db.commit()
-            db.refresh(new_interviewee)
-            if not new_interviewee:
-                raise HTTPException(status = 500, detail = {"error": "There was an error in adding new interviewee"})
-            else:
-                applicant.update({
-                    "screened_by": user_data.user_id,
-                    "screened_at": req.screened_at,
-                    "status": req.status,
-                    "remarks": req.remarks
-                })
-                db.commit()
-                return {"message": "Update success"}
+            return {"message": "Update success"}
     except Exception as e:
         print(e)
 
@@ -472,5 +484,30 @@ async def get_one_interview_question(
             raise HTTPException(status_code = 404, detail = INTERVIEW_QUESTION_NOT_FOUND_RESPONSE)
         else:
             return interview_question
+    except Exception as e:
+        print(e)
+
+
+# Create Interview Schedule
+@router.post("/interview-schedule")
+async def create_interview_schedule(
+    req: db_schemas.CreateInterviewSchedule,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        new_interview_schedule = InterviewSchedule(
+            scheduled_date = req.scheduled_date,
+            start_session = req.start_session,
+            end_session = req.end_session
+        )
+        db.add(new_interview_schedule)
+        db.commit()
+        db.refresh(new_interview_schedule)
+        return {
+            "data": new_interview_schedule,
+            "message": "Interview schedule is successfully created"
+        }
     except Exception as e:
         print(e)

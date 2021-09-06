@@ -244,6 +244,11 @@ class ApplicantScreening(BaseModel):
     remarks: Optional[str]
 
 
+# Interviewee
+class Interviewee(BaseModel):
+    applicant_id: str
+
+
 # Create Interview Question
 class CreateInterviewQuestion(BaseModel):
     question: str
@@ -269,6 +274,14 @@ class InterviewSchedule(BaseModel):
     scheduled_date: date
     start_session: time
     end_session: time
+
+
+# Create Interview Schedule
+class CreateInterviewSchedule(BaseModel):
+    scheduled_date: date
+    start_session: time
+    end_session: time
+    interviewees: List[Interviewee]
 
 
 # Interview Schedule Info

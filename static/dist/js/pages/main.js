@@ -98,7 +98,7 @@ const dtBadge = (theme = "light", content) => { return `<div class="badge badge-
 jQuery.validator.addMethod("lessThan", function(val, elem, params) {
     if($(params).length) {
         const c = getValue(params);
-        return isEmptyOrNull(c) ? true : val < c;
+        return isEmptyOrNull(c) ? true : parseFloat(val) < parseFloat(c);
     }
     return true;
 }, `It must be less than something`);
@@ -107,7 +107,7 @@ jQuery.validator.addMethod("lessThan", function(val, elem, params) {
 jQuery.validator.addMethod("greaterThan", function(val, elem, params) {
     if($(params).length) {
         const c = getValue(params);
-        return isEmptyOrNull(c) ? true : val > c;
+        return isEmptyOrNull(c) ? true : parseFloat(val) > parseFloat(c);
     }
     return true;
 }, `It must be greater than something`);
@@ -116,7 +116,7 @@ jQuery.validator.addMethod("greaterThan", function(val, elem, params) {
 jQuery.validator.addMethod("lessThanOrEqualTo", function(val, elem, params) {
     if($(params).length) {
         const c = getValue(params);
-        if(!(isEmptyOrNull(c) || c == 0)) return val <= c;
+        if(!(isEmptyOrNull(c) || c == 0)) return parseFloat(val) <= parseFloat(c);
     }
     return true;
 }, `It must be less than or equal to something`);
@@ -125,7 +125,7 @@ jQuery.validator.addMethod("lessThanOrEqualTo", function(val, elem, params) {
 jQuery.validator.addMethod("greaterThan", function(val, elem, params) {
     if($(params).length) {
         const c = getValue(params);
-        if(!(isEmptyOrNull(c) || c == 0)) return val >= c;
+        if(!(isEmptyOrNull(c) || c == 0)) return parseFloat(val) >= parseFloat(c);
     }
     return true;
 }, `It must be greater than or equal to something`);
@@ -140,6 +140,23 @@ jQuery.validator.addMethod("afterToday", function(val, elem, params) {
     return this.optional(elem) || isAfterToday(val);
 }, `Date and Time must be before today`);
 
+// Before Time
+jQuery.validator.addMethod("beforeTime", function(val, elem, params) {
+    if($(params).length) {
+        const c = getValue(params);
+        return isEmptyOrNull(c) ? true : moment(val, 'H:mm').isBefore(moment(c, 'H:mm'));
+    }
+    return true;
+});
+
+// After Time
+jQuery.validator.addMethod("afterTime", function(val, elem, params) {
+    if($(params).length) {
+        const c = getValue(params);
+        return isEmptyOrNull(c) ? true : moment(val, 'H:mm').isAfter(moment(c, 'H:mm'));
+    }
+    return true;
+});
 
 /** Validate Form */
 const validateForm = (selector = "", validationOptions = { rules: {}, messages: {}, submitHandler: () => {} }) => {
