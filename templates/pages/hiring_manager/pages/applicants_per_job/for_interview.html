@@ -61,6 +61,7 @@
                                 <th>Applicant Name</th>
                                 <th>Contact number</th>
                                 <th>Email</th>
+                                <th>Status</th>
                                 <th>Date Applied</th>
                                 <th class="text-center">Actions</th>
                             </tr>
@@ -89,67 +90,26 @@
                 >
                     <div>
 
-                        <div class="form-group text-right">
-                            <a class="btn btn-sm btn-primary" href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/create-interview-schedule">
-                                <span>Create schedule</span>
-                                <i class="fas fa-plus ml-1"></i>
-                            </a>
+                        <div class="form-row mb-3">
+                            <div class="col-sm-8">
+                                <div id="scheduleCountDetails">You have 1 schedule in total</div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="text-right">
+                                    <a class="btn btn-sm btn-primary" href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/create-interview-schedule">
+                                        <span>Create schedule</span>
+                                        <i class="fas fa-plus ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="callout callout-info">
-                            <h5 class="mb-0">Thursday, September 30, 2021</h5>
-                            <h5 class="mb-0">09:00 AM - 12:00 PM</h5>
-                            <div class="small text-secondary">in 7 days</div>
-
-                            <div class="row mt-2">
-                                <div class="col">
-                                    <div>4 applicants are scheduled</div>
+                        <div id="interviewSchedules">
+                            <div class="py-5 text-center">
+                                <div class="spinner-border my-3 text-primary">
+                                    <div class="sr-only">Loading ...</div>
                                 </div>
-                                <div class="col">
-                                    <div class="text-right">
-                                        <button href="#" class="btn btn-sm btn-secondary">View Details</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="callout callout-info">
-                            <h5 class="mb-0">Thursday, September 30, 2021</h5>
-                            <h5 class="mb-0">09:00 AM - 12:00 PM</h5>
-                            <div class="d-flex align-items-center">
-                                <div class="badge bg-primary mr-2">Today</div>
-                                <div class="small text-secondary">in 7 days</div>
-                            </div>
-
-                            <div class="row mt-2">
-                                <div class="col">
-                                    <div>4 applicants are scheduled</div>
-                                </div>
-                                <div class="col">
-                                    <div class="text-right">
-                                        <button href="#" class="btn btn-sm btn-secondary">View Details</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="callout callout-info">
-                            <h5 class="mb-0">Thursday, September 30, 2021</h5>
-                            <h5 class="mb-0">09:00 AM - 12:00 PM</h5>
-                            <div class="d-flex align-items-center">
-                                <div class="badge bg-danger mr-2">Ended</div>
-                                <div class="small text-secondary">in 7 days</div>
-                            </div>
-
-                            <div class="row mt-2">
-                                <div class="col">
-                                    <div>4 applicants are scheduled</div>
-                                </div>
-                                <div class="col">
-                                    <div class="text-right">
-                                        <button href="#" class="btn btn-sm btn-secondary">View Details</button>
-                                    </div>
-                                </div>
+                                <div class="text-secondary">Please wait while loading records ...</div>
                             </div>
                         </div>
                         

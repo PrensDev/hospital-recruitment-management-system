@@ -384,6 +384,10 @@ class JobPost(Base):
         "Applicant",
         back_populates = "applied_job"
     )
+    job_post_interview_schedules = relationship(
+        "InterviewSchedule",
+        back_populates = "schedule_for"
+    )
 
 
 # Applicants
@@ -565,6 +569,11 @@ class InterviewSchedule(Base):
         primary_key = True,
         default = text('UUID()')
     )
+    job_post_id = Column(
+        String(36),
+        ForeignKey("job_posts.job_post_id"),
+        nullable = False
+    )
     scheduled_date = Column(
         Date,
         nullable = False
@@ -594,6 +603,10 @@ class InterviewSchedule(Base):
     )
 
     # Relationships
+    schedule_for = relationship(
+        "JobPost",
+        back_populates = "job_post_interview_schedules"
+    )
     interviewees = relationship(
         "Interviewee",
         back_populates = "interviewee_schedule"

@@ -363,7 +363,7 @@ const screenApplicant = () => {
 
 /** Applicants for Interview DataTable */
 initDataTable('#applicantsForInterviewDT', {
-    debugMode: true,
+    // debugMode: true,
     url: `${ H_API_ROUTE }job-posts/${ jobPostID }/applicants/for-interview`,
     columns: [
         
@@ -389,10 +389,23 @@ initDataTable('#applicantsForInterviewDT', {
         // Email
         { data: 'email' },
 
+        // Status
+        {
+            data: null,
+            render: () => {
+                return `
+                    <div class="badge bg-warning p-2 w-100">
+                        <span>No schedule yet</span>
+                    </div>
+                `
+            }
+        },
+
         // Date Applied
         {
             data: null,
             class: 'text-nowrap',
+            visible: false,
             render: data => {
                 const dateApplied = data.created_at;
                 return `
@@ -427,6 +440,83 @@ initDataTable('#applicantsForInterviewDT', {
             }
         }
     ]
+});
+
+/** For Interview Schedules */
+ifSelectorExist('#interviewSchedules', () => {
+    GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }/interview-schedules`, {
+        success: result => {
+            console.log(result);
+
+            if(result) {
+                let schedules = '';
+                if(result.length > 0) {
+                    
+                    setContent('#scheduleCountDetails', () => {
+                        const c = result.length;
+                        return `You already have ${ c } schedule${ c > 1 ? 's' : '' } in total.`
+                    });
+
+                    result.forEach(r => {
+                        const startSession = moment(`${ r.scheduled_date } ${ r.start_session }`);
+                        const endSession = moment(`${ r.scheduled_date } ${ r.end_session }`);
+                        
+                        const momentDetails = () => {
+                            if(moment().isSame(r.scheduled_date)) {
+                                if(isAfterToday(startSession)) {
+                                    return `
+                                        <div class="badge badge-primary mr-2">Today</div>
+                                        <div class="small text-secondary">${ fromNow(startSession) }</div>
+                                    `
+                                }
+                            } else if(isAfterToday(startSession)) {
+                                return `
+                                    <div class="small text-secondary">${ fromNow(startSession) }</div>
+                                `
+                            }
+                        }
+
+                        schedules += `
+                            <div class="callout callout-info">
+                                <h5 class="mb-0">${ formatDateTime(r.scheduled_date, 'Full Date') }</h5>
+                                <h5 class="mb-0">${ formatDateTime(startSession, 'Time') } - ${ formatDateTime(endSession, 'Time') }</h5>
+                                <div class="d-flex align-items-center">
+                                    ${momentDetails()}
+                                </div>
+    
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <div>4 applicants are scheduled</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="text-right">
+                                            <a class="btn btn-sm btn-secondary text-white" style="text-decoration: none" href="${ H_WEB_ROUTE }interview-schedules/${ r.interview_schedule_id }">
+                                                <i class="fas fa-list mr-1"></i>
+                                                <span>View Details</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    });
+                } else {
+                    setContent('#scheduleCountDetails', 'No schedule has been set yet');
+
+                    schedules = `
+                        <div class="py-5 text-center">
+                            <h3>There are no schedules yet</h3>
+                            <p class="text-secondary">You may create by clicking the button above</p>
+                        </div>
+                    `
+                }
+                setContent('#interviewSchedules', schedules);
+            }
+        },
+        error: () => {
+            toastr.error('There was an error in getting interview schedules')
+        }
+    })
 });
 
 
@@ -623,6 +713,9 @@ validateForm('#createInterviewScheduleForm', {
 
 /** Create Schedule Button */
 onClick('#createScheduleBtn', () => {
+    btnToLoadingState('#createScheduleBtn');
+    disableElement('#cancelConfirmCreateInterviewScheduleBtn');
+
     const formData = generateFormData('#createInterviewScheduleForm');
     const get = (n) => { return formData.get(n) }
 
@@ -630,20 +723,32 @@ onClick('#createScheduleBtn', () => {
     selectedApplicants.forEach(a => interviewees.push({applicant_id: a}));
  
     const data = {
+        job_post_id: jobPostID,
         scheduled_date: get('scheduledDate'),
         start_session: get('startSession'),
         end_session: get('endSession'),
         interviewees: interviewees
     }
 
-    console.log(data);
-
     POST_ajax(`${ H_API_ROUTE }interview-schedule`, data, {
-        suceess: result => {
-            console.log(result)
+        success: result => {
+            if(result) {
+                setSessionedAlertAndRedirect({
+                    theme: "success",
+                    message: "A new schedule is successfully created",
+                    redirectURL: `${ H_WEB_ROUTE }job-posts/${ jobPostID }/applicants/for-interview`
+                });
+            }
         },
         error: () => {
             hideModal('#confirmCreateInterviewScheduleModal');
+
+            btnToUnloadState('#createScheduleBtn', `
+                <span>Yes, create it!</span>
+                <i class="fas fa-check ml-1"></i>
+            `);
+            enableElement('#cancelConfirmCreateInterviewScheduleBtn');
+
             toastr.error('There was an error in creating an interview schedule');
         }
     });

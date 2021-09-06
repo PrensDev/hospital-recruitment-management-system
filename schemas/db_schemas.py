@@ -278,6 +278,7 @@ class InterviewSchedule(BaseModel):
 
 # Create Interview Schedule
 class CreateInterviewSchedule(BaseModel):
+    job_post_id: str
     scheduled_date: date
     start_session: time
     end_session: time

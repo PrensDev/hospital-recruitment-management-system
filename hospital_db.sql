@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 06, 2021 at 03:32 PM
+-- Generation Time: Sep 06, 2021 at 08:24 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.4.22
 
@@ -110,6 +110,14 @@ CREATE TABLE `interviewees` (
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `interviewees`
+--
+
+INSERT INTO `interviewees` (`interviewee_id`, `applicant_id`, `interview_schedule_id`, `is_interviewed`, `interviewed_at`, `remarks`, `created_at`, `updated_at`) VALUES
+('efead62f-0f32-11ec-8a15-d8c497916dda', '7e316a7c-0e40-11ec-9e47-d8c497916dda', 'ef9ad695-0f32-11ec-8a15-d8c497916dda', NULL, NULL, NULL, '2021-09-07 00:53:18', '2021-09-07 00:53:18'),
+('efffc5f2-0f32-11ec-8a15-d8c497916dda', '965bfcce-0e40-11ec-9e47-d8c497916dda', 'ef9ad695-0f32-11ec-8a15-d8c497916dda', NULL, NULL, NULL, '2021-09-07 00:53:19', '2021-09-07 00:53:19');
+
 -- --------------------------------------------------------
 
 --
@@ -126,6 +134,15 @@ CREATE TABLE `interview_questions` (
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `interview_questions`
+--
+
+INSERT INTO `interview_questions` (`interview_question_id`, `question`, `type`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+('05667517-0f1e-11ec-8a15-d8c497916dda', 'What are your strengths and weaknesses?', 'General', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-06 22:23:35', '2021-09-06 22:23:35'),
+('c06a3599-0f26-11ec-8a15-d8c497916dda', 'What are your hobbies?', 'General', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-06 23:26:05', '2021-09-06 23:26:05'),
+('f89c3eed-0f1d-11ec-8a15-d8c497916dda', 'Tell me about yourself.', 'General', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-06 22:23:14', '2021-09-06 22:23:14');
+
 -- --------------------------------------------------------
 
 --
@@ -134,6 +151,7 @@ CREATE TABLE `interview_questions` (
 
 CREATE TABLE `interview_schedules` (
   `interview_schedule_id` varchar(36) NOT NULL,
+  `job_post_id` varchar(36) NOT NULL,
   `scheduled_date` date NOT NULL,
   `start_session` time NOT NULL,
   `end_session` time NOT NULL,
@@ -141,6 +159,13 @@ CREATE TABLE `interview_schedules` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `interview_schedules`
+--
+
+INSERT INTO `interview_schedules` (`interview_schedule_id`, `job_post_id`, `scheduled_date`, `start_session`, `end_session`, `set_by`, `created_at`, `updated_at`) VALUES
+('ef9ad695-0f32-11ec-8a15-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', '2021-09-08', '09:30:00', '11:30:00', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-07 00:53:18', '2021-09-07 00:53:18');
 
 -- --------------------------------------------------------
 
@@ -389,6 +414,7 @@ ALTER TABLE `interview_questions`
 --
 ALTER TABLE `interview_schedules`
   ADD PRIMARY KEY (`interview_schedule_id`),
+  ADD KEY `job_post_id` (`job_post_id`),
   ADD KEY `set_by` (`set_by`);
 
 --
@@ -488,7 +514,8 @@ ALTER TABLE `interview_questions`
 -- Constraints for table `interview_schedules`
 --
 ALTER TABLE `interview_schedules`
-  ADD CONSTRAINT `interview_schedules_ibfk_1` FOREIGN KEY (`set_by`) REFERENCES `users` (`user_id`);
+  ADD CONSTRAINT `interview_schedules_ibfk_1` FOREIGN KEY (`job_post_id`) REFERENCES `job_posts` (`job_post_id`),
+  ADD CONSTRAINT `interview_schedules_ibfk_2` FOREIGN KEY (`set_by`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `interview_scores`

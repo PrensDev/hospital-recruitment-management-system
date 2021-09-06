@@ -430,6 +430,29 @@ async def update_applicant_status(
 INTERVIEW_QUESTION_NOT_FOUND_RESPONSE = {"message": "Interview Question not found"}
 
 
+# Interview Schedules Per Job
+@router.get("/job-posts/{job_post_id}/interview-schedules")
+async def get_interview_schedules_per_job_post(
+    job_post_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        job_post = db.query(JobPost).filter(
+            JobPost.job_post_id == job_post_id).first()
+        if not job_post:
+            raise HTTPException(status_code=404, detail = JOB_POST_NOT_FOUND_RESPONSE)
+        else:
+            interview_schedules = db.query(InterviewSchedule).filter(
+                InterviewSchedule.job_post_id == job_post_id,
+                InterviewSchedule.set_by == user_data.user_id
+            ).all()
+            return interview_schedules
+    except Exception as e:
+        print(e)
+
+
 # Create Interview Question
 @router.post("/interview-questions", status_code = 201)
 async def create_interview_question(
@@ -489,7 +512,7 @@ async def get_one_interview_question(
 
 
 # Create Interview Schedule
-@router.post("/interview-schedule")
+@router.post("/interview-schedule", status_code = 201)
 async def create_interview_schedule(
     req: db_schemas.CreateInterviewSchedule,
     db: Session = Depends(get_db),
@@ -498,16 +521,24 @@ async def create_interview_schedule(
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
         new_interview_schedule = InterviewSchedule(
+            job_post_id = req.job_post_id,
             scheduled_date = req.scheduled_date,
             start_session = req.start_session,
-            end_session = req.end_session
+            end_session = req.end_session,
+            set_by = user_data.user_id
         )
         db.add(new_interview_schedule)
         db.commit()
         db.refresh(new_interview_schedule)
-        return {
-            "data": new_interview_schedule,
-            "message": "Interview schedule is successfully created"
-        }
+        interview_schedule_id = (new_interview_schedule.interview_schedule_id)
+        for a in req.interviewees:
+            new_interviewee = Interviewee(
+                applicant_id = a.applicant_id,
+                interview_schedule_id = interview_schedule_id
+            )
+            db.add(new_interviewee)
+            db.commit()
+            db.refresh(new_interviewee)
+        return {"message": "Interview schedule is successfully created"}
     except Exception as e:
         print(e)
