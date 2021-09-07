@@ -174,9 +174,7 @@ const addGeneralInterviewQuestion = () => {
 }
 
 // When add general interview question modal is going to be hidden
-onHideModal('#addGeneralInterviewQuestionModal', () => {
-    resetForm('#addGeneralInterviewQuestionForm');
-});
+onHideModal('#addGeneralInterviewQuestionModal', () => resetForm('#addGeneralInterviewQuestionForm'));
 
 
 /**
@@ -398,7 +396,7 @@ initDataTable('#intervieweesDT', {
                         <div class="dropdown-menu dropdown-menu-right">
                             <a 
                                 class="dropdown-item d-flex"
-                                href="${ H_WEB_ROUTE }/interview/${ data.interviewee_id }"                                  
+                                href="${ H_WEB_ROUTE }interview/${ data.interviewee_id }"                                  
                             >
                                 <div style="width: 2rem"><i class="fas fa-tasks mr-1"></i></div>
                                 <div>Interview this applicant</div>
@@ -416,4 +414,185 @@ initDataTable('#intervieweesDT', {
             }
         }
     ]
+});
+
+
+/**
+ * ==============================================================================
+ * INTERVIEW SCORESHEET
+ * ==============================================================================
+ */
+
+var scoresheetFormValidationRules = {}
+var scoresheetFormValidationMessages = {}
+var inputs = []
+
+/** For General Interview Questions Table */
+ifSelectorExist('#generalInterviewQuestionsForIntervieweeDT', () => {
+    GET_ajax(`${ H_API_ROUTE }interview-questions/general`, {
+        success: result => {
+            console.log(result)
+
+            $('#generalInterviewQuestionsForIntervieweeDTBody').empty();
+
+            if(result.length > 0) {
+                result.forEach(r => {
+                    const inputName = `input${ r.interview_question_id.replace(/\-/g, '') }`;
+ 
+                    $('#generalInterviewQuestionsForIntervieweeDTBody').append(`
+                        <tr>
+                            <td>
+                                <p>${ r.question }</p>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input 
+                                        class="form-control form-control-border" 
+                                        type="number" 
+                                        min=0 
+                                        max=100 
+                                        name="${ inputName }"
+                                        placeholder="%"
+                                        required
+                                    >
+                                </div>
+                            </td>
+                        </tr>
+                    `);
+
+                    inputs.push({
+                        interviewQuestionID: r.interview_question_id,
+                        name: inputName
+                    });
+
+                    // Set Validation Rule
+                    scoresheetFormValidationRules[inputName] = {
+                        required: true,
+                        number: true,
+                        min: 0,
+                        max: 100
+                    };
+
+                    // Set Message Rule
+                    scoresheetFormValidationMessages[inputName] = {
+                        required: 'Required',
+                        number: 'Invalid value',
+                        min: 'Min. of 0',
+                        max: 'Max. of 100'
+                    };
+                });
+            } else {
+                $('#generalInterviewQuestionsForIntervieweeDTBody').append(`
+                    <tr>
+                        <td colspan="2">
+                            <div class="py-5 text-center">
+                                <h5>No general interview questions</h5>
+                            </div>
+                        </td>
+                    </tr>
+                `);
+            }
+
+        },
+        error: () => {
+            toastr.error('There was an error in getting the general interview questions')
+        }
+    })
+});
+
+
+/** Validate Interview Scoresheet Form */
+validateForm('#interviewScoresheetForm', {
+    rules: scoresheetFormValidationRules,
+    messages: scoresheetFormValidationMessages,
+    submitHandler: () => {
+        showModal('#confirmSaveScoresheetModal');
+        return false;
+    }
+});
+
+
+var addedQuestions = [];
+
+
+/** Validate Add Interview Question Modal */
+validateForm('#addInterviewQuestionForm', {
+    rules: {
+        question: {
+            required: true
+        }
+    },
+    messages: {
+        question: {
+            required: 'Please type your additional question here'
+        }
+    },
+    submitHandler: () => {
+        const question = generateFormData('#addInterviewQuestionForm').get('question');
+        
+        if(addedQuestions.length == 0) $('#addedInterviewQuestionsDTBody').empty();
+
+        const inputName = `${String.fromCharCode(97+Math.floor(Math.random() * 26))}${Math.floor(Math.random() * 26)}${Date.now()}`;
+        
+        $('#addedInterviewQuestionsDTBody').append(`
+            <tr>
+                <td>
+                    <p>${ question }</p>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <input 
+                            class="form-control form-control-border" 
+                            type="number" 
+                            min=0 
+                            max=100 
+                            name="${ inputName }"
+                            placeholder="%"
+                            required
+                        >
+                    </div>
+                </td>
+            </tr>
+        `);
+
+        addedQuestions.push({
+            name: inputName,
+            question: question
+        });
+
+        hideModal('#addInterviewQuestionModal');
+
+        return false;
+    }
+});
+
+
+onHideModal('#addInterviewQuestionModal', () => resetForm('#addInterviewQuestionForm'));
+
+
+
+/** Save Scoresheet */
+onClick('#saveScoresheetBtn', () => {
+    const formData = generateFormData('#interviewScoresheetForm');
+    const get = (n) => { return formData.get(n) }
+    
+    inputs.forEach(i => {
+        const data = {
+            interview_question_id: i.interviewQuestionID,
+            score: get(i.name)
+        }
+
+        console.log(data)
+    });
+
+    if(addedQuestions.length > 0) {
+        addedQuestions.forEach(a => {
+            const data = {
+                question: a.question,
+                score: get(a.name)
+            }
+
+            console.log(data)
+        });
+    }
 });

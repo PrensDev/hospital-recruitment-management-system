@@ -12,6 +12,7 @@ import models
 # Models
 Requisition         = models.Requisition
 JobPost             = models.JobPost
+Interviewee         = models.Interviewee
 InterviewSchedule   = models.InterviewSchedule
 
 # Router
@@ -286,6 +287,34 @@ async def render(
             })
     else:
         return errTemplate.page_not_found(req)
+
+
+# ===========================================================
+# INTERVIEW
+# ===========================================================
+
+# Interview Schedules
+@router.get("/interview/{interviewee_id}", response_class=HTMLResponse)
+async def render(
+    interviewee_id: str,
+    req: Request,
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        interview_schedule = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
+        if not interview_schedule:
+            return errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse(TEMPLATES_PATH + "interview_scoresheet.html", {
+                "request": req,
+                "page_title": "Interview Scoresheet",
+                "sub_title": "Lorem ipsum dolor sit amet",
+                "active_navlink": "Applicants"
+            })
+    else:
+        return errTemplate.page_not_found(req)
+
 
 
 # ===========================================================

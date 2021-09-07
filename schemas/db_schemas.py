@@ -324,6 +324,7 @@ class IntervieweeScore(BaseModel):
 
 # Interviewee Info
 class IntervieweeInfo(BaseModel):
+    interviewee_id: str
     applicant_info: ShowApplicant
     interviewee_schedule: Optional[InterviewScheduleInfo]
     interviewee_score: List[Optional[IntervieweeScore]]

@@ -435,6 +435,9 @@ async def update_applicant_status(
 # ====================================================================
 
 
+# Interviewee Not Found Response
+INTERVIEWEE_NOT_FOUND_RESPONSE = {"message": "Interviewee not found"}
+
 # Interview Question Not Found Response
 INTERVIEW_QUESTION_NOT_FOUND_RESPONSE = {"message": "Interview Question not found"}
 
@@ -588,5 +591,23 @@ async def interviewees_per_schedule(
             raise HTTPException(status_code = 404, detail = INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE)
         else:
             return interview_schedule.interviewees
+    except Exception as e:
+        print(e)
+
+
+# Create General Interview Scores
+@router.post("/interview-scores/{interviewee_id}/general")
+async def create_general_interviewee_scores(
+    interviewee_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        interviewee = db.Query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
+        if not interviewee:
+            raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
+        else:
+            return {"message": "General Interview Scores are recorded"}
     except Exception as e:
         print(e)

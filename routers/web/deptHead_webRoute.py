@@ -115,6 +115,7 @@ async def render(req: Request):
         "active_navlink": "Onboarding Employees"
     })
 
+
 # Onboarding Details
 @router.get("/add-onboarding-employee", response_class=HTMLResponse)
 async def render(req: Request):
@@ -135,6 +136,7 @@ async def render(req: Request):
         "sub_title": "General Tasks to manage employees tasks and monitor performances",
         "active_navlink": "General Tasks"
     })
+
 
 # Task
 @router.get("/tasks", response_class=HTMLResponse)
