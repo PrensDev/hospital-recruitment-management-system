@@ -10,8 +10,9 @@ import models
 
 
 # Models
-Requisition = models.Requisition
-JobPost = models.JobPost
+Requisition         = models.Requisition
+JobPost             = models.JobPost
+InterviewSchedule   = models.InterviewSchedule
 
 # Router
 router = APIRouter(
@@ -256,6 +257,33 @@ async def render(
                     "active_navlink": "Applicants",
                     "job_post_id": f"{job_post_id}"
                 })
+    else:
+        return errTemplate.page_not_found(req)
+
+
+# ===========================================================
+# INTERVIEW SCHEDULES
+# ===========================================================
+
+# Interview Schedules
+@router.get("/interview-schedules/{interview_schedule_id}", response_class=HTMLResponse)
+async def render(
+    interview_schedule_id: str,
+    req: Request,
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
+        if not interview_schedule:
+            return errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse(TEMPLATES_PATH + "schedule_details.html", {
+                "request": req,
+                "page_title": "Interview Schedule Details",
+                "sub_title": "Lorem ipsum dolor sit amet",
+                "active_navlink": "Applicants"
+            })
     else:
         return errTemplate.page_not_found(req)
 

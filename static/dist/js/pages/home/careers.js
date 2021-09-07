@@ -242,9 +242,11 @@ onClick('#submitApplicationBtn', () => {
     disableElement('#cancelApplicationBtn');
     disableElement('#confirmReview');
 
+    // Generate Form Data
     const formData = generateFormData('#applicationForm');
     const get = (name) => { return formData.get(name) }
 
+    // Get resume file
     const resume = $('#resume')[0].files[0];
     const fd = new FormData();
     fd.append('file', resume);
@@ -257,6 +259,8 @@ onClick('#submitApplicationBtn', () => {
         contentType: false,
         data: fd,
         success: result => {
+
+            // Get the data from form
             const data = {
                 job_post_id: get('jobPostID'),
                 first_name: get('firstName'),

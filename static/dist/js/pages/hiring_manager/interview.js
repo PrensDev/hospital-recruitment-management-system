@@ -1,5 +1,14 @@
 /**
  * ==============================================================================
+ * CONSTANTS
+ * ==============================================================================
+ */
+
+// Get interview schedule ID from URL
+const interviewScheduleID = window.location.pathname.split("/")[3];
+
+/**
+ * ==============================================================================
  * GET ALL GENERAL INTERVIEW QUESTIONS
  * ==============================================================================
  */
@@ -251,3 +260,160 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
         error: () => toastr.error('There was an error in getting a general interview question details')
     })
 }
+
+
+/**
+ * ==============================================================================
+ * INTERVIEW SCHEDULE DETAILS
+ * ==============================================================================
+ */
+
+/** Interview Schedule Details */
+ifSelectorExist('#interviewScheduleDetails', () => {
+    GET_ajax(`${ H_API_ROUTE }interview-schedules/${ interviewScheduleID }`, {
+        success: result => {
+            console.log(result);
+
+            /**
+             * ==============================================================================
+             * SCHEDULE DETAILS
+             * ==============================================================================
+             */
+
+            const scheduledDate = result.scheduled_date;
+            const startSession = moment(`${ scheduledDate } ${ result.start_session }`);
+            const endSession = moment(`${ scheduledDate } ${ result.end_session }`);
+
+            // Set Scheduled Date
+            setContent('#scheduledDate', formatDateTime(scheduledDate, 'Full Date'));
+
+            // Set Session Range
+            setContent('#sessionRange', `${ formatDateTime(startSession, 'Time') } - ${ formatDateTime(endSession, 'Time') }`)
+
+            // Set Session Humanized
+            setContent('#scheduledDateHumanized', `${ fromNow(startSession) }`)
+
+            $('#interviewScheduleDetailsLoader').remove();
+            showElement('#interviewScheduleDetails');
+
+            /**
+             * ==============================================================================
+             * JOB POST DETAILS
+             * ==============================================================================
+             */
+
+            const jobPost = result.schedule_for;
+
+            // Set Vacant Position
+            setContent('#vacantPosition', jobPost.manpower_request.vacant_position.name);
+
+            // Set Posted At
+            setContent('#jobPostedAt', `Posted ${ formatDateTime(jobPost.created_at, 'Full Date') }`);
+
+            const staffsNeeded = jobPost.manpower_request.staffs_needed;
+            
+            // Set Staffs Needed
+            setContent('#staffsNeeded', `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' }`);
+
+            // Set Employment Type
+            setContent('#employmentType', jobPost.manpower_request.employment_type);
+
+            // Set Deadline
+            const deadline = jobPost.manpower_request.deadline;
+            isEmptyOrNull(deadline)
+                ? setContent('#deadline', `<div class="text-secondary font-italic">No deadline</div>`)
+                : setContent('#deadline', formatDateTime(deadline, 'Full DateTime'))
+
+            $('#jobPostSummaryLoader').remove();
+            showElement('#jobPostSummary');
+        },
+        error: () => {
+            toastr.error('There was an error in getting interview schedule details')
+        }
+    });
+});
+
+/** Scheduled Interviewees DataTable */
+initDataTable('#intervieweesDT', {
+    // debugMode: true,
+    url: `${ H_API_ROUTE }interview-schedules/${ interviewScheduleID }/interviewees`,
+    columns: [
+
+        // Created At (Hidden for default)
+        { data: "created_at", visible: false },
+
+        // Applicant
+        {
+            data: null,
+            render: data => {
+                const applicant = data.applicant_info;
+
+                return formatName('F M. L, S', {
+                    firstName: applicant.first_name,
+                    middleName: applicant.middle_name,
+                    lastName: applicant.last_name,
+                    suffixName: applicant.suffixName
+                });
+            }
+        },
+
+        // Email
+        { data: 'applicant_info.email'},
+
+        // Contact Number
+        { data: 'applicant_info.contact_number'},
+
+        // Date Applied
+        {
+            data: null,
+            render: data => {
+                const appliedAt = data.applicant_info.created_at;
+                return `
+                    <div>${ formatDateTime(appliedAt, 'MMM. D, YYYY') }<div>
+                    <div class="small text-secodary">${ fromNow(appliedAt) }<div>
+                `
+            }
+        },
+
+        // Status
+        {
+            data: null,
+            render: data => {
+                return `
+                    <div class="badge bg-warning p-2 w-100">Not interviewed yet</div>
+                `
+            }
+        },
+
+        // Actions
+        {
+            data: null,
+            render: data => {
+                return `
+                    <div class="text-center dropdown">
+                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a 
+                                class="dropdown-item d-flex"
+                                href="${ H_WEB_ROUTE }/interview/${ data.interviewee_id }"                                  
+                            >
+                                <div style="width: 2rem"><i class="fas fa-tasks mr-1"></i></div>
+                                <div>Interview this applicant</div>
+                            <a>
+                            <div 
+                                class="dropdown-item d-flex"
+                                role="button"                            
+                            >
+                                <div style="width: 2rem"><i class="fas fa-user-times mr-1"></i></div>
+                                <div>Reject applicant</div>
+                            <div>
+                        </div>
+                    </div>
+                `
+            }
+        }
+    ]
+});

@@ -200,7 +200,11 @@ class ShowApplicantInfo(ShowApplicant):
     applied_job: ShowJobPostForApplicantInfo
     status: str
     evaluation_done_by: Optional[UserInfo]
+    evaluated_at: Optional[datetime]
     screening_done_by: Optional[UserInfo]
+    screened_at: Optional[datetime]
+    rejected_by: Optional[UserInfo]
+    rejected_at: Optional[datetime]
 
     class Config():
         orm_mode = True
@@ -232,15 +236,17 @@ class Search(BaseModel):
 
 # Applicant Evaluation
 class ApplicantEvaluation(BaseModel):
-    evaluated_at: Optional[datetime]
     status: str
+    evaluated_at: Optional[datetime]
+    rejected_at: Optional[datetime]
     remarks: Optional[str]
 
 
 # Applicant Screening
 class ApplicantScreening(BaseModel):
+    status: str 
     screened_at: Optional[datetime]
-    status: str
+    rejected_at: Optional[datetime]
     remarks: Optional[str]
 
 
@@ -287,6 +293,8 @@ class CreateInterviewSchedule(BaseModel):
 
 # Interview Schedule Info
 class InterviewScheduleInfo(InterviewSchedule):
+    schedule_for: ShowJobPost
+
     class Config():
         orm_mode = True
 
@@ -316,6 +324,7 @@ class IntervieweeScore(BaseModel):
 
 # Interviewee Info
 class IntervieweeInfo(BaseModel):
+    applicant_info: ShowApplicant
     interviewee_schedule: Optional[InterviewScheduleInfo]
     interviewee_score: List[Optional[IntervieweeScore]]
     is_interviewed: Optional[bool]
@@ -334,3 +343,12 @@ class ShowIntervieweeInfo(ShowApplicantInfo):
 
     class Config():
         orm_mod =  True
+
+
+# Show Interview Schedule Info
+class ShowInterviewScheduleInfo(InterviewScheduleInfo):
+    interview_schedule_id: str
+    interviewees: List[IntervieweeInfo]
+    
+    class Config():
+        orm_mode = True

@@ -409,14 +409,23 @@ async def update_applicant_status(
         if not applicant.first():
             raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
         else:
-            applicant.update({
-                "screened_by": user_data.user_id,
-                "screened_at": req.screened_at,
-                "status": req.status,
-                "remarks": req.remarks
-            })
-            db.commit()
-            return {"message": "Update success"}
+            if req.status == "For interview":
+                applicant.update({
+                    "screened_by": user_data.user_id,
+                    "screened_at": req.screened_at,
+                    "status": req.status
+                })
+                db.commit()
+                return {"message": "An applicant is screened and ready for interiew"}
+            elif req.status == "Rejected from screening":
+                applicant.update({
+                    "rejected_by": user_data.user_id,
+                    "rejected_at": req.rejected_at,
+                    "status": req.status,
+                    "remarks": req.remarks
+                })
+                db.commit()
+                return {"message": "An applicant is rejected from screening"}
     except Exception as e:
         print(e)
 
@@ -429,9 +438,12 @@ async def update_applicant_status(
 # Interview Question Not Found Response
 INTERVIEW_QUESTION_NOT_FOUND_RESPONSE = {"message": "Interview Question not found"}
 
+# Interview Schedule Not Found Response
+INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE = {"message": "Interview Schedule not found"}
+
 
 # Interview Schedules Per Job
-@router.get("/job-posts/{job_post_id}/interview-schedules")
+@router.get("/job-posts/{job_post_id}/interview-schedules", response_model = List[db_schemas.ShowInterviewScheduleInfo])
 async def get_interview_schedules_per_job_post(
     job_post_id: str,
     db: Session = Depends(get_db),
@@ -540,5 +552,41 @@ async def create_interview_schedule(
             db.commit()
             db.refresh(new_interviewee)
         return {"message": "Interview schedule is successfully created"}
+    except Exception as e:
+        print(e)
+
+
+# Get Interview Schedule and Applicants
+@router.get("/interview-schedules/{interview_schedule_id}", response_model=db_schemas.ShowInterviewScheduleInfo)
+async def interview_schedules_and_applicants(
+    interview_schedule_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
+        if not interview_schedule_id:
+            raise HTTPException(status_code = 404, detail = INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE)
+        else:
+            return interview_schedule
+    except Exception as e:
+        print(e)
+
+
+# Get Interviewees per Schedule
+@router.get("/interview-schedules/{interview_schedule_id}/interviewees", response_model=List[db_schemas.IntervieweeInfo])
+async def interviewees_per_schedule(
+    interview_schedule_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
+        if not interview_schedule_id:
+            raise HTTPException(status_code = 404, detail = INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE)
+        else:
+            return interview_schedule.interviewees
     except Exception as e:
         print(e)

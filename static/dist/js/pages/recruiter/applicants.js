@@ -582,11 +582,13 @@ const evaluateApplicant = () => {
     const isRejected = applicantStatus === 'Rejected from evaluation' 
 
     const evaluatedAt = isRejected ? null : formatDateTime(moment());
+    const rejectedAt = isRejected ? formatDateTime(moment()) : null;
     const remarks = isRejected ? get('remarks') : null;
 
     const data = {
-        evaluated_at: evaluatedAt,
         status: applicantStatus,
+        evaluated_at: evaluatedAt,
+        rejected_at: rejectedAt,
         remarks: remarks
     }
 

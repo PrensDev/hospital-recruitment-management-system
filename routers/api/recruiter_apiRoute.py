@@ -434,13 +434,22 @@ async def evaluate_applicant(
         if not applicant.first():
             raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
         else:
-            applicant.update({
-                "evaluated_by": user_data.user_id,
-                "evaluated_at": req.evaluated_at,
-                "status": req.status,
-                "remarks": req.remarks
-            })
-            db.commit()
-            return {"message": "An evaluation for an applicant is successfully updated"}
+            if req.status == "For screening":
+                applicant.update({
+                    "evaluated_by": user_data.user_id,
+                    "evaluated_at": req.evaluated_at,
+                    "status": req.status
+                })
+                db.commit()
+                return {"message": "An applicant is evaluated and ready for screening"}
+            elif req.status == "Rejected from evaluation":
+                applicant.update({
+                    "rejected_by": user_data.user_id,
+                    "rejected_at": req.rejected_at,
+                    "status": req.status,
+                    "remarks": req.remarks
+                })
+                db.commit()
+                return {"message": "An applicant is rejected from evaluation"}
     except Exception as e:
         print(e)
