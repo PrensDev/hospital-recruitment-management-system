@@ -459,6 +459,7 @@ ifSelectorExist('#applicantDetails', () => {
             setContent('#appliedTime', formatDateTime(applicant.created_at, 'Time'));
             setContent('#appliedAtHumanized', fromNow(applicant.created_at));
 
+            // Components to loaded state
             $('#applicantDetailsLoader').remove();
             showElement('#applicantDetails');
         },

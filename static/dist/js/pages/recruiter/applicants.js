@@ -575,6 +575,11 @@ validateForm('#applicantEvaluationForm', {
 
 /** Evaluate Applicant */
 const evaluateApplicant = () => {
+    
+    // Buttons to loading state
+    btnToLoadingState('#submitBtn');
+    disableElement('#applicationDetailsCloseModalBtn');
+
     const formData = generateFormData('#applicantEvaluationForm');
     const get = (name) => { return formData.get(name) }
 
@@ -599,6 +604,13 @@ const evaluateApplicant = () => {
                 // Hide Applicant Details Modal
                 hideModal('#applicantDetailsModal');
 
+                // Set modal buttons to unload state
+                btnToUnloadState('#submitBtn', `
+                    <span>Submit</span>
+                    <i class="fas fa-check ml-1"></i>
+                `);
+                enableElement('#applicationDetailsCloseModalBtn');
+
                 // Reload Applicants Per Job Analytics
                 applicantsPerJobAnalytics();
 
@@ -610,9 +622,20 @@ const evaluateApplicant = () => {
             }
         },
         error: () => {
+
+            // Hide Applicant Details Modal
             hideModal('#applicantDetailsModal');
+
+            // Set modal buttons to unload state
+            btnToUnloadState('#submitBtn', `
+                <span>Submit</span>
+                <i class="fas fa-check ml-1"></i>
+            `);
+            enableElement('#applicationDetailsCloseModalBtn');
+
+            // Show error alert
             toastr.error('There was an error while updating applicant evaluation');
         }
-    })
+    });
 }
 
