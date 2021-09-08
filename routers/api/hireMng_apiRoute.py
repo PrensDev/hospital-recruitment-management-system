@@ -278,41 +278,57 @@ async def applicants_per_job_analytics(
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
         query = db.query(Applicant)
+
         total = query.filter(Applicant.job_post_id == job_post_id).count()
+
         for_evaluation = query.filter(
             Applicant.status == "For evaluation",
             Applicant.job_post_id == job_post_id
         ).count()
+
         for_screening = query.filter(
             Applicant.status == "For screening",
             Applicant.job_post_id == job_post_id
         ).count()
+
         for_interview = query.filter(
             Applicant.status == "For interview",
             Applicant.job_post_id == job_post_id
-        ).count()
+        ).outerjoin(Interviewee).filter(Interviewee.is_interviewed == None).count()
+
+        interviewed = query.filter(
+            Applicant.status == "For interview",
+            Applicant.job_post_id == job_post_id
+        ).join(Interviewee).filter(Interviewee.is_interviewed == True).count()
+
         rejected_from_evalution = query.filter(
             Applicant.status == "Rejected from evaluation",
             Applicant.job_post_id == job_post_id
         ).count()
+
         rejected_from_screening = query.filter(
             Applicant.status == "Rejected from screening",
             Applicant.job_post_id == job_post_id
         ).count()
+
         rejected_from_intreview = query.filter(
             Applicant.status == "Rejected from interview",
             Applicant.job_post_id == job_post_id
         ).count()
+
         hired = query.filter(
             Applicant.status == "Hired",
             Applicant.job_post_id == job_post_id
         ).count()
+
         total_rejected = rejected_from_evalution + rejected_from_screening + rejected_from_intreview
+        
         return {
             "total": total,
             "for_evaluation": for_evaluation,
             "for_screening": for_screening,
             "for_interview": for_interview,
+            "interviewed": interviewed,
             "hired": hired,
             "rejected": {
                 "total": total_rejected,
@@ -354,7 +370,24 @@ async def evaluated_applicants(
         return db.query(Applicant).filter(
             Applicant.job_post_id == job_post_id,
             Applicant.status == 'For interview'
-        ).all()
+        ).outerjoin(Interviewee).filter(Interviewee.is_interviewed == None).all()
+    except Exception as e:
+        print(e)
+
+
+# Get All Applicants Per Job (Interviewed)
+@router.get("/job-posts/{job_post_id}/applicants/interviewed", response_model = List[db_schemas.ShowIntervieweeInfo])
+async def evaluated_applicants(
+    job_post_id,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        return db.query(Applicant).filter(
+            Applicant.job_post_id == job_post_id,
+            Applicant.status == 'For interview'
+        ).join(Interviewee).filter(Interviewee.is_interviewed == True).all()
     except Exception as e:
         print(e)
 
@@ -659,7 +692,11 @@ async def update_interviewee(
         if not interviewee.first():
             raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
         else:
-            interviewee.update(**req.dict())
+            interviewee.update({
+                "is_interviewed": req.is_interviewed,
+                "interviewed_at": req.interviewed_at,
+                "remarks": req.remarks
+            })
             db.commit()
             return {"message": "An interviewee record is updated"}
     except Exception as e:

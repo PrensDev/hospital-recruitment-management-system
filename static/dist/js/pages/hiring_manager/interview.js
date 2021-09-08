@@ -19,7 +19,6 @@ const intervieweeID = window.location.pathname.split("/")[3];
 
 // Initialize General Interview Questions DataTable
 initDataTable('#generalInterviewQuestionsDT', {
-    // debugMode: true,
     url: `${ H_API_ROUTE }interview-questions/general`,
     columns: [
         
@@ -380,9 +379,23 @@ initDataTable('#intervieweesDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="badge bg-warning p-2 w-100">Not interviewed yet</div>
-                `
+                const isInterviewed = data.is_interviewed;
+                if(isEmptyOrNull(isInterviewed))
+                    return `<div class="badge bg-warning p-2 w-100">Not interviewed yet</div>`
+                else if(isInterviewed)
+                    return `
+                        <div class="badge bg-success p-2 w-100">
+                            <i class="fas fa-check mr-1"></i>
+                            <span>Interviewed</span>   
+                        </div>
+                    `
+                else
+                    return `
+                        <div class="badge bg-danger p-2 w-100">
+                            <i class="fas fa-times mr-1"></i>
+                            <span>Not Interviewed</span>   
+                        </div>
+                    `
             }
         },
 
@@ -390,6 +403,39 @@ initDataTable('#intervieweesDT', {
         {
             data: null,
             render: data => {
+                const isInterviewed = data.is_interviewed;
+
+                let userActions = '';
+
+                if(isEmptyOrNull(isInterviewed)) {
+                    userActions = `
+                        <a 
+                            class="dropdown-item d-flex"
+                            href="${ H_WEB_ROUTE }interview/${ data.interviewee_id }"                                  
+                        >
+                            <div style="width: 2rem"><i class="fas fa-tasks mr-1"></i></div>
+                            <div>Interview this applicant</div>
+                        <a>
+                        <div 
+                            class="dropdown-item d-flex"
+                            role="button"                            
+                        >
+                            <div style="width: 2rem"><i class="fas fa-times mr-1"></i></div>
+                            <div>Mark as Not Interviewed</div>
+                        <div>
+                    `
+                } else {
+                    userActions = `
+                        <div 
+                            class="dropdown-item d-flex"
+                            role="button"                            
+                        >
+                            <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                            <div>View Details</div>
+                        <div>
+                    `;
+                }
+
                 return `
                     <div class="text-center dropdown">
                         <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
@@ -397,20 +443,7 @@ initDataTable('#intervieweesDT', {
                         </div>
 
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a 
-                                class="dropdown-item d-flex"
-                                href="${ H_WEB_ROUTE }interview/${ data.interviewee_id }"                                  
-                            >
-                                <div style="width: 2rem"><i class="fas fa-tasks mr-1"></i></div>
-                                <div>Interview this applicant</div>
-                            <a>
-                            <div 
-                                class="dropdown-item d-flex"
-                                role="button"                            
-                            >
-                                <div style="width: 2rem"><i class="fas fa-user-times mr-1"></i></div>
-                                <div>Reject applicant</div>
-                            <div>
+                            ${ userActions }
                         </div>
                     </div>
                 `
@@ -604,6 +637,8 @@ onHideModal('#addInterviewQuestionModal', () => resetForm('#addInterviewQuestion
 
 /** Save Scoresheet */
 onClick('#saveScoresheetBtn', () => {
+
+    // Set buttons to loading state
     btnToLoadingState('#saveScoresheetBtn');
     disableElement('#cancelConfirmSaveScoresheetModalBtn');
 
@@ -654,10 +689,12 @@ onClick('#saveScoresheetBtn', () => {
         },
         {
             success: result => {
-                localStorage.setItem('sessioned_alert', true);
-                localStorage.setItem('sessioned_alert_theme', 'success');
-                localStorage.setItem('sessioned_alert_message', 'Applicant is successfully interviewed');
-                history.back();
+                if(result) {
+                    localStorage.setItem('sessioned_alert', true);
+                    localStorage.setItem('sessioned_alert_theme', 'success');
+                    localStorage.setItem('sessioned_alert_message', 'Applicant is successfully interviewed');
+                    history.back();
+                }
             },
             error: () => {
                 btnToUnloadState('#saveScoresheetBtn', `

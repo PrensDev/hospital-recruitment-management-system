@@ -257,7 +257,7 @@ class Interviewee(BaseModel):
 
 # Interviewee
 class UpdateInterviewee(BaseModel):
-    is_interviewed: Optional[str]
+    is_interviewed: Optional[bool]
     interviewed_at: Optional[datetime]
     remarks: Optional[str]
 

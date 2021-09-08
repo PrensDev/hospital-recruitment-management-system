@@ -154,7 +154,7 @@ async def render(
         return errTemplate.page_not_found(req)
 
 
-# Applicants Per Job Post (For Interview)
+# Applicants Per Job Post (Interviewed)
 @router.get("/job-posts/{job_post_id}/applicants/for-interview", response_class=HTMLResponse)
 async def render(
     job_post_id: str, 
@@ -182,6 +182,33 @@ async def render(
 
 
 # Applicants Per Job Post (For Interview)
+@router.get("/job-posts/{job_post_id}/applicants/interviewed", response_class=HTMLResponse)
+async def render(
+    job_post_id: str, 
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        if not job_post_id:
+            return errTemplate.page_not_found(req)
+        else:
+            job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+            if not job_post:
+                return errTemplate.page_not_found(req)
+            else:
+                return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/interviewed.html", {
+                    "request": req,
+                    "page_title": "Applicants - Inteviewed",
+                    "sub_title": "Applicants to manage potential candidates",
+                    "active_navlink": "Applicants",
+                    "job_post_id": f"{job_post_id}"
+                })
+    else:
+        return errTemplate.page_not_found(req)
+
+
+# Applicants Per Job Post (Create Interview Schedule)
 @router.get("/job-posts/{job_post_id}/create-interview-schedule", response_class=HTMLResponse)
 async def render(
     job_post_id: str, 
@@ -206,6 +233,7 @@ async def render(
                 })
     else:
         return errTemplate.page_not_found(req)
+
 
 
 # Applicants Per Job Post (Hired)
