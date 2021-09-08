@@ -7,6 +7,10 @@
 // Get interview schedule ID from URL
 const interviewScheduleID = window.location.pathname.split("/")[3];
 
+// Get interviewee ID form URL
+const intervieweeID = window.location.pathname.split("/")[3];
+
+
 /**
  * ==============================================================================
  * GET ALL GENERAL INTERVIEW QUESTIONS
@@ -270,7 +274,6 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
 ifSelectorExist('#interviewScheduleDetails', () => {
     GET_ajax(`${ H_API_ROUTE }interview-schedules/${ interviewScheduleID }`, {
         success: result => {
-            console.log(result);
 
             /**
              * ==============================================================================
@@ -425,14 +428,48 @@ initDataTable('#intervieweesDT', {
 
 var scoresheetFormValidationRules = {}
 var scoresheetFormValidationMessages = {}
-var inputs = []
+var generalQuestionInputs = [];
+var addedQuestions = [];
+
+/** Applicants Details */
+ifSelectorExist('#applicantDetails', () => {
+    GET_ajax(`${ H_API_ROUTE }interviewee/${ intervieweeID }`, {
+        success: result => {
+            const applicant = result.applicant_info;
+
+            // Set interviweee name
+            setContent('#intervieweeName', formatName('L, F M., S', {
+                firstName: applicant.first_name,
+                middleName: applicant.middle_name,
+                lastName: applicant.last_name,
+                suffixName: applicant.suffixName
+            }));
+
+            // Applying for
+            setContent('#applyingFor', applicant.applied_job.manpower_request.vacant_position.name);
+
+            // Email
+            setContent('#applicantEmail', applicant.email);
+
+            // Contact Number
+            setContent('#applicantContactNumber', applicant.contact_number);
+
+            // Applied Date
+            setContent('#appliedDate', formatDateTime(applicant.created_at, 'Full Date'));
+            setContent('#appliedTime', formatDateTime(applicant.created_at, 'Time'));
+            setContent('#appliedAtHumanized', fromNow(applicant.created_at));
+
+            $('#applicantDetailsLoader').remove();
+            showElement('#applicantDetails');
+        },
+        error: () => toastr.error('There was an error in getting interviewee details')
+    })
+});
 
 /** For General Interview Questions Table */
 ifSelectorExist('#generalInterviewQuestionsForIntervieweeDT', () => {
     GET_ajax(`${ H_API_ROUTE }interview-questions/general`, {
         success: result => {
-            console.log(result)
-
             $('#generalInterviewQuestionsForIntervieweeDTBody').empty();
 
             if(result.length > 0) {
@@ -460,7 +497,7 @@ ifSelectorExist('#generalInterviewQuestionsForIntervieweeDT', () => {
                         </tr>
                     `);
 
-                    inputs.push({
+                    generalQuestionInputs.push({
                         interviewQuestionID: r.interview_question_id,
                         name: inputName
                     });
@@ -500,7 +537,6 @@ ifSelectorExist('#generalInterviewQuestionsForIntervieweeDT', () => {
     })
 });
 
-
 /** Validate Interview Scoresheet Form */
 validateForm('#interviewScoresheetForm', {
     rules: scoresheetFormValidationRules,
@@ -510,10 +546,6 @@ validateForm('#interviewScoresheetForm', {
         return false;
     }
 });
-
-
-var addedQuestions = [];
-
 
 /** Validate Add Interview Question Modal */
 validateForm('#addInterviewQuestionForm', {
@@ -566,33 +598,74 @@ validateForm('#addInterviewQuestionForm', {
     }
 });
 
-
+/** When Add Interview Question Modal is going to be hidden */
 onHideModal('#addInterviewQuestionModal', () => resetForm('#addInterviewQuestionForm'));
-
-
 
 /** Save Scoresheet */
 onClick('#saveScoresheetBtn', () => {
+    btnToLoadingState('#saveScoresheetBtn');
+    disableElement('#cancelConfirmSaveScoresheetModalBtn');
+
     const formData = generateFormData('#interviewScoresheetForm');
     const get = (n) => { return formData.get(n) }
     
-    inputs.forEach(i => {
+    generalQuestionInputs.forEach(g => {
         const data = {
-            interview_question_id: i.interviewQuestionID,
-            score: get(i.name)
-        }
+            interview_question_id: g.interviewQuestionID,
+            score: get(g.name)
+        };
 
-        console.log(data)
+        POST_ajax(`${ H_API_ROUTE }interview-scores/${ intervieweeID }`, data, {
+            success: () => {},
+            error: () => toastr.error('There was an error in saving interviewee score')
+        });
     });
 
     if(addedQuestions.length > 0) {
         addedQuestions.forEach(a => {
             const data = {
                 question: a.question,
-                score: get(a.name)
+                type: 'Added'
             }
 
-            console.log(data)
+            POST_ajax(`${ H_API_ROUTE }interview-questions`, data, {
+                success: result => {
+                    const data = {
+                        interview_question_id: result.data.interview_question_id,
+                        score: get(a.name)
+                    }
+
+                    POST_ajax(`${ H_API_ROUTE }interview-scores/${ intervieweeID }`, data, {
+                        success: result => console.log(result),
+                        error: () => toastr.error('There was an error in saving interviewee score for added questions')
+                    });
+                },
+                error: () => toastr.error('There was an error in saving added questions')
+            });
         });
     }
+
+    PUT_ajax(
+        `${ H_API_ROUTE }interviewee/${ intervieweeID }`,
+        {
+            is_interviewed: true,
+            interviewed_at: formatDateTime(moment())
+        },
+        {
+            success: result => {
+                localStorage.setItem('sessioned_alert', true);
+                localStorage.setItem('sessioned_alert_theme', 'success');
+                localStorage.setItem('sessioned_alert_message', 'Applicant is successfully interviewed');
+                history.back();
+            },
+            error: () => {
+                btnToUnloadState('#saveScoresheetBtn', `
+                    <span>Yes, save it!</span>
+                    <i class="fas fa-check ml-1"></i>
+                `);
+                enableElement('#cancelConfirmSaveScoresheetModalBtn');
+                toastr.error('There was an error in updating interviewee record')
+            }
+        }
+    )
 });

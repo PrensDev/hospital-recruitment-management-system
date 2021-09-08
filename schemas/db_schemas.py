@@ -255,6 +255,13 @@ class Interviewee(BaseModel):
     applicant_id: str
 
 
+# Interviewee
+class UpdateInterviewee(BaseModel):
+    is_interviewed: Optional[str]
+    interviewed_at: Optional[datetime]
+    remarks: Optional[str]
+
+
 # Create Interview Question
 class CreateInterviewQuestion(BaseModel):
     question: str
@@ -311,21 +318,26 @@ class InterviewQuestionInfo(InterviewQuestion):
         orm_mode = True
 
 
-# Interview Score
+# Interviewee Score
 class IntervieweeScore(BaseModel):
     interview_question: InterviewQuestionInfo
-    score: int
+    score: float
     scored_by_hiring_manager: UserInfo
-    remarks: str
 
     class Config():
         orm_mode = True
 
 
+# Create General Interviewee Score
+class CreateGeneralIntervieweeScore(BaseModel):
+    interview_question_id: str
+    score: float
+
+
 # Interviewee Info
 class IntervieweeInfo(BaseModel):
     interviewee_id: str
-    applicant_info: ShowApplicant
+    applicant_info: ShowApplicantInfo
     interviewee_schedule: Optional[InterviewScheduleInfo]
     interviewee_score: List[Optional[IntervieweeScore]]
     is_interviewed: Optional[bool]

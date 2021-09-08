@@ -637,17 +637,13 @@ class InterviewScore(Base):
         ForeignKey("interview_questions.interview_question_id")
     )
     score = Column(
-        Integer,
+        Float,
         nullable = True
     )
     scored_by = Column(
         String(36),
         ForeignKey("users.user_id"),
         nullable = True
-    )
-    remarks = Column(
-        Text,
-        nullable = False
     )
     created_at = Column(
         DateTime,

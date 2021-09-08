@@ -697,7 +697,7 @@ ifSelectorExist('#createInterviewScheduleForm', () => {
 
         const selectedApplicant = selectApplicant.val();
 
-        GET_ajax(`${ H_API_ROUTE }interviewee/${ selectedApplicant }`, {
+        GET_ajax(`${ H_API_ROUTE }applicants/${ selectedApplicant }/interviewee-info`, {
             success: result => {
                 const intervieweeFullName = formatName('F M. L, S', {
                     firstName: result.first_name,

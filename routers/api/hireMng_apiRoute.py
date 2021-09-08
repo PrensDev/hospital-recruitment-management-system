@@ -18,6 +18,7 @@ Requisition         = models.Requisition
 JobPost             = models.JobPost
 Applicant           = models.Applicant
 Interviewee         = models.Interviewee
+InterviewScore      = models.InterviewScore
 InterviewQuestion   = models.InterviewQuestion
 InterviewSchedule   = models.InterviewSchedule
 
@@ -245,7 +246,7 @@ async def get_one_applicant(
 
 
 # Get One Interviewee
-@router.get("/interviewee/{applicant_id}", response_model = db_schemas.ShowIntervieweeInfo)
+@router.get("/applicants/{applicant_id}/interviewee-info", response_model = db_schemas.ShowIntervieweeInfo)
 async def get_one_applicant(
     applicant_id,
     db: Session = Depends(get_db),
@@ -596,18 +597,70 @@ async def interviewees_per_schedule(
 
 
 # Create General Interview Scores
-@router.post("/interview-scores/{interviewee_id}/general")
+@router.post("/interview-scores/{interviewee_id}", status_code=201)
 async def create_general_interviewee_scores(
+    interviewee_id: str,
+    req: db_schemas.CreateGeneralIntervieweeScore,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
+        if not interviewee:
+            raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
+        else:
+            new_interview_score = InterviewScore(
+                interviewee_id = interviewee_id,
+                interview_question_id = req.interview_question_id,
+                score = req.score,
+                scored_by = user_data.user_id
+            )
+            db.add(new_interview_score)
+            db.commit()
+            db.refresh(new_interview_score)
+            return {
+                "data": new_interview_score,
+                "message": "General Interview Scores are recorded"
+            }
+    except Exception as e:
+        print(e)
+
+
+# Get One Interviewee
+@router.get("/interviewee/{interviewee_id}", response_model = db_schemas.IntervieweeInfo)
+async def get_one_intervieweee(
     interviewee_id: str,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
-        interviewee = db.Query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
+        interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
         if not interviewee:
             raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
         else:
-            return {"message": "General Interview Scores are recorded"}
+            return interviewee
+    except Exception as e:
+        print(e)
+
+
+# Update Interviewee Status
+@router.put("/interviewee/{interviewee_id}")
+async def update_interviewee(
+    interviewee_id: str,
+    req: db_schemas.UpdateInterviewee,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id)
+        if not interviewee.first():
+            raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
+        else:
+            interviewee.update(**req.dict())
+            db.commit()
+            return {"message": "An interviewee record is updated"}
     except Exception as e:
         print(e)
