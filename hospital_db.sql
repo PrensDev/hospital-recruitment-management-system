@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 08, 2021 at 11:43 AM
+-- Generation Time: Sep 08, 2021 at 09:18 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.4.22
 
@@ -56,16 +56,16 @@ CREATE TABLE `applicants` (
 INSERT INTO `applicants` (`applicant_id`, `job_post_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `resume`, `contact_number`, `email`, `status`, `evaluated_by`, `evaluated_at`, `screened_by`, `screened_at`, `rejected_by`, `rejected_at`, `remarks`, `created_at`, `updated_at`) VALUES
 ('14dda571-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Efren', '', 'Lazaro', '', '7ca673e4c5ff4e3d830e35bcac4e2d92.pdf', '123-546-6786', 'efren.lazaro@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:25:26', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:55', NULL, NULL, NULL, '2021-09-08 17:21:00', '2021-09-08 17:39:55'),
 ('2168107c-0e43-11ec-9e47-d8c497916dda', '2edf54f3-0e3c-11ec-9e47-d8c497916dda', 'Malika', '', 'Willms', 'Sr.', '57dc88b4fd4e448a9ccafaaa615fa500.pdf', '09234567892', 'malika.willms@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-06 13:30:26', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-06 13:31:29', NULL, NULL, NULL, '2021-09-05 20:16:42', '2021-09-06 13:31:30'),
-('2794fc42-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Jose', '', 'Devera', '', '889c7fe65e4344a7bdf8235f06f42427.pdf', '234-567-9012', 'jose.devera@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:25:20', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:51', NULL, NULL, NULL, '2021-09-08 17:21:31', '2021-09-08 17:39:51'),
+('2794fc42-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Jose', '', 'Devera', '', '889c7fe65e4344a7bdf8235f06f42427.pdf', '234-567-9012', 'jose.devera@email.com', 'Hired', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:25:20', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:51', NULL, NULL, NULL, '2021-09-08 17:21:31', '2021-09-09 02:39:37'),
 ('303eb1be-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Herbert', 'Kenneth', 'Tillman', 'Jr.', '346e80148d8d42d3b58c789a9358f646.pdf', '09123456788', 'herbert.tillman@email.com', 'Rejected from screening', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:18', NULL, NULL, '0000-00-00 00:00:00', '2021-09-07 10:36:25', 'No enough information is provided.', '2021-09-05 19:55:39', '2021-09-07 10:36:25'),
 ('3edd726e-0e43-11ec-9e47-d8c497916dda', '2edf54f3-0e3c-11ec-9e47-d8c497916dda', 'Carole', '', 'Moen', 'III', '0aef3f80946f491897f53a88c00483c6.pdf', '771-475-203', 'carole.moen@email.com', 'For screening', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-06 13:30:20', NULL, NULL, NULL, NULL, NULL, '2021-09-05 20:17:32', '2021-09-06 13:30:21'),
 ('4f4a3571-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Crisanto', 'Esteban', 'Cortez', '', '2be0c663a81d407f8f241f8c178763b6.pdf', '345-678-0123', 'crisanto.cortez@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:23:58', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:48', NULL, NULL, NULL, '2021-09-08 17:22:38', '2021-09-08 17:39:48'),
 ('5ad08512-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Domenica', '', 'Considine', '', 'a453f95718e140f88d6fb9cc7eb62ef7.pdf', '0987654322', 'domenica.considine@email.com', 'For screening', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:12', NULL, NULL, NULL, NULL, NULL, '2021-09-05 19:56:50', '2021-09-05 20:38:12'),
 ('64a97f1f-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Sherwin', 'Romero', 'Mariano', '', '968dfedcddf04444afe862e9f754f1d3.pdf', '321-543-6543', 'sherwin.mariano@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:23:53', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:43', NULL, NULL, NULL, '2021-09-08 17:23:14', '2021-09-08 17:39:43'),
 ('7e316a7c-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Hilario', 'Matanong', 'Gleason', '', 'e6d1fccb57aa4d3d85edeef9575440e3.pdf', '0987654323', 'hilario.gleason@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:09', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:48:47', NULL, NULL, NULL, '2021-09-05 19:57:49', '2021-09-05 20:48:47'),
-('88ed65f4-0e3f-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Colin', '', 'Kozey', '', 'f4a49f92e626446b80e6a9f92440bba1.pdf', '09000000003', 'colin.kozey@email.com', 'For screening', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:25:33', NULL, NULL, NULL, NULL, NULL, '2021-09-05 19:50:58', '2021-09-08 17:25:33'),
+('88ed65f4-0e3f-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Colin', '', 'Kozey', '', 'f4a49f92e626446b80e6a9f92440bba1.pdf', '09000000003', 'colin.kozey@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:25:33', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:52', NULL, NULL, NULL, '2021-09-05 19:50:58', '2021-09-08 21:48:52'),
 ('965bfcce-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Daisha', '', 'Bruen', '', '0a8349875c1446be8811ff0bec41b444.pdf', '0998765432', 'daisha.bruen@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:06', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:48:42', NULL, NULL, NULL, '2021-09-05 19:58:30', '2021-09-05 20:48:42'),
-('b33f2854-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Colleen', '', 'Shanahan', '', '3ed21106c49f4cae8ce9eb3b564828b4.pdf', '09123456777', 'colleen.shanahan@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:03', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:48:37', NULL, NULL, NULL, '2021-09-05 19:59:18', '2021-09-05 20:48:37'),
+('b33f2854-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Colleen', '', 'Shanahan', '', '3ed21106c49f4cae8ce9eb3b564828b4.pdf', '09123456777', 'colleen.shanahan@email.com', 'Rejected from interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:03', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:48:37', '0000-00-00 00:00:00', '2021-09-09 02:54:06', 'Not satisfied in interview', '2021-09-05 19:59:18', '2021-09-09 02:54:08'),
 ('c0a37f16-0e3f-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Evan', '', 'Breitenberg', 'III', '742de456d9374204a1da83954e2e18f0.pdf', '0900000004', 'evan.breitenberg@email.com', 'For screening', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:25:12', NULL, NULL, NULL, NULL, NULL, '2021-09-05 19:52:31', '2021-09-08 17:25:12'),
 ('c0d96d35-1085-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Noriel', 'Pachica', 'Padrogane', '', '14f4866f3a744cc18c71312d87079f20.pdf', '09345678535', 'noriel.padrogane@email.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-09-08 17:18:39', '2021-09-08 17:18:39'),
 ('ce454f34-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Manuel', '', 'Cassin', 'Jr.', 'f324ec93acec47ceb76af3f3e3db42d3.pdf', '097867564532', 'manuel.cassin@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:00', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:48:30', NULL, NULL, NULL, '2021-09-05 20:00:04', '2021-09-05 20:48:31'),
@@ -120,10 +120,10 @@ CREATE TABLE `interviewees` (
 --
 
 INSERT INTO `interviewees` (`interviewee_id`, `applicant_id`, `interview_schedule_id`, `is_interviewed`, `interviewed_at`, `remarks`, `created_at`, `updated_at`) VALUES
-('7c8731f5-0fcc-11ec-9785-d8c497916dda', 'ce454f34-0e40-11ec-9e47-d8c497916dda', '7c0545c1-0fcc-11ec-9785-d8c497916dda', NULL, NULL, NULL, '2021-09-07 19:12:27', '2021-09-07 19:12:27'),
-('7c940dd7-0fcc-11ec-9785-d8c497916dda', 'b33f2854-0e40-11ec-9e47-d8c497916dda', '7c0545c1-0fcc-11ec-9785-d8c497916dda', NULL, NULL, NULL, '2021-09-07 19:12:27', '2021-09-07 19:12:27'),
-('da2a78e7-1088-11ec-82da-d8c497916dda', '14dda571-1086-11ec-82da-d8c497916dda', 'd9f5a379-1088-11ec-82da-d8c497916dda', NULL, NULL, NULL, '2021-09-08 17:40:50', '2021-09-08 17:40:50'),
-('da576eeb-1088-11ec-82da-d8c497916dda', '2794fc42-1086-11ec-82da-d8c497916dda', 'd9f5a379-1088-11ec-82da-d8c497916dda', NULL, NULL, NULL, '2021-09-08 17:40:50', '2021-09-08 17:40:50'),
+('7c8731f5-0fcc-11ec-9785-d8c497916dda', 'ce454f34-0e40-11ec-9e47-d8c497916dda', '7c0545c1-0fcc-11ec-9785-d8c497916dda', 1, '2021-09-08 18:44:32', NULL, '2021-09-07 19:12:27', '2021-09-08 18:44:33'),
+('7c940dd7-0fcc-11ec-9785-d8c497916dda', 'b33f2854-0e40-11ec-9e47-d8c497916dda', '7c0545c1-0fcc-11ec-9785-d8c497916dda', 1, '2021-09-08 21:42:12', NULL, '2021-09-07 19:12:27', '2021-09-08 21:42:14'),
+('da2a78e7-1088-11ec-82da-d8c497916dda', '14dda571-1086-11ec-82da-d8c497916dda', 'd9f5a379-1088-11ec-82da-d8c497916dda', 1, '2021-09-08 21:44:44', NULL, '2021-09-08 17:40:50', '2021-09-08 21:44:47'),
+('da576eeb-1088-11ec-82da-d8c497916dda', '2794fc42-1086-11ec-82da-d8c497916dda', 'd9f5a379-1088-11ec-82da-d8c497916dda', 1, '2021-09-08 21:48:20', NULL, '2021-09-08 17:40:50', '2021-09-08 21:48:21'),
 ('da7057bf-1088-11ec-82da-d8c497916dda', '4f4a3571-1086-11ec-82da-d8c497916dda', 'd9f5a379-1088-11ec-82da-d8c497916dda', NULL, NULL, NULL, '2021-09-08 17:40:50', '2021-09-08 17:40:50'),
 ('da894e3f-1088-11ec-82da-d8c497916dda', '64a97f1f-1086-11ec-82da-d8c497916dda', 'd9f5a379-1088-11ec-82da-d8c497916dda', NULL, NULL, NULL, '2021-09-08 17:40:50', '2021-09-08 17:40:50'),
 ('efead62f-0f32-11ec-8a15-d8c497916dda', '7e316a7c-0e40-11ec-9e47-d8c497916dda', 'ef9ad695-0f32-11ec-8a15-d8c497916dda', NULL, NULL, NULL, '2021-09-07 00:53:18', '2021-09-07 00:53:18'),
@@ -151,8 +151,13 @@ CREATE TABLE `interview_questions` (
 
 INSERT INTO `interview_questions` (`interview_question_id`, `question`, `type`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
 ('05667517-0f1e-11ec-8a15-d8c497916dda', 'What are your strengths and weaknesses?', 'General', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-06 22:23:35', '2021-09-06 22:23:35'),
-('1b7fca3d-1069-11ec-82da-d8c497916dda', 'Why we should hire you?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 13:53:36', '2021-09-08 13:53:36'),
+('6df71687-10ab-11ec-82da-d8c497916dda', 'What do we expect from you if we hire you?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:21', '2021-09-08 21:48:21'),
+('6e1d354a-10ab-11ec-82da-d8c497916dda', 'What qualities do you have that makes you unique from the others?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:21', '2021-09-08 21:48:21'),
+('92e9ffc0-10aa-11ec-82da-d8c497916dda', 'What we are going to expect if we are going to hire you?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:13', '2021-09-08 21:42:13'),
+('93d0c2ae-10aa-11ec-82da-d8c497916dda', 'How do you see yourself in 10 years?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:15', '2021-09-08 21:42:15'),
 ('c06a3599-0f26-11ec-8a15-d8c497916dda', 'What are your hobbies?', 'General', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-06 23:26:05', '2021-09-06 23:26:05'),
+('c0c48e1d-1091-11ec-82da-d8c497916dda', 'Why should we hire you?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 18:44:33', '2021-09-08 18:44:33'),
+('ed59ed93-10aa-11ec-82da-d8c497916dda', 'What are your experiences that fits you for this job?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:44:45', '2021-09-08 21:44:45'),
 ('f89c3eed-0f1d-11ec-8a15-d8c497916dda', 'Tell me about yourself.', 'General', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-06 22:23:14', '2021-09-06 22:23:14');
 
 -- --------------------------------------------------------
@@ -202,10 +207,24 @@ CREATE TABLE `interview_scores` (
 --
 
 INSERT INTO `interview_scores` (`interview_score_id`, `interviewee_id`, `interview_question_id`, `score`, `scored_by`, `created_at`, `updated_at`) VALUES
-('18320900-1069-11ec-82da-d8c497916dda', '7c8731f5-0fcc-11ec-9785-d8c497916dda', '05667517-0f1e-11ec-8a15-d8c497916dda', 98, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 13:53:30', '2021-09-08 13:53:30'),
-('1bb95546-1069-11ec-82da-d8c497916dda', '7c8731f5-0fcc-11ec-9785-d8c497916dda', 'c06a3599-0f26-11ec-8a15-d8c497916dda', 97, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 13:53:36', '2021-09-08 13:53:36'),
-('1c5baa1f-1069-11ec-82da-d8c497916dda', '7c8731f5-0fcc-11ec-9785-d8c497916dda', 'f89c3eed-0f1d-11ec-8a15-d8c497916dda', 95, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 13:53:37', '2021-09-08 13:53:37'),
-('1c80eed1-1069-11ec-82da-d8c497916dda', '7c8731f5-0fcc-11ec-9785-d8c497916dda', '1b7fca3d-1069-11ec-82da-d8c497916dda', 92, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 13:53:37', '2021-09-08 13:53:37');
+('6d5963be-10ab-11ec-82da-d8c497916dda', 'da576eeb-1088-11ec-82da-d8c497916dda', '05667517-0f1e-11ec-8a15-d8c497916dda', 99.25, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:20', '2021-09-08 21:48:20'),
+('6d8102e3-10ab-11ec-82da-d8c497916dda', 'da576eeb-1088-11ec-82da-d8c497916dda', 'c06a3599-0f26-11ec-8a15-d8c497916dda', 98.25, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:20', '2021-09-08 21:48:20'),
+('6d960722-10ab-11ec-82da-d8c497916dda', 'da576eeb-1088-11ec-82da-d8c497916dda', 'f89c3eed-0f1d-11ec-8a15-d8c497916dda', 99.75, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:20', '2021-09-08 21:48:20'),
+('6e78b74d-10ab-11ec-82da-d8c497916dda', 'da576eeb-1088-11ec-82da-d8c497916dda', '6df71687-10ab-11ec-82da-d8c497916dda', 98, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:22', '2021-09-08 21:48:22'),
+('6eb34147-10ab-11ec-82da-d8c497916dda', 'da576eeb-1088-11ec-82da-d8c497916dda', '6e1d354a-10ab-11ec-82da-d8c497916dda', 97.5, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:22', '2021-09-08 21:48:22'),
+('9275ba56-10aa-11ec-82da-d8c497916dda', '7c940dd7-0fcc-11ec-9785-d8c497916dda', '05667517-0f1e-11ec-8a15-d8c497916dda', 92, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:12', '2021-09-08 21:42:12'),
+('9344d852-10aa-11ec-82da-d8c497916dda', '7c940dd7-0fcc-11ec-9785-d8c497916dda', 'f89c3eed-0f1d-11ec-8a15-d8c497916dda', 93, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:14', '2021-09-08 21:42:14'),
+('93c2febe-10aa-11ec-82da-d8c497916dda', '7c940dd7-0fcc-11ec-9785-d8c497916dda', 'c06a3599-0f26-11ec-8a15-d8c497916dda', 92, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:15', '2021-09-08 21:42:15'),
+('93de4cca-10aa-11ec-82da-d8c497916dda', '7c940dd7-0fcc-11ec-9785-d8c497916dda', '92e9ffc0-10aa-11ec-82da-d8c497916dda', 92, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:15', '2021-09-08 21:42:15'),
+('93f962d0-10aa-11ec-82da-d8c497916dda', '7c940dd7-0fcc-11ec-9785-d8c497916dda', '93d0c2ae-10aa-11ec-82da-d8c497916dda', 95, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:15', '2021-09-08 21:42:15'),
+('c06065a7-1091-11ec-82da-d8c497916dda', '7c8731f5-0fcc-11ec-9785-d8c497916dda', '05667517-0f1e-11ec-8a15-d8c497916dda', 97, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 18:44:32', '2021-09-08 18:44:32'),
+('c09490ce-1091-11ec-82da-d8c497916dda', '7c8731f5-0fcc-11ec-9785-d8c497916dda', 'c06a3599-0f26-11ec-8a15-d8c497916dda', 94, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 18:44:32', '2021-09-08 18:44:32'),
+('c0da72c7-1091-11ec-82da-d8c497916dda', '7c8731f5-0fcc-11ec-9785-d8c497916dda', 'f89c3eed-0f1d-11ec-8a15-d8c497916dda', 96, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 18:44:33', '2021-09-08 18:44:33'),
+('c0ff7f03-1091-11ec-82da-d8c497916dda', '7c8731f5-0fcc-11ec-9785-d8c497916dda', 'c0c48e1d-1091-11ec-82da-d8c497916dda', 91, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 18:44:33', '2021-09-08 18:44:33'),
+('ed0e0491-10aa-11ec-82da-d8c497916dda', 'da2a78e7-1088-11ec-82da-d8c497916dda', '05667517-0f1e-11ec-8a15-d8c497916dda', 97.25, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:44:44', '2021-09-08 21:44:44'),
+('ed1f24c9-10aa-11ec-82da-d8c497916dda', 'da2a78e7-1088-11ec-82da-d8c497916dda', 'c06a3599-0f26-11ec-8a15-d8c497916dda', 95.25, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:44:45', '2021-09-08 21:44:45'),
+('ed2f9926-10aa-11ec-82da-d8c497916dda', 'da2a78e7-1088-11ec-82da-d8c497916dda', 'f89c3eed-0f1d-11ec-8a15-d8c497916dda', 96.75, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:44:45', '2021-09-08 21:44:45'),
+('eef73932-10aa-11ec-82da-d8c497916dda', 'da2a78e7-1088-11ec-82da-d8c497916dda', 'ed59ed93-10aa-11ec-82da-d8c497916dda', 95.5, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:44:48', '2021-09-08 21:44:48');
 
 -- --------------------------------------------------------
 

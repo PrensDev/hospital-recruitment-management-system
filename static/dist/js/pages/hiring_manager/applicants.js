@@ -972,10 +972,13 @@ initDataTable('#interviewedApplicantsDT', {
     ]
 });
 
+/** View Interviewed Applicant Details */
 const viewInterviewedApplicantDetails = (applicantID) => {
     GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }/interviewee-info`, {
         success: result => {
-            console.log(result);
+
+            // Set Applicant ID
+            setValue('#applicantID', result.applicant_id);
 
             // Set applicant full name
             setContent('#applicantFullName', formatName('F M. L, S', {
@@ -1094,6 +1097,104 @@ const viewInterviewedApplicantDetails = (applicantID) => {
     })
 }
 
+$('#rejectFromInterview, #hiredApplicant').on('change', () => {
+    const requestStatus = $(`input[name="applicantStatus"]:checked`).val();
+    if(requestStatus == "Hired") hideElement("#remarksField");
+    if(requestStatus == "Rejected from interview") showElement("#remarksField");
+    ifSelectorExist('#submitBtn', () => enableElement('#submitBtn'));
+});
+
+onHideModal('#applicantDetailsModal', () => {
+    resetForm('#applicantHiringForm');
+    hideElement('#remarksField');
+    disableElement('#submitBtn');
+});
+
+/** Validate Appicant Hiring Form */
+validateForm('#applicantHiringForm', {
+    rules: {
+        applicantStatus: {
+            required: true
+        },
+        remarks: {
+            required: true
+        }
+    },
+    messages: {
+        applicantStatus: {
+            required: 'Please select a status'
+        },
+        remarks: {
+            required: 'Please insert remarks for rejecting this applicant'
+        }
+    },
+    submitHandler: () => {
+        hireOrRejectApplicant();
+        return false;
+    }
+});
+
+/** Hire or reject applicant */
+const hireOrRejectApplicant = () => {
+
+    btnToLoadingState('#submitBtn');
+    disableElement('#cancelApplicantHiringBtn');
+
+    const formData = generateFormData('#applicantHiringForm');
+    const get = (n) => { return formData.get(n) }
+
+    const applicantStatus = get('applicantStatus');
+    const isRejected = applicantStatus === 'Rejected from interview';
+
+    const rejectedAt = isRejected ? formatDateTime(moment()) : null;
+    const remarks = isRejected ? get('remarks') : null;
+
+    const data = {
+        status: applicantStatus,
+        rejected_at: rejectedAt,
+        remarks: remarks
+    }
+
+    PUT_ajax(`${ H_API_ROUTE }applicants/${ get('applicantID') }/hire`, data, {
+        success: result => {
+            if(result) {
+
+                //  Hide Applicant Details Modal
+                hideModal('#applicantDetailsModal');
+
+                // Reload DataTable
+                reloadDataTable('#interviewedApplicantsDT');
+                
+                // Set buttons to unload state
+                btnToUnloadState('#submitBtn', `
+                    <span>Submit</span>
+                    <i class="fas fa-check ml-1"></i>
+                `);
+                enableElement('#cancelApplicantHiringBtn');
+
+                // Show alert
+                isRejected 
+                    ? toastr.info('An applicant has been rejected from interview')
+                    : toastr.success('An applicant is successfully hired')
+            }
+        },
+        error: () => {
+            
+            //  Hide Applicant Details Modal
+            hideModal('#applicantDetailsModal');
+
+            // Set buttons to unload state
+            btnToUnloadState('#submitBtn', `
+                <span>Submit</span>
+                <i class="fas fa-check ml-1"></i>
+            `);
+            enableElement('#cancelApplicantHiringBtn');
+
+            // Show error alert
+            toastr.error('There was an error in updating applicant status')
+        }
+    })
+}
 
 /**
  * ==============================================================================
@@ -1198,11 +1299,16 @@ initDataTable('#rejectedApplicantsDT', {
             }
         },
 
-        // Contact Number
-        { data: 'contact_number' },
-
-        // Email
-        { data: 'email' },
+        // Contact Information
+        {
+            data: null,
+            render: data => {
+                return `
+                    <div>${ data.email }</div>
+                    <div>${ data.contact_number }</div>
+                `
+            }
+        },
 
         // Date Applied
         {
@@ -1213,6 +1319,20 @@ initDataTable('#rejectedApplicantsDT', {
                 return `
                     <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
                     <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                `
+            }
+        },
+
+        
+        // Status
+        {
+            data: null,
+            render: data => {
+                return `
+                    <div class="badge bg-danger p-2 w-100">
+                        <i class="fas fa-times mr-1"></i>
+                        <span>${ data.status }</span>
+                    </div>
                 `
             }
         },

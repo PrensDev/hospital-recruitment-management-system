@@ -432,7 +432,7 @@ async def evaluated_applicants(
 # Screen Applicant
 @router.put("/applicants/{applicant_id}/screen", status_code = 202)
 async def update_applicant_status(
-    applicant_id,
+    applicant_id: str,
     req: db_schemas.ApplicantScreening,
     db: Session = Depends(get_db),
     user_data: db_schemas.User = Depends(get_user)
@@ -462,6 +462,40 @@ async def update_applicant_status(
                 return {"message": "An applicant is rejected from screening"}
     except Exception as e:
         print(e)
+
+
+# Hired Applicant
+@router.put("/applicants/{applicant_id}/hire", status_code = 202)
+async def update_applicant_status(
+    applicant_id: str,
+    req: db_schemas.ApplicantHiring,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
+        if not applicant.first():
+            raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
+        else:
+            if req.status == "Hired":
+                applicant.update({
+                    "status": req.status
+                })
+                db.commit()
+                return {"message": "An applicant is successfully hired"}
+            elif req.status == "Rejected from interview":
+                applicant.update({
+                    "rejected_by": user_data.user_id,
+                    "rejected_at": req.rejected_at,
+                    "status": req.status,
+                    "remarks": req.remarks
+                })
+                db.commit()
+                return {"message": "An applicant is rejected from interview"}
+    except Exception as e:
+        print(e)
+
 
 
 # ====================================================================

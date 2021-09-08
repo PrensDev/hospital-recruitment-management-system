@@ -1,7 +1,7 @@
 <!-- Applicant Details Modal -->
 <div class="modal" id="applicantDetailsModal">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <form class="modal-content" id="applicantScreeningForm">
+        <form class="modal-content" id="applicantHiringForm">
             <div class="modal-header">
                 <div class="modal-title">
                     <i class="fas fa-file-alt text-secondary mr-1"></i>
@@ -130,7 +130,7 @@
                 <div id="hiringField">
 
                     <!-- Applicant ID -->
-                    <input type="hidden" id="applicantID" name="applicantID">
+                    <input type="text" id="applicantID" name="applicantID">
     
                     <!-- Reject or Approve -->
                     <label class="mt-3">Select decision for hiring</label>
@@ -179,7 +179,11 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" id="cancelApplicantHiringBtn" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                    <span>Submit</span>
+                    <i class="fas fa-check ml-1"></i>
+                </button>
             </div>
         </form>
     </div>

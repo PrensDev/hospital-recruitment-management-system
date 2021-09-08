@@ -250,6 +250,13 @@ class ApplicantScreening(BaseModel):
     remarks: Optional[str]
 
 
+# Applicant Hiring
+class ApplicantHiring(BaseModel):
+    status: str 
+    rejected_at: Optional[datetime]
+    remarks: Optional[str]
+
+
 # Interviewee
 class Interviewee(BaseModel):
     applicant_id: str
