@@ -1,0 +1,39 @@
+<!-- Add General Task Modal -->
+<div class="modal" id="addGeneralTaskModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="addGeneralTaskForm">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-file-alt text-secondary mr-2"></i>
+                    <span>Add General Onboarding Task</span>
+                </div>
+            </div>
+            <div class="modal-body">
+
+                <!-- Task Title -->
+                <div class="form-group">
+                    <label for="taskTitle">Task Title</label>
+                    <input type="text" class="form-control" id="taskTitle" name="taskTitle" placeholder="Type the title of the task here">
+                </div>
+                
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="question">Description</label>
+                    <textarea class="form-control" rows="3" id="description" name="description" placeholder="Please type the description of the task here"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button 
+                    type="button" 
+                    class="btn btn-default" 
+                    data-dismiss="modal" 
+                    id="cancelAddGeneralTaskBtn"
+                >Cancel</button>
+                <button type="submit" id="addGeneralTaskBtn" class="btn btn-primary">
+                    <span>Add</span>
+                    <i class="fas fa-plus ml-1"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

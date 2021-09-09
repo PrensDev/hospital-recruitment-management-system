@@ -15,6 +15,8 @@ User        = models.User
 Position    = models.Position
 Requisition = models.Requisition
 Department  = models.Department
+JobPost     = models.JobPost
+Applicant   = models.Applicant
 
 
 # Router Instance
@@ -136,6 +138,38 @@ async def requisition_analytics(
         print(e)
 
 
+
+# Requisitions and Hired Applicants
+@router.get("/requisitions/hired-applicants", response_model=List[db_schemas.ManpowerRequestsWithHiredApplicants])
+async def get_all_requisitions_and_hired_applicants(
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        return db.query(Requisition).filter(Requisition.requested_by == user_data.user_id).join(JobPost).filter(JobPost.requisition_id == Requisition.requisition_id).join(Applicant).filter(Applicant.job_post_id == JobPost.job_post_id, Applicant.status == "Hired").all()
+    except Exception as e:
+        print(e)
+
+
+# Hired Applicants Per Request
+@router.get("/requisitions/hired-applicants/{requisition_id}")
+async def get_all_applicants_per_request(
+    requisition_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
+        if not requisition:
+            raise HTTPException(status_code=404, detail = REQUISITION_NOT_FOUND_RESPONSE)
+        else:
+            return db.query(Applicant).filter(Applicant.status == "Hired").join(JobPost).filter(JobPost.job_post_id == Applicant.job_post_id).join(Requisition).filter(Requisition.requisition_id == requisition_id).all()
+    except Exception as e:
+        print(e)
+
+
 # Get One Manpower Request
 @router.get("/requisitions/{requisition_id}", response_model = db_schemas.ShowManpowerRequest)
 async def get_one_requisition(
@@ -196,7 +230,7 @@ async def delete_requisition(
 
 
 # ====================================================================
-# REQUISITIONS/MANPOWER REQUESTS
+# DEPARTMENT POSITIONS
 # ====================================================================
 
 

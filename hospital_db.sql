@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 08, 2021 at 09:18 PM
+-- Generation Time: Sep 09, 2021 at 04:00 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.4.22
 
@@ -305,7 +305,6 @@ CREATE TABLE `onboarding_tasks` (
   `description` text NOT NULL,
   `type` varchar(255) NOT NULL,
   `department_id` varchar(36) NOT NULL,
-  `duration` int(11) NOT NULL,
   `added_by` varchar(36) NOT NULL,
   `updated_by` varchar(36) NOT NULL,
   `created_at` datetime NOT NULL,

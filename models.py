@@ -830,10 +830,6 @@ class OnboardingTask(Base):
         ForeignKey("departments.department_id"),
         nullable = False
     )
-    duration = Column(
-        Integer,
-        nullable = False
-    )
     added_by = Column(
         String(36),
         ForeignKey("users.user_id"),

@@ -1,3 +1,10 @@
+/**
+ * ==============================================================================
+ * ADD ONBOARDING EMPLOYEE
+ * ==============================================================================
+ */
+
+
 /** Validate Add Onboarding Employee Form */
 validateForm('#addOnboardingEmployeeForm', {
     rules: {
@@ -36,3 +43,34 @@ validateForm('#addOnboardingEmployeeForm', {
         return false;
     }
 });
+
+
+/** Initalize Stepper for Add Onboarding Employee */
+document.addEventListener('DOMContentLoaded', function () {
+    window.stepper = new Stepper(document.querySelector('.bs-stepper'))
+});
+
+
+
+validateForm('#addGeneralTaskForm', {
+    rules: {
+        taskTitle: {
+            required: true
+        },
+        description: {
+            required: true
+        }
+    },
+    messages: {
+        taskTitle: {
+            required: 'Task title is required'
+        },
+        description: {
+            required: 'Description is required'
+        }
+    },
+    submitHandler: () => {
+        alert('Submitted');
+        return false;
+    }
+})

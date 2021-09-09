@@ -14,17 +14,8 @@
                 <p class="text-muted">{{ sub_title }}</p>
             </div>
     
-            <!-- Breadcrumb -->
-            <!-- <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Layout</a></li>
-                <li class="breadcrumb-item active">Fixed Layout</li>
-                </ol>
-            </div> -->
-    
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </section>
 
     <!-- Main content -->
@@ -41,11 +32,9 @@
                             <span class="info-box-text">Total Employees with Completed Tasks</span>
                             <span class="info-box-number">13,648</span>
                         </div>
-                        <!-- /.info-box-content -->
                     </div>
-                    <!-- /.info-box -->
                 </div>
-                <!-- /.col -->
+
                 <div class="col-md-6 col-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-danger"><i class="fas fa-spinner"></i></span>
@@ -54,26 +43,28 @@
                             <span class="info-box-text">Total Employees with Tasks on Progress</span>
                             <span class="info-box-number">13,648</span>
                         </div>
-                        <!-- /.info-box-content -->
                     </div>
-                    <!-- /.info-box -->
                 </div>
-                <!-- /.col -->
 
-                
             </div>
-            <!-- / Info Boxes -->
 
             <!-- Card -->
             <div class="card card-primary card-outline">
 
                 <!-- Card Header -->
-                <div class=" p-3 d-flex justify-content-between">
-                    <div>
-                        <h3 class="card-title">Lists of General Tasks</h3>
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="card-title">Lists of General Tasks</h3>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addGeneralTaskModal">
+                                <span>Add new task</span>
+                                <i class="fas fa-plus ml-1"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <!-- /.card-header -->
 
                 <!-- Card Body -->
                 <div class="card-body">
@@ -82,30 +73,42 @@
                         <table id="generalTasksDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>Task Name</th>
-                                    <th>Staffs Needed</th>
-                                    <th>Nature of Request</th>
-                                    <th>Status</th>
-                                    <th>Date Requested</th>
+                                    <th>Date Added</th>
+                                    <th>Added By</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="text-center py-5">
+                                            <div class="spinner-border text-primary my-3" role="status">
+                                                <span class="sr-only">Loading ...</span>
+                                            </div>
+                                            <div>Loading ...</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 
                 </div>
-                <!-- /.card-body -->
 
             </div>
-            <!-- /.card -->
             
         </div>
     </section>
-    <!-- /. content -->
+{% endblock %}
+
+
+{% block page_modals %}
+    {% include "pages/department_head/modals/onboarding_tasks_modal.html" %}
 {% endblock %}
 
 
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/admin/dashboard.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/pages/department_head/onboarding_employees.js')}}"></script>
 {% endblock %}

@@ -372,3 +372,32 @@ class ShowInterviewScheduleInfo(InterviewScheduleInfo):
     
     class Config():
         orm_mode = True
+
+
+# Hired Applicants
+class HiredApplicants(ShowApplicant):
+    applied_job: ShowJobPostForApplicantInfo
+    status: str
+    evaluation_done_by: Optional[UserInfo]
+    evaluated_at: Optional[datetime]
+    screening_done_by: Optional[UserInfo]
+    screened_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+# Job Post For Hired Applicants
+class JobpostForHiredApplicants(BaseModel):
+    applicants: List[HiredApplicants]
+
+    class Config():
+        orm_mode = True
+
+
+# Manpower Request With Hired Applicants
+class ManpowerRequestsWithHiredApplicants(ManpowerRequest):
+    job_post: List[JobpostForHiredApplicants]
+
+    class Config():
+        orm_mode = True
