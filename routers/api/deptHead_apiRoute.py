@@ -1,5 +1,7 @@
 # Import Packages
-from typing import List
+from sqlalchemy.sql.expression import or_
+from routers.api.hireMng_apiRoute import APPLICANT_NOT_FOUND_RESPONSE
+from typing import List, Text
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
@@ -11,13 +13,15 @@ import models
 
 
 # Models
-User        = models.User
-Position    = models.Position
-Requisition = models.Requisition
-Department  = models.Department
-JobPost     = models.JobPost
-Applicant   = models.Applicant
-
+User                    = models.User
+Position                = models.Position
+Requisition             = models.Requisition
+Department              = models.Department
+JobPost                 = models.JobPost
+Applicant               = models.Applicant
+OnboardingTask          = models.OnboardingTask
+OnboardingEmployee      = models.OnboardingEmployee
+OnboardingEmployeeTask  = models.OnboardingEmployeeTask
 
 # Router Instance
 router = APIRouter(
@@ -165,7 +169,12 @@ async def get_all_applicants_per_request(
         if not requisition:
             raise HTTPException(status_code=404, detail = REQUISITION_NOT_FOUND_RESPONSE)
         else:
-            return db.query(Applicant).filter(Applicant.status == "Hired").join(JobPost).filter(JobPost.job_post_id == Applicant.job_post_id).join(Requisition).filter(Requisition.requisition_id == requisition_id).all()
+            return db.query(Applicant).filter(
+                or_(
+                    Applicant.status == "Hired",
+                    Applicant.status == "Onboarding"
+                )
+            ).join(JobPost).filter(JobPost.job_post_id == Applicant.job_post_id).join(Requisition).filter(Requisition.requisition_id == requisition_id).all()
     except Exception as e:
         print(e)
 
@@ -257,5 +266,245 @@ async def department_positions(
                     raise HTTPException(status_code=404, detail="Deparment does not exist")
                 else:
                     return user_department
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+#  APPLICANTS
+# ====================================================================
+
+
+# Get One Hired Applicant
+@router.get("/hired-applicants/{applicant_id}")
+async def get_one_hired_applicant(
+    applicant_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        applicant = db.query(Applicant).filter(
+            Applicant.applicant_id == applicant_id,
+            Applicant.status == "Hired"
+        ).first()
+        if not applicant:
+            raise HTTPException(status_code=404, detail = APPLICANT_NOT_FOUND_RESPONSE)
+        else:
+            job_post = db.query(JobPost).filter(JobPost.job_post_id == applicant.job_post_id).first()
+            manpower_request = db.query(Requisition).filter(Requisition.requisition_id == job_post.requisition_id).first()
+            position = db.query(Position).filter(Position.position_id == manpower_request.position_id).first()
+            return {
+                "applicant": applicant,
+                "position": position
+            }
+    except Exception as e:
+        print(e)
+
+
+# Change Applicant Status
+@router.put("/applicants/{applicant_id}")
+async def change_applicant_status(
+    applicant_id: str,
+    req: db_schemas.ChangeApplicantStatus,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
+        if not applicant.first():
+            raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
+        else:
+            applicant.update(req.dict())
+            db.commit()
+            return {"message": "Applicant status has been updated"}
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# ONBOARDING TASKS
+# ====================================================================
+
+
+# Onboarding Task Not Found Response
+ONBOARDING_TASK_NOT_FOUND = {"message": "Onboarding Task not found"}
+
+
+# Add Onboarding task
+@router.post("/onboarding-tasks")
+async def add_onboarding_task(
+    req: db_schemas.CreateOnboardingTask,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+        if not user_info:
+            raise HTTPException(status_code=404, detail="User does not exist")
+        else:
+            position_id = user_info.position_id
+            user_position = db.query(Position).filter(Position.position_id == position_id).first()
+            if not user_position:
+                raise HTTPException(status_code=404, detail="Position does not exist")
+            else:
+                department_id = user_position.department_id
+                user_department = db.query(Department).filter(Department.department_id == department_id).first()
+                if not user_department:
+                    raise HTTPException(status_code=404, detail="Deparment does not exist")
+                else:
+                    new_onboarding_task = OnboardingTask(
+                        title = req.title,
+                        description = req.description,
+                        task_type = req.task_type,
+                        department_id = department_id,
+                        added_by = user_data.user_id,
+                        updated_by = user_data.user_id
+                    )
+                    db.add(new_onboarding_task)
+                    db.commit()
+                    db.refresh(new_onboarding_task)
+                    return {
+                        "data": new_onboarding_task,
+                        "message": "New onbaording task"
+                    }
+    except Exception as e:
+        print(e)
+
+
+# Get All General Onboarding Tasks
+@router.get("/onboarding-tasks/general", response_model=List[db_schemas.ShowOnboardingTask])
+async def get_all_general_onboarding_tasks(
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+        if not user_info:
+            raise HTTPException(status_code=404, detail="User does not exist")
+        else:
+            position_id = user_info.position_id
+            user_position = db.query(Position).filter(Position.position_id == position_id).first()
+            if not user_position:
+                raise HTTPException(status_code=404, detail="Position does not exist")
+            else:
+                department_id = user_position.department_id
+                user_department = db.query(Department).filter(Department.department_id == department_id).first()
+                if not user_department:
+                    raise HTTPException(status_code=404, detail="Deparment does not exist")
+                else:
+                    return db.query(OnboardingTask).filter(OnboardingTask.department_id == department_id, OnboardingTask.task_type == "General").all()
+    except Exception as e:
+        print(e)
+
+# Get One General Onboarding Task
+@router.get("/onboarding-tasks/{onboarding_task_id}", response_model=db_schemas.ShowOnboardingTask)
+async def get_one_onboarding_task(
+    onboarding_task_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+        if not user_info:
+            raise HTTPException(status_code=404, detail="User does not exist")
+        else:
+            position_id = user_info.position_id
+            user_position = db.query(Position).filter(Position.position_id == position_id).first()
+            if not user_position:
+                raise HTTPException(status_code=404, detail="Position does not exist")
+            else:
+                department_id = user_position.department_id
+                user_department = db.query(Department).filter(Department.department_id == department_id).first()
+                if not user_department:
+                    raise HTTPException(status_code=404, detail="Deparment does not exist")
+                else:
+                    onboarding_task = db.query(OnboardingTask).filter(
+                        OnboardingTask.department_id == department_id, 
+                        OnboardingTask.task_type == "General", 
+                        OnboardingTask.onboarding_task_id == onboarding_task_id
+                    ).first()
+                    if not onboarding_task:
+                        raise HTTPException(status_code=404, detail=ONBOARDING_TASK_NOT_FOUND)
+                    else:
+                        return onboarding_task
+    except Exception as e:
+        print(e)
+
+
+
+# ====================================================================
+# ONBOARDING EMPLOYEE
+# ====================================================================
+
+# Onboarding employee not found
+ONBOARDING_EMPLOYEE_NOT_FOUND = {"message": "Onboarding employee not found"}
+
+@router.post("/onboarding-employees")
+async def add_onboarding_employee(
+    req: db_schemas.CreateOnboardingEmployee,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        new_onboarding_employment = OnboardingEmployee(
+            first_name = req.first_name,
+            middle_name = req.middle_name,
+            last_name = req.last_name,
+            suffix_name = req.suffix_name,
+            contact_number = req.contact_number,
+            email = req.email,
+            employment_start_date = req.employment_start_date,
+            added_by = user_data.user_id,
+            updated_by = user_data.user_id
+        )
+        db.add(new_onboarding_employment)
+        db.commit()
+        db.refresh(new_onboarding_employment)
+        return {
+            "data": new_onboarding_employment,
+            "message": "A new onboarding employee has been created"
+        }
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# ONBOARDING TASKS
+# ====================================================================
+
+@router.post("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks")
+async def add_employee_onboarding_task(
+    onboarding_employee_id: str,
+    req: db_schemas.CreateOnboardingEmployeeTask,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
+        if not onboarding_employee:
+            raise HTTPException(status_code = 404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
+        else:
+            new_onboarding_employee_task = OnboardingEmployeeTask(
+                onboarding_employee_id = onboarding_employee_id,
+                onboarding_task_id = req.onboarding_task_id,
+                start_at = req.start_at,
+                end_at = req.end_at,
+                assigned_by = user_data.user_id,
+                status = "On Going"
+            )
+            db.add(new_onboarding_employee_task)
+            db.commit()
+            db.refresh(new_onboarding_employee_task)
+            return {
+                "data": new_onboarding_employee_task,
+                "message": "New onboarding task is added"
+            }
     except Exception as e:
         print(e)

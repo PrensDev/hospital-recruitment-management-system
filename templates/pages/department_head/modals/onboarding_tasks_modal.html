@@ -12,14 +12,26 @@
 
                 <!-- Task Title -->
                 <div class="form-group">
-                    <label for="taskTitle">Task Title</label>
-                    <input type="text" class="form-control" id="taskTitle" name="taskTitle" placeholder="Type the title of the task here">
+                    <label for="taskTitleForAdd">Task Title</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="taskTitleForAdd" 
+                        name="taskTitle" 
+                        placeholder="Type the title of the task here"
+                    >
                 </div>
                 
                 <!-- Description -->
                 <div class="form-group">
-                    <label for="question">Description</label>
-                    <textarea class="form-control" rows="3" id="description" name="description" placeholder="Please type the description of the task here"></textarea>
+                    <label for="descriptionForAdd">Description</label>
+                    <textarea 
+                        class="form-control" 
+                        rows="3" 
+                        id="descriptionForAdd" 
+                        name="description" 
+                        placeholder="Please type the description of the task here"]
+                    ></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -35,5 +47,55 @@
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+
+<!-- General Onboarding Task Details -->
+<div class="modal fade" id="generalOnboardingTaskDetailsModal">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-file-alt text-secondary mr-2"></i>
+                    <span>General Onboarding Task Details</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tr>
+                        <th>Task Title</th>
+                        <td id="taskTitle"></td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td id="taskDescription"></td>
+                    </tr>
+                    <tr>
+                        <th>Added By</th>
+                        <td id="addedBy"></td>
+                    </tr>
+                    <tr>
+                        <th>Added At</th>
+                        <td id="addedAt"></td>
+                    </tr>
+                    <tr>
+                        <th>Last updated By</th>
+                        <td id="lastUpdatedBy"></td>
+                    </tr>
+                    <tr>
+                        <th>Last Updated At</th>
+                        <td id="lastUpdatedAt"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button 
+                    type="button" 
+                    class="btn btn-default" 
+                    data-dismiss="modal" 
+                >Close</button>
+            </div>
+        </div>
     </div>
 </div>

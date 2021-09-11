@@ -821,7 +821,7 @@ class OnboardingTask(Base):
         Text,
         nullable = False
     )
-    type = Column(
+    task_type = Column(
         String(255),
         nullable = False
     )
@@ -838,7 +838,7 @@ class OnboardingTask(Base):
     updated_by = Column(
         String(36),
         ForeignKey("users.user_id"),
-        nullable = False
+        nullable = True
     )
     created_at = Column(
         DateTime,

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 09, 2021 at 04:00 PM
+-- Generation Time: Sep 11, 2021 at 05:03 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.4.22
 
@@ -59,7 +59,7 @@ INSERT INTO `applicants` (`applicant_id`, `job_post_id`, `first_name`, `middle_n
 ('2794fc42-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Jose', '', 'Devera', '', '889c7fe65e4344a7bdf8235f06f42427.pdf', '234-567-9012', 'jose.devera@email.com', 'Hired', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:25:20', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:51', NULL, NULL, NULL, '2021-09-08 17:21:31', '2021-09-09 02:39:37'),
 ('303eb1be-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Herbert', 'Kenneth', 'Tillman', 'Jr.', '346e80148d8d42d3b58c789a9358f646.pdf', '09123456788', 'herbert.tillman@email.com', 'Rejected from screening', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:18', NULL, NULL, '0000-00-00 00:00:00', '2021-09-07 10:36:25', 'No enough information is provided.', '2021-09-05 19:55:39', '2021-09-07 10:36:25'),
 ('3edd726e-0e43-11ec-9e47-d8c497916dda', '2edf54f3-0e3c-11ec-9e47-d8c497916dda', 'Carole', '', 'Moen', 'III', '0aef3f80946f491897f53a88c00483c6.pdf', '771-475-203', 'carole.moen@email.com', 'For screening', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-06 13:30:20', NULL, NULL, NULL, NULL, NULL, '2021-09-05 20:17:32', '2021-09-06 13:30:21'),
-('4f4a3571-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Crisanto', 'Esteban', 'Cortez', '', '2be0c663a81d407f8f241f8c178763b6.pdf', '345-678-0123', 'crisanto.cortez@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:23:58', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:48', NULL, NULL, NULL, '2021-09-08 17:22:38', '2021-09-08 17:39:48'),
+('4f4a3571-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Crisanto', 'Esteban', 'Cortez', '', '2be0c663a81d407f8f241f8c178763b6.pdf', '345-678-0123', 'crisanto.cortez@email.com', 'Onboarding', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:23:58', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:48', NULL, NULL, NULL, '2021-09-08 17:22:38', '2021-09-11 21:17:02'),
 ('5ad08512-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Domenica', '', 'Considine', '', 'a453f95718e140f88d6fb9cc7eb62ef7.pdf', '0987654322', 'domenica.considine@email.com', 'For screening', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:12', NULL, NULL, NULL, NULL, NULL, '2021-09-05 19:56:50', '2021-09-05 20:38:12'),
 ('64a97f1f-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Sherwin', 'Romero', 'Mariano', '', '968dfedcddf04444afe862e9f754f1d3.pdf', '321-543-6543', 'sherwin.mariano@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:23:53', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:43', NULL, NULL, NULL, '2021-09-08 17:23:14', '2021-09-08 17:39:43'),
 ('7e316a7c-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Hilario', 'Matanong', 'Gleason', '', 'e6d1fccb57aa4d3d85edeef9575440e3.pdf', '0987654323', 'hilario.gleason@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:09', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:48:47', NULL, NULL, NULL, '2021-09-05 19:57:49', '2021-09-05 20:48:47'),
@@ -124,7 +124,7 @@ INSERT INTO `interviewees` (`interviewee_id`, `applicant_id`, `interview_schedul
 ('7c940dd7-0fcc-11ec-9785-d8c497916dda', 'b33f2854-0e40-11ec-9e47-d8c497916dda', '7c0545c1-0fcc-11ec-9785-d8c497916dda', 1, '2021-09-08 21:42:12', NULL, '2021-09-07 19:12:27', '2021-09-08 21:42:14'),
 ('da2a78e7-1088-11ec-82da-d8c497916dda', '14dda571-1086-11ec-82da-d8c497916dda', 'd9f5a379-1088-11ec-82da-d8c497916dda', 1, '2021-09-08 21:44:44', NULL, '2021-09-08 17:40:50', '2021-09-08 21:44:47'),
 ('da576eeb-1088-11ec-82da-d8c497916dda', '2794fc42-1086-11ec-82da-d8c497916dda', 'd9f5a379-1088-11ec-82da-d8c497916dda', 1, '2021-09-08 21:48:20', NULL, '2021-09-08 17:40:50', '2021-09-08 21:48:21'),
-('da7057bf-1088-11ec-82da-d8c497916dda', '4f4a3571-1086-11ec-82da-d8c497916dda', 'd9f5a379-1088-11ec-82da-d8c497916dda', NULL, NULL, NULL, '2021-09-08 17:40:50', '2021-09-08 17:40:50'),
+('da7057bf-1088-11ec-82da-d8c497916dda', '4f4a3571-1086-11ec-82da-d8c497916dda', 'd9f5a379-1088-11ec-82da-d8c497916dda', 1, '2021-09-10 22:43:17', NULL, '2021-09-08 17:40:50', '2021-09-10 22:43:17'),
 ('da894e3f-1088-11ec-82da-d8c497916dda', '64a97f1f-1086-11ec-82da-d8c497916dda', 'd9f5a379-1088-11ec-82da-d8c497916dda', NULL, NULL, NULL, '2021-09-08 17:40:50', '2021-09-08 17:40:50'),
 ('efead62f-0f32-11ec-8a15-d8c497916dda', '7e316a7c-0e40-11ec-9e47-d8c497916dda', 'ef9ad695-0f32-11ec-8a15-d8c497916dda', NULL, NULL, NULL, '2021-09-07 00:53:18', '2021-09-07 00:53:18'),
 ('efffc5f2-0f32-11ec-8a15-d8c497916dda', '965bfcce-0e40-11ec-9e47-d8c497916dda', 'ef9ad695-0f32-11ec-8a15-d8c497916dda', NULL, NULL, NULL, '2021-09-07 00:53:19', '2021-09-07 00:53:19');
@@ -153,6 +153,7 @@ INSERT INTO `interview_questions` (`interview_question_id`, `question`, `type`, 
 ('05667517-0f1e-11ec-8a15-d8c497916dda', 'What are your strengths and weaknesses?', 'General', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-06 22:23:35', '2021-09-06 22:23:35'),
 ('6df71687-10ab-11ec-82da-d8c497916dda', 'What do we expect from you if we hire you?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:21', '2021-09-08 21:48:21'),
 ('6e1d354a-10ab-11ec-82da-d8c497916dda', 'What qualities do you have that makes you unique from the others?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:21', '2021-09-08 21:48:21'),
+('6ff2680d-1245-11ec-bceb-d8c497916dda', 'What are your experiences and skills that makes you fit for this job?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-10 22:43:18', '2021-09-10 22:43:18'),
 ('92e9ffc0-10aa-11ec-82da-d8c497916dda', 'What we are going to expect if we are going to hire you?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:13', '2021-09-08 21:42:13'),
 ('93d0c2ae-10aa-11ec-82da-d8c497916dda', 'How do you see yourself in 10 years?', 'Added', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:15', '2021-09-08 21:42:15'),
 ('c06a3599-0f26-11ec-8a15-d8c497916dda', 'What are your hobbies?', 'General', '4c915545-0e34-11ec-9e47-d8c497916dda', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-06 23:26:05', '2021-09-06 23:26:05'),
@@ -212,6 +213,9 @@ INSERT INTO `interview_scores` (`interview_score_id`, `interviewee_id`, `intervi
 ('6d960722-10ab-11ec-82da-d8c497916dda', 'da576eeb-1088-11ec-82da-d8c497916dda', 'f89c3eed-0f1d-11ec-8a15-d8c497916dda', 99.75, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:20', '2021-09-08 21:48:20'),
 ('6e78b74d-10ab-11ec-82da-d8c497916dda', 'da576eeb-1088-11ec-82da-d8c497916dda', '6df71687-10ab-11ec-82da-d8c497916dda', 98, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:22', '2021-09-08 21:48:22'),
 ('6eb34147-10ab-11ec-82da-d8c497916dda', 'da576eeb-1088-11ec-82da-d8c497916dda', '6e1d354a-10ab-11ec-82da-d8c497916dda', 97.5, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:48:22', '2021-09-08 21:48:22'),
+('6f692ab2-1245-11ec-bceb-d8c497916dda', 'da7057bf-1088-11ec-82da-d8c497916dda', '05667517-0f1e-11ec-8a15-d8c497916dda', 98, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-10 22:43:17', '2021-09-10 22:43:17'),
+('6fa668a0-1245-11ec-bceb-d8c497916dda', 'da7057bf-1088-11ec-82da-d8c497916dda', 'f89c3eed-0f1d-11ec-8a15-d8c497916dda', 97, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-10 22:43:17', '2021-09-10 22:43:17'),
+('6fbcc179-1245-11ec-bceb-d8c497916dda', 'da7057bf-1088-11ec-82da-d8c497916dda', 'c06a3599-0f26-11ec-8a15-d8c497916dda', 97, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-10 22:43:17', '2021-09-10 22:43:17'),
 ('9275ba56-10aa-11ec-82da-d8c497916dda', '7c940dd7-0fcc-11ec-9785-d8c497916dda', '05667517-0f1e-11ec-8a15-d8c497916dda', 92, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:12', '2021-09-08 21:42:12'),
 ('9344d852-10aa-11ec-82da-d8c497916dda', '7c940dd7-0fcc-11ec-9785-d8c497916dda', 'f89c3eed-0f1d-11ec-8a15-d8c497916dda', 93, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:14', '2021-09-08 21:42:14'),
 ('93c2febe-10aa-11ec-82da-d8c497916dda', '7c940dd7-0fcc-11ec-9785-d8c497916dda', 'c06a3599-0f26-11ec-8a15-d8c497916dda', 92, '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 21:42:15', '2021-09-08 21:42:15'),
@@ -275,6 +279,13 @@ CREATE TABLE `onboarding_employees` (
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `onboarding_employees`
+--
+
+INSERT INTO `onboarding_employees` (`onboarding_employee_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `contact_number`, `email`, `employment_start_date`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+('8bd4eaf0-1302-11ec-8353-d8c497916dda', 'Crisanto', 'Esteban', 'Cortez', '', '345-678-0123', 'crisanto.cortez@email.com', '2021-09-01', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-11 21:16:59', '2021-09-11 21:16:59');
+
 -- --------------------------------------------------------
 
 --
@@ -293,6 +304,15 @@ CREATE TABLE `onboarding_employee_task` (
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `onboarding_employee_task`
+--
+
+INSERT INTO `onboarding_employee_task` (`onboarding_employee_task_id`, `onboarding_employee_id`, `onboarding_task_id`, `start_at`, `end_at`, `assigned_by`, `status`, `created_at`, `updated_at`) VALUES
+('8c41b3ff-1302-11ec-8353-d8c497916dda', '8bd4eaf0-1302-11ec-8353-d8c497916dda', '86c41699-1244-11ec-bceb-d8c497916dda', '2021-09-01 09:00:00', '2021-09-01 10:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-11 21:17:00', '2021-09-11 21:17:00'),
+('8d8c0ec8-1302-11ec-8353-d8c497916dda', '8bd4eaf0-1302-11ec-8353-d8c497916dda', '9fa04811-1244-11ec-bceb-d8c497916dda', '2021-09-01 10:00:00', '2021-09-01 15:15:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-11 21:17:02', '2021-09-11 21:17:02'),
+('8dc4afa2-1302-11ec-8353-d8c497916dda', '8bd4eaf0-1302-11ec-8353-d8c497916dda', '94a28ca4-1240-11ec-bceb-d8c497916dda', '2021-09-01 07:00:00', '2021-09-01 09:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-11 21:17:03', '2021-09-11 21:17:03');
+
 -- --------------------------------------------------------
 
 --
@@ -303,13 +323,23 @@ CREATE TABLE `onboarding_tasks` (
   `onboarding_task_id` varchar(36) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` text NOT NULL,
-  `type` varchar(255) NOT NULL,
+  `task_type` varchar(255) NOT NULL,
   `department_id` varchar(36) NOT NULL,
   `added_by` varchar(36) NOT NULL,
-  `updated_by` varchar(36) NOT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `onboarding_tasks`
+--
+
+INSERT INTO `onboarding_tasks` (`onboarding_task_id`, `title`, `description`, `task_type`, `department_id`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+('86c41699-1244-11ec-bceb-d8c497916dda', 'Introduce the rules, regulations, and policies', 'Introduce the rules, regulations, and policies of organization and ICU department to new onboarding employee', 'General', '6783f999-0e30-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-10 22:36:46', '2021-09-10 22:36:46'),
+('8d7e2dec-1302-11ec-8353-d8c497916dda', 'Get all necessary files and information of onboarding employee', 'Get all necessary files and information of onboarding employee', 'Added', '6783f999-0e30-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-11 21:17:02', '2021-09-11 21:17:02'),
+('94a28ca4-1240-11ec-bceb-d8c497916dda', 'Welcoming the new onboarding employee', 'Welcoming the new onboarding employee to all staffs and employees of the ICU department', 'General', '6783f999-0e30-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-10 22:08:32', '2021-09-10 22:08:32'),
+('9fa04811-1244-11ec-bceb-d8c497916dda', 'Assign work for first day', 'Assign work for first day', 'General', '6783f999-0e30-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-10 22:37:28', '2021-09-10 22:37:28');
 
 -- --------------------------------------------------------
 

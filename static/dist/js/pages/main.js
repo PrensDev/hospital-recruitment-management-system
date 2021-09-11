@@ -75,10 +75,10 @@ const initDataTable = (selector = "", dtOptions = { debugMode: false, url: "", c
                     <div class="text-secondary">No records was found that matched to your query</div>
                 </div>
             `,
-            paginate: {
-                previous: `<i class="fas fa-caret-left"></i>`,
-                next: `<i class="fas fa-caret-right"></i>`,
-            }
+            // paginate: {
+            //     previous: `<i class="fas fa-caret-left"></i>`,
+            //     next: `<i class="fas fa-caret-right"></i>`,
+            // }
         }
     })
 ));
@@ -339,50 +339,57 @@ const btnToUnloadState = (selector, originalContent) => {
  */
 
 /** GET AJAX */
-const GET_ajax = (url = '', options = {success: () => {}, error: () => console.error('GET_ajax failed')}) => $.ajax({
-    url: url,
-    type: 'GET',
-    headers: AJAX_HEADERS,
-    success: options.success,
-    error: options.error
-});
+const GET_ajax = (url = '', options = {success: () => {}, error: () => console.error('GET_ajax failed')}) => {
+    $.ajax({
+        url: url,
+        type: 'GET',
+        headers: AJAX_HEADERS,
+        success: options.success,
+        error: options.error
+    }).fail(options.error);
+}
 
 
 /** POST AJAX */
-const POST_ajax = (url = '', data = {}, options = {success: () => {}, error: () => console.error('POST_ajax failed')}) => $.ajax({
-    url: url,
-    type: 'POST',
-    headers: AJAX_HEADERS,
-    dataType: 'json',
-    contentType: 'application/json; charset=utf-8',
-    data: JSON.stringify(data),
-    success: options.success,
-    error: options.error
-});
+const POST_ajax = (url = '', data = {}, options = {success: () => {}, error: () => console.error('POST_ajax failed')}) => {
+    $.ajax({
+        url: url,
+        type: 'POST',
+        headers: AJAX_HEADERS,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data),
+        success: options.success,
+        error: options.error
+    }).fail(options.error);
+}
 
 
 /** PUT AJAX */
-const PUT_ajax = (url = '', data = {}, options = {success: () => {}, error: () => console.error('PUT_ajax failed')}) => $.ajax({
-    url: url,
-    type: 'PUT',
-    headers: AJAX_HEADERS,
-    dataType: 'json',
-    contentType: 'application/json; charset=utf-8',
-    data: JSON.stringify(data),
-    success: options.success,
-    error: options.error
-});
+const PUT_ajax = (url = '', data = {}, options = {success: () => {}, error: () => console.error('PUT_ajax failed')}) => {
+    $.ajax({
+        url: url,
+        type: 'PUT',
+        headers: AJAX_HEADERS,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data),
+        success: options.success,
+        error: options.error
+    }).fail(options.error);
+}
 
 
 /** DELETE AJAX */
-const DELETE_ajax = (url = '', options = {success: () => {}, error: () => console.error('DELETE_ajax failed')}) => $.ajax({
-    url: url,
-    type: 'DELETE',
-    headers: AJAX_HEADERS,
-    success: options.success,
-    error: options.error
-});
-
+const DELETE_ajax = (url = '', options = {success: () => {}, error: () => console.error('DELETE_ajax failed')}) => {
+    $.ajax({
+        url: url,
+        type: 'DELETE',
+        headers: AJAX_HEADERS,
+        success: options.success,
+        error: options.error
+    }).fail(options.error);
+}
 
 
 

@@ -7,7 +7,6 @@
 /** Get requisition ID from the URL */
 const requisitionID = window.location.pathname.split("/")[3];
 
-
 /** Initialize Hired Applicants DataTable */
 initDataTable('#hiredApplicantsDT', {
     // debugMode: true,
@@ -49,11 +48,42 @@ initDataTable('#hiredApplicantsDT', {
             }
         },
 
+        // Status
+        {
+            data: null,
+            render: data => {
+                const status = data.status;
+
+                if(status === "Hired") {
+                    return dtBadge('success', `Hired`);
+                } else if(status === "Onboarding") {
+                    return dtBadge('info', `Onbaording`);
+                } else {
+                    return dtBadge('light', `Invalid Data`);
+                }
+            }
+        },
+
         // Action
         {
             data: null,
             render: data => {
                 const applicantID = data.applicant_id;
+
+                const onboardEmployeeLink = () => {
+                    return data.status === "Hired"
+                        ? `
+                            <a 
+                                class="dropdown-item d-flex"
+                                href="${ D_WEB_ROUTE }add-onboarding-employee/${ applicantID }"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-user-tie mr-1"></i></div>
+                                <span>Onboard this applicant</span>
+                            </a>
+                        `
+                        : ''
+                }
+
                 return `
                     <div class="text-center dropdown">
                         <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
@@ -69,13 +99,7 @@ initDataTable('#hiredApplicantsDT', {
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <span>View applicant details</span>
                             </div>
-                            <a 
-                                class="dropdown-item d-flex"
-                                href="${ D_WEB_ROUTE }add-onboarding-employee/${ applicantID }"
-                            >
-                                <div style="width: 2rem"><i class="fas fa- mr-1"></i></div>
-                                <span>Onboard this applicant</span>
-                            </a>
+                            ${ onboardEmployeeLink() }
                         </div>
                     </div>
                 `

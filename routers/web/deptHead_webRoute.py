@@ -77,9 +77,9 @@ async def render(
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants_per_request.html", {
                 "request": req,
-                "page_title": "Manpower Requests",
-                "sub_title": "Manpower Requests to manage requests for employees",
-                "active_navlink": "Manpower Requests"
+                "page_title": "Hired Applicants",
+                "sub_title": "Hired Applicants to manage new hired employees",
+                "active_navlink": "Hired Applicants"
             })
     else:
         return errTemplate.page_not_found(req)
@@ -115,17 +115,6 @@ async def render(requisition_id: str, req: Request, db: Session = Depends(get_db
                 "sub_title": "Edit your manpower request here",
                 "active_navlink": "Manpower Requests"
             })
-
-
-# Hired Applicants
-@router.get("/hired-applicants", response_class=HTMLResponse)
-async def render(req: Request):
-    return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants.html", {
-        "request": req,
-        "page_title": "Hired Applicants",
-        "sub_title": "Hired Applicants to manage new hired employees",
-        "active_navlink": "Hired Applicants"
-    })
 
 
 # Onboarding Employees

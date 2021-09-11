@@ -819,9 +819,7 @@ validateForm('#deleteManpowerRequestForm', {
     messages: { requisitionID: { required: 'Requisition ID should be here' }},
     submitHandler: () => {
         const formData = generateFormData('#deleteManpowerRequestForm');
-
         const requisitionID = formData.get('requisitionID');
-
         DELETE_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
             success: result => {
                 if(result) {

@@ -317,8 +317,11 @@ async def applicants_per_job_analytics(
         ).count()
 
         hired = query.filter(
-            Applicant.status == "Hired",
-            Applicant.job_post_id == job_post_id
+            Applicant.job_post_id == job_post_id,
+            or_(
+                Applicant.status == "Hired",
+                Applicant.status == "Onboarding"
+            )
         ).count()
 
         total_rejected = rejected_from_evalution + rejected_from_screening + rejected_from_intreview
@@ -403,7 +406,10 @@ async def evaluated_applicants(
         check_priviledge(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(
             Applicant.job_post_id == job_post_id,
-            Applicant.status == 'Hired'
+            or_(
+                Applicant.status == 'Hired',
+                Applicant.status == 'Onboarding'
+            )
         ).all()
     except Exception as e:
         print(e)

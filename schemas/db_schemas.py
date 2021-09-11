@@ -1,6 +1,8 @@
 # Import Package
 from datetime import datetime, date, time
 from typing import List, Optional
+
+from sqlalchemy.sql.functions import concat
 from pydantic import BaseModel
 
 
@@ -401,3 +403,48 @@ class ManpowerRequestsWithHiredApplicants(ManpowerRequest):
 
     class Config():
         orm_mode = True
+
+
+# Create Onboarding Tasks
+class CreateOnboardingTask(BaseModel):
+    title: str
+    description: str
+    task_type: str
+
+
+# Show Onboarding Tasks
+class ShowOnboardingTask(BaseModel):
+    onboarding_task_id: str
+    title: str
+    description: str
+    task_type: str
+    onboarding_task_for_department: ShowDepartment
+    onboarding_task_added_by: UserInfo
+    onboarding_task_updated_by: Optional[UserInfo]
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+# Add Onboarding Employee
+class CreateOnboardingEmployee(BaseModel):
+    first_name: str
+    middle_name: Optional[str]
+    last_name: str
+    suffix_name: Optional[str]
+    contact_number: str
+    email: str
+    employment_start_date: date
+
+
+# Add Onboarding Employee Task
+class CreateOnboardingEmployeeTask(BaseModel):
+    onboarding_task_id: str
+    start_at: datetime
+    end_at: datetime
+
+# Change Applicant Status
+class ChangeApplicantStatus(BaseModel):
+    status: str
