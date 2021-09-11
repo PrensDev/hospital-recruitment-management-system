@@ -444,6 +444,7 @@ async def get_one_onboarding_task(
 # Onboarding employee not found
 ONBOARDING_EMPLOYEE_NOT_FOUND = {"message": "Onboarding employee not found"}
 
+# Add onboarding employees
 @router.post("/onboarding-employees")
 async def add_onboarding_employee(
     req: db_schemas.CreateOnboardingEmployee,
@@ -459,6 +460,7 @@ async def add_onboarding_employee(
             suffix_name = req.suffix_name,
             contact_number = req.contact_number,
             email = req.email,
+            position_id = req.position_id,
             employment_start_date = req.employment_start_date,
             added_by = user_data.user_id,
             updated_by = user_data.user_id
@@ -470,6 +472,32 @@ async def add_onboarding_employee(
             "data": new_onboarding_employment,
             "message": "A new onboarding employee has been created"
         }
+    except Exception as e:
+        print(e)
+
+
+# Get all onboarding employees
+@router.get("/onboarding-employees", response_model=List[db_schemas.OnboardingEmployeeInfo])
+async def get_all_onboarding_employees(
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+        if not user_info:
+            raise HTTPException(status_code=404, detail="User does not exist")
+        else:
+            position_id = user_info.position_id
+            user_position = db.query(Position).filter(Position.position_id == position_id).first()
+            if not user_position:
+                raise HTTPException(status_code=404, detail="Position does not exist")
+            else:
+                department_id = user_position.department_id
+                user_department = db.query(Department).filter(Department.department_id == department_id).first()
+                if not user_department:
+                    raise HTTPException(status_code=404, detail="Deparment does not exist")
+                else:
+                    return db.query(OnboardingEmployee).join(Position).filter(Position.position_id == OnboardingEmployee.position_id).join(Department).filter(Department.department_id == user_department.department_id).all()
     except Exception as e:
         print(e)
 

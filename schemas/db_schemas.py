@@ -436,6 +436,7 @@ class CreateOnboardingEmployee(BaseModel):
     suffix_name: Optional[str]
     contact_number: str
     email: str
+    position_id: str
     employment_start_date: date
 
 
@@ -445,6 +446,39 @@ class CreateOnboardingEmployeeTask(BaseModel):
     start_at: datetime
     end_at: datetime
 
+
 # Change Applicant Status
 class ChangeApplicantStatus(BaseModel):
     status: str
+
+
+# Show Onbaording Employee Task
+class ShowOnbaordingEmployeeTask(BaseModel):
+    onboarding_employee_task_id: str
+    status: str
+    start_at: datetime
+    end_at: datetime
+    onboarding_employee_task_assigned_by: UserInfo
+    onboarding_task: ShowOnboardingTask
+
+    class Config():
+        orm_mode = True
+
+
+# Onboarding Employee Info
+class OnboardingEmployeeInfo(BaseModel):
+    first_name: str
+    middle_name: Optional[str]
+    last_name: str
+    suffix_name: Optional[str]
+    email: str
+    contact_number: str
+    onboarding_employee_position: ShowPosition
+    onboarding_employee_added_by: UserInfo
+    onboarding_employee_updated_by: UserInfo
+    onboarding_employee_tasks: List[ShowOnbaordingEmployeeTask]
+    created_at: datetime
+    updated_at: datetime
+
+    class Config():
+        orm_mode = True

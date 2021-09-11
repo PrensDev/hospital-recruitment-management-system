@@ -43,7 +43,7 @@
                                     id="applicantInformationPanelTrigger"
                                 >
                                     <span class="bs-stepper-circle">1</span>
-                                    <span class="bs-stepper-label">Applicant Information</span>
+                                    <span class="bs-stepper-label">Onboarding Employee Information</span>
                                 </button>
                             </div>
 
@@ -84,6 +84,7 @@
                                     <p class="font-weight-bold">Please confirm and make sure the employee details are correct and updated.</p>
                     
                                     <div class="form-group mb-3">
+                                        <input type="hidden" id="positionID" name="positionID">
                                         <p>Position: <span id="position"></span></p>
                                     </div>
 
@@ -321,5 +322,5 @@
 
 
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/department_head/onboarding.js')}}"></script>   
+    <script src="{{ url_for('static', path='/dist/js/pages/department_head/onboarding.js') }}"></script>   
 {% endblock %}

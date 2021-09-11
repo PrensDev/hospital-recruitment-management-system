@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 11, 2021 at 05:03 PM
+-- Generation Time: Sep 11, 2021 at 08:12 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.4.22
 
@@ -59,7 +59,7 @@ INSERT INTO `applicants` (`applicant_id`, `job_post_id`, `first_name`, `middle_n
 ('2794fc42-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Jose', '', 'Devera', '', '889c7fe65e4344a7bdf8235f06f42427.pdf', '234-567-9012', 'jose.devera@email.com', 'Hired', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:25:20', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:51', NULL, NULL, NULL, '2021-09-08 17:21:31', '2021-09-09 02:39:37'),
 ('303eb1be-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Herbert', 'Kenneth', 'Tillman', 'Jr.', '346e80148d8d42d3b58c789a9358f646.pdf', '09123456788', 'herbert.tillman@email.com', 'Rejected from screening', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:18', NULL, NULL, '0000-00-00 00:00:00', '2021-09-07 10:36:25', 'No enough information is provided.', '2021-09-05 19:55:39', '2021-09-07 10:36:25'),
 ('3edd726e-0e43-11ec-9e47-d8c497916dda', '2edf54f3-0e3c-11ec-9e47-d8c497916dda', 'Carole', '', 'Moen', 'III', '0aef3f80946f491897f53a88c00483c6.pdf', '771-475-203', 'carole.moen@email.com', 'For screening', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-06 13:30:20', NULL, NULL, NULL, NULL, NULL, '2021-09-05 20:17:32', '2021-09-06 13:30:21'),
-('4f4a3571-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Crisanto', 'Esteban', 'Cortez', '', '2be0c663a81d407f8f241f8c178763b6.pdf', '345-678-0123', 'crisanto.cortez@email.com', 'Onboarding', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:23:58', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:48', NULL, NULL, NULL, '2021-09-08 17:22:38', '2021-09-11 21:17:02'),
+('4f4a3571-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Crisanto', 'Esteban', 'Cortez', '', '2be0c663a81d407f8f241f8c178763b6.pdf', '345-678-0123', 'crisanto.cortez@email.com', 'Onboarding', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:23:58', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:48', NULL, NULL, NULL, '2021-09-08 17:22:38', '2021-09-12 00:58:45'),
 ('5ad08512-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Domenica', '', 'Considine', '', 'a453f95718e140f88d6fb9cc7eb62ef7.pdf', '0987654322', 'domenica.considine@email.com', 'For screening', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:12', NULL, NULL, NULL, NULL, NULL, '2021-09-05 19:56:50', '2021-09-05 20:38:12'),
 ('64a97f1f-1086-11ec-82da-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Sherwin', 'Romero', 'Mariano', '', '968dfedcddf04444afe862e9f754f1d3.pdf', '321-543-6543', 'sherwin.mariano@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:23:53', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-08 17:39:43', NULL, NULL, NULL, '2021-09-08 17:23:14', '2021-09-08 17:39:43'),
 ('7e316a7c-0e40-11ec-9e47-d8c497916dda', '8758886f-0e3d-11ec-9e47-d8c497916dda', 'Hilario', 'Matanong', 'Gleason', '', 'e6d1fccb57aa4d3d85edeef9575440e3.pdf', '0987654323', 'hilario.gleason@email.com', 'For interview', '73d29fff-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:38:09', '4c915545-0e34-11ec-9e47-d8c497916dda', '2021-09-05 20:48:47', NULL, NULL, NULL, '2021-09-05 19:57:49', '2021-09-05 20:48:47'),
@@ -272,6 +272,7 @@ CREATE TABLE `onboarding_employees` (
   `suffix_name` varchar(255) DEFAULT NULL,
   `contact_number` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `position_id` varchar(36) NOT NULL,
   `employment_start_date` date DEFAULT NULL,
   `added_by` varchar(36) NOT NULL,
   `updated_by` varchar(36) DEFAULT NULL,
@@ -283,8 +284,8 @@ CREATE TABLE `onboarding_employees` (
 -- Dumping data for table `onboarding_employees`
 --
 
-INSERT INTO `onboarding_employees` (`onboarding_employee_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `contact_number`, `email`, `employment_start_date`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-('8bd4eaf0-1302-11ec-8353-d8c497916dda', 'Crisanto', 'Esteban', 'Cortez', '', '345-678-0123', 'crisanto.cortez@email.com', '2021-09-01', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-11 21:16:59', '2021-09-11 21:16:59');
+INSERT INTO `onboarding_employees` (`onboarding_employee_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `contact_number`, `email`, `position_id`, `employment_start_date`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+('857229f3-1321-11ec-93c0-d8c497916dda', 'Crisanto', 'Esteban', 'Cortez', '', '345-678-0123', 'crisanto.cortez@email.com', '088704a8-0e31-11ec-9e47-d8c497916dda', '2021-09-01', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-12 00:58:43', '2021-09-12 00:58:43');
 
 -- --------------------------------------------------------
 
@@ -309,9 +310,10 @@ CREATE TABLE `onboarding_employee_task` (
 --
 
 INSERT INTO `onboarding_employee_task` (`onboarding_employee_task_id`, `onboarding_employee_id`, `onboarding_task_id`, `start_at`, `end_at`, `assigned_by`, `status`, `created_at`, `updated_at`) VALUES
-('8c41b3ff-1302-11ec-8353-d8c497916dda', '8bd4eaf0-1302-11ec-8353-d8c497916dda', '86c41699-1244-11ec-bceb-d8c497916dda', '2021-09-01 09:00:00', '2021-09-01 10:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-11 21:17:00', '2021-09-11 21:17:00'),
-('8d8c0ec8-1302-11ec-8353-d8c497916dda', '8bd4eaf0-1302-11ec-8353-d8c497916dda', '9fa04811-1244-11ec-bceb-d8c497916dda', '2021-09-01 10:00:00', '2021-09-01 15:15:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-11 21:17:02', '2021-09-11 21:17:02'),
-('8dc4afa2-1302-11ec-8353-d8c497916dda', '8bd4eaf0-1302-11ec-8353-d8c497916dda', '94a28ca4-1240-11ec-bceb-d8c497916dda', '2021-09-01 07:00:00', '2021-09-01 09:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-11 21:17:03', '2021-09-11 21:17:03');
+('860da5cb-1321-11ec-93c0-d8c497916dda', '857229f3-1321-11ec-93c0-d8c497916dda', '86c41699-1244-11ec-bceb-d8c497916dda', '2021-09-01 09:00:00', '2021-09-01 11:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-12 00:58:44', '2021-09-12 00:58:44'),
+('864d9e96-1321-11ec-93c0-d8c497916dda', '857229f3-1321-11ec-93c0-d8c497916dda', '94a28ca4-1240-11ec-bceb-d8c497916dda', '2021-09-01 07:00:00', '2021-09-01 09:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-12 00:58:44', '2021-09-12 00:58:44'),
+('8660a8b2-1321-11ec-93c0-d8c497916dda', '857229f3-1321-11ec-93c0-d8c497916dda', '9fa04811-1244-11ec-bceb-d8c497916dda', '2021-09-01 12:00:00', '2021-09-01 15:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-12 00:58:45', '2021-09-12 00:58:45'),
+('87350a17-1321-11ec-93c0-d8c497916dda', '857229f3-1321-11ec-93c0-d8c497916dda', '86b2e2c9-1321-11ec-93c0-d8c497916dda', '2021-09-01 15:00:00', '2021-09-01 17:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-12 00:58:46', '2021-09-12 00:58:46');
 
 -- --------------------------------------------------------
 
@@ -336,8 +338,8 @@ CREATE TABLE `onboarding_tasks` (
 --
 
 INSERT INTO `onboarding_tasks` (`onboarding_task_id`, `title`, `description`, `task_type`, `department_id`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+('86b2e2c9-1321-11ec-93c0-d8c497916dda', 'Get all necessary files and information of onboarding employee', 'Get all necessary files and information of onboarding employee', 'Added', '6783f999-0e30-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-12 00:58:45', '2021-09-12 00:58:45'),
 ('86c41699-1244-11ec-bceb-d8c497916dda', 'Introduce the rules, regulations, and policies', 'Introduce the rules, regulations, and policies of organization and ICU department to new onboarding employee', 'General', '6783f999-0e30-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-10 22:36:46', '2021-09-10 22:36:46'),
-('8d7e2dec-1302-11ec-8353-d8c497916dda', 'Get all necessary files and information of onboarding employee', 'Get all necessary files and information of onboarding employee', 'Added', '6783f999-0e30-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-11 21:17:02', '2021-09-11 21:17:02'),
 ('94a28ca4-1240-11ec-bceb-d8c497916dda', 'Welcoming the new onboarding employee', 'Welcoming the new onboarding employee to all staffs and employees of the ICU department', 'General', '6783f999-0e30-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-10 22:08:32', '2021-09-10 22:08:32'),
 ('9fa04811-1244-11ec-bceb-d8c497916dda', 'Assign work for first day', 'Assign work for first day', 'General', '6783f999-0e30-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'e025248c-0e34-11ec-9e47-d8c497916dda', '2021-09-10 22:37:28', '2021-09-10 22:37:28');
 
@@ -510,6 +512,7 @@ ALTER TABLE `job_posts`
 --
 ALTER TABLE `onboarding_employees`
   ADD PRIMARY KEY (`onboarding_employee_id`),
+  ADD KEY `position_id` (`position_id`),
   ADD KEY `added_by` (`added_by`),
   ADD KEY `updated_by` (`updated_by`);
 
@@ -607,8 +610,9 @@ ALTER TABLE `job_posts`
 -- Constraints for table `onboarding_employees`
 --
 ALTER TABLE `onboarding_employees`
-  ADD CONSTRAINT `onboarding_employees_ibfk_1` FOREIGN KEY (`added_by`) REFERENCES `users` (`user_id`),
-  ADD CONSTRAINT `onboarding_employees_ibfk_2` FOREIGN KEY (`updated_by`) REFERENCES `users` (`user_id`);
+  ADD CONSTRAINT `onboarding_employees_ibfk_1` FOREIGN KEY (`position_id`) REFERENCES `positions` (`position_id`),
+  ADD CONSTRAINT `onboarding_employees_ibfk_2` FOREIGN KEY (`added_by`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `onboarding_employees_ibfk_3` FOREIGN KEY (`updated_by`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `onboarding_employee_task`

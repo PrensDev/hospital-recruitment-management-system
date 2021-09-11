@@ -183,6 +183,10 @@ class Position(Base):
         "Requisition",
         back_populates = "vacant_position"
     )
+    onboarding_employees = relationship(
+        "OnboardingEmployee",
+        back_populates = "onboarding_employee_position"
+    )
 
 
 # Department Model
@@ -761,6 +765,11 @@ class OnboardingEmployee(Base):
         String(255),
         nullable = False
     )
+    position_id = Column(
+        String(36),
+        ForeignKey("positions.position_id"),
+        nullable = False
+    )
     employment_start_date = Column(
         Date,
         nullable = True
@@ -787,6 +796,10 @@ class OnboardingEmployee(Base):
     )
 
     # Relationships
+    onboarding_employee_position = relationship(
+        "Position",
+        back_populates = "onboarding_employees"
+    )
     onboarding_employee_added_by = relationship(
         "User",
         back_populates = "added_onboarding_employees",

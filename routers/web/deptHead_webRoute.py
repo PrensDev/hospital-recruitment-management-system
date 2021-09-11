@@ -117,6 +117,17 @@ async def render(requisition_id: str, req: Request, db: Session = Depends(get_db
             })
 
 
+# Hired Applicants
+@router.get("/hired-applicants", response_class=HTMLResponse)
+async def render(req: Request):
+    return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants.html", {
+        "request": req,
+        "page_title": "Hired Applicants",
+        "sub_title": "Hired Applicants to manage new hired employees",
+        "active_navlink": "Hired Applicants"
+    })
+
+
 # Onboarding Employees
 @router.get("/onboarding-employees", response_class=HTMLResponse)
 async def render(req: Request):

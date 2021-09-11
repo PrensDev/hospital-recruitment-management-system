@@ -67,6 +67,7 @@ ifSelectorExist('#addOnboardingEmployeeForm', () => {
 
             // Set Position
             setContent('#position', result.position.name);
+            setValue('#positionID', result.position.position_id);
 
             // Set First Name
             setValue('#firstName', applicant.first_name);
@@ -438,6 +439,7 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
         suffix_name: get('suffixName'),
         contact_number: get('contactNumber'),
         email: get('email'),
+        position_id: get('positionID'),
         employment_start_date: get('employmentStartDate')
     }
 
@@ -757,5 +759,100 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
 
 /** Initialize Onboarding Employees DataTable */
 initDataTable('#onboardingEmployeesDT', {
-    debugMode: true
+    // debugMode: true,
+    url: `${ D_API_ROUTE }onboarding-employees`,
+    columns: [
+
+        // Created At (Hidden By Default)
+        { data: 'created_at', visible: false },
+
+        // Onboarding Employee
+        {
+            data: null,
+            render: data => {
+                const fullName = formatName('F M. L, S', {
+                    firstName: data.first_name,
+                    middleName: data.middle_name,
+                    lastName: data.last_name,
+                    suffix_name: data.suffix_name
+                });
+
+                return `
+                    <div>${ fullName }</div>
+                    <div class="small text-secondary">${ data.onboarding_employee_position.name }</div>
+                `
+            }
+        },
+
+        // No. of tasks
+        {
+            data: null,
+            render: data => {
+                const tasksCount = data.onboarding_employee_tasks.length;
+                return `${ tasksCount } task${ tasksCount > 1 ? 's' : '' }`
+            }
+        },
+
+        // Task Progress
+        {
+            data: null,
+            render: data => {
+                let completed = 0;
+
+                const tasks = data.onboarding_employee_tasks;
+
+                tasks.forEach(t => { if(t.status == "Completed") completed++ });
+
+                var taskProgress = (completed/tasks.length).toFixed(2);
+
+                var bgColor;
+                if(taskProgress <= 25) bgColor = 'danger';
+                else if(taskProgress <= 75) bgColor = 'warning';
+                else if(taskProgress < 100) bgColor = 'info';
+                else if(taskProgress == 100) bgColor = 'success';
+
+                return `
+                    <div class="project_progress">
+                        <div class="progress progress-sm rounded">
+                            <div 
+                                class="progress-bar 
+                                bg-primary" 
+                                role="progressbar" 
+                                aria-valuenow="${ taskProgress }" 
+                                aria-valuemin="0" 
+                                aria-valuemax="100" 
+                                style="width: ${ taskProgress }%"
+                            ></div>
+                        </div>
+                        <small>${ taskProgress }% Complete</small>
+                    </div>
+                `
+            }
+        },
+
+        // Action
+        {
+            data: null,
+            render: data => {
+                return  `
+                    <div class="text-center dropdown">
+                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div 
+                                class="dropdown-item d-flex"
+                                role="button"
+                                onclick="viewTasks"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                <div>View Tasks</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        }
+    ]
 });
