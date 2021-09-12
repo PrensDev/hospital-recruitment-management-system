@@ -1,0 +1,135 @@
+{% extends "pages/department_head/_layout.html" %} 
+
+
+{% block content %}
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                
+                <!-- Title -->
+                <div class="col-sm-6">
+                    <h1>{{ page_title }}</h1>
+                    <p class="text-muted">{{ sub_title }}</p>
+                </div>
+    
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card card-primary card-outline" id="onboardingEmployeeDetailsLoader">
+                            <div class="card-body py-5">
+                                <div class="my-5 py-5 text-center">
+                                    <div class="spinner-border text-primary my-3">
+                                        <div class="sr-only">Loading ...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="card card-primary card-outline" id="onboardingEmployeeDetails" style="display: none">
+                            <div class="card-body box-profile">
+                
+                                <h3 class="profile-username text-center mb-0" id="employeeFullName"></h3>
+                
+                                <p class="text-muted text-center" id="employeePosition"></p>
+
+                                <!-- Progress Bar -->
+                                <div class="mb-3">
+                                    <label>Tasks Progress</label>
+                                    <div id="taskProgress"></div>
+                                </div>
+
+                                <!-- Applicant Details -->
+                                <table class="table">
+                                    <tr>
+                                        <td>
+                                            <div class="font-weight-bold">
+                                                <i class="fas fa-envelope mr-1 text-secondary"></i>
+                                                <span>Email</span>
+                                            </div>
+                                            <div id="employeeEmail"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="font-weight-bold">
+                                                <i class="fas fa-phone mr-1 text-secondary"></i>
+                                                <span>Contact Number</span>
+                                            </div>
+                                            <div id="employeeContactNumber"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="font-weight-bold">
+                                                <i class="fas fa-calendar-alt mr-1 text-secondary"></i>
+                                                <span>Start of employment</span>
+                                            </div>
+                                            <div>
+                                                <div id="startOfEmploymentDate"></div>
+                                                <div class="small text-secondary" id="startOfEmploymentHumanized"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-8">
+                        <div class="card card-primary card-outline">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h3 class="card-title">Lists of Tasks</h3>
+                                    </div>
+                                    <div>
+                                        <a href="#" class="btn btn-sm btn-primary">
+                                            <span>Add Task</span>
+                                            <i class="fas fa-plus ml-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <table id="onboardingEmployeeTasksDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Tasks</th>
+                                            <th>Start</th>
+                                            <th>Deadline</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block page_modals %}
+    {% include "pages/department_head/modals/onboarding_employee_task_modal.html" %}
+{% endblock %}
+
+
+{% block page_scripts %}
+    <script src="{{ url_for('static', path='/dist/js/pages/department_head/onboarding.js') }}"></script>
+{% endblock %}

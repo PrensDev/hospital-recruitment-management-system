@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 11, 2021 at 08:12 PM
+-- Generation Time: Sep 12, 2021 at 07:44 AM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.4.22
 
@@ -311,7 +311,7 @@ CREATE TABLE `onboarding_employee_task` (
 
 INSERT INTO `onboarding_employee_task` (`onboarding_employee_task_id`, `onboarding_employee_id`, `onboarding_task_id`, `start_at`, `end_at`, `assigned_by`, `status`, `created_at`, `updated_at`) VALUES
 ('860da5cb-1321-11ec-93c0-d8c497916dda', '857229f3-1321-11ec-93c0-d8c497916dda', '86c41699-1244-11ec-bceb-d8c497916dda', '2021-09-01 09:00:00', '2021-09-01 11:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-12 00:58:44', '2021-09-12 00:58:44'),
-('864d9e96-1321-11ec-93c0-d8c497916dda', '857229f3-1321-11ec-93c0-d8c497916dda', '94a28ca4-1240-11ec-bceb-d8c497916dda', '2021-09-01 07:00:00', '2021-09-01 09:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-12 00:58:44', '2021-09-12 00:58:44'),
+('864d9e96-1321-11ec-93c0-d8c497916dda', '857229f3-1321-11ec-93c0-d8c497916dda', '94a28ca4-1240-11ec-bceb-d8c497916dda', '2021-09-01 07:00:00', '2021-09-01 09:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'Completed', '2021-09-12 00:58:44', '2021-09-12 13:26:06'),
 ('8660a8b2-1321-11ec-93c0-d8c497916dda', '857229f3-1321-11ec-93c0-d8c497916dda', '9fa04811-1244-11ec-bceb-d8c497916dda', '2021-09-01 12:00:00', '2021-09-01 15:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-12 00:58:45', '2021-09-12 00:58:45'),
 ('87350a17-1321-11ec-93c0-d8c497916dda', '857229f3-1321-11ec-93c0-d8c497916dda', '86b2e2c9-1321-11ec-93c0-d8c497916dda', '2021-09-01 15:00:00', '2021-09-01 17:00:00', 'e025248c-0e34-11ec-9e47-d8c497916dda', 'On Going', '2021-09-12 00:58:46', '2021-09-12 00:58:46');
 

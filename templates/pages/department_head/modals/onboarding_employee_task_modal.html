@@ -1,0 +1,27 @@
+<!-- Confirm Mark As Completed Modal -->
+<div class="modal" id="confirmMarkAsCompletedModal" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="markAsCompletedForm">
+
+            <div class="modal-header">
+                <h4 class="modal-title text-secondary">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <span>Confirmation</span>
+                </h4>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="onboardingEmployeeTaskID" name="onboardingEmployeeTaskID">
+                <p>Are you sure you want to mark a task as completed?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" id="cancelConfimMarkAsCompletedBtn">Cancel</button>
+                <button class="btn btn-primary" id="confimMarkAsCompletedBtn">
+                    <span>Yes, mark it!</span>
+                    <i class="fas fa-check ml-1"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

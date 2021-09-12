@@ -759,7 +759,6 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
 
 /** Initialize Onboarding Employees DataTable */
 initDataTable('#onboardingEmployeesDT', {
-    // debugMode: true,
     url: `${ D_API_ROUTE }onboarding-employees`,
     columns: [
 
@@ -803,7 +802,7 @@ initDataTable('#onboardingEmployeesDT', {
 
                 tasks.forEach(t => { if(t.status == "Completed") completed++ });
 
-                var taskProgress = (completed/tasks.length).toFixed(2);
+                var taskProgress = ((completed/tasks.length) * 100).toFixed(2);
 
                 var bgColor;
                 if(taskProgress <= 25) bgColor = 'danger';
@@ -815,8 +814,7 @@ initDataTable('#onboardingEmployeesDT', {
                     <div class="project_progress">
                         <div class="progress progress-sm rounded">
                             <div 
-                                class="progress-bar 
-                                bg-primary" 
+                                class="progress-bar bg-${ bgColor }" 
                                 role="progressbar" 
                                 aria-valuenow="${ taskProgress }" 
                                 aria-valuemin="0" 
@@ -841,14 +839,13 @@ initDataTable('#onboardingEmployeesDT', {
                         </div>
 
                         <div class="dropdown-menu dropdown-menu-right">
-                            <div 
+                            <a 
+                                href="${ D_WEB_ROUTE }onboarding-employees/${ data.onboarding_employee_id }/onboarding-tasks"
                                 class="dropdown-item d-flex"
-                                role="button"
-                                onclick="viewTasks"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <div>View Tasks</div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 `
@@ -856,3 +853,240 @@ initDataTable('#onboardingEmployeesDT', {
         }
     ]
 });
+
+
+// Get the onboardingEmployeeID from the URL
+const onboardingEmployeeID = window.location.pathname.split('/')[3];
+
+/** Initialize Onboarding Employee Tasks DataTable */
+initDataTable('#onboardingEmployeeTasksDT', {
+    url: `${ D_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`,
+    columns: [
+
+        // Start at (Hidden for default sorting)
+        { data: 'start_at', visible: false },
+
+        // Tasks
+        {
+            data: null,
+            render: data => {
+                const task = data.onboarding_task;
+                return `
+                    <div>${ task.title }</div>
+                    <div class="small text-secondary">${ task.description }</div>
+                `
+            }
+        },
+
+        // Start
+        {
+            data: null,
+            class: 'text-nowrap',
+            render: data => {
+                const startAt = data.start_at;
+                return `
+                    <div>${ formatDateTime(startAt, 'MMM. D, YYYY') }</div>
+                    <div>${ formatDateTime(startAt, 'Time') }</div>
+                    <div class="small text-secondary">${ fromNow(startAt) }</div>
+                `
+            }
+        },
+
+        // Deadline
+        {
+            data: null,
+            class: 'text-nowrap',
+            render: data => {
+                const endAt = data.end_at;
+                return `
+                    <div>${ formatDateTime(endAt, 'MMM. D, YYYY') }</div>
+                    <div>${ formatDateTime(endAt, 'Time') }</div>
+                    <div class="small text-secondary">${ fromNow(endAt) }</div>
+                `
+            }
+        },
+
+        // Status
+        {
+            data: null,
+            render: data => {
+                const status = data.status;
+                if(status == "On Going") return dtBadge('info', `
+                    <i class="fas fa-redo mr-1"></i>
+                    <span>${ status }<span>
+                `)
+                else if(status == "Completed") return dtBadge('success', `
+                    <i class="fas fa-check mr-1"></i>
+                    <span>${ status }<span>
+                `)
+                else return dtBadge('light', 'Invalid data')
+            }
+        },
+
+        // Action
+        { 
+            data: null,
+            render: data => {
+                const onboardingEmplyeeTaskID = data.onboarding_employee_task_id;
+
+                const markAsCompletedLink = () => {
+                    return data.status == "On Going"
+                        ? `
+                            <div 
+                                class="dropdown-item d-flex"
+                                role="button"
+                                onclick="markAsCompleted('${ onboardingEmplyeeTaskID }')"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-check mr-1"></i></div>
+                                <span>Mark as Completed</span>
+                            </div>
+                        `
+                        : ''
+                }
+
+                return `
+                    <div class="text-center dropdown">
+                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div 
+                                class="dropdown-item d-flex"
+                                role="button"
+                                onclick="viewOnboardingTaskDetails('${ onboardingEmplyeeTaskID }')"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                <span>View Details</span>
+                            </div>
+                            ${ markAsCompletedLink() }
+                        </div>
+                    </div>
+                `
+            }
+        }
+    ]
+});
+
+/** Get Onboarding Employee Details */
+const getOnboardingEmployeeDetails = () => {
+    GET_ajax(`${ D_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }`, {
+        success: result => {
+
+            // Set Employee Full Name
+            setContent('#employeeFullName', formatName('F M. L, S', {
+                firstName: result.first_name,
+                middleName: result.middle_name,
+                lastName: result.last_name,
+                suffixName: result.suffix_name
+            }));
+
+            // Set Employee Position
+            setContent('#employeePosition', result.onboarding_employee_position.name);
+
+            // Set Task Progress
+            setContent('#taskProgress', () => {
+                const tasks = result.onboarding_employee_tasks;
+
+                let completed = 0;
+
+                tasks.forEach(t => { if(t.status === 'Completed') completed++ });
+
+                var taskProgress = ((completed/tasks.length) * 100).toFixed(2);
+
+                var bgColor;
+                if(taskProgress <= 25) bgColor = 'danger';
+                else if(taskProgress <= 75) bgColor = 'warning';
+                else if(taskProgress < 100) bgColor = 'info';
+                else if(taskProgress == 100) bgColor = 'success';
+
+                return `
+                    <div class="progress progress-sm rounded">
+                        <div 
+                            class="progress-bar bg-${ bgColor }" 
+                            role="progressbar" 
+                            aria-valuenow="${ taskProgress }" 
+                            aria-valuemin="0" 
+                            aria-valuemax="100" 
+                            style="width: ${ taskProgress }%"
+                        ></div>
+                    </div>
+                    <small>${ taskProgress }% Complete</small>
+                `
+            });
+
+            // Set Email
+            setContent('#employeeEmail', result.email);
+
+            // Set Contact Number
+            setContent('#employeeContactNumber', result.contact_number);
+
+            // Set Start of Employment
+            setContent('#startOfEmploymentDate', formatDateTime(result.employment_start_date, 'Full Date'));
+            setContent('#startOfEmploymentHumanized', fromNow(result.employment_start_date));
+
+            // Remove loader and show container
+            $('#onboardingEmployeeDetailsLoader').remove();
+            showElement('#onboardingEmployeeDetails');
+        },
+        error: () => {
+            toastr.error('There was an error in getting onboarding employee details')
+        }
+    });
+}
+
+/** Onboarding Employee Details */
+ifSelectorExist('#onboardingEmployeeDetails', () => getOnboardingEmployeeDetails());
+
+/** Mark as Completed */
+const markAsCompleted = (onboardingEmployeeTaskID) => {
+    setValue('#onboardingEmployeeTaskID', onboardingEmployeeTaskID);
+    showModal('#confirmMarkAsCompletedModal');
+}
+
+/** When confirm mark as completed modal was hidden */
+onHideModal('#confirmMarkAsCompletedModal', () => resetForm('#markAsCompletedForm'));
+
+/** Validate Makr As Completed Form */
+validateForm('#markAsCompletedForm', {
+    submitHandler: () => markTaskAsCompleted()
+});
+
+/** Mark Task As Completed */
+const markTaskAsCompleted = () => {
+
+    // Set buttons to loading state
+    btnToLoadingState('#confimMarkAsCompletedBtn');
+    disableElement('#cancelConfimMarkAsCompletedBtn');
+
+    const onboardingEmployeeTaskID = generateFormData('#markAsCompletedForm').get('onboardingEmployeeTaskID');
+
+    const data = {status: 'Completed'}
+
+    PUT_ajax(`${ D_API_ROUTE }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, data, {
+        success: result => {
+
+            // Hide Modal
+            hideModal('#confirmMarkAsCompletedModal');
+
+            // Reload DataTable
+            reloadDataTable('#onboardingEmployeeTasksDT');
+
+            // Reload Onboarding Employee Details
+            getOnboardingEmployeeDetails();
+
+            // Set buttons to unload state
+            btnToUnloadState('#confimMarkAsCompletedBtn');
+            enableElement('#cancelConfimMarkAsCompletedBtn');
+
+            toastr.success('An onboarding task is successfully completed');
+        },
+        error: () => {
+            // Set buttons to unload state
+            btnToUnloadState('#confimMarkAsCompletedBtn');
+            enableElement('#cancelConfimMarkAsCompletedBtn');
+
+            toastr.error('There was an error in updating onboarding employee task status');
+        }
+    })
+}

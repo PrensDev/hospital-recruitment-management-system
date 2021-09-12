@@ -453,7 +453,7 @@ class ChangeApplicantStatus(BaseModel):
 
 
 # Show Onbaording Employee Task
-class ShowOnbaordingEmployeeTask(BaseModel):
+class ShowOnboardingEmployeeTask(BaseModel):
     onboarding_employee_task_id: str
     status: str
     start_at: datetime
@@ -467,18 +467,25 @@ class ShowOnbaordingEmployeeTask(BaseModel):
 
 # Onboarding Employee Info
 class OnboardingEmployeeInfo(BaseModel):
+    onboarding_employee_id: str
     first_name: str
     middle_name: Optional[str]
     last_name: str
     suffix_name: Optional[str]
     email: str
     contact_number: str
+    employment_start_date: date
     onboarding_employee_position: ShowPosition
     onboarding_employee_added_by: UserInfo
     onboarding_employee_updated_by: UserInfo
-    onboarding_employee_tasks: List[ShowOnbaordingEmployeeTask]
+    onboarding_employee_tasks: List[ShowOnboardingEmployeeTask]
     created_at: datetime
     updated_at: datetime
 
     class Config():
         orm_mode = True
+
+
+# Update Onboarding Empployee Task
+class UpdatedOnboardingEmployeeTaskStatus(BaseModel):
+    status: str

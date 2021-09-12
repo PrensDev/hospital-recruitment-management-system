@@ -1,4 +1,5 @@
 # Import Packages
+from sqlalchemy.orm.base import state_str
 from sqlalchemy.sql.expression import or_
 from routers.api.hireMng_apiRoute import APPLICANT_NOT_FOUND_RESPONSE
 from typing import List, Text
@@ -476,7 +477,7 @@ async def add_onboarding_employee(
         print(e)
 
 
-# Get all onboarding employees
+# Get All Onboarding Employees
 @router.get("/onboarding-employees", response_model=List[db_schemas.OnboardingEmployeeInfo])
 async def get_all_onboarding_employees(
     db: Session = Depends(get_db),
@@ -502,10 +503,37 @@ async def get_all_onboarding_employees(
         print(e)
 
 
+# Get One Onboarding Employees
+@router.get("/onboarding-employees/{onboarding_employee_id}", response_model=db_schemas.OnboardingEmployeeInfo)
+async def get_one_onboarding_employee(
+    onboarding_employee_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+        if not user_info:
+            raise HTTPException(status_code=404, detail="User does not exist")
+        else:
+            onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
+            if not onboarding_employee:
+                raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
+            else:
+                return onboarding_employee
+    except Exception as e:
+        print(e)
+
+
 # ====================================================================
 # ONBOARDING TASKS
 # ====================================================================
 
+
+# Onboarding Employee Task not found
+ONBOARDING_EMPLOYEE_TASK_NOT_FOUND = {"message": "Onboarding Employee Task not found"}
+
+
+# Add Onboarding Employee Task
 @router.post("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks")
 async def add_employee_onboarding_task(
     onboarding_employee_id: str,
@@ -534,5 +562,62 @@ async def add_employee_onboarding_task(
                 "data": new_onboarding_employee_task,
                 "message": "New onboarding task is added"
             }
+    except Exception as e:
+        print(e)
+
+
+# Get All Onabording Employee Task
+@router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_model=List[db_schemas.ShowOnboardingEmployeeTask])
+async def get_all_onboarding_employee_tasks(
+    onboarding_employee_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
+        if not onboarding_employee:
+            raise HTTPException(status_code = 404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
+        else:
+            return db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_id == onboarding_employee_id).all()
+    except Exception as e:
+        print(e)
+
+
+# Get One Onboarding Employee Task
+@router.get("/onboarding-employee-tasks/{onboarding_employee_task_id}", response_model=db_schemas.ShowOnboardingEmployeeTask)
+async def get_one_onboarding_employee_tasks(
+    onboarding_employee_task_id: str,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        onboarding_employee_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id).first()
+        if not onboarding_employee_task:
+            raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
+        else:
+            return onboarding_employee_task
+    except Exception as e:
+        print(e)
+
+
+# Update Onboarding Employee Task Status
+@router.put("/onboarding-employee-tasks/{onboarding_employee_task_id}")
+async def update_onboarding_employee_task_status(
+    onboarding_employee_task_id: str,
+    req: db_schemas.UpdatedOnboardingEmployeeTaskStatus,
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        onboarding_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id)
+        if not onboarding_task.first():
+            raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
+        else:
+            onboarding_task.update(req.dict())
+            db.commit()
+            return {"message": "An onboarding employee task has been updated"}
     except Exception as e:
         print(e)
