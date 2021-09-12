@@ -1076,14 +1076,20 @@ const markTaskAsCompleted = () => {
             getOnboardingEmployeeDetails();
 
             // Set buttons to unload state
-            btnToUnloadState('#confimMarkAsCompletedBtn');
+            btnToUnloadState('#confimMarkAsCompletedBtn', `
+                <span>Yes, mark it!</span>
+                <i class="fas fa-check ml-1"></i>
+            `);
             enableElement('#cancelConfimMarkAsCompletedBtn');
 
             toastr.success('An onboarding task is successfully completed');
         },
         error: () => {
             // Set buttons to unload state
-            btnToUnloadState('#confimMarkAsCompletedBtn');
+            btnToUnloadState('#confimMarkAsCompletedBtn', `
+                <span>Yes, mark it!</span>
+                <i class="fas fa-check ml-1"></i>
+            `);
             enableElement('#cancelConfimMarkAsCompletedBtn');
 
             toastr.error('There was an error in updating onboarding employee task status');

@@ -143,7 +143,6 @@ async def requisition_analytics(
         print(e)
 
 
-
 # Requisitions and Hired Applicants
 @router.get("/requisitions/hired-applicants", response_model=List[db_schemas.ManpowerRequestsWithHiredApplicants])
 async def get_all_requisitions_and_hired_applicants(
