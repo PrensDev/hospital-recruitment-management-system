@@ -459,8 +459,6 @@ initDataTable('#intervieweesDT', {
  * ==============================================================================
  */
 
-var scoresheetFormValidationRules = {}
-var scoresheetFormValidationMessages = {}
 var generalQuestionInputs = [];
 var addedQuestions = [];
 
@@ -509,7 +507,7 @@ ifSelectorExist('#generalInterviewQuestionsForIntervieweeDT', () => {
             if(result.length > 0) {
                 result.forEach(r => {
                     const inputName = `input${ r.interview_question_id.replace(/\-/g, '') }`;
- 
+
                     $('#generalInterviewQuestionsForIntervieweeDTBody').append(`
                         <tr>
                             <td>
@@ -528,6 +526,24 @@ ifSelectorExist('#generalInterviewQuestionsForIntervieweeDT', () => {
                                     >
                                 </div>
                             </td>
+                            <td>
+                                <div class="text-center dropdown">
+                                    <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </div>
+
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <div 
+                                            class="dropdown-item d-flex"
+                                            role="button"
+                                            onclick="removeGeneralQuestion('${ 'test' }')"
+                                        >
+                                            <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
+                                            <span>Remove</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                     `);
 
@@ -537,20 +553,18 @@ ifSelectorExist('#generalInterviewQuestionsForIntervieweeDT', () => {
                     });
 
                     // Set Validation Rule
-                    scoresheetFormValidationRules[inputName] = {
+                    $(`[name="${ inputName }"]`).rules('add', {
                         required: true,
                         number: true,
                         min: 0,
-                        max: 100
-                    };
-
-                    // Set Message Rule
-                    scoresheetFormValidationMessages[inputName] = {
-                        required: 'Required',
-                        number: 'Invalid value',
-                        min: 'Min. of 0',
-                        max: 'Max. of 100'
-                    };
+                        max: 100,
+                        messages: {
+                            required: 'Required',
+                            number: 'Invalid value',
+                            min: 'Min. of 0',
+                            max: 'Max. of 100'
+                        }
+                    });
                 });
             } else {
                 $('#generalInterviewQuestionsForIntervieweeDTBody').append(`
@@ -573,8 +587,6 @@ ifSelectorExist('#generalInterviewQuestionsForIntervieweeDT', () => {
 
 /** Validate Interview Scoresheet Form */
 validateForm('#interviewScoresheetForm', {
-    rules: scoresheetFormValidationRules,
-    messages: scoresheetFormValidationMessages,
     submitHandler: () => {
         showModal('#confirmSaveScoresheetModal');
         return false;
@@ -618,8 +630,40 @@ validateForm('#addInterviewQuestionForm', {
                         >
                     </div>
                 </td>
+                <td>
+                    <div class="text-center dropdown">
+                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div 
+                                class="dropdown-item d-flex"
+                                role="button"
+                                onclick="removeAddedQuestion('${ 'test' }')"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
+                                <span>Remove</span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
             </tr>
         `);
+
+        // Set Validation Rule
+        $(`[name="${ inputName }"]`).rules('add', {
+            required: true,
+            number: true,
+            min: 0,
+            max: 100,
+            messages: {
+                required: 'Required',
+                number: 'Invalid value',
+                min: 'Min. of 0',
+                max: 'Max. of 100'
+            }
+        });
 
         addedQuestions.push({
             name: inputName,

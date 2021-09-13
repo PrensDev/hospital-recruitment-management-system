@@ -109,3 +109,60 @@
         </div>
     </div>
 </div>
+
+<!-- View Job Post Modal -->
+<div class="modal fade" id="viewJobPostModal">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-secondary">
+                    <i class="fas fa-file-alt mr-2"></i>
+                    <span>View Job Post</span>
+                </h4>
+                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </button>
+            </div>
+            <div class="modal-body p-5">
+
+                <!-- Job Summary -->
+                <div class="mb-5">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h1 class="m-0" id="vacantPosition"></h1>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div id="jobPostStatus">
+                            <badge class="badge badge-info p-2"></badge>
+                        </div>
+                        <div class="mx-2">|</div>
+                        <div id="postedAt"></div>
+                    </div>
+                    <div>
+                        <b>Employment Type: </b><span id="employmentType"></span>
+                    </div>
+                    <div id="salaryRangeDisplay">
+                        <b>Offered Salary: </b><span id="salaryRange"></span>
+                    </div>
+                    <div id="openUntilDisplay">
+                        <b>Open Until: </b><span id="openUntil"></span>
+                    </div>
+                </div>
+
+                <!-- Job Description -->
+                <div class="mb-5">
+                    <h3>Job Description</h3>
+                    <div class="dropdown-divider"></div>
+                    <div class="my-3" id="jobDescription"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <div id="editJobPostBtn"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

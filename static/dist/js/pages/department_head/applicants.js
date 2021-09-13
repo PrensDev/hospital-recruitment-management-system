@@ -7,6 +7,13 @@
 /** Get requisition ID from the URL */
 const requisitionID = window.location.pathname.split("/")[3];
 
+
+/**
+ * ==============================================================================
+ * HIRED APPLICANTS DATATABLE
+ * ==============================================================================
+ */
+
 /** Initialize Hired Applicants DataTable */
 initDataTable('#hiredApplicantsDT', {
     // debugMode: true,
@@ -53,14 +60,9 @@ initDataTable('#hiredApplicantsDT', {
             data: null,
             render: data => {
                 const status = data.status;
-
-                if(status === "Hired") {
-                    return dtBadge('success', `Hired`);
-                } else if(status === "Onboarding") {
-                    return dtBadge('info', `Onbaording`);
-                } else {
-                    return dtBadge('light', `Invalid Data`);
-                }
+                if(status === "Hired") return dtBadge('success', status);
+                else if(status === "Onboarding") return dtBadge('info', status);
+                else return dtBadge('light', `Invalid Data`);
             }
         },
 
@@ -107,3 +109,14 @@ initDataTable('#hiredApplicantsDT', {
         }
     ]
 });
+
+
+/**
+ * ==============================================================================
+ * VIEW APPLICANT DETAILS
+ * ==============================================================================
+ */
+
+const viewApplicantDetails = (applicantID) => {
+    alert(applicantID);
+}

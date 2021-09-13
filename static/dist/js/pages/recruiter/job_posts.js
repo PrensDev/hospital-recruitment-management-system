@@ -412,8 +412,6 @@ ifSelectorExist('#jobPostsAnalytics', () => jobPostsAnalytics())
 const viewJobPostDetails = (jobPostID) => {
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
-            // console.log(result)
-
             const manpowerRequest = result.manpower_request;
 
             // Set Job Post Status

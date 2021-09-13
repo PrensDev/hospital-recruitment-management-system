@@ -278,6 +278,198 @@ const viewForInterviewApplicantDetails = (applicantID) => {
     });
 }
 
+/** View Hired Applicant Details */
+const viewHiredApplicantDetails = (applicantID) => {
+    GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }`, {
+        success: result => {
+            
+            // Set Applicant Full Name
+            setContent('#applicantFullName', formatName('F M. L, S', {
+                firstName: result.first_name,
+                middleName: result.middle_name,
+                lastName: result.last_name,
+                suffixName: result.suffixName
+            }));
+
+            // Set Applicant Contact Number
+            setContent("#applicantContactNumber", result.contact_number);
+
+            // Set Applicant Email
+            setContent("#applicantEmail", result.email);
+
+            // Set Resume
+            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
+
+            // Set Applicant Date Applied
+            setContent("#applicantDateApplied", `
+                <div>${ formatDateTime(result.created_at, "Full Date") }</div>
+                <div>${ formatDateTime(result.created_at, "Time") }</div>
+                <div class="small text-secondary">${  fromNow(result.created_at) }</div>
+            `);
+
+            // Set Evaluated By
+            setContent('#applicantEvaluatedBy', () => {
+                const evaluatedBy = result.evaluation_done_by;
+
+                const evaluatorName = formatName('F M. L, S', {
+                    firstName: evaluatedBy.first_name,
+                    middleName: evaluatedBy.middle_name,
+                    lastName: evaluatedBy.last_name,
+                    suffixName: evaluatedBy.suffix_name
+                });
+
+                const evaluatorPosition = evaluatedBy.position;
+
+                return `
+                    <div>${ evaluatorName }</div>
+                    <div class="small text-secondary">${ evaluatorPosition.name }, ${ evaluatorPosition.department.name }</div>
+                `
+            });
+
+            // Set Evauated At
+            setContent('#applicantEvaluatedAt', () => {
+                const evaluatedAt = result.evaluated_at;
+
+                return `
+                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
+                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
+                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
+                `
+            });
+
+            // Set Screening Done By
+            setContent('#applicantScreenedBy', () => {
+                const screenedBy = result.screening_done_by;
+
+                const screenedByFullName = formatName('F M. L, S', {
+                    firstName: screenedBy.first_name,
+                    middleName: screenedBy.middle_name,
+                    lastName: screenedBy.last_name,
+                    suffixName: screenedBy.suffix_name
+                });
+
+                const screenedByPosition = screenedBy.position;
+
+                return `
+                    <div>${ screenedByFullName }</div>
+                    <div class="small text-secondary">${ screenedByPosition.name }, ${ screenedByPosition.department.name }</div>
+                `
+            });
+
+            // Set Screening Done At
+            setContent('#applicantScreenedAt', () => {
+                const evaluatedAt = result.screened_at;
+
+                return `
+                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
+                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
+                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
+                `
+            });
+
+            // Show Applicants Details Modal
+            showModal('#applicantDetailsModal');
+        },
+        error: () => toastr.error('There was an error in getting hired applicant details')
+    })
+}
+
+/** View Rejected Applicant Details */
+const viewRejectedApplicantDetails = (applicantID) => {
+    GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }`, {
+        success: result => {
+            
+            // Set Applicant Full Name
+            setContent('#applicantFullName', formatName('F M. L, S', {
+                firstName: result.first_name,
+                middleName: result.middle_name,
+                lastName: result.last_name,
+                suffixName: result.suffixName
+            }));
+
+            // Set Applicant Contact Number
+            setContent("#applicantContactNumber", result.contact_number);
+
+            // Set Applicant Email
+            setContent("#applicantEmail", result.email);
+
+            // Set Resume
+            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
+
+            // Set Applicant Date Applied
+            setContent("#applicantDateApplied", `
+                <div>${ formatDateTime(result.created_at, "Full Date") }</div>
+                <div>${ formatDateTime(result.created_at, "Time") }</div>
+                <div class="small text-secondary">${  fromNow(result.created_at) }</div>
+            `);
+
+            // Set Evaluated By
+            setContent('#applicantEvaluatedBy', () => {
+                const evaluatedBy = result.evaluation_done_by;
+
+                const evaluatorName = formatName('F M. L, S', {
+                    firstName: evaluatedBy.first_name,
+                    middleName: evaluatedBy.middle_name,
+                    lastName: evaluatedBy.last_name,
+                    suffixName: evaluatedBy.suffix_name
+                });
+
+                const evaluatorPosition = evaluatedBy.position;
+
+                return `
+                    <div>${ evaluatorName }</div>
+                    <div class="small text-secondary">${ evaluatorPosition.name }, ${ evaluatorPosition.department.name }</div>
+                `
+            });
+
+            // Set Evauated At
+            setContent('#applicantEvaluatedAt', () => {
+                const evaluatedAt = result.evaluated_at;
+
+                return `
+                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
+                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
+                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
+                `
+            });
+
+            // Set Screening Done By
+            setContent('#applicantScreenedBy', () => {
+                const screenedBy = result.screening_done_by;
+
+                const screenedByFullName = formatName('F M. L, S', {
+                    firstName: screenedBy.first_name,
+                    middleName: screenedBy.middle_name,
+                    lastName: screenedBy.last_name,
+                    suffixName: screenedBy.suffix_name
+                });
+
+                const screenedByPosition = screenedBy.position;
+
+                return `
+                    <div>${ screenedByFullName }</div>
+                    <div class="small text-secondary">${ screenedByPosition.name }, ${ screenedByPosition.department.name }</div>
+                `
+            });
+
+            // Set Screening Done At
+            setContent('#applicantScreenedAt', () => {
+                const evaluatedAt = result.screened_at;
+
+                return `
+                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
+                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
+                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
+                `
+            });
+
+            // Show Applicants Details Modal
+            showModal('#applicantDetailsModal');
+        },
+        error: () => toastr.error('There was an error in getting rejected applicants details')
+    })
+}
+
 
 /**
  * ==============================================================================
@@ -564,6 +756,8 @@ initDataTable('#applicantsForInterviewDT', {
 const getInterviewSchedulesPerJobPost = () => {
     GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }/interview-schedules`, {
         success: result => {
+            console.log(result);
+
             if(result) {
                 let schedules = '';
                 if(result.length > 0) {
@@ -587,6 +781,11 @@ const getInterviewSchedulesPerJobPost = () => {
                                 }
                             } else if(isAfterToday(startSession)) {
                                 return `
+                                    <div class="small text-secondary">${ fromNow(startSession) }</div>
+                                `
+                            } else {
+                                return `
+                                    <div class="badge badge-danger mr-2">Ended</div>
                                     <div class="small text-secondary">${ fromNow(startSession) }</div>
                                 `
                             }
@@ -1097,6 +1296,7 @@ const viewInterviewedApplicantDetails = (applicantID) => {
     })
 }
 
+/** If reject interview or hide applicant has been selected */
 $('#rejectFromInterview, #hiredApplicant').on('change', () => {
     const requestStatus = $(`input[name="applicantStatus"]:checked`).val();
     if(requestStatus == "Hired") hideElement("#remarksField");
@@ -1104,6 +1304,7 @@ $('#rejectFromInterview, #hiredApplicant').on('change', () => {
     ifSelectorExist('#submitBtn', () => enableElement('#submitBtn'));
 });
 
+/** On Applicant Details Modal has been hidden */
 onHideModal('#applicantDetailsModal', () => {
     resetForm('#applicantHiringForm');
     hideElement('#remarksField');
@@ -1257,7 +1458,7 @@ initDataTable('#hiredApplicantsDT', {
                             <div 
                                 class="dropdown-item d-flex" 
                                 role="button" 
-                                onclick="viewApplicantDetails('${ data.applicant_id }')"
+                                onclick="viewHiredApplicantDetails('${ data.applicant_id }')"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <div>View Details</div>
@@ -1351,7 +1552,7 @@ initDataTable('#rejectedApplicantsDT', {
                             <div 
                                 class="dropdown-item d-flex" 
                                 role="button" 
-                                onclick="viewApplicantDetails('${ data.applicant_id }')"
+                                onclick="viewRejectedApplicantDetails('${ data.applicant_id }')"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <div>View Details</div>

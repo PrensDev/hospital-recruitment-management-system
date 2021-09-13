@@ -1,0 +1,69 @@
+<!-- Applicant Details Modal -->
+<div class="modal" id="applicantDetailsModal">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="applicantScreeningForm">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-file-alt text-secondary mr-1"></i>
+                    <span>Applicant Details</span>
+                </div>
+            </div>
+            <div class="modal-body">
+
+                <!-- Applicant Details -->
+                <table class="table border-bottom">
+                    <tr>
+                        <th>Applicant Name</th>
+                        <td id="applicantFullName"></td>
+                    </tr>
+                    <tr>
+                        <th>Contact Number</th>
+                        <td id="applicantContactNumber"></td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td id="applicantEmail"></td>
+                    </tr>
+                    <tr>
+                        <th>Resume</th>
+                        <td>
+                            <a 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                class="btn btn-sm btn-secondary"
+                                id="viewResumeBtn"
+                            >
+                                <span>View Resume</span>
+                                <i class="fas fa-file-alt ml-1"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Date Applied</th>
+                        <td id="applicantDateApplied"></td>
+                    </tr>
+                    <tr>
+                        <th>Evaluated By</th>
+                        <td id="applicantEvaluatedBy"></td>
+                    </tr>
+                    <tr>
+                        <th>Evaluated At</th>
+                        <td id="applicantEvaluatedAt"></td>
+                    </tr>
+                    <tr>
+                        <th>Screening Done By</th>
+                        <td id="applicantScreenedBy"></td>
+                    </tr>
+                    <tr>
+                        <th>Screening Done At</th>
+                        <td id="applicantScreenedAt"></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>

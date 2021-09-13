@@ -151,12 +151,77 @@ initDataTable('#jobPostsDT', {
 });
 
 
+/**
+ * ==============================================================================
+ * VIEW JOB POST DETAILS
+ * ==============================================================================
+ */
+
 /** View Job Post Details */
 const viewJobPostDetails = (jobPostID) => {
-    alert(jobPostID)
+    GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }`, {
+        success: result => {
+            const manpowerRequest = result.manpower_request;
+
+            // Set Job Post Status
+            const expiresAt = result.expiration_date;
+
+            if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
+                setContent('#jobPostStatus', dtBadge('info', 'On Going'))
+            else if(isBeforeToday(expiresAt))
+                setContent('#jobPostStatus', dtBadge('danger', 'Ended'))
+            else
+                setContent('#jobPostStatus', dtBadge('warning', 'Last Day Today'))
+
+            // Set Posted At
+            setContent('#postedAt', `Posted ${ formatDateTime(result.created_at, 'Date') }`);
+
+            // Set Vacant Position
+            setContent('#vacantPosition', manpowerRequest.vacant_position.name);
+
+            // Set Employment Type
+            setContent('#employmentType', manpowerRequest.employment_type);
+
+            // Set Salary Range
+            const minSalary = manpowerRequest.min_monthly_salary;
+            const maxSalary = manpowerRequest.max_monthly_salary;
+
+            if((isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary)) || !result.salary_is_visible) {
+                hideElement('#salaryRangeDisplay');
+                setContent('#salaryRange', '');
+            } else {
+                showElement('#salaryRangeDisplay');
+                setContent('#salaryRange', `${ formatCurrency(minSalary) } - ${ formatCurrency(maxSalary) }`);
+            }
+
+            // Set Open Until
+            const openUntil = result.expiration_date;
+            if(isEmptyOrNull(openUntil)) {
+                hideElement('#openUntilDisplay');
+                setContent('#openUntil', '');
+            } else {
+                showElement('#openUntilDisplay');
+                setContent('#openUntil', formatDateTime(openUntil, "Full Date"))
+            }
+
+            // Set Job Description
+            setContent('#jobDescription', result.content);
+
+            /** Show View Job Post Modal */
+            showModal('#viewJobPostModal');
+        },
+        error: () => toastr.error('There was an error in getting job post details')
+    })
 }
 
-/** View Manpower Reuqest Details */
+
+/**
+ * ==============================================================================
+ * VIEW MANPOWER REQUEST DETAILS
+ * ==============================================================================
+ */
+
+/** View Manpower Request Details */
 const viewManpowerRequestDetails = (requisitionID) => {
     GET_ajax(`${ H_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {

@@ -745,7 +745,7 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
                 // Show Modal
                 showModal('#generalOnboardingTaskDetailsModal');
             }
-         },
+        },
         error: () => toastr.error('There was an error in getting onboarding task details')
     });
 }
