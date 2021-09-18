@@ -26,13 +26,13 @@ OnboardingEmployeeTask  = models.OnboardingEmployeeTask
 
 # Router Instance
 router = APIRouter(
-    prefix = "/api/department-head",
-    tags = ["Department Head API"]
+    prefix = "/api/department-manager",
+    tags = ["Department Manager API"]
 )
 
 
 # Priviledge User
-AUTHORIZED_USER = "Department Head"
+AUTHORIZED_USER = "Department Manager"
 
 
 # User Information
@@ -115,23 +115,29 @@ async def requisition_analytics(
     try:
         check_priviledge(user_data, AUTHORIZED_USER)
         query = db.query(Requisition)
+
         total = query.filter(Requisition.requested_by == user_data.user_id).count()
+        
         for_review_count = query.filter(
             Requisition.request_status == "For Review",
             Requisition.requested_by == user_data.user_id
         ).count()
+        
         approved = query.filter(
             Requisition.request_status == "Approved",
             Requisition.requested_by == user_data.user_id
         ).count()
+        
         rejected = query.filter(
             Requisition.request_status == "Rejected",
             Requisition.requested_by == user_data.user_id
         ).count()
+        
         completed = query.filter(
             Requisition.request_status == "Completed",
             Requisition.requested_by == user_data.user_id
         ).count()
+        
         return {
             "total": total,
             "for_review": for_review_count,

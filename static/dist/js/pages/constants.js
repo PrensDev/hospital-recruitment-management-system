@@ -15,13 +15,15 @@ const URL_RESUME_FILES = `${ URL_WEB_FILES }resumes/`;
 
 
 // User Web Routes
-const D_WEB_ROUTE = `${ BASE_URL_WEB }d/`;
-const H_WEB_ROUTE = `${ BASE_URL_WEB }h/`;
-const R_WEB_ROUTE = `${ BASE_URL_WEB }r/`;
+const DH_WEB_ROUTE = `${ BASE_URL_WEB }dh/`;
+const DM_WEB_ROUTE = `${ BASE_URL_WEB }dm/`;
+const H_WEB_ROUTE  = `${ BASE_URL_WEB }h/`;
+const R_WEB_ROUTE  = `${ BASE_URL_WEB }r/`;
 
 
 // User API Routes
-const D_API_ROUTE    = `${ BASE_URL_API }department-head/`;
+const DH_API_ROUTE   = `${ BASE_URL_API }department-head/`;
+const DM_API_ROUTE   = `${ BASE_URL_API }department-manager/`;
 const H_API_ROUTE    = `${ BASE_URL_API }hiring-manager/`;
 const R_API_ROUTE    = `${ BASE_URL_API }recruiter/`;
 const API_AUTH_ROUTE = `${ BASE_URL_API }auth/`;

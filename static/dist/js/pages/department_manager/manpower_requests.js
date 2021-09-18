@@ -8,7 +8,7 @@
 ifSelectorExist('#addManpowerRequestForm', () => {
     
     /** Vacant Position For Add Select2 */
-    GET_ajax(`${ D_API_ROUTE }department/positions`, {
+    GET_ajax(`${ DM_API_ROUTE }department/positions`, {
         success: result => {
             const positions = result.department_positions;
 
@@ -168,13 +168,13 @@ onClick('#confirmAddManpowerRequestBtn', () => {
         deadline: isChecked('#setDeadline') ? formatDateTime(get("deadline")) : null
     }
 
-    POST_ajax(`${ D_API_ROUTE }requisitions`, data, {
+    POST_ajax(`${ DM_API_ROUTE }requisitions`, data, {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({
                     theme: 'success', 
                     message: 'A new request has been submitted', 
-                    redirectURL: `${ D_WEB_ROUTE }manpower-requests`
+                    redirectURL: `${ DM_WEB_ROUTE }manpower-requests`
                 });
             }
         },
@@ -195,7 +195,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
 /** ManPower Requests DataTable */
 initDataTable('#manpowerRequestDT', {
     // debugMode: true,
-    url: `${ D_API_ROUTE }requisitions`,
+    url: `${ DM_API_ROUTE }requisitions`,
     columns: [
 
         // Created At (For Default Sorting)
@@ -284,7 +284,7 @@ initDataTable('#manpowerRequestDT', {
                 const editBtn = `
                     <a 
                         class="dropdown-item d-flex"
-                        href="${ D_WEB_ROUTE }edit-manpower-request/${ data.requisition_id }"
+                        href="${ DM_WEB_ROUTE }edit-manpower-request/${ data.requisition_id }"
                     >
                         <div style="width: 2rem"><i class="fas fa-pen mr-1"></i></div>
                         <span>Edit</span>
@@ -350,7 +350,7 @@ initDataTable('#manpowerRequestDT', {
  */
 
 /** Manpower Requests Analytics */
-const manpowerRequestAnalytics = () => GET_ajax(`${ D_API_ROUTE }requisitions/analytics`, {
+const manpowerRequestAnalytics = () => GET_ajax(`${ DM_API_ROUTE }requisitions/analytics`, {
     success: result => {
         
         // Set Total Mapower Requests Count
@@ -380,7 +380,7 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
 
 /** View Manpower Request */
 const viewManpowerRequest = (requisitionID) => {
-    GET_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
+    GET_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
             // console.log(result);
 
@@ -481,7 +481,7 @@ const viewManpowerRequest = (requisitionID) => {
             var modalPositiveBtn;
             if(result.request_status === 'For Review') {
                 modalPositiveBtn = `
-                    <a href="${ D_WEB_ROUTE }edit-manpower-request/${ result.requisition_id }" class="btn btn-info">
+                    <a href="${ DM_WEB_ROUTE }edit-manpower-request/${ result.requisition_id }" class="btn btn-info">
                         <span>Edit</span>
                         <i class="fas fa-edit ml-1"></i>
                     </a>
@@ -512,7 +512,7 @@ const viewManpowerRequest = (requisitionID) => {
 ifSelectorExist('#editManpowerRequestForm', () => {
 
     /** Vacant Position For Add Select2 */
-    GET_ajax(`${ D_API_ROUTE }department/positions`, {
+    GET_ajax(`${ DM_API_ROUTE }department/positions`, {
         success: result => {
             // console.log(result);
 
@@ -564,7 +564,7 @@ ifSelectorExist('#editManpowerRequestForm', () => {
     const requisitionID = window.location.pathname.split('/')[3];
 
     /** Get Manpower Request Information */
-    GET_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
+    GET_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
             // console.log(result);
 
@@ -738,13 +738,13 @@ onClick('#confirmEditManpowerRequestBtn', () => {
 
     const requisitionID = get('requisitionID');
 
-    PUT_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, data, {
+    PUT_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, data, {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({
                     theme: 'success', 
                     message: 'A new request has been updated', 
-                    redirectURL: `${ D_WEB_ROUTE }manpower-requests`
+                    redirectURL: `${ DM_WEB_ROUTE }manpower-requests`
                 });
             }
         },
@@ -780,7 +780,7 @@ validateForm('#cancelManpowerRequestForm', {
 
         const requisitionID = formData.get('requisitionID');
 
-        DELETE_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
+        DELETE_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
             success: result => {
                 if(result) {
                     hideModal('#cancelManpowerRequestModal');
@@ -820,7 +820,7 @@ validateForm('#deleteManpowerRequestForm', {
     submitHandler: () => {
         const formData = generateFormData('#deleteManpowerRequestForm');
         const requisitionID = formData.get('requisitionID');
-        DELETE_ajax(`${ D_API_ROUTE }requisitions/${ requisitionID }`, {
+        DELETE_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
             success: result => {
                 if(result) {
                     hideModal('#deleteManpowerRequestModal');
@@ -849,7 +849,7 @@ validateForm('#deleteManpowerRequestForm', {
 /** Hired Applicants DataTable */
 initDataTable('#hiredApplicantsDT', {
     // debugMode: true,
-    url: `${ D_API_ROUTE }requisitions/hired-applicants`,
+    url: `${ DM_API_ROUTE }requisitions/hired-applicants`,
     columns: [
 
         // Created at (Hidden by default)
@@ -898,7 +898,7 @@ initDataTable('#hiredApplicantsDT', {
                         <div class="dropdown-menu dropdown-menu-right">
                             <a 
                                 class="dropdown-item d-flex"
-                                href="${ D_WEB_ROUTE }manpower-requests/${ requisitionID }/hired-applicants"
+                                href="${ DM_WEB_ROUTE }manpower-requests/${ requisitionID }/hired-applicants"
                             >
                                 <div style="width: 2rem"><i class="fas fa-users mr-1"></i></div>
                                 <span>View applicants</span>

@@ -15,8 +15,8 @@ Requisition = models.Requisition
 
 # Router
 router = APIRouter(
-    prefix = "/d",
-    tags = ["Department Head Web Routes"]
+    prefix = "/dm",
+    tags = ["Department Manager Web Routes"]
 )
 
 
@@ -25,8 +25,8 @@ templates = Jinja2Templates(directory = "templates")
 
 
 # Constants
-TEMPLATES_PATH = "/pages/department_head/"
-AUTHORIZED_USER = "Department Head"
+TEMPLATES_PATH = "/pages/department_manager/"
+AUTHORIZED_USER = "Department Manager"
 
 
 # ===========================================================
@@ -41,7 +41,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
             "request": req,
             "page_title": user_data['user_type'],
-            "sub_title": "Department Head manages all employees assigned in each departments",
+            "sub_title": "Manage your tasks and activities here using this dashboard",
             "active_navlink": "Dashboard"
         })
     else:

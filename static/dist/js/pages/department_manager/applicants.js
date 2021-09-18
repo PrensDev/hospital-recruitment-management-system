@@ -17,7 +17,7 @@ const requisitionID = window.location.pathname.split("/")[3];
 /** Initialize Hired Applicants DataTable */
 initDataTable('#hiredApplicantsDT', {
     // debugMode: true,
-    url: `${ D_API_ROUTE }requisitions/hired-applicants/${ requisitionID }`,
+    url: `${ DM_API_ROUTE }requisitions/hired-applicants/${ requisitionID }`,
     columns: [
 
         // Updated at (Hidden for default sorting)
@@ -77,7 +77,7 @@ initDataTable('#hiredApplicantsDT', {
                         ? `
                             <a 
                                 class="dropdown-item d-flex"
-                                href="${ D_WEB_ROUTE }add-onboarding-employee/${ applicantID }"
+                                href="${ DM_WEB_ROUTE }add-onboarding-employee/${ applicantID }"
                             >
                                 <div style="width: 2rem"><i class="fas fa-user-tie mr-1"></i></div>
                                 <span>Onboard this applicant</span>

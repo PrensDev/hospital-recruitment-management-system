@@ -1,6 +1,5 @@
 # Import Packages
 from database import get_db
-from routers.api.deptHead_apiRoute import AUTHORIZED_USER
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates

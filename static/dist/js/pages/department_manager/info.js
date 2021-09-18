@@ -6,7 +6,7 @@
 
 
 /** Get User Information */
-GET_ajax(`${ D_API_ROUTE }info`, {
+GET_ajax(`${ DM_API_ROUTE }info`, {
     success: result => {
         setContent('#userFullName', formatName("F M. L, S", {
             firstName: result.first_name,

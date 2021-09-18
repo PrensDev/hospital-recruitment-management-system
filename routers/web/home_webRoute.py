@@ -47,7 +47,9 @@ async def index(req: Request):
 @router.get("/redirect")
 async def redirect(req: Request, user_data: dict = Depends(get_token)):
     if(user_data["user_type"] == "Department Head"):
-        return RedirectResponse("/d")
+        return RedirectResponse("/dh")
+    elif(user_data["user_type"] == "Department Manager"):
+        return RedirectResponse("/dm")
     elif(user_data["user_type"] == "Hiring Manager"):
         return RedirectResponse("/h")
     elif(user_data["user_type"] == "Recruiter"):

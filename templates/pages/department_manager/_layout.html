@@ -2,12 +2,12 @@
 
 
 {% block topbar %}
-    {% include "pages/department_head/components/topbar.html" %}
+    {% include "pages/department_manager/components/topbar.html" %}
 {% endblock %}
 
 
 {% block sidebar %}
-    {% include "pages/department_head/components/sidebar.html" %}
+    {% include "pages/department_manager/components/sidebar.html" %}
 {% endblock %}
 
 
@@ -17,7 +17,7 @@
 
 
 {% block scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/department_head/info.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/pages/department_manager/info.js')}}"></script>
 
     {% block page_scripts %}{% endblock %}
 {% endblock %}

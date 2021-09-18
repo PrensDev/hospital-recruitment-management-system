@@ -60,7 +60,7 @@ const applicantID = window.location.pathname.split('/')[3];
 ifSelectorExist('#addOnboardingEmployeeForm', () => {
 
     // Get applicant information
-    GET_ajax(`${ D_API_ROUTE }hired-applicants/${ applicantID }`, {
+    GET_ajax(`${ DM_API_ROUTE }hired-applicants/${ applicantID }`, {
         success: result => {
 
             const applicant = result.applicant;
@@ -94,7 +94,7 @@ ifSelectorExist('#addOnboardingEmployeeForm', () => {
     });
 
     // Get general onboarding tasks
-    GET_ajax(`${ D_API_ROUTE }onboarding-tasks/general`, {
+    GET_ajax(`${ DM_API_ROUTE }onboarding-tasks/general`, {
         success: result => {
             $('#generalOnboardingTasksDTBody').empty();
 
@@ -444,7 +444,7 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
     }
 
     // Add onboarding employee
-    POST_ajax(`${ D_API_ROUTE }onboarding-employees`, onboardingEmployeeData, {
+    POST_ajax(`${ DM_API_ROUTE }onboarding-employees`, onboardingEmployeeData, {
         success: result => {
             if(result) {
                 const onboardingEmployeeID = result.data.onboarding_employee_id;
@@ -458,7 +458,7 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
                         end_at: get(`endAt${ t.id }`)
                     }
     
-                    POST_ajax(`${ D_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, generalTasksData, {
+                    POST_ajax(`${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, generalTasksData, {
                         success: () => {},
                         error: () => {
                             toastr.error('There was an error in creating onbaording tasks to onboarding employee')
@@ -474,7 +474,7 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
                         task_type: 'Added'
                     }
                     
-                    POST_ajax(`${ D_API_ROUTE }onboarding-tasks`, addedTasksData, {
+                    POST_ajax(`${ DM_API_ROUTE }onboarding-tasks`, addedTasksData, {
                         success: result2 => {
                             const onboardingTaskID = result2.data.onboarding_task_id;
 
@@ -485,7 +485,7 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
                                 end_at: get(`endAt${ t.id }`)
                             }
 
-                            POST_ajax(`${ D_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, addedOnboardingTaskData, {
+                            POST_ajax(`${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, addedOnboardingTaskData, {
                                 success: () => {},
                                 error: () => {
                                     toastr.error('There was an error in creating onbaording tasks to onboarding employee')
@@ -499,7 +499,7 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
                 });
 
                 // Update applicant status
-                PUT_ajax(`${ D_API_ROUTE }applicants/${ applicantID }`, {status: 'Onboarding'}, {
+                PUT_ajax(`${ DM_API_ROUTE }applicants/${ applicantID }`, {status: 'Onboarding'}, {
                     success: () => {},
                     error: () => toastr.error('There was an error in updating applicant status')
                 });
@@ -508,7 +508,7 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
                 setSessionedAlertAndRedirect({
                     theme: 'success',
                     message: 'A new onboarding employee has been added',
-                    redirectURL: `${ D_WEB_ROUTE }onboarding-employees`
+                    redirectURL: `${ DM_WEB_ROUTE }onboarding-employees`
                 });
             }
         },
@@ -568,7 +568,7 @@ const addOnboardingTask = () => {
         task_type: 'General'
     }
 
-    POST_ajax(`${ D_API_ROUTE }onboarding-tasks`, data, {
+    POST_ajax(`${ DM_API_ROUTE }onboarding-tasks`, data, {
         success: result => {
             if(result) {
 
@@ -617,7 +617,7 @@ const addOnboardingTask = () => {
 /** General Tasks DataTable */
 initDataTable('#generalTasksDT', {
     // debugMode: true,
-    url: `${ D_API_ROUTE }onboarding-tasks/general`,
+    url: `${ DM_API_ROUTE }onboarding-tasks/general`,
     columns: [
 
         // Created at (Hidden for default sorting)
@@ -684,7 +684,7 @@ initDataTable('#generalTasksDT', {
 
 /** View Onaborading Task Details */
 const viewOnboardingTaskDetails = (onboardingTaskID) => {
-    GET_ajax(`${ D_API_ROUTE }onboarding-tasks/${ onboardingTaskID }`, {
+    GET_ajax(`${ DM_API_ROUTE }onboarding-tasks/${ onboardingTaskID }`, {
         success: result => {
             if(result) {
                 
@@ -759,7 +759,7 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
 
 /** Initialize Onboarding Employees DataTable */
 initDataTable('#onboardingEmployeesDT', {
-    url: `${ D_API_ROUTE }onboarding-employees`,
+    url: `${ DM_API_ROUTE }onboarding-employees`,
     columns: [
 
         // Created At (Hidden By Default)
@@ -840,7 +840,7 @@ initDataTable('#onboardingEmployeesDT', {
 
                         <div class="dropdown-menu dropdown-menu-right">
                             <a 
-                                href="${ D_WEB_ROUTE }onboarding-employees/${ data.onboarding_employee_id }/onboarding-tasks"
+                                href="${ DM_WEB_ROUTE }onboarding-employees/${ data.onboarding_employee_id }/onboarding-tasks"
                                 class="dropdown-item d-flex"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
@@ -860,7 +860,7 @@ const onboardingEmployeeID = window.location.pathname.split('/')[3];
 
 /** Initialize Onboarding Employee Tasks DataTable */
 initDataTable('#onboardingEmployeeTasksDT', {
-    url: `${ D_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`,
+    url: `${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`,
     columns: [
 
         // Start at (Hidden for default sorting)
@@ -970,7 +970,7 @@ initDataTable('#onboardingEmployeeTasksDT', {
 
 /** Get Onboarding Employee Details */
 const getOnboardingEmployeeDetails = () => {
-    GET_ajax(`${ D_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }`, {
+    GET_ajax(`${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }`, {
         success: result => {
 
             // Set Employee Full Name
@@ -1063,7 +1063,7 @@ const markTaskAsCompleted = () => {
 
     const data = {status: 'Completed'}
 
-    PUT_ajax(`${ D_API_ROUTE }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, data, {
+    PUT_ajax(`${ DM_API_ROUTE }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, data, {
         success: result => {
 
             // Hide Modal

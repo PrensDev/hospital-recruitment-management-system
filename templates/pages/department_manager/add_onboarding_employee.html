@@ -1,4 +1,4 @@
-{% extends "pages/department_head/_layout.html" %}
+{% extends "pages/department_manager/_layout.html" %}
 
 
 {% block content %}
@@ -317,10 +317,10 @@
 
 
 {% block page_modals %}
-    {% include "pages/department_head/modals/add_onboarding_employee_modal.html" %}
+    {% include "pages/department_manager/modals/add_onboarding_employee_modal.html" %}
 {% endblock %}
 
 
 {% block page_scripts %}
-    <script src="{{ url_for('static', path='/dist/js/pages/department_head/onboarding.js') }}"></script>   
+    <script src="{{ url_for('static', path='/dist/js/pages/department_manager/onboarding.js') }}"></script>   
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "pages/department_head/_layout.html" %} 
+{% extends "pages/department_manager/_layout.html" %} 
 
 
 {% block content %}
@@ -6,15 +6,13 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
             
-                <!-- Title -->
-                <div class="col-sm-6">
-                    <h1>{{ page_title }}</h1>
-                    <p class="text-muted">{{ sub_title }}</p>
-                </div>
-    
+            <!-- Title -->
+            <div class="col-sm-6">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">{{ sub_title }}</p>
             </div>
+    
         </div>
     </section>
 
@@ -59,5 +57,5 @@
 
 
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/department_head/applicants.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/pages/department_manager/applicants.js')}}"></script>
 {% endblock %}

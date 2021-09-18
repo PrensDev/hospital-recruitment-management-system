@@ -1,11 +1,10 @@
 # Import Packages
-from sqlalchemy.orm.relationships import foreign
 from sqlalchemy.sql.expression import null
 from database import Base
 from sqlalchemy import text
 from sqlalchemy.sql.schema import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import String, Integer, DateTime, Float, Text, Boolean, Date, Time
-from sqlalchemy.orm import backref, relation, relationship
+from sqlalchemy.orm import relationship
 
 
 # User Model
