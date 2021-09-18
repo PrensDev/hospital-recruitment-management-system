@@ -675,6 +675,8 @@ validateForm('#addInterviewQuestionForm', {
 
         hideModal('#addInterviewQuestionModal');
 
+        toastr.success('A new interview question has been added');
+
         return false;
     }
 });
@@ -781,10 +783,33 @@ validateForm('#confirmRemoveAddedQuestionForm', {
         }
     },
     submitHandler: () => {
+
+        // Get added input name from the form
         const inputName = generateFormData('#confirmRemoveAddedQuestionForm').get('addedInputName');
 
-        $(`row${ inputName }`).remove();
+        // Remove Row
+        $(`#row${ inputName }`).remove();
 
+        // Remove Added Question from array
+        addedQuestions = $.grep(addedQuestions, e => { return e.name != inputName });
+
+        // Set empty body if added questions array is empty
+        if(addedQuestions.length == 0) {
+            setContent('#addedInterviewQuestionsDTBody', `
+                <tr>
+                    <td colspan="2">
+                        <div class="text-center py-5">
+                            <h5 class="text-secondary">No additional question yet</h5>
+                        </div>
+                    </td>
+                </tr>
+            `)
+        }
+
+        // Hide Confirm Remove Added Question Modal
+        hideModal('#confirmRemoveAddedQuestionModal');
+
+        // Show info alert
         toastr.info('An added interview question has been removed')
 
         return false;
