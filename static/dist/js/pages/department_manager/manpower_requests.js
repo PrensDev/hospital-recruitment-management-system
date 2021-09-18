@@ -257,8 +257,9 @@ initDataTable('#manpowerRequestDT', {
             render: data => {
                 const createdAt = data.created_at
                 return `
-                    <div>${ formatDateTime(createdAt, "DateTime") }<div>
-                    <div class="small text-secondary">${ fromNow(createdAt) }<div>
+                    <div>${ formatDateTime(createdAt, "Date") }</div>
+                    <div>${ formatDateTime(createdAt, "Time") }</div>
+                    <div class="small text-secondary">${ fromNow(createdAt) }</div>
                 `
             }
         },
@@ -286,7 +287,7 @@ initDataTable('#manpowerRequestDT', {
                         class="dropdown-item d-flex"
                         href="${ DM_WEB_ROUTE }edit-manpower-request/${ data.requisition_id }"
                     >
-                        <div style="width: 2rem"><i class="fas fa-pen mr-1"></i></div>
+                        <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
                         <span>Edit</span>
                     </a>
                 `
@@ -326,7 +327,7 @@ initDataTable('#manpowerRequestDT', {
                                 onclick="viewManpowerRequest('${ requisitionID }')"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <span>View</span>
+                                <span>View Details</span>
                             </div>
 
                             ${ requestStatus === "For Review" ? editBtn + cancelBtn : "" }

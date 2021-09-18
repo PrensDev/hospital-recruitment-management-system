@@ -71,7 +71,7 @@
 <!-- Confirm Remove General Question Modal -->
 <div class="modal" id="confirmRemoveGeneralQuestionModal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
+        <div class="modal-content" id="confirmRemoveGeneralQuestionForm">
 
             <div class="modal-header">
                 <h4 class="modal-title">
@@ -81,6 +81,7 @@
             </div>
 
             <div class="modal-body">
+                <input type="hidden" id="generalInputName" name="generalInputName">
                 <p>Are you sure you want to remove this general interview question?</p>
             </div>
             
@@ -90,7 +91,7 @@
                     class="btn btn-default" 
                     data-dismiss="modal"
                 >Cancel</button>
-                <button type="button" class="btn btn-danger" id="saveScoresheetBtn">
+                <button type="submit" class="btn btn-danger" id="saveScoresheetBtn">
                     <span>Yes, remove it!</span>
                     <i class="fas fa-trash-alt ml-1"></i>
                 </button>
@@ -102,7 +103,7 @@
 <!-- Confirm Remove Added Question Modal -->
 <div class="modal" id="confirmRemoveAddedQuestionModal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
+        <form class="modal-content" id="confirmRemoveAddedQuestionForm">
 
             <div class="modal-header">
                 <h4 class="modal-title">
@@ -112,6 +113,7 @@
             </div>
 
             <div class="modal-body">
+                <input type="hidden" id="addedInputName" name="addedInputName">
                 <p>Are you sure you want to remove this added interview question?</p>
             </div>
             
@@ -121,11 +123,11 @@
                     class="btn btn-default" 
                     data-dismiss="modal"
                 >Cancel</button>
-                <button type="button" class="btn btn-danger" id="saveScoresheetBtn">
+                <button type="submit" class="btn btn-danger" id="saveScoresheetBtn">
                     <span>Yes, remove it!</span>
                     <i class="fas fa-trash-alt ml-1"></i>
                 </button>
             </div>
-        </div>
+        </form>
     </div>
 </div>

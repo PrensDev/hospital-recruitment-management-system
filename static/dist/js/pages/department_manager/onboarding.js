@@ -377,6 +377,8 @@ validateForm('#addOnboardingTaskForm', {
 
         hideModal('#addOnboardingTaskModal');
 
+        toastr.success('Additional onboarding task has been added');
+
         return false;
     }
 });
@@ -402,7 +404,7 @@ validateForm('#confirmRemoveAddedTaskForm', {
     },
     messages: {
         addedTaskID: {
-            required: 'These filed must have value'
+            required: 'These field must have value'
         }
     },
     submitHandler: () => {

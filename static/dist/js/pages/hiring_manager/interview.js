@@ -616,7 +616,7 @@ validateForm('#addInterviewQuestionForm', {
         const inputName = `${String.fromCharCode(97+Math.floor(Math.random() * 26))}${Math.floor(Math.random() * 26)}${Date.now()}`;
         
         $('#addedInterviewQuestionsDTBody').append(`
-            <tr>
+            <tr id="row${ inputName }">
                 <td>
                     <p>${ question }</p>
                 </td>
@@ -643,7 +643,7 @@ validateForm('#addInterviewQuestionForm', {
                             <div 
                                 class="dropdown-item d-flex"
                                 role="button"
-                                onclick="removeAddedQuestion('${ 'test' }')"
+                                onclick="removeAddedQuestion('${ inputName }')"
                             >
                                 <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
                                 <span>Remove</span>
@@ -758,10 +758,38 @@ onClick('#saveScoresheetBtn', () => {
 /** Remove General Question */
 const removeGeneralQuestion = () => {
     showModal('#confirmRemoveGeneralQuestionModal');
+    setValue('#', )
 }
 
 
 /** Remove Added Question */
-const removeAddedQuestion = () => {
+const removeAddedQuestion = (inputName) => {
     showModal('#confirmRemoveAddedQuestionModal');
+    setValue('#addedInputName', inputName);
 }
+
+/** Validate Confirm Added Question Form */
+validateForm('#confirmRemoveAddedQuestionForm', {
+    rules: {
+        addedInputName: {
+            required: true
+        }
+    },
+    messages: {
+        addedInputName: {
+            required: 'This field must have value'
+        }
+    },
+    submitHandler: () => {
+        const inputName = generateFormData('#confirmRemoveAddedQuestionForm').get('addedInputName');
+
+        $(`row${ inputName }`).remove();
+
+        toastr.info('An added interview question has been removed')
+
+        return false;
+    }
+})
+
+/** On Confirm Remove Added Question Modal is going to be hidden */
+onHideModal('#confirmRemoveAddedQuestionModal', () => resetForm('#confirmRemoveAddedQuestionForm'));
