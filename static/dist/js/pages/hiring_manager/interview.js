@@ -476,19 +476,22 @@ ifSelectorExist('#applicantDetails', () => {
                 suffixName: applicant.suffixName
             }));
 
-            // Applying for
+            // Set Applying for
             setContent('#applyingFor', applicant.applied_job.manpower_request.vacant_position.name);
 
-            // Email
+            // Set Email
             setContent('#applicantEmail', applicant.email);
 
-            // Contact Number
+            // Set Contact Number
             setContent('#applicantContactNumber', applicant.contact_number);
 
-            // Applied Date
+            // Set Applied Date
             setContent('#appliedDate', formatDateTime(applicant.created_at, 'Full Date'));
             setContent('#appliedTime', formatDateTime(applicant.created_at, 'Time'));
             setContent('#appliedAtHumanized', fromNow(applicant.created_at));
+
+            // Set Resume
+            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ applicant.resume }`)
 
             // Components to loaded state
             $('#applicantDetailsLoader').remove();

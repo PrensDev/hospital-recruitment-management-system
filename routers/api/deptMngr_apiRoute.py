@@ -447,8 +447,10 @@ async def get_one_onboarding_task(
 # ONBOARDING EMPLOYEE
 # ====================================================================
 
+
 # Onboarding employee not found
 ONBOARDING_EMPLOYEE_NOT_FOUND = {"message": "Onboarding employee not found"}
+
 
 # Add onboarding employees
 @router.post("/onboarding-employees")
@@ -489,6 +491,7 @@ async def get_all_onboarding_employees(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
+        check_priviledge(user_data, AUTHORIZED_USER)
         user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
         if not user_info:
             raise HTTPException(status_code=404, detail="User does not exist")
@@ -504,6 +507,34 @@ async def get_all_onboarding_employees(
                     raise HTTPException(status_code=404, detail="Deparment does not exist")
                 else:
                     return db.query(OnboardingEmployee).join(Position).filter(Position.position_id == OnboardingEmployee.position_id).join(Department).filter(Department.department_id == user_department.department_id).all()
+    except Exception as e:
+        print(e)
+
+
+# Onboarding Employees Analytics
+@router.get("/onboarding-employees/analytics")
+async def onboarding_employees_analytics(
+    db: Session = Depends(get_db),
+    user_data: db_schemas.User = Depends(get_user)
+):
+    try:
+        check_priviledge(user_data, AUTHORIZED_USER)
+        user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+        if not user_info:
+            raise HTTPException(status_code=404, detail="User does not exist")
+        else:
+            position_id = user_info.position_id
+            user_position = db.query(Position).filter(Position.position_id == position_id).first()
+            if not user_position:
+                raise HTTPException(status_code=404, detail="Position does not exist")
+            else:
+                department_id = user_position.department_id
+                user_department = db.query(Department).filter(Department.department_id == department_id).first()
+                if not user_department:
+                    raise HTTPException(status_code=404, detail="Deparment does not exist")
+                else:
+                    total = db.query(OnboardingEmployee).join(Position).filter(Position.position_id == OnboardingEmployee.position_id).join(Department).filter(Department.department_id == user_department.department_id).count()
+                    return {"total": total}
     except Exception as e:
         print(e)
 

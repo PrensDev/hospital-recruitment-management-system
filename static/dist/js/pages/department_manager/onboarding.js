@@ -624,7 +624,15 @@ initDataTable('#generalTasksDT', {
         { data: 'created_at', visible: false },
 
         // Task Title
-        { data: 'title' },
+        {
+            data: null,
+            render: data => {
+                return `
+                    <div>${ data.title }</div>
+                    <div class="small text-secondary">${ data.description }</div>
+                `
+            }
+        },
 
         // Date Added
         {
@@ -757,6 +765,18 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
  * ==============================================================================
  */
 
+/** Onboarding employees analytics */
+ifSelectorExist('#onboardingEmployeesAnalyticsContainer', () => {
+    GET_ajax(`${ DM_API_ROUTE }onboarding-employees/analytics`, {
+        success: result => {
+
+            // Set Total Onboarding Employees Count
+            setContent('#totalOnboardingEmployeesCount', result.total);
+        }, 
+        error: () => toastr.error('There was an error in getting onboarding employee analytics')
+    })
+});
+
 /** Initialize Onboarding Employees DataTable */
 initDataTable('#onboardingEmployeesDT', {
     url: `${ DM_API_ROUTE }onboarding-employees`,
@@ -810,6 +830,12 @@ initDataTable('#onboardingEmployeesDT', {
                 else if(taskProgress < 100) bgColor = 'info';
                 else if(taskProgress == 100) bgColor = 'success';
 
+                var completeStatus = taskProgress == 100
+                    ? `
+                        <small>All tasks are completed</small>
+                    `
+                    : `<small>${ taskProgress }% complete</small>`
+
                 return `
                     <div class="project_progress">
                         <div class="progress progress-sm rounded">
@@ -822,7 +848,7 @@ initDataTable('#onboardingEmployeesDT', {
                                 style="width: ${ taskProgress }%"
                             ></div>
                         </div>
-                        <small>${ taskProgress }% Complete</small>
+                        ${ completeStatus }
                     </div>
                 `
             }
@@ -854,6 +880,12 @@ initDataTable('#onboardingEmployeesDT', {
     ]
 });
 
+
+/**
+ * ==============================================================================
+ * ONBOARDING EMPLOYEE TASKS
+ * ==============================================================================
+ */
 
 // Get the onboardingEmployeeID from the URL
 const onboardingEmployeeID = window.location.pathname.split('/')[3];
@@ -912,7 +944,7 @@ initDataTable('#onboardingEmployeeTasksDT', {
             render: data => {
                 const status = data.status;
                 if(status == "On Going") return dtBadge('info', `
-                    <i class="fas fa-redo mr-1"></i>
+                    <i class="fas fa-sync-alt mr-1"></i>
                     <span>${ status }<span>
                 `)
                 else if(status == "Completed") return dtBadge('success', `

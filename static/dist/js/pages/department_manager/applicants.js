@@ -60,8 +60,16 @@ initDataTable('#hiredApplicantsDT', {
             data: null,
             render: data => {
                 const status = data.status;
-                if(status === "Hired") return dtBadge('success', status);
-                else if(status === "Onboarding") return dtBadge('info', status);
+                if(status === "Hired") 
+                    return dtBadge('success', `
+                        <i class="fas fa-handshake mr-1"></i>
+                        <span>${ status }</span>
+                    `);
+                else if(status === "Onboarding") 
+                    return dtBadge('info', `
+                    <i class="fas fa-clipboard-list mr-1"></i>
+                    <span>${ status }</span>
+                `);
                 else return dtBadge('light', `Invalid Data`);
             }
         },

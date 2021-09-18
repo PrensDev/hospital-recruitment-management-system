@@ -48,7 +48,7 @@ initDataTable('#manpowerRequestDT', {
                 
                 if(requestStatus === "For Review") {
                     bagdeTheme = "warning";
-                    badgeIcon = "redo";
+                    badgeIcon = "sync-alt";
                 } else if(requestStatus === "Approved") {
                     bagdeTheme = "success";
                     badgeIcon = "check";

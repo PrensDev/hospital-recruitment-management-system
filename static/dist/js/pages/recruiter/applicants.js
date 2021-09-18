@@ -61,7 +61,7 @@ initDataTable('#applicantsDT', {
                 const status = data.status;
                 if(status === "For evaluation") {
                     return dtBadge('warning', `
-                        <i class="fas fa-redo mr-1"></i>
+                        <i class="fas fa-sync-alt mr-1"></i>
                         <span>${ status }</span>
                     `);
                 } else if(status === "For screening") {
@@ -71,12 +71,17 @@ initDataTable('#applicantsDT', {
                     `);
                 } else if(status === "For interview") {
                     return dtBadge('info', `
-                        <i class="fas fa-file-alt mr-1"></i>
+                        <i class="fas fa-user-friends mr-1"></i>
                         <span>${ status }</span>
                     `);
                 } else if(status === "Hired") {
                     return dtBadge('success', `
-                        <i class="fas fa-check mr-1"></i>
+                        <i class="fas fa-handshake mr-1"></i>
+                        <span>${ status }</span>
+                    `);
+                } else if(status === "Onboarding") {
+                    return dtBadge('info', `
+                        <i class="fas fa-clipboard-list mr-1"></i>
                         <span>${ status }</span>
                     `);
                 } else if(
