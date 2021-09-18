@@ -462,7 +462,7 @@ const viewJobPostDetails = (jobPostID) => {
             setContent('#editJobPostBtn', `
                 <a href="${ R_WEB_ROUTE }edit-job-post/${ result.job_post_id }" class="btn btn-info">
                     <span>Edit Job Post</span>
-                    <i class="fas fa-pencil-alt ml-1"></i>
+                    <i class="fas fa-edit ml-1"></i>
                 </a>
             `);
 
