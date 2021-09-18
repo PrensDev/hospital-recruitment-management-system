@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 12, 2021 at 07:44 AM
--- Server version: 10.4.20-MariaDB
--- PHP Version: 7.4.22
+-- Generation Time: Sep 18, 2021 at 05:55 AM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 7.4.23
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -440,11 +440,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `position_id`, `email`, `password`, `user_type`, `created_at`, `updated_at`) VALUES
-('2235a47a-0e35-11ec-9e47-d8c497916dda', 'Eleanora', NULL, 'Baumbach', NULL, '7de3176d-0e31-11ec-9e47-d8c497916dda', 'opd_head@email.com', '$2b$12$xgz1CzdGsRrYNNFxmZdXPuG04JLgCCiUmE.xwbTgACjxC7.ibxxC2', 'Department Head', '2021-09-05 18:36:31', '2021-09-05 18:36:31'),
-('28452e4a-0e34-11ec-9e47-d8c497916dda', 'Jetsun Prince', 'Padrogane', 'Torres', NULL, '189aa20f-0e30-11ec-9e47-d8c497916dda', 'hr_head@email.com', '$2b$12$R89UgYBzXRP7OGqh3nmbOub73S1kq44CZNskJgGP4J9Ipey/Yptbq', 'Department Head', '2021-09-05 18:29:31', '2021-09-05 18:29:31'),
+('2235a47a-0e35-11ec-9e47-d8c497916dda', 'Eleanora', NULL, 'Baumbach', NULL, '7de3176d-0e31-11ec-9e47-d8c497916dda', 'opd_manager@email.com', '$2b$12$xgz1CzdGsRrYNNFxmZdXPuG04JLgCCiUmE.xwbTgACjxC7.ibxxC2', 'Department Manager', '2021-09-05 18:36:31', '2021-09-05 18:36:31'),
+('28452e4a-0e34-11ec-9e47-d8c497916dda', 'Jetsun Prince', 'Padrogane', 'Torres', NULL, '189aa20f-0e30-11ec-9e47-d8c497916dda', 'hr_head@email.com', '$2b$12$R89UgYBzXRP7OGqh3nmbOub73S1kq44CZNskJgGP4J9Ipey/Yptbq', 'Department Manager', '2021-09-05 18:29:31', '2021-09-05 18:29:31'),
 ('4c915545-0e34-11ec-9e47-d8c497916dda', 'Vanessah', 'Ogatis', 'Buenaventura', NULL, '29014583-0e30-11ec-9e47-d8c497916dda', 'hr_manager@email.com', '$2b$12$Rm50zwgoqRM1rKO/2nhSb.414rxvufarO99y65hgcvI.PWe/y57/K', 'Hiring Manager', '2021-09-05 18:30:32', '2021-09-05 18:30:32'),
 ('73d29fff-0e34-11ec-9e47-d8c497916dda', 'Neil', NULL, 'Concepcion', NULL, '4a0d886d-0e30-11ec-9e47-d8c497916dda', 'hr_recruiter@email.com', '$2b$12$2BVdljHII/Tydini9cNWquv1j0iCRqquOmBMXGG0/bKb/PEpj534e', 'Recruiter', '2021-09-05 18:31:38', '2021-09-05 18:31:38'),
-('e025248c-0e34-11ec-9e47-d8c497916dda', 'Carlos', NULL, 'Del Mundo', 'Jr.', 'b5d7cba3-0e30-11ec-9e47-d8c497916dda', 'icu_head@email.com', '$2b$12$vkKnquqyTxjCZfKxpcfOgeTxbgiixqPd7xuDQ.Hhq5iPnZsOvIfKK', 'Department Head', '2021-09-05 18:34:40', '2021-09-05 18:34:40');
+('e025248c-0e34-11ec-9e47-d8c497916dda', 'Carlos', NULL, 'Del Mundo', 'Jr.', 'b5d7cba3-0e30-11ec-9e47-d8c497916dda', 'icu_manager@email.com', '$2b$12$vkKnquqyTxjCZfKxpcfOgeTxbgiixqPd7xuDQ.Hhq5iPnZsOvIfKK', 'Department Manager', '2021-09-05 18:34:40', '2021-09-05 18:34:40');
 
 --
 -- Indexes for dumped tables
