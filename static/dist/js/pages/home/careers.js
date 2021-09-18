@@ -129,7 +129,7 @@ ifSelectorExist('#availableJobDetails', () => {
             setContent('#openUntil', () => {
                 const expiresAt = result.expiration_date;
                 return isEmptyOrNull(expiresAt)
-                    ? `No deadline`
+                    ? `<div class="text-secondary font-italic">No deadline</div>`
                     : `
                         <div>${ formatDateTime(expiresAt, "Date") }</div>
                         <div class="small text-secondary">${ fromNow(expiresAt) }</div>
