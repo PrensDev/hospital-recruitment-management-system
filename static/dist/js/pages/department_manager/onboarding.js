@@ -113,22 +113,28 @@ ifSelectorExist('#addOnboardingEmployeeForm', () => {
                                 <div class="small text-secondary">${ t.description }</div>
                             </td>
                             <td>
-                                <input 
-                                    type="datetime-local" 
-                                    class="form-control form-control-border"
-                                    style="width: 15rem"
-                                    name="${ startAtInputName }"
-                                    required
-                                >
+                                <div class="form-group">
+                                    <input 
+                                        type="datetime-local" 
+                                        class="form-control form-control-border"
+                                        style="width: 15rem"
+                                        name="${ startAtInputName }"
+                                        id="${ startAtInputName }"
+                                        required
+                                    >
+                                </div>
                             </td>
                             <td>
-                                <input 
-                                    type="datetime-local" 
-                                    class="form-control form-control-border"
-                                    style="width: 15rem"
-                                    name="${ endAtInputName }"
-                                    required
-                                >
+                                <div class="form-group">
+                                    <input 
+                                        type="datetime-local" 
+                                        class="form-control form-control-border"
+                                        style="width: 15rem"
+                                        name="${ endAtInputName }"
+                                        id="${ endAtInputName }"
+                                        required
+                                    >
+                                </div>
                             </td>
                             <td>
                                 <div class="text-center dropdown">
@@ -151,21 +157,30 @@ ifSelectorExist('#addOnboardingEmployeeForm', () => {
                         <tr>
                     `);
 
-                    addOnboardingEmployeeFormRules[startAtInputName] = {
-                        required: true
-                    }
-                    
-                    addOnboardingEmployeeFormMessages[startAtInputName] = {
-                        required: 'Start Date is required'
-                    }
+                    // Set Validation Rule
+                    $(`[name="${ startAtInputName }"]`).rules('add', {
+                        required: true,
+                        afterToday: true,
+                        beforeDateTime: `#${ endAtInputName }`,
+                        messages: {
+                            required: 'Start date is required',
+                            afterToday: 'It must be in the future',
+                            beforeDateTime: 'It must be before deadline'
+                        }
+                    });
 
-                    addOnboardingEmployeeFormRules[endAtInputName] = {
-                        required: true
-                    }
+                    // Set Validation Rule
+                    $(`[name="${ endAtInputName }"]`).rules('add', {
+                        required: true,
+                        afterToday: true,
+                        afterDateTime: `#${ startAtInputName }`,
+                        messages: {
+                            required: 'Deadline is required',
+                            afterToday: 'It must be in the future',
+                            afterDateTime: 'It must be after start date'
+                        }
+                    });
 
-                    addOnboardingEmployeeFormMessages[endAtInputName] = {
-                        required: 'Deadline is required'
-                    }
 
                     generalOnboardingTasks.push({ 
                         id: uniqueSuffix,
@@ -284,22 +299,28 @@ validateForm('#addOnboardingTaskForm', {
                     <div class="small text-secondary">${ taskDescription }</div>
                 </td>
                 <td>
-                    <input 
-                        type="datetime-local" 
-                        class="form-control form-control-border"
-                        style="width: 15rem"
-                        name="${ startAtInputName }"
-                        required
-                    >
+                    <div class="form-group">
+                        <input 
+                            type="datetime-local" 
+                            class="form-control form-control-border"
+                            style="width: 15rem"
+                            name="${ startAtInputName }"
+                            id="${ startAtInputName }"
+                            required
+                        >
+                    </div>
                 </td>
                 <td>
-                    <input 
-                        type="datetime-local" 
-                        class="form-control form-control-border"
-                        style="width: 15rem"
-                        name="${ endAtInputName }"
-                        required
-                    >
+                    <div class="form-group">
+                        <input 
+                            type="datetime-local" 
+                            class="form-control form-control-border"
+                            style="width: 15rem"
+                            name="${ endAtInputName }"
+                            id="${ endAtInputName }"
+                            required
+                        >
+                    </div>
                 </td>
                 <td>
                     <div class="text-center dropdown">
@@ -322,21 +343,29 @@ validateForm('#addOnboardingTaskForm', {
             </tr>
         `);
 
-        addOnboardingEmployeeFormRules[startAtInputName] = {
-            required: true
-        }
+        // Set Validation Rule
+        $(`[name="${ startAtInputName }"]`).rules('add', {
+            required: true,
+            afterToday: true,
+            beforeDateTime: `#${ endAtInputName }`,
+            messages: {
+                required: 'Start date is required',
+                afterToday: 'It must be in the future',
+                beforeDateTime: 'It must be before deadline'
+            }
+        });
 
-        addOnboardingEmployeeFormMessages[startAtInputName] = {
-            required: 'Start Date is reqired'
-        }
-
-        addOnboardingEmployeeFormRules[endAtInputName] = {
-            required: true
-        }
-
-        addOnboardingEmployeeFormMessages[endAtInputName] = {
-            required: 'Deadline is required'
-        }
+        // Set Validation Rule
+        $(`[name="${ endAtInputName }"]`).rules('add', {
+            required: true,
+            afterToday: true,
+            afterDateTime: `#${ startAtInputName }`,
+            messages: {
+                required: 'Deadline is required',
+                afterToday: 'It must be in the future',
+                afterDateTime: 'It must be after start date'
+            }
+        });
 
         addedOnboardingTasks.push({
             id: uniqueSuffix,
@@ -774,7 +803,7 @@ ifSelectorExist('#onboardingEmployeesAnalyticsContainer', () => {
             setContent('#totalOnboardingEmployeesCount', result.total);
         }, 
         error: () => toastr.error('There was an error in getting onboarding employee analytics')
-    })
+    });
 });
 
 /** Initialize Onboarding Employees DataTable */

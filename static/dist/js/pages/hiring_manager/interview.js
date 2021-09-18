@@ -754,3 +754,14 @@ onClick('#saveScoresheetBtn', () => {
         }
     )
 });
+
+/** Remove General Question */
+const removeGeneralQuestion = () => {
+    showModal('#confirmRemoveGeneralQuestionModal');
+}
+
+
+/** Remove Added Question */
+const removeAddedQuestion = () => {
+    showModal('#confirmRemoveAddedQuestionModal');
+}

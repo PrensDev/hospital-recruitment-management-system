@@ -46,6 +46,7 @@ const initDataTable = (selector = "", dtOptions = { debugMode: false, url: "", c
         columns: dtOptions.columns,
         order: [[0, 'desc']],
         responsive: true,
+        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
         columnDefs: [{
             targets: [-1],
             orderable: false
@@ -75,12 +76,12 @@ const initDataTable = (selector = "", dtOptions = { debugMode: false, url: "", c
                     <div class="text-secondary">No records was found that matched to your query</div>
                 </div>
             `,
-            // paginate: {
-            //     previous: `<i class="fas fa-caret-left"></i>`,
-            //     next: `<i class="fas fa-caret-right"></i>`,
-            // }
+            paginate: {
+                previous: `<i class="fas fa-caret-left"></i>`,
+                next: `<i class="fas fa-caret-right"></i>`,
+            }
         }
-    })
+    }).buttons().container().appendTo(`.col-md-6:eq(0)`)
 ));
 
 
@@ -154,6 +155,24 @@ jQuery.validator.addMethod("afterTime", function(val, elem, params) {
     if($(params).length) {
         const c = getValue(params);
         return isEmptyOrNull(c) ? true : moment(val, 'H:mm').isAfter(moment(c, 'H:mm'));
+    }
+    return true;
+});
+
+// Before DateTime
+jQuery.validator.addMethod("beforeDateTime", function(val, elem, params) {
+    if($(params).length) {
+        const c = getValue(params);
+        return isEmptyOrNull(c) ? true : moment(val, 'YYYY-MM-DD HH:mm:ss').isBefore(moment(c, 'YYYY-MM-DD HH:mm:ss'));
+    }
+    return true;
+});
+
+// After DateTime
+jQuery.validator.addMethod("afterDateTime", function(val, elem, params) {
+    if($(params).length) {
+        const c = getValue(params);
+        return isEmptyOrNull(c) ? true : moment(val, 'YYYY-MM-DD HH:mm:ss').isAfter(moment(c, 'YYYY-MM-DD HH:mm:ss'));
     }
     return true;
 });
