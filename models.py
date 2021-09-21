@@ -131,7 +131,13 @@ class User(Base):
     )
     assigned_onboarding_employee_tasks = relationship(
         "OnboardingEmployeeTask",
-        back_populates = "onboarding_employee_task_assigned_by"
+        back_populates = "onboarding_employee_task_assigned_by",
+        foreign_keys = "OnboardingEmployeeTask.assigned_by"
+    )
+    completed_onboarding_employee_tasks = relationship(
+        "OnboardingEmployeeTask",
+        back_populates = "onboarding_employee_task_completed_by",
+        foreign_keys = "OnboardingEmployeeTask.completed_by"
     )
 
 
@@ -921,6 +927,15 @@ class OnboardingEmployeeTask(Base):
         String(255),
         nullable = False
     )
+    completed_at = Column(
+        DateTime,
+        nullable = True
+    )
+    completed_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = True
+    )
     created_at = Column(
         DateTime,
         default = text('NOW()'),
@@ -935,7 +950,8 @@ class OnboardingEmployeeTask(Base):
     # Relationship
     onboarding_employee_task_assigned_by = relationship(
         "User",
-        back_populates = "assigned_onboarding_employee_tasks"
+        back_populates = "assigned_onboarding_employee_tasks",
+        foreign_keys = "OnboardingEmployeeTask.assigned_by"
     )
     onboarding_employee = relationship(
         "OnboardingEmployee",
@@ -944,4 +960,9 @@ class OnboardingEmployeeTask(Base):
     onboarding_task = relationship(
         "OnboardingTask",
         back_populates = "assigned_tasks"
+    )
+    onboarding_employee_task_completed_by = relationship(
+        "User",
+        back_populates = "completed_onboarding_employee_tasks",
+        foreign_keys = "OnboardingEmployeeTask.completed_by"
     )

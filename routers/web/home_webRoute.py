@@ -55,7 +55,7 @@ async def redirect(req: Request, user_data: dict = Depends(get_token)):
     elif(user_data["user_type"] == "Recruiter"):
         return RedirectResponse("/r")
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -96,7 +96,7 @@ async def available_job_details(job_post_id: str, req: Request, db: Session = De
     try:
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
         if not job_post:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse("pages/home/available_job_details.html", {
                 "request": req,

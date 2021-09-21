@@ -45,7 +45,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Dashboard"
         })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 
@@ -65,7 +65,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Manpower Requests"
         })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -84,7 +84,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Job Posts"
         })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -103,7 +103,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Applicants"
         })    
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Applicants Per Job Post
@@ -116,15 +116,15 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not job_post_id:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
             if not job_post:
-                return errTemplate.page_not_found(req)
+                return await errTemplate.page_not_found(req)
             else:
                 return RedirectResponse(f"/h/job-posts/{job_post_id}/applicants/for-screening")
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Applicants Per Job Post (For Screening)
@@ -137,11 +137,11 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not job_post_id:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
             if not job_post:
-                return errTemplate.page_not_found(req)
+                return await errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/for_screening.html", {
                     "request": req,
@@ -151,7 +151,7 @@ async def render(
                     "job_post_id": f"{job_post_id}"
                 })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Applicants Per Job Post (Interviewed)
@@ -164,11 +164,11 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not job_post_id:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
             if not job_post:
-                return errTemplate.page_not_found(req)
+                return await errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/for_interview.html", {
                     "request": req,
@@ -178,7 +178,7 @@ async def render(
                     "job_post_id": f"{job_post_id}"
                 })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Applicants Per Job Post (For Interview)
@@ -191,11 +191,11 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not job_post_id:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
             if not job_post:
-                return errTemplate.page_not_found(req)
+                return await errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/interviewed.html", {
                     "request": req,
@@ -205,7 +205,7 @@ async def render(
                     "job_post_id": f"{job_post_id}"
                 })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Applicants Per Job Post (Create Interview Schedule)
@@ -218,11 +218,11 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not job_post_id:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
             if not job_post:
-                return errTemplate.page_not_found(req)
+                return await errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "create_schedule.html", {
                     "request": req,
@@ -232,7 +232,7 @@ async def render(
                     "job_post_id": f"{job_post_id}"
                 })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 
@@ -250,7 +250,7 @@ async def render(
         else:
             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
             if not job_post:
-                return errTemplate.page_not_found(req)
+                return await errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/hired.html", {
                     "request": req,
@@ -260,7 +260,7 @@ async def render(
                     "job_post_id": f"{job_post_id}"
                 })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Applicants Per Job Post (Rejected)
@@ -277,7 +277,7 @@ async def render(
         else:
             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
             if not job_post:
-                return errTemplate.page_not_found(req)
+                return await errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/rejected.html", {
                     "request": req,
@@ -287,7 +287,7 @@ async def render(
                     "job_post_id": f"{job_post_id}"
                 })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -305,7 +305,7 @@ async def render(
     if user_data['user_type'] == AUTHORIZED_USER:
         interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
         if not interview_schedule:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "schedule_details.html", {
                 "request": req,
@@ -314,7 +314,7 @@ async def render(
                 "active_navlink": "Applicants"
             })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -332,7 +332,7 @@ async def render(
     if user_data['user_type'] == AUTHORIZED_USER:
         interview_schedule = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
         if not interview_schedule:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "interview_scoresheet.html", {
                 "request": req,
@@ -341,7 +341,7 @@ async def render(
                 "active_navlink": "Applicants"
             })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 
@@ -365,4 +365,4 @@ async def render(
             "active_navlink": "Interview Questions",
         })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)

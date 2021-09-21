@@ -589,7 +589,7 @@ async def add_employee_onboarding_task(
                 start_at = req.start_at,
                 end_at = req.end_at,
                 assigned_by = user_data.user_id,
-                status = "On Going"
+                status = "Pending"
             )
             db.add(new_onboarding_employee_task)
             db.commit()

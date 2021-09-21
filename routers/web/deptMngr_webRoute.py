@@ -45,7 +45,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Dashboard"
         })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Manpower Requests
@@ -59,7 +59,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Manpower Requests"
         })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Manpower Requests
@@ -73,7 +73,7 @@ async def render(
     if user_data['user_type'] == AUTHORIZED_USER:
         requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
         if not requisition:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants_per_request.html", {
                 "request": req,
@@ -82,7 +82,7 @@ async def render(
                 "active_navlink": "Hired Applicants"
             })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Add Manpower Request
@@ -96,7 +96,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Manpower Requests"
         })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Edit Manpower Request
@@ -109,14 +109,14 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not requisition_id:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             requisition = db.query(Requisition).filter(
                 Requisition.requisition_id == requisition_id,
                 Requisition.request_status == 'For review'
             ).first()
             if not requisition:
-                return errTemplate.page_not_found(req)
+                return await errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "edit_manpower_request.html", {
                     "request": req,
@@ -125,7 +125,7 @@ async def render(
                     "active_navlink": "Manpower Requests"
                 })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Hired Applicants
@@ -139,7 +139,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Hired Applicants"
         })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Onboarding Employees
@@ -153,7 +153,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Onboarding Employees"
         })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 # Onboarding Details
 @router.get("/add-onboarding-employee/{applicant_id}", response_class=HTMLResponse)
@@ -164,7 +164,7 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not applicant_id:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "add_onboarding_employee.html", {
                 "request": req,
@@ -173,7 +173,7 @@ async def render(
                 "active_navlink": "Onboarding Employees"
             })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # General Tasks
@@ -187,7 +187,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "General Tasks"
         })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)
 
 
 # Onboarding Employee Tasks
@@ -195,7 +195,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
 async def render(onboarding_employee_task_id: str, req: Request, db: Session = Depends(get_db), user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not onboarding_employee_task_id:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
                 "request": req,
@@ -204,4 +204,4 @@ async def render(onboarding_employee_task_id: str, req: Request, db: Session = D
                 "active_navlink": "Onboarding Employees"
             })
     else:
-        return errTemplate.page_not_found(req)
+        return await errTemplate.page_not_found(req)

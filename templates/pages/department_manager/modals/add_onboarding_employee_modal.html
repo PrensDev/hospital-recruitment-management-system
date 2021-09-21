@@ -25,7 +25,7 @@
     </div>
 </div>
 
-<!-- Add Onabording Task Modal -->
+<!-- Add Onboarding Task Modal -->
 <div class="modal" id="addOnboardingTaskModal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form class="modal-content" id="addOnboardingTaskForm">
@@ -39,7 +39,7 @@
 
                 <!-- Task Title -->
                 <div class="form-group">
-                    <label for="taskTitle">Task Title</label>
+                    <label for="taskTitle">Task Title <span class="text-danger">*</span></label>
                     <input 
                         type="text" 
                         class="form-control" 
@@ -51,7 +51,7 @@
                 
                 <!-- Description -->
                 <div class="form-group">
-                    <label for="descriptionForAdd">Description</label>
+                    <label for="descriptionForAdd">Description <span class="text-danger">*</span></label>
                     <textarea 
                         class="form-control" 
                         rows="3" 
@@ -70,6 +70,60 @@
                 <button type="submit" class="btn btn-primary">
                     <span>Add</span>
                     <i class="fas fa-plus ml-1"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Onboarding Task Modal -->
+<div class="modal" id="editAddedOnboardingTaskModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="editAddedOnboardingTaskForm">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-edit text-secondary mr-2"></i>
+                    <span>Edit Added Onboarding Task</span>
+                </div>
+            </div>
+            <div class="modal-body">
+
+                <!-- Added Task ID -->
+                <input type="text" id="addedTaskID" name="addedTaskID">
+
+                <!-- Task Title -->
+                <div class="form-group">
+                    <label for="taskTitleForEdit">Task Title <span class="text-danger">*</span></label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="taskTitleForEdit" 
+                        name="taskTitle" 
+                        placeholder="Type the title of the task here"
+                    >
+                </div>
+                
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="descriptionForEdit">Description <span class="text-danger">*</span></label>
+                    <textarea 
+                        class="form-control" 
+                        rows="3" 
+                        id="descriptionForEdit" 
+                        name="description" 
+                        placeholder="Please type the description of the task here"]
+                    ></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button 
+                    type="button" 
+                    class="btn btn-default" 
+                    data-dismiss="modal" 
+                >Cancel</button>
+                <button type="submit" class="btn btn-info">
+                    <span>Save</span>
+                    <i class="fas fa-check ml-1"></i>
                 </button>
             </div>
         </form>

@@ -332,6 +332,14 @@ validateForm('#addOnboardingTaskForm', {
                             <div 
                                 class="dropdown-item d-flex"
                                 role="button"
+                                onclick="editAddedTask('${ uniqueSuffix }')"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
+                                <span>Edit task</span>
+                            </div>
+                            <div 
+                                class="dropdown-item d-flex"
+                                role="button"
                                 onclick="removeAddedTask('${ uniqueSuffix }')"
                             >
                                 <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
@@ -367,6 +375,7 @@ validateForm('#addOnboardingTaskForm', {
             }
         });
 
+        // Push Added Task to array
         addedOnboardingTasks.push({
             id: uniqueSuffix,
             task_title: taskTitle,
@@ -377,6 +386,7 @@ validateForm('#addOnboardingTaskForm', {
 
         hideModal('#addOnboardingTaskModal');
 
+        // Show success alert
         toastr.success('Additional onboarding task has been added');
 
         return false;
@@ -385,6 +395,44 @@ validateForm('#addOnboardingTaskForm', {
 
 /** When add onbaording task modal is hidden */
 onHideModal('#addOnboardingTaskModal', () => resetForm('#addOnboardingTaskForm'));
+
+/** Edit Added Task */
+const editAddedTask = (id) => {
+    addedOnboardingTasks.forEach(t => {
+        if(t.id == id) {
+            setValue('#addedTaskID', t.id);
+            setValue('#taskTitleForEdit', t.task_title);
+            setValue('#descriptionForEdit', t.description);
+        }
+    });
+    showModal('#editAddedOnboardingTaskModal');
+}
+
+/** When Edit Added Onboarding Task Modal is going to be hidden */
+onHideModal('#editAddedOnboardingTaskModal', () => resetForm('#editAddedOnboardingTaskForm'));
+
+/** Validate Edit Added Onboarding Task Form */
+validateForm('#editAddedOnboardingTaskForm', {
+    rules: {
+        taskTitle: {
+            required: true
+        },
+        description: {
+            required: true
+        }
+    },
+    messages: {
+        taskTitle: {
+            required: 'Task Title is required'
+        },
+        description: {
+            required: 'Task Description is required'
+        }
+    },
+    submitHandler: () => {
+        return false
+    }
+});
 
 /** Remove Added Task */
 const removeAddedTask = (id) => {
@@ -974,14 +1022,45 @@ initDataTable('#onboardingEmployeeTasksDT', {
             data: null,
             render: data => {
                 const status = data.status;
-                if(status == "On Going") return dtBadge('info', `
-                    <i class="fas fa-sync-alt mr-1"></i>
-                    <span>${ status }<span>
-                `)
-                else if(status == "Completed") return dtBadge('success', `
-                    <i class="fas fa-check mr-1"></i>
-                    <span>${ status }<span>
-                `)
+                const startAt = data.start_at;
+                const deadline = data.end_at;
+
+                if(status == "Pending") {
+                    if(isAfterToday(startAt) && isAfterToday(deadline))
+                        return dtBadge('secondary', `
+                            <i class="fas fa-stopwatch mr-1"></i>
+                            <span>Soon<span>
+                        `)
+                    else if(isBeforeToday(startAt) && isAfterToday(deadline))
+                        return dtBadge('danger', `
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            <span>Must working<span>
+                        `)
+                    else 
+                        return dtBadge('danger', `
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            <span>Not worked<span>
+                        `)
+                } else if(status == "On Going") 
+                    return isAfterToday(deadline)
+                        ? dtBadge('info', `
+                            <i class="fas fa-sync-alt mr-1"></i>
+                            <span>On Going<span>
+                        `)
+                        : dtBadge('danger', `
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            <span>Must be done<span>
+                        `)
+                else if(status == "Completed") 
+                    return moment(data.completed_at).isAfter(moment(dealine))
+                        ? dtBadge('success', `
+                            <i class="fas fa-check mr-1"></i>
+                            <span>Conpleted (On Time)<span>
+                        `)
+                        : dtBadge('success', `
+                            <i class="fas fa-check mr-1"></i>
+                            <span>Completed (Late)<span>
+                        `)
                 else return dtBadge('light', 'Invalid data')
             }
         },
@@ -993,15 +1072,15 @@ initDataTable('#onboardingEmployeeTasksDT', {
                 const onboardingEmplyeeTaskID = data.onboarding_employee_task_id;
 
                 const markAsCompletedLink = () => {
-                    return data.status == "On Going"
+                    return data.status == "Pending" || data.status == "On Going"
                         ? `
                             <div 
                                 class="dropdown-item d-flex"
                                 role="button"
-                                onclick="markAsCompleted('${ onboardingEmplyeeTaskID }')"
+                                onclick="changeProgressStatus('${ onboardingEmplyeeTaskID }')"
                             >
-                                <div style="width: 2rem"><i class="fas fa-check mr-1"></i></div>
-                                <span>Mark as Completed</span>
+                                <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
+                                <span>Change Task Progress</span>
                             </div>
                         `
                         : ''
@@ -1017,7 +1096,7 @@ initDataTable('#onboardingEmployeeTasksDT', {
                             <div 
                                 class="dropdown-item d-flex"
                                 role="button"
-                                onclick="viewOnboardingTaskDetails('${ onboardingEmplyeeTaskID }')"
+                                onclick="viewOnboardingEmployeeTaskDetails('${ onboardingEmplyeeTaskID }')"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <span>View Details</span>
@@ -1051,31 +1130,38 @@ const getOnboardingEmployeeDetails = () => {
             setContent('#taskProgress', () => {
                 const tasks = result.onboarding_employee_tasks;
 
+                let pending = 0;
+                let onGoing = 0;
                 let completed = 0;
 
-                tasks.forEach(t => { if(t.status === 'Completed') completed++ });
+                tasks.forEach(t => { 
+                    if(t.status === 'Pending') pending++; 
+                    if(t.status === 'On Going') onGoing++; 
+                    if(t.status === 'Completed') completed++;
+                });
 
-                var taskProgress = ((completed/tasks.length) * 100).toFixed(2);
+                var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+                var donutData = {
+                    labels: ['Pending','On Going', 'Completed'],
+                    datasets: [
+                        {
+                            data: [pending, onGoing, completed],
+                            backgroundColor : ['#ea580c', '#06b6d4', '#10b981'],
+                        }
+                    ]
+                }
+                var donutOptions = {
+                    maintainAspectRatio : false,
+                    responsive : true,
+                }
+                //Create pie or douhnut chart
+                // You can switch between pie and douhnut using the method below.
+                new Chart(donutChartCanvas, {
+                    type: 'doughnut',
+                    data: donutData,
+                    options: donutOptions
+                })
 
-                var bgColor;
-                if(taskProgress <= 25) bgColor = 'danger';
-                else if(taskProgress <= 75) bgColor = 'warning';
-                else if(taskProgress < 100) bgColor = 'info';
-                else if(taskProgress == 100) bgColor = 'success';
-
-                return `
-                    <div class="progress progress-sm rounded">
-                        <div 
-                            class="progress-bar bg-${ bgColor }" 
-                            role="progressbar" 
-                            aria-valuenow="${ taskProgress }" 
-                            aria-valuemin="0" 
-                            aria-valuemax="100" 
-                            style="width: ${ taskProgress }%"
-                        ></div>
-                    </div>
-                    <small>${ taskProgress }% Complete</small>
-                `
             });
 
             // Set Email
@@ -1102,13 +1188,13 @@ const getOnboardingEmployeeDetails = () => {
 ifSelectorExist('#onboardingEmployeeDetails', () => getOnboardingEmployeeDetails());
 
 /** Mark as Completed */
-const markAsCompleted = (onboardingEmployeeTaskID) => {
+const changeProgressStatus = (onboardingEmployeeTaskID) => {
     setValue('#onboardingEmployeeTaskID', onboardingEmployeeTaskID);
-    showModal('#confirmMarkAsCompletedModal');
+    showModal('#changeTaskStatusModal');
 }
 
 /** When confirm mark as completed modal was hidden */
-onHideModal('#confirmMarkAsCompletedModal', () => resetForm('#markAsCompletedForm'));
+onHideModal('#changeTaskStatusModal', () => resetForm('#markAsCompletedForm'));
 
 /** Validate Makr As Completed Form */
 validateForm('#markAsCompletedForm', {
@@ -1158,4 +1244,9 @@ const markTaskAsCompleted = () => {
             toastr.error('There was an error in updating onboarding employee task status');
         }
     })
+}
+
+/** View Onboarding Employee Task Details */
+const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
+    showModal('#onboardingEmployeeTaskDetailsModal');
 }
