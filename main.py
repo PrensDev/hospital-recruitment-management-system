@@ -21,11 +21,11 @@ models.Base.metadata.create_all(engine)
 
 # API Routers
 app.include_router(test_apiRoute.router)
-app.include_router(home_apiRoute.router)
+# app.include_router(home_apiRoute.router)
 app.include_router(auth_apiRoute.router)
 app.include_router(deptMngr_apiRoute.router)
-app.include_router(hireMng_apiRoute.router)
-app.include_router(recruiter_apiRoute.router)
+# app.include_router(hireMng_apiRoute.router)
+# app.include_router(recruiter_apiRoute.router)
 
 
 # Mount static folder
@@ -35,5 +35,5 @@ app.mount('/static', StaticFiles(directory='static'), name='static')
 # Web Routers
 app.include_router(home_webRoute.router)
 app.include_router(deptMngr_webRoute.router)
-app.include_router(hireMng_webRoute.router)
-app.include_router(recruiter_webRoute.router)
+# app.include_router(hireMng_webRoute.router)
+# app.include_router(recruiter_webRoute.router)

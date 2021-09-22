@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-from oauth2 import get_user, check_priviledge
+from oauth2 import get_user, authorized
 from schemas import db_schemas
 from datetime import date
 from sqlalchemy import or_
@@ -41,7 +41,7 @@ def get_user_info(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         user_info = db.query(User).filter(User.user_id == user_data.user_id)
         if not user_info.first():
             return "User does not exist"
@@ -67,7 +67,7 @@ async def get_all_requisitions(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Requisition).all()
     except Exception as e:
         print(e)
@@ -80,7 +80,7 @@ async def requisition_analytics(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         query = db.query(Requisition)
         total = query.count()
         for_review_count = query.filter(Requisition.request_status == "For Review").count()
@@ -104,7 +104,7 @@ async def get_one_requisition(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
         if not requisition:
             return REQUISITION_NOT_FOUND_RESPONSE
@@ -123,7 +123,7 @@ async def update_requisition(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id)
         if not requisition.first():
             raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE)
@@ -156,7 +156,7 @@ async def get_all_job_posts(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         job_posts = db.query(JobPost).all()
         return job_posts
     except Exception as e:
@@ -170,7 +170,7 @@ async def job_posts_analytics(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         query = db.query(JobPost)
         total = query.count()
         on_going = query.filter(or_(
@@ -195,7 +195,7 @@ async def get_one_job_post(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
         if not job_post:
             raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
@@ -221,7 +221,7 @@ async def get_all_applicants_per_job(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(Applicant.job_post_id == job_post_id).all()
     except Exception as e:
         print(e)
@@ -235,7 +235,7 @@ async def get_one_applicant(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id).first()
         if not applicant:
             return APPLICANT_NOT_FOUND_RESPONSE
@@ -253,7 +253,7 @@ async def get_one_applicant(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id).first()
         if not applicant:
             return APPLICANT_NOT_FOUND_RESPONSE
@@ -276,7 +276,7 @@ async def applicants_per_job_analytics(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         query = db.query(Applicant)
 
         total = query.filter(Applicant.job_post_id == job_post_id).count()
@@ -352,7 +352,7 @@ async def evaluated_applicants(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(
             Applicant.job_post_id == job_post_id,
             Applicant.status == 'For screening'
@@ -369,7 +369,7 @@ async def evaluated_applicants(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(
             Applicant.job_post_id == job_post_id,
             Applicant.status == 'For interview'
@@ -386,7 +386,7 @@ async def evaluated_applicants(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(
             Applicant.job_post_id == job_post_id,
             Applicant.status == 'For interview'
@@ -403,7 +403,7 @@ async def evaluated_applicants(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(
             Applicant.job_post_id == job_post_id,
             or_(
@@ -423,7 +423,7 @@ async def evaluated_applicants(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(
             Applicant.job_post_id == job_post_id,
             or_(
@@ -444,7 +444,7 @@ async def update_applicant_status(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
         if not applicant.first():
             raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
@@ -479,7 +479,7 @@ async def update_applicant_status(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
         if not applicant.first():
             raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
@@ -527,7 +527,7 @@ async def get_interview_schedules_per_job_post(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         job_post = db.query(JobPost).filter(
             JobPost.job_post_id == job_post_id).first()
         if not job_post:
@@ -550,7 +550,7 @@ async def create_interview_question(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         new_interview_question = InterviewQuestion(
             question = req.question,
             type = req.type,
@@ -575,7 +575,7 @@ async def get_all_general_interview_questions(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         general_questions = db.query(InterviewQuestion).filter(InterviewQuestion.type == "General").all()
         return general_questions
     except Exception as e:
@@ -590,7 +590,7 @@ async def get_one_interview_question(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         interview_question = db.query(InterviewQuestion).filter(InterviewQuestion.interview_question_id == interview_question_id).first()
         if not interview_question:
             raise HTTPException(status_code = 404, detail = INTERVIEW_QUESTION_NOT_FOUND_RESPONSE)
@@ -608,7 +608,7 @@ async def create_interview_schedule(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         new_interview_schedule = InterviewSchedule(
             job_post_id = req.job_post_id,
             scheduled_date = req.scheduled_date,
@@ -641,7 +641,7 @@ async def interview_schedules_and_applicants(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
         if not interview_schedule_id:
             raise HTTPException(status_code = 404, detail = INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE)
@@ -659,7 +659,7 @@ async def interviewees_per_schedule(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
         if not interview_schedule_id:
             raise HTTPException(status_code = 404, detail = INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE)
@@ -678,7 +678,7 @@ async def create_general_interviewee_scores(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
         if not interviewee:
             raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
@@ -708,7 +708,7 @@ async def get_one_intervieweee(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
         if not interviewee:
             raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
@@ -727,7 +727,7 @@ async def update_interviewee(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id)
         if not interviewee.first():
             raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)

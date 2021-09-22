@@ -113,7 +113,7 @@ async def render(
         else:
             requisition = db.query(Requisition).filter(
                 Requisition.requisition_id == requisition_id,
-                Requisition.request_status == 'For review'
+                Requisition.request_status == 'For signature'
             ).first()
             if not requisition:
                 return await errTemplate.page_not_found(req)

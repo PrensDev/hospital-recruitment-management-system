@@ -10,21 +10,21 @@ ifSelectorExist('#addManpowerRequestForm', () => {
     /** Vacant Position For Add Select2 */
     GET_ajax(`${ DM_API_ROUTE }department/positions`, {
         success: result => {
-            const positions = result.department_positions;
+            if(result) {
+                let vacantPosition = $('#vacantPosition');
+                vacantPosition.empty();
+                vacantPosition.append(`<option></option>`);
+                
+                result.length > 0
+                    ? result.forEach(p => vacantPosition.append(`<option value="${ p.position_id }">${ p.name }</option>`))
+                    : vacantPosition.append(`<option disabled>No data</option>`)
 
-            let vacantPosition = $('#vacantPosition');
-            vacantPosition.empty();
-            vacantPosition.append(`<option></option>`);
-
-            positions.forEach(p => vacantPosition.append(`<option value="${ p.position_id }">${ p.name }</option>`));
-
-            $('#vacantPosition').select2({
-                placeholder: "Please select a vacant position",
-            });
+                $('#vacantPosition').select2({
+                    placeholder: "Please select a vacant position",
+                });
+            } else toastr.error('There was an error in getting positions')
         },
-        error: () => {
-            toastr.error('There was an error in getting positions')
-        }
+        error: () => toastr.error('There was an error in getting positions')
     })
 
     /** Request Nature For Add Select 2 */
@@ -226,28 +226,29 @@ initDataTable('#manpowerRequestDT', {
                 var badgeIcon;
                 let validStatus = true;
                 
-                if(requestStatus === "For Review") {
+                if(requestStatus === "For signature") {
+                    bagdeTheme = "secondary";
+                    badgeIcon = "file-signature";
+                } else if(requestStatus === "For approval") {
                     bagdeTheme = "warning";
                     badgeIcon = "sync-alt";
                 } else if(requestStatus === "Approved") {
                     bagdeTheme = "success";
-                    badgeIcon = "check";
+                    badgeIcon = "thumbs";
                 } else if(requestStatus === "Rejected") {
                     bagdeTheme = "danger";
                     badgeIcon = "times";
                 } else if(requestStatus === "Completed") {
                     bagdeTheme = "blue";
-                    badgeIcon = "thumbs";
+                    badgeIcon = "check";
                 } else validStatus = false
 
                 return validStatus 
-                    ? `
-                        <div class="badge badge-${ bagdeTheme } p-2 w-100">
+                    ? `<div class="badge badge-${ bagdeTheme } p-2 w-100">
                             <i class="fas fa-${ badgeIcon } mr-1"></i>
                             <span>${ requestStatus }</span>
-                        </div>
-                    ` 
-                    : `<div class="badge badge-light p-2 w-100">Undefined</div>`
+                        </div>` 
+                    : `<div class="badge badge-light p-2 w-100">Invalid data</div>`
             }
         },
 
@@ -330,7 +331,7 @@ initDataTable('#manpowerRequestDT', {
                                 <span>View Details</span>
                             </div>
 
-                            ${ requestStatus === "For Review" ? editBtn + cancelBtn : "" }
+                            ${ requestStatus === "For signature" ? editBtn + cancelBtn : "" }
 
                             ${ requestStatus === "Approved" ? markAsCompletedBtn : "" }
 
@@ -353,18 +354,22 @@ initDataTable('#manpowerRequestDT', {
 /** Manpower Requests Analytics */
 const manpowerRequestAnalytics = () => GET_ajax(`${ DM_API_ROUTE }requisitions/analytics`, {
     success: result => {
-        
-        // Set Total Mapower Requests Count
-        setContent('#totalManpowerRequestsCount', formatNumber(result.total));
+        if(result) {
 
-        // Set Completed Requests
-        setContent('#completedRequestsCount', formatNumber(result.completed));
+            console.log(result);
 
-        // Set Approved Requests
-        setContent('#approvedRequestsCount', formatNumber(result.approved));
+            // Set Total Mapower Requests Count
+            setContent('#totalManpowerRequestsCount', formatNumber(result.total));
 
-        // Set Rejected Requests
-        setContent('#rejectedRequestsCount', formatNumber(result.rejected));
+            // Set Completed Requests
+            setContent('#completedRequestsCount', formatNumber(result.completed));
+
+            // Set Approved Requests
+            setContent('#approvedRequestsCount', formatNumber(result.approved));
+
+            // Set Rejected Requests
+            setContent('#rejectedRequestsCount', formatNumber(result.rejected));
+        } else toastr.error('There was an error in getting manpower request analytics')
     },
     error: () => toastr.error('There was an error in getting manpower request analytics')
 });
@@ -383,7 +388,6 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
 const viewManpowerRequest = (requisitionID) => {
     GET_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
-            // console.log(result);
 
             const requestedBy = result.manpower_request_by;
             
@@ -445,9 +449,9 @@ const viewManpowerRequest = (requisitionID) => {
                 return isEmptyOrNull(approvedBy)
                     ? `<div class="text-secondary font-italic">Not yet approved</div>`
                     : () => {
-                        if(result.request_status === "Rejected") {
+                        if(result.request_status === "Rejected")
                             return `<div class="text-danger">This request has been rejected</div>`
-                        } else {
+                        else {
                             const approvedByFullName = formatName("L, F M., S", {
                                 firstName: approvedBy.first_name,
                                 middleName: approvedBy.middle_name,
@@ -480,16 +484,13 @@ const viewManpowerRequest = (requisitionID) => {
 
             // Set Modal Footer
             var modalPositiveBtn;
-            if(result.request_status === 'For Review') {
-                modalPositiveBtn = `
-                    <a href="${ DM_WEB_ROUTE }edit-manpower-request/${ result.requisition_id }" class="btn btn-info">
-                        <span>Edit</span>
-                        <i class="fas fa-edit ml-1"></i>
-                    </a>
-                `
-            } else {
-                modalPositiveBtn = '';
-            }
+            if(result.request_status === 'For signature') modalPositiveBtn = `
+                <a href="${ DM_WEB_ROUTE }edit-manpower-request/${ result.requisition_id }" class="btn btn-info">
+                    <span>Edit</span>
+                    <i class="fas fa-edit ml-1"></i>
+                </a>`
+            else modalPositiveBtn = '';
+            
             setContent('#viewManpowerRequestModalFooter', `
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 ${ modalPositiveBtn }
@@ -515,19 +516,19 @@ ifSelectorExist('#editManpowerRequestForm', () => {
     /** Vacant Position For Add Select2 */
     GET_ajax(`${ DM_API_ROUTE }department/positions`, {
         success: result => {
-            // console.log(result);
-
-            const positions = result.department_positions;
-
-            let vacantPosition = $('#vacantPosition');
-            vacantPosition.empty();
-            vacantPosition.append(`<option></option>`);
-
-            positions.forEach(p => vacantPosition.append(`<option value="${ p.position_id }">${ p.name }</option>`));
-
-            $('#vacantPosition').select2({
-                placeholder: "Please select a vacant position",
-            });
+            if(result) {
+                let vacantPosition = $('#vacantPosition');
+                vacantPosition.empty();
+                vacantPosition.append(`<option></option>`);
+                
+                result.length > 0
+                    ? result.forEach(p => vacantPosition.append(`<option value="${ p.position_id }">${ p.name }</option>`))
+                    : vacantPosition.append(`<option disabled>No data</option>`)
+                
+                $('#vacantPosition').select2({
+                    placeholder: "Please select a vacant position",
+                });
+            } else toastr.error('There was an error in getting positions')
         },
         error: () => toastr.error('There was an error in getting positions')
     });
@@ -567,66 +568,66 @@ ifSelectorExist('#editManpowerRequestForm', () => {
     /** Get Manpower Request Information */
     GET_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
-            // console.log(result);
+            if(result) {
 
-            /** Set Requisition ID */
-            setValue('#requisitionID', result.requisition_id);
-
-            /** Set Vacant Position */
-            $('#vacantPosition').val(result.vacant_position.position_id).trigger('change');
-
-            /** Set Nature of Request */
-            $('#requestNature').val(result.request_nature).trigger('change');
-
-            /** Set number of staffs */
-            setValue('#staffsNeeded', result.staffs_needed);
-
-            /** Set Employment Type */
-            $('#employmentType').val(result.employment_type).trigger('change');
-
-            /** Set Deadline */
-            const deadline = result.deadline;
-            if(!isEmptyOrNull(deadline)) {
-                checkElement('#setDeadline');
-                showElement('#deadlineField');
-                setValue('#deadline', deadline);
-            }
-
-            /** Set Salary Range */
-            const minSalary = result.min_monthly_salary;
-            const maxSalary = result.max_monthly_salary;
-            if(!(isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary))) {
-                checkElement('#setSalaryRange');
-                showElement('#salaryRangeField');
-                setValue('#minSalary', minSalary);
-                setValue('#maxSalary', maxSalary);
-            }
-
-            /** Set Requisition  */
-            $('#requestDescription').summernote('code', result.content);
-
-            /** Set Date Requested */
-            const dateRequested = result.created_at;
-            setContent('#dateRequested', `
-                <div>${ formatDateTime(dateRequested, "dddd, MMMM D, YYYY") }</div>
-                <div>${ formatDateTime(dateRequested, "hh:mm A") }</div>
-            `);
-            setContent('#dateRequestedHumanized', fromNow(dateRequested));
-
-            /** Set Last Updated */
-            const lastUpdated = result.updated_at;
-            setContent('#lastUpdated', `
-                <div>${ formatDateTime(lastUpdated, "dddd, MMMM D, YYYY") }</div>
-                <div>${ formatDateTime(lastUpdated, "hh:mm A") }</div>
-            `);
-            setContent('#lastUpdatedHumanized', fromNow(lastUpdated));
-
+                /** Set Requisition ID */
+                setValue('#requisitionID', result.requisition_id);
+    
+                /** Set Vacant Position */
+                $('#vacantPosition').val(result.vacant_position.position_id).trigger('change');
+    
+                /** Set Nature of Request */
+                $('#requestNature').val(result.request_nature).trigger('change');
+    
+                /** Set number of staffs */
+                setValue('#staffsNeeded', result.staffs_needed);
+    
+                /** Set Employment Type */
+                $('#employmentType').val(result.employment_type).trigger('change');
+    
+                /** Set Deadline */
+                const deadline = result.deadline;
+                if(!isEmptyOrNull(deadline)) {
+                    checkElement('#setDeadline');
+                    showElement('#deadlineField');
+                    setValue('#deadline', deadline);
+                }
+    
+                /** Set Salary Range */
+                const minSalary = result.min_monthly_salary;
+                const maxSalary = result.max_monthly_salary;
+                if(!(isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary))) {
+                    checkElement('#setSalaryRange');
+                    showElement('#salaryRangeField');
+                    setValue('#minSalary', minSalary);
+                    setValue('#maxSalary', maxSalary);
+                }
+    
+                /** Set Requisition  */
+                $('#requestDescription').summernote('code', result.content);
+    
+                /** Set Date Requested */
+                const dateRequested = result.created_at;
+                setContent('#dateRequested', `
+                    <div>${ formatDateTime(dateRequested, "dddd, MMMM D, YYYY") }</div>
+                    <div>${ formatDateTime(dateRequested, "hh:mm A") }</div>
+                `);
+                setContent('#dateRequestedHumanized', fromNow(dateRequested));
+    
+                /** Set Last Updated */
+                const lastUpdated = result.updated_at;
+                setContent('#lastUpdated', `
+                    <div>${ formatDateTime(lastUpdated, "dddd, MMMM D, YYYY") }</div>
+                    <div>${ formatDateTime(lastUpdated, "hh:mm A") }</div>
+                `);
+                setContent('#lastUpdatedHumanized', fromNow(lastUpdated));
+            } else toastr.error('There was an error in getting manpower request information')
         },
         error: () => toastr.error('There was an error in getting manpower request information')
     });
 
-     /** Validate Summernote */
-     $('#requestDescription').summernote().on('summernote.change', () => {
+    /** Validate Summernote */
+    $('#requestDescription').summernote().on('summernote.change', () => {
         if($('#requestDescription').summernote('isEmpty')) {
             $('#requestDescription').next().addClass('border-danger');
             showElement('#requestDescriptionInvalidFeedback');

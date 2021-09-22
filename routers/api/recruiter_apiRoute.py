@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-from oauth2 import get_user, check_priviledge
+from oauth2 import get_user, authorized
 from schemas import db_schemas
 from datetime import date
 from sqlalchemy import or_
@@ -37,7 +37,7 @@ def get_user_info(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         user_info = db.query(User).filter(User.user_id == user_data.user_id)
         if not user_info.first():
             return "User does not exist"
@@ -63,7 +63,7 @@ def get_all_approved_requisitions(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Requisition).filter(Requisition.request_status == "Approved").all()
     except Exception as e:
         print(e)
@@ -76,7 +76,7 @@ def requisition_analytics(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         query = db.query(Requisition)
         approved_request = query.filter(Requisition.request_status == "Approved").count()
         with_job_post = query.join(JobPost).filter(Requisition.request_status == "Approved").filter(JobPost.requisition_id == Requisition.requisition_id).count()
@@ -96,7 +96,7 @@ def get_one_approved_requisitions(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
         if not requisition:
             return REQUISITION_NOT_FOUND_RESPONSE
@@ -122,7 +122,7 @@ def get_all_job_posts(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(JobPost).filter(JobPost.posted_by == user_data.user_id).order_by(JobPost.created_at).all()
     except Exception as e:
         print(e)
@@ -135,7 +135,7 @@ async def job_posts_analytics(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         query = db.query(JobPost)
         total = query.count()
         on_going = query.filter(or_(
@@ -160,7 +160,7 @@ async def get_one_job_post(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
         if not job_post:
             raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
@@ -178,7 +178,7 @@ async def post_vacant_job(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         new_job_post = JobPost(
             requisition_id = req.requisition_id,
             salary_is_visible = req.salary_is_visible,
@@ -206,7 +206,7 @@ async def update_job_post(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id)
         if not job_post.first():
             raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
@@ -235,7 +235,7 @@ async def get_all_applicants(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Applicant).all()
     except Exception as e:
         print(e)
@@ -248,7 +248,7 @@ async def applicants_analytics(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         query = db.query(Applicant)
         total = query.count()
         for_evaluation = query.filter(Applicant.status == "For evaluation").count()
@@ -284,7 +284,7 @@ async def get_all_applicants_per_job(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(Applicant.job_post_id == job_post_id).all()
     except Exception as e:
         print(e)
@@ -298,7 +298,7 @@ async def applicants_per_job_analytics(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         query = db.query(Applicant)
         total = query.filter(Applicant.job_post_id == job_post_id).count()
         for_evaluation = query.filter(
@@ -355,7 +355,7 @@ async def for_evaluation_applicants(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(
             Applicant.job_post_id == job_post_id,
             Applicant.status == 'For evaluation'
@@ -372,7 +372,7 @@ async def evaluated_applicants(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(
             Applicant.job_post_id == job_post_id,
             or_(
@@ -393,7 +393,7 @@ async def rejected_applicants(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         return db.query(Applicant).filter(
             Applicant.job_post_id == job_post_id,
             Applicant.status == 'Rejected from evaluation'
@@ -410,7 +410,7 @@ async def get_one_applicant(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id).first()
         if not applicant:
             return APPLICANT_NOT_FOUND_RESPONSE
@@ -429,7 +429,7 @@ async def evaluate_applicant(
     user_data: db_schemas.User = Depends(get_user)
 ):
     try:
-        check_priviledge(user_data, AUTHORIZED_USER)
+        authorized(user_data, AUTHORIZED_USER)
         applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
         if not applicant.first():
             raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)

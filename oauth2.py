@@ -12,13 +12,18 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl = "api/auth/login")
 # Get User
 def get_user(token: str = Depends(oauth2_scheme)):
     return verify_token(token)
-    
+
 
 # Check Priviledge
-def check_priviledge(user_data, user_type: str):
-    if user_data.user_type != user_type:
-        raise HTTPException(
-            status_code = 401,
-            detail = "Unauthorized",
-            headers = {"WWW-Authenticate": "Bearer"}
-        )
+def authorized(user_data, user_type: str):
+    try:
+        if user_data.user_type != user_type:
+            raise HTTPException(
+                status_code = 401,
+                detail = "Unauthorized",
+                headers = {"WWW-Authenticate": "Bearer"}
+            )
+        else:
+            return True
+    except Exception as e:
+        print(e)

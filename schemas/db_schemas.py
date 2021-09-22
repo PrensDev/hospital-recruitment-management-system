@@ -1,8 +1,6 @@
 # Import Package
 from datetime import datetime, date, time
 from typing import List, Optional
-
-from sqlalchemy.sql.functions import concat
 from pydantic import BaseModel
 
 

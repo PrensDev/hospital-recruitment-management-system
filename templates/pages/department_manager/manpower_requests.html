@@ -24,7 +24,7 @@
             <div class="row" id="manpowerRequestAnalytics">
 
                 <!-- Total Manpower Requests -->
-                <div class="col-md-6 col-12">
+                <div class="col-md-6">
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fas fa-people-carry"></i></span>
         
@@ -36,7 +36,7 @@
                 </div>
                 
                 <!-- Completed Requests -->
-                <div class="col-md-6 col-12">
+                <div class="col-md-6">
                     <div class="info-box">
                         <span class="info-box-icon bg-success"><i class="fas fa-calendar-check"></i></span>
         
@@ -47,10 +47,22 @@
                     </div>
                 </div>
 
-                <!-- Approved Requests -->
-                <div class="col-md-6 col-12">
+                <!-- Signed Requests -->
+                <div class="col-md-4">
                     <div class="info-box">
-                        <span class="info-box-icon bg-warning"><i class="fas fa-clipboard-check"></i></span>
+                        <span class="info-box-icon bg-secondary"><i class="fas fa-file-signature"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">Signed Requests</span>
+                            <span class="info-box-number" id="signedRequestsCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approved Requests -->
+                <div class="col-md-4">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-warning"><i class="fas fa-check-double"></i></span>
         
                         <div class="info-box-content">
                             <span class="info-box-text">Approved Requests</span>
@@ -60,7 +72,7 @@
                 </div>
 
                 <!-- Rejected Requests -->
-                <div class="col-md-6 col-12">
+                <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-danger"><i class="fas fa-file-excel"></i></span>
         
@@ -72,7 +84,7 @@
                 </div>
             </div>
 
-            <!-- Card -->
+            <!-- Manpower Request Card -->
             <div class="card card-primary card-outline">
 
                 <!-- Card Header -->
@@ -106,7 +118,13 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="py-5 text-secondary"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>

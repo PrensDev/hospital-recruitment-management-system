@@ -5,8 +5,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database import get_db
 from hashing import Hash
+from models import User
 
-import models
 
 # Router Instance
 router = APIRouter(
@@ -19,7 +19,7 @@ router = APIRouter(
 @router.post("/login")
 async def login(res: Response, req: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     try:
-        user = db.query(models.User).filter(models.User.email == req.username).first()
+        user = db.query(User).filter(User.email == req.username).first()
         if user:
             matched = Hash.verify(req.password, user.password)
             if matched:

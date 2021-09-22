@@ -1,4 +1,5 @@
 # Import Packages
+from sqlalchemy.orm.relationships import foreign
 from sqlalchemy.sql.expression import null
 from database import Base
 from sqlalchemy import text
@@ -72,10 +73,20 @@ class User(Base):
         back_populates = "manpower_request_by",
         foreign_keys = "Requisition.requested_by"
     )
+    signed_manpower_requests = relationship(
+        "Requisition",
+        back_populates = "manpower_request_signed_by",
+        foreign_keys = "Requisition.signed_by"
+    )
     reviewed_manpower_requests = relationship(
         "Requisition",
         back_populates = "manpower_request_reviewed_by",
         foreign_keys = "Requisition.reviewed_by"
+    )
+    rejected_manpower_requests = relationship(
+        "Requisition",
+        back_populates = "manpower_request_rejected_by",
+        foreign_keys = "Requisition.rejected_by"
     )
     job_posts = relationship(
         "JobPost",
@@ -90,6 +101,16 @@ class User(Base):
         "Applicant",
         back_populates = "screening_done_by",
         foreign_keys = "Applicant.screened_by"
+    )
+    hired_applicants = relationship(
+        "Applicant",
+        back_populates = "hiring_done_by",
+        foreign_keys = "Applicant.hired_by"
+    )
+    rejected_applicants = relationship(
+        "Applicant",
+        back_populates = "rejection_done_by",
+        foreign_keys = "Applicant.rejected_by"
     )
     set_schedules = relationship(
         "InterviewSchedule",
@@ -287,6 +308,15 @@ class Requisition(Base):
         DateTime,
         nullable = True
     )
+    signed_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = True
+    )
+    signed_at = Column(
+        DateTime,
+        nullable = True
+    )
     reviewed_by = Column(
         String(36),
         ForeignKey("users.user_id"),
@@ -297,6 +327,15 @@ class Requisition(Base):
         nullable = True
     )
     completed_at = Column(
+        DateTime,
+        nullable = True
+    )
+    rejected_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = True
+    )
+    rejected_at = Column(
         DateTime,
         nullable = True
     )
@@ -325,6 +364,16 @@ class Requisition(Base):
         "User",
         back_populates = "reviewed_manpower_requests",
         foreign_keys = "Requisition.reviewed_by"
+    )
+    manpower_request_signed_by = relationship(
+        "User",
+        back_populates = "signed_manpower_requests",
+        foreign_keys = "Requisition.signed_by"
+    )
+    manpower_request_rejected_by = relationship(
+        "User",
+        back_populates = "rejected_manpower_requests",
+        foreign_keys = "Requisition.rejected_by"
     )
     vacant_position = relationship(
         "Position",
@@ -466,8 +515,18 @@ class Applicant(Base):
         DateTime,
         nullable = True
     )
+    hired_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = True  
+    )
+    hired_at = Column(
+        String(36),
+        nullable = True
+    )
     rejected_by = Column(
-        DateTime,
+        String(36),
+        ForeignKey("users.user_id"),
         nullable = True
     )
     rejected_at = Column(
@@ -507,6 +566,16 @@ class Applicant(Base):
         "User",
         back_populates = "screened_applicants",
         foreign_keys = "Applicant.screened_by"
+    )
+    hiring_done_by = relationship(
+        "User",
+        back_populates = "hired_applicants",
+        foreign_keys = "Applicant.hired_by"
+    )
+    rejection_done_by = relationship(
+        "User",
+        back_populates = "rejected_applicants",
+        foreign_keys = "Applicant.rejected_by"
     )
 
 
@@ -842,6 +911,11 @@ class OnboardingTask(Base):
     task_type = Column(
         String(255),
         nullable = False
+    )
+    is_general = Column(
+        Boolean,
+        nullable = False,
+        default = False
     )
     department_id = Column(
         String(36),
