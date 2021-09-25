@@ -72,10 +72,36 @@
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="{{url_for('static', path='/dist/css/adminlte.min.css')}}">
 
-    <!-- <style>
-        * {
-            font-weight: 600;
+    <style>
+        .skeleton-loader {
+            display: block;
+            height: 22px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0),
+                rgba(255, 255, 255, 0),
+                rgba(255, 255, 255, 0.5) 50%,
+                rgba(255, 255, 255, 0) 80%
+            ), #eee;
+            background-repeat: repeat-y;
+            background-size: 50px 500px;
+            background-position: 0 0;
+            animation: shine 1s infinite;
         }
-    </style> -->
+
+        @keyframes shine {
+            to {
+                background-position: 100% 0, /* move highlight to right */ 0 0;
+            }
+        }
+
+        .skeleton-loader.sm { height: 17px; }
+
+        .skeleton-loader.w-25 { width: 25%; }
+        .skeleton-loader.w-50 { width: 50%; }
+        .skeleton-loader.w-75 { width: 75%; }
+    </style>
 
 </head>

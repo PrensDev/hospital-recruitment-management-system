@@ -1,4 +1,4 @@
-{% extends "pages/hiring_manager/_layout.html" %} 
+{% extends "pages/department_head/_layout.html" %} 
 
 
 {% block content %}
@@ -8,9 +8,11 @@
         <div class="container-fluid">
             
             <!-- Title -->
-            <h1>{{ page_title }}</h1>
-            <p class="text-muted">{{ sub_title }}</p>
-
+            <div class="col-sm-6">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">{{ sub_title }}</p>
+            </div>
+    
         </div>
     </section>
 
@@ -21,8 +23,8 @@
             <!-- Manpower Requests Analytics -->
             <div class="row" id="manpowerRequestAnalytics">
 
-                <!-- Total Manpower Requests Count -->
-                <div class="col-md-6 col-12">
+                <!-- Total Manpower Requests -->
+                <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fas fa-people-carry"></i></span>
         
@@ -32,33 +34,21 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- For Review Requests -->
-                <div class="col-md-6 col-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-warning"><i class="fas fa-redo"></i></span>
-        
-                        <div class="info-box-content">
-                            <span class="info-box-text">For Review</span>
-                            <span class="info-box-number" id="forReviewRequestsCount">0</span>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Approved Requests -->
-                <div class="col-md-6 col-12">
+                <!-- Signed Requests -->
+                <div class="col-md-4">
                     <div class="info-box">
-                        <span class="info-box-icon bg-success"><i class="fas fa-clipboard-check"></i></span>
+                        <span class="info-box-icon bg-secondary"><i class="fas fa-file-signature"></i></span>
         
                         <div class="info-box-content">
-                            <span class="info-box-text">Approved Requests</span>
-                            <span class="info-box-number" id="approvedRequestsCount">0</span>
+                            <span class="info-box-text">Signed Requests</span>
+                            <span class="info-box-number" id="signedRequestsCount">0</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Rejected Requests -->
-                <div class="col-md-6 col-12">
+                <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-danger"><i class="fas fa-file-excel"></i></span>
         
@@ -70,47 +60,61 @@
                 </div>
             </div>
 
-            <!-- Card -->
+            <!-- Manpower Request Card -->
             <div class="card card-primary card-outline">
 
                 <!-- Card Header -->
-                <div class=" p-3 d-flex justify-content-between">
-                    <div>
-                        <h3 class="card-title">Lists of Manpower Requests</h3>
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="card-title">Lists of Manpower Requests</h3>
+                        </div>
+                        <div>
+                            <a href="{{ D_WEB_ROUTE }}add-manpower-request" class="btn btn-sm btn-primary">
+                                <span>Add Manpower Request</span>
+                                <i class="fas fa-plus ml-1"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Card Body -->
                 <div class="card-body">
+                    
                     <div class="table-responsive">
                         <table id="manpowerRequestDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Position Title</th>
+                                    <th>Requisition No.</th>
                                     <th>Staffs Needed</th>
                                     <th>Nature of Request</th>
                                     <th>Status</th>
                                     <th>Date Requested</th>
-                                    <th class="text-center">Actions</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="py-5 text-secondary"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 {% endblock %}
 
 
 {% block page_modals %}
-    {% include "pages/hiring_manager/modals/manpower_requests_modal.html" %}
 {% endblock %}
 
 
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/hiring_manager/manpower_requests.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/pages/department_head/manpower_requests.js')}}"></script>
 {% endblock %}
-

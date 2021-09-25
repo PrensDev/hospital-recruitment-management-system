@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 22, 2021 at 01:46 PM
+-- Generation Time: Sep 25, 2021 at 11:58 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.4.23
 
@@ -252,6 +252,7 @@ INSERT INTO `positions` (`position_id`, `department_id`, `name`, `description`, 
 
 CREATE TABLE `requisitions` (
   `requisition_id` varchar(36) NOT NULL,
+  `requisition_no` varchar(255) NOT NULL,
   `requested_by` varchar(36) NOT NULL,
   `position_id` varchar(36) NOT NULL,
   `employment_type` varchar(255) NOT NULL,
@@ -278,8 +279,9 @@ CREATE TABLE `requisitions` (
 -- Dumping data for table `requisitions`
 --
 
-INSERT INTO `requisitions` (`requisition_id`, `requested_by`, `position_id`, `employment_type`, `request_nature`, `staffs_needed`, `min_monthly_salary`, `max_monthly_salary`, `content`, `request_status`, `deadline`, `signed_by`, `signed_at`, `reviewed_by`, `reviewed_at`, `completed_at`, `rejected_by`, `rejected_at`, `remarks`, `created_at`, `updated_at`) VALUES
-('54cbbb97-1b95-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'b4ef84d2-1b94-11ec-9d57-6c626d3a5d34', 'Full Time', 'New/Addition', 4, NULL, NULL, '<p>Test</p>', 'For signature', '2021-10-01 22:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-09-22 19:07:52', '2021-09-22 19:07:52');
+INSERT INTO `requisitions` (`requisition_id`, `requisition_no`, `requested_by`, `position_id`, `employment_type`, `request_nature`, `staffs_needed`, `min_monthly_salary`, `max_monthly_salary`, `content`, `request_status`, `deadline`, `signed_by`, `signed_at`, `reviewed_by`, `reviewed_at`, `completed_at`, `rejected_by`, `rejected_at`, `remarks`, `created_at`, `updated_at`) VALUES
+('2df685aa-1dce-11ec-8b6c-6c626d3a5d34', 'REQ-KTZG0DEE-MX892I', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'b4ef84d2-1b94-11ec-9d57-6c626d3a5d34', 'Full Time', 'New/Addition', 2, NULL, NULL, '<p>test</p>', 'For signature', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-09-25 14:59:51', '2021-09-25 14:59:51'),
+('83946187-1dd0-11ec-8b6c-6c626d3a5d34', 'REQ-KTZGIL3R-BQF298', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'a7bbc44d-1b94-11ec-9d57-6c626d3a5d34', 'Full Time', 'New/Addition', 1, NULL, NULL, '<p><b>From ICU Department</b></p><p>Lorem ipsum dolor sit amet consectetur&nbsp;<span style=\"text-align: justify;\">Se</span>d ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. </p><ul><li><span style=\"font-size: 1rem;\">Duis aute irure dolor in reprehenderit</span></li><li><span style=\"font-size: 1rem;\">Excepteur sint occaecat cupidatat non proident<br></span></li></ul><p><span style=\"font-size: 1rem;\">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</span></p><p><span style=\"font-size: 1rem;\"><br></span></p><table class=\"table table-bordered\"><tbody><tr><td>&nbsp;dolorem ipsum quia<br></td><td>dolor<br></td><td>amet</td></tr><tr><td><span style=\"text-align: justify;\">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti</span><br></td><td>2</td><td>1</td></tr><tr><td><span style=\"text-align: justify;\">quos dolores et quas molestias excepturi sint occaecati cupiditate non provident,&nbsp;</span><br></td><td>3</td><td>1</td></tr><tr><td><span style=\"text-align: justify;\">similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.&nbsp;</span><br></td><td>1</td><td>1</td></tr></tbody></table><p><span style=\"font-size: 1rem;\"> </span></p><p><span style=\"font-size: 1rem;\">Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</span><br></p><p><br></p>', 'For signature', '2021-09-30 15:16:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-09-25 15:16:33', '2021-09-25 16:13:30');
 
 -- --------------------------------------------------------
 
@@ -414,6 +416,7 @@ ALTER TABLE `positions`
 --
 ALTER TABLE `requisitions`
   ADD PRIMARY KEY (`requisition_id`),
+  ADD UNIQUE KEY `requisition_no` (`requisition_no`),
   ADD KEY `requested_by` (`requested_by`),
   ADD KEY `position_id` (`position_id`),
   ADD KEY `signed_by` (`signed_by`),

@@ -15,14 +15,17 @@ JobPost             = models.JobPost
 Interviewee         = models.Interviewee
 InterviewSchedule   = models.InterviewSchedule
 
+
 # Router
 router = APIRouter(
     prefix = "/h",
     tags = ["Hiring Manager Web Routes"]
 )
 
+
 # Templates
 templates = Jinja2Templates(directory = "templates")
+
 
 # Templates Path
 TEMPLATES_PATH = "/pages/hiring_manager/"
@@ -46,7 +49,6 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
         })
     else:
         return await errTemplate.page_not_found(req)
-
 
 
 # ===========================================================

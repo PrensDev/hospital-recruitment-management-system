@@ -36,10 +36,17 @@
                     
                     <div class="card-body">
 
+                        <!-- Requisition ID -->
                         <input type="hidden" id="requisitionID" name="requisitionID">
+
+                        <!-- Requisition No. -->
+                        <div class="form-group">
+                            <label for="requisitionNo">Requisiition No.</label>
+                            <input type="text" class="form-control" id="requisitionNo" name="requisitionNo" readonly>
+                        </div>
                         
                         <div class="form-row">
-        
+
                             <!-- Vacant Position -->
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -234,38 +241,45 @@
             </div>
 
             <!-- Mnapower Request Details -->
-            <div class="col-lg-4">
-                <div class="card card-primary card-outline">
-                    <div class="card-header align-items-center">
-                        <h3 class="card-title">Manpower Request Details</h3>
+            <div class="col-lg-4">            
+                <div class="timeline">
+                    <div class="time-label">
+                        <span class="bg-primary shadow-sm">Manpower Request Timeline</span>
+                    </div>
+                    <div>
+                        <i class="fas fa-edit bg-info"></i>
+                        <div class="timeline-item">
+                            <div class="time">
+                                <i class="fas fa-clock mr-1"></i>
+                                <span id="lastUpdatedHumanized"></span>
+                            </div>
+                            
+                            <div class="timeline-header">Last Updated</div>
 
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
+                            <div class="timeline-body">
+                                <div class="small" id="lastUpdated"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <table class="table w-100" width="100%" cellspacing="0">
-                            <tr>
-                                <td>
-                                    <h6 class="mb-1">Date Requested</h6>
-                                    <div>
-                                        <div id="dateRequested"></div>
-                                        <div class="small text-secondary" id="dateRequestedHumanized"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h6 class="mb-1">Last Updated</h6>
-                                    <div>
-                                        <div id="lastUpdated"></div>
-                                        <div class="small text-secondary" id="lastUpdatedHumanized"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
+
+                    <div>
+                        <i class="fas fa-pen bg-primary"></i>
+                        <div class="timeline-item">
+                            <div class="time">
+                                <i class="fas fa-clock mr-1"></i>
+                                <span id="dateRequestedHumanized"></span>
+                            </div>
+                            
+                            <div class="timeline-header">Created</div>
+
+                            <div class="timeline-body">
+                                <div class="small" id="dateRequested"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <i class="fas fa-clock bg-secondary"></i>
                     </div>
                 </div>
             </div>

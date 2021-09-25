@@ -1,5 +1,4 @@
 # Import Packages
-from routers.api.test_apiRoute import DEPARTMENT_NOT_FOUND_RESPONSE
 from sqlalchemy.sql.expression import or_
 from typing import List, Text
 from fastapi import APIRouter, Depends
@@ -74,7 +73,7 @@ async def create_manpower_request(
 
 
 # Get All Manpower Request
-@router.get("/requisitions", response_model = List[db_schemas.ShowManpowerRequest])
+@router.get("/requisitions", response_model = List[deptMngr.ShowManpowerRequest])
 async def get_all_requisitions(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
@@ -178,7 +177,7 @@ async def requisition_analytics(
 
 
 # Get One Manpower Request
-@router.get("/requisitions/{requisition_id}", response_model = db_schemas.ShowManpowerRequest)
+@router.get("/requisitions/{requisition_id}", response_model = deptMngr.ShowManpowerRequest)
 async def get_one_requisition(
     requisition_id: str,
     db: Session = Depends(get_db), 
@@ -199,19 +198,19 @@ async def get_one_requisition(
 @router.put("/requisitions/{requisition_id}", status_code = 202)
 async def update_requisition(
     requisition_id: str,
-    req: deptMngr.CreateManpowerRequest,
+    req: deptMngr.UpdateManpowerRequest,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id)
-        if not requisition.first():
-            raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
-        else:
-            requisition.update(req.dict())
-            db.commit()
-            return {"message": "A requisition has been updated"}
+        if(authorized(user_data, AUTHORIZED_USER)):
+            requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id)
+            if not requisition.first():
+                raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
+            else:
+                requisition.update(req.dict())
+                db.commit()
+                return {"message": "A requisition has been updated"}
     except Exception as e:
         print(e)
 

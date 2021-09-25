@@ -7,6 +7,16 @@
 // Initialize Plugins for Custom Controls
 ifSelectorExist('#addManpowerRequestForm', () => {
     
+    /** Set Requisition No. */
+    setValue('#requisitionNo', () => {
+        const generateShortUID = () => {
+            const id = () => { return ("000" + ((Math.random() * 46656) | 0).toString(36)).slice(-3); }
+            return id() + id();
+        }
+        
+        return (`req-${ Date.now().toString(36) }-${ generateShortUID() }`).toUpperCase(); 
+    });
+
     /** Vacant Position For Add Select2 */
     GET_ajax(`${ DM_API_ROUTE }department/positions`, {
         success: result => {
@@ -79,8 +89,11 @@ onChange('#setSalaryRange', () => isChecked('#setSalaryRange')
 /** Validate Add Manpower Request Form */
 validateForm('#addManpowerRequestForm', {
     rules: {
+        requisitionNo: {
+            required: true
+        },
         vacantPosition: {
-            required: true,
+            required: true
         },
         requestNature: {
             required: true
@@ -113,6 +126,9 @@ validateForm('#addManpowerRequestForm', {
         },
     },
     messages:{
+        requisitionNo: {
+            required: 'Please reload the page to generate requisition number'
+        },
         vacantPosition: {
             required: 'Position is required',
         },
@@ -158,6 +174,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
     const get = (n) => { return formData.get(n) }
     
     const data = {
+        requisition_no: get('requisitionNo'),
         position_id: get('vacantPosition'),
         employment_type: get("employmentType"),
         request_nature: get("requestNature"),
@@ -176,6 +193,9 @@ onClick('#confirmAddManpowerRequestBtn', () => {
                     message: 'A new request has been submitted', 
                     redirectURL: `${ DM_WEB_ROUTE }manpower-requests`
                 });
+            } else {
+                hideModal('#confirmAddManpowerRequestModal')
+                toastr.error("There was an error in creating manpower request");
             }
         },
         error: () => {
@@ -201,15 +221,18 @@ initDataTable('#manpowerRequestDT', {
         // Created At (For Default Sorting)
         { data: 'created_at', visible: false },
 
-        // Vacant Position
-        { data: "vacant_position.name" },
+        // Requisition No.
+        { data: 'requisition_no', class: 'text-nowrap' },
 
         // Staffs Needed
         { 
             data: null,
             render: data => {
                 staffsNeeded = data.staffs_needed;
-                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`;
+                return `
+                    <div>${ data.vacant_position.name }</div>
+                    <div class="small text-secondary">${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }</div>
+                `;
             }
         },
 
@@ -322,14 +345,13 @@ initDataTable('#manpowerRequestDT', {
                         </div>
 
                         <div class="dropdown-menu dropdown-menu-right">
-                            <div 
+                            <a 
                                 class="dropdown-item d-flex"
-                                role="button"
-                                onclick="viewManpowerRequest('${ requisitionID }')"
+                                href="${ DM_WEB_ROUTE }manpower-requests/${ requisitionID }"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <span>View Details</span>
-                            </div>
+                            </a>
 
                             ${ requestStatus === "For signature" ? editBtn + cancelBtn : "" }
 
@@ -355,8 +377,6 @@ initDataTable('#manpowerRequestDT', {
 const manpowerRequestAnalytics = () => GET_ajax(`${ DM_API_ROUTE }requisitions/analytics`, {
     success: result => {
         if(result) {
-
-            console.log(result);
 
             // Set Total Mapower Requests Count
             setContent('#totalManpowerRequestsCount', formatNumber(result.total));
@@ -385,11 +405,17 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
  */
 
 /** View Manpower Request */
-const viewManpowerRequest = (requisitionID) => {
+ifSelectorExist('#manpowerRequestFormDocument', () => {
+
+    const requisitionID = window.location.pathname.split('/')[3];
+    
     GET_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
 
             const requestedBy = result.manpower_request_by;
+
+            // Set Requisition No
+            setContent('#requisitionNo', result.requisition_no);
             
             // Set Requestor Name
             setContent('#requestorName', formatName("L, F M., S", {
@@ -482,26 +508,30 @@ const viewManpowerRequest = (requisitionID) => {
                     : formatDateTime(completedAt, "DateTime")
             });
 
-            // Set Modal Footer
-            var modalPositiveBtn;
-            if(result.request_status === 'For signature') modalPositiveBtn = `
-                <a href="${ DM_WEB_ROUTE }edit-manpower-request/${ result.requisition_id }" class="btn btn-info">
-                    <span>Edit</span>
-                    <i class="fas fa-edit ml-1"></i>
-                </a>`
-            else modalPositiveBtn = '';
-            
-            setContent('#viewManpowerRequestModalFooter', `
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                ${ modalPositiveBtn }
-            `);
+            // Set Date Requested For Timeline Humanized
+            setContent('#dateRequestedForTimelineHumanized', fromNow(result.created_at));
+
+            // Set Date Requested For Timeline
+            setContent('#dateRequestedForTimeline', `
+                <div>${ formatDateTime(result.created_at, 'Full Date') }</div>
+                <div>${ formatDateTime(result.created_at, 'Time') }</div>
+            `)
+
+            // Set Last Updated Humanized
+            setContent('#lastUpdatedHumanized', fromNow(result.updated_at));
+
+            // Set Last Updated
+            setContent('#lastUpdated', `
+                <div>${ formatDateTime(result.updated_at, 'Full Date') }</div>
+                <div>${ formatDateTime(result.updated_at, 'Time') }</div>
+            `)
 
             // Show View Manpower Request Modal
             showModal('#viewManpowerRequestModal');
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });
-}
+})
 
 
 /** 
@@ -572,6 +602,9 @@ ifSelectorExist('#editManpowerRequestForm', () => {
 
                 /** Set Requisition ID */
                 setValue('#requisitionID', result.requisition_id);
+
+                /** Set Requisition No. */
+                setValue('#requisitionNo', result.requisition_no);
     
                 /** Set Vacant Position */
                 $('#vacantPosition').val(result.vacant_position.position_id).trigger('change');
