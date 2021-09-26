@@ -420,6 +420,7 @@ $(() => {
 
         setTimeout(() => {
             if(alertTheme === 'success') toastr.success(alertMessage);
+            if(alertTheme === 'info')    toastr.info(alertMessage);
             if(alertTheme === 'warning') toastr.warning(alertMessage);
             if(alertTheme === 'error')   toastr.error(alertMessage);
         }, 1000)

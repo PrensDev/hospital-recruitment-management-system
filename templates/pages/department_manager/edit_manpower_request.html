@@ -22,7 +22,67 @@
 
             <!-- Edit Manpower Request Form -->
             <div class="col-lg-8">
-                <form class="card card-primary card-outline" id="editManpowerRequestForm">
+                
+                <!-- Loader -->
+                <div class="card card-primary card-outline" id="editManpowerRequestFormLoader">
+                    <div class="card-header">
+                        <div class="skeleton-loader w-50 m-0"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="skeleton-loader w-25"></div>
+                                    <div class="skeleton-loader" style="height: 35px"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="skeleton-loader w-50"></div>
+                                    <div class="skeleton-loader" style="height: 35px"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="skeleton-loader w-50"></div>
+                                    <div class="skeleton-loader" style="height: 35px"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="skeleton-loader w-50"></div>
+                                    <div class="skeleton-loader" style="height: 35px"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="skeleton-loader w-50"></div>
+                                    <div class="skeleton-loader" style="height: 35px"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="skeleton-loader"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="skeleton-loader"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="skeleton-loader w-50"></div>
+                                    <div class="skeleton-loader" style="height: 25rem"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+
+                <!-- Form -->
+                <form class="card card-primary card-outline" id="editManpowerRequestForm" style="display: none">
         
                     <div class="card-header align-items-center">
                         <h3 class="card-title">Edit Manpower Request</h3>
@@ -257,7 +317,10 @@
                             <div class="timeline-header">Last Updated</div>
 
                             <div class="timeline-body">
-                                <div class="small" id="lastUpdated"></div>
+                                <div class="small" id="lastUpdated">
+                                    <div class="skeleton-loader"></div>
+                                    <div class="skeleton-loader sm w-75"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -273,7 +336,10 @@
                             <div class="timeline-header">Created</div>
 
                             <div class="timeline-body">
-                                <div class="small" id="dateRequested"></div>
+                                <div class="small" id="dateRequested">
+                                    <div class="skeleton-loader"></div>
+                                    <div class="skeleton-loader sm w-75"></div>
+                                </div>
                             </div>
                         </div>
                     </div>

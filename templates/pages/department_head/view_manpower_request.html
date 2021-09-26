@@ -1,4 +1,4 @@
-{% extends "pages/department_manager/_layout.html" %} 
+{% extends "pages/department_head/_layout.html" %} 
 
 
 {% block content %}
@@ -161,22 +161,63 @@
             <!-- Options and Details -->
             <div class="col-md-4">
 
-                <!-- Options -->
-                <div class="card card-primary card-outline">
-                    <div class="card-header align-items-center">
-                        <h3 class="card-title">Options</h3>
+                <!-- Options Loader -->
+                <div class="card card-primary card-outline" id="signatureFormLoader">
+                    <div class="card-header">
+                        <h3 class="card-title">Action</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="skeleton-loader w-75"></div>
+                        <div class="skeleton-loader" style="height: 35px"></div>
+                        <div class="skeleton-loader" style="height: 35px"></div>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
 
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
+                <!-- Options -->
+                <form class="card card-primary card-outline" id="signatureForm">
+                    <div class="card-header">
+                        <h3 class="card-title">Action</h3>
+                    </div>
+                    <div class="card-body">
+                        <label>Select decision for this request</label>
+                        <div class="form-group">
+                            <div class="d-flex">
+                                <div class="custom-control custom-radio">
+                                    <div class="icheck-danger d-inline">
+                                        <input 
+                                            type="radio" 
+                                            name="requestStatus" 
+                                            id="rejectRequest"
+                                            value="Rejected for signature"
+                                        >
+                                        <label for="rejectRequest">Reject</label>
+                                    </div>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <div class="icheck-success d-inline">
+                                        <input 
+                                            type="radio" 
+                                            name="requestStatus" 
+                                            id="signRequest"
+                                            value="For approval"
+                                        >
+                                        <label for="signRequest">Sign</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="float-right">
+                            <button type="button" class="btn btn-sm btn-default" onclick="history.back()">Cancel</button>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <span>Submit</span>
+                                <i class="fas fa-check ml-1"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="card-body" id="manpowerRequestOptions">
-                        <div class="skeleton-loader"></div>
-                        <div class="skeleton-loader"></div>
-                    </div>
-                </div>
+                </form>
 
                 <!-- Timeline -->
                 <div class="timeline">
@@ -234,10 +275,10 @@
 
 
 {% block page_modals %}
-    {% include "pages/department_manager/modals/view_manpower_request_modal.html" %}
+    {% include "pages/department_head/modals/view_manpower_request_modal.html" %}
 {% endblock %}
 
 
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/department_manager/manpower_requests.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/pages/department_head/manpower_requests.js')}}"></script>
 {% endblock %}

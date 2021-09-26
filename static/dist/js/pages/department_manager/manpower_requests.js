@@ -74,6 +74,9 @@ ifSelectorExist('#addManpowerRequestForm', () => {
         }
     });
 
+    /** Remove loader */
+    showElement('#addManpowerRequestForm');
+    $('#addManpowerRequestFormLoader').remove();
 });
 
 /** On Set Salary Range Change */
@@ -258,7 +261,7 @@ initDataTable('#manpowerRequestDT', {
                 } else if(requestStatus === "Approved") {
                     bagdeTheme = "success";
                     badgeIcon = "thumbs";
-                } else if(requestStatus === "Rejected") {
+                } else if(requestStatus === "Rejected for signing" || requestStatus === "Rejected for approval") {
                     bagdeTheme = "danger";
                     badgeIcon = "times";
                 } else if(requestStatus === "Completed") {
@@ -525,13 +528,48 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                 <div>${ formatDateTime(result.updated_at, 'Full Date') }</div>
                 <div>${ formatDateTime(result.updated_at, 'Time') }</div>
             `)
+            
+            // Set Manpower Request Options
+            setContent('#manpowerRequestOptions', () => {
+                const requisitionID = result.requisition_id;
+                const requestStatus = result.request_status;
 
-            // Show View Manpower Request Modal
-            showModal('#viewManpowerRequestModal');
+                if(requestStatus === "For signature") return `
+                    <a 
+                        class="btn btn-sm btn-info btn-block"
+                        href="${ DM_WEB_ROUTE }edit-manpower-request/${ requisitionID }"
+                    >
+                        <span>Edit request</span>
+                        <i class="fas fa-edit ml-1"></i>
+                    </a>
+
+                    <div class="btn btn-sm btn-warning btn-block" onclick="cancelManpowerRequest('${ requisitionID }')">
+                        <span>Cancel request</span>
+                        <i class="fas fa-times-circle ml-1"></i>
+                    </div>
+
+                    <hr>
+
+                    <div class="btn btn-sm btn-secondary btn-block">
+                        <span>Print Manpower Request Form</span>
+                        <i class="fas fa-print ml-1"></i>
+                    </div>
+                `
+                else if(requestStatus === "For approval" || requestStatus === "Approved") {
+                    $('#cancelManpowerRequestModal').remove();
+                    
+                    return `
+                        <div class="btn btn-sm btn-secondary btn-block">
+                            <span>Print Manpower Request Form</span>
+                            <i class="fas fa-print ml-1"></i>
+                        </div>
+                    `
+                }
+            })
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });
-})
+});
 
 
 /** 
@@ -671,6 +709,10 @@ ifSelectorExist('#editManpowerRequestForm', () => {
             enableElement('#saveBtn');
         }
     });
+    
+    /** Remove Loader */
+    showElement('#editManpowerRequestForm');
+    $('#editManpowerRequestFormLoader').remove();
 });
 
 /** Validate Edit Manpower Request Form */
@@ -811,17 +853,23 @@ validateForm('#cancelManpowerRequestForm', {
     rules: { requisitionID: { required: true }},
     messages: { requisitionID: { required: 'Requisition ID should be here' }},
     submitHandler: () => {
-        const formData = generateFormData('#cancelManpowerRequestForm');
-
-        const requisitionID = formData.get('requisitionID');
+        const requisitionID = generateFormData('#cancelManpowerRequestForm').get('requisitionID');
 
         DELETE_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
             success: result => {
                 if(result) {
-                    hideModal('#cancelManpowerRequestModal');
-                    reloadDataTable('#manpowerRequestDT');
-                    manpowerRequestAnalytics();
-                    toastr.info('A manpower request is successfully canceled');
+                    if($('#manpowerRequestFormDocument').length) {
+                        setSessionedAlertAndRedirect({
+                            theme: 'info',
+                            message: 'A manpower request has been canceled',
+                            redirectURL: `${ DM_WEB_ROUTE }manpower-requests`
+                        });
+                    } else {
+                        hideModal('#cancelManpowerRequestModal');
+                        reloadDataTable('#manpowerRequestDT');
+                        manpowerRequestAnalytics();
+                        toastr.info('A manpower request has been canceled');
+                    }
                 }
             },
             error: () => {

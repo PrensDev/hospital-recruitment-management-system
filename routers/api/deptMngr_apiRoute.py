@@ -215,24 +215,27 @@ async def update_requisition(
         print(e)
 
 
-# # Delete Manpower Request
-# @router.delete("/requisitions/{requisition_id}")
-# async def delete_requisition(
-#     requisition_id: str,
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         authorized(user_data, AUTHORIZED_USER)
-#         requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id)
-#         if not requisition.first():
-#             raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
-#         else:
-#             requisition.delete(synchronize_session = False)
-#             db.commit()
-#             return {"message": "A requisition is successfully deleted"}
-#     except Exception as e:
-#         print(e) 
+# Delete Manpower Request
+@router.delete("/requisitions/{requisition_id}")
+async def delete_requisition(
+    requisition_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            requisition = db.query(Requisition).filter(
+                Requisition.requisition_id == requisition_id,
+                Requisition.requested_by == user_data.user_id
+            )
+            if not requisition.first():
+                raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
+            else:
+                requisition.delete(synchronize_session = False)
+                db.commit()
+                return {"message": "A requisition is successfully deleted"}
+    except Exception as e:
+        print(e) 
 
 
 # # ====================================================================
