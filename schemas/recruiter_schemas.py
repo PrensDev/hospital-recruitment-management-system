@@ -5,6 +5,17 @@ from pydantic import BaseModel
 from schemas.user_schemas import ShowUser, ShowPosition
 
 
+# Show Job Post
+class JobPost(BaseModel):
+    job_post_id: str
+    job_posted_by: ShowUser
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
 # Show Manpower Request
 class ShowManpowerRequest(BaseModel):
     requisition_id: str
@@ -29,12 +40,7 @@ class ShowManpowerRequest(BaseModel):
     remarks: Optional[str]
     created_at: datetime
     updated_at: Optional[datetime]
+    job_post: List[Optional[JobPost]]
 
     class Config():
         orm_mode = True
-
-
-# Sign Manpower Request
-class SignManpowerRequest(BaseModel):
-    request_status: str
-    remarks: Optional[str]

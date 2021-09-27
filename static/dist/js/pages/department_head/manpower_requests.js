@@ -37,43 +37,46 @@ initDataTable('#manpowerRequestDT', {
             render: data => {
                 const requestStatus = data.request_status;
 
-                var bagdeTheme;
-                var badgeIcon;
+                var bagdeTheme, badgeIcon, bagdeContent;
                 let validStatus = true;
                 
                 if(requestStatus === "For signature") {
                     bagdeTheme = "secondary";
                     badgeIcon = "file-signature";
-                } else if(requestStatus === "For approval") {
-                    bagdeTheme = "warning";
-                    badgeIcon = "sync-alt";
-                } else if(requestStatus === "Approved") {
+                    bagdeContent = requestStatus
+                } else if(
+                    requestStatus === "For approval" || 
+                    requestStatus === "Approved"     || 
+                    requestStatus === "Completed"
+                ) {
                     bagdeTheme = "success";
-                    badgeIcon = "thumbs";
-                } else if(requestStatus === "Rejected for signing" || requestStatus === "Rejected for approval") {
+                    badgeIcon = "check";
+                    bagdeContent = "Signed"
+                } else if(
+                    requestStatus === "Rejected for signing" || 
+                    requestStatus === "Rejected for approval"
+                ) {
                     bagdeTheme = "danger";
                     badgeIcon = "times";
-                } else if(requestStatus === "Completed") {
-                    bagdeTheme = "blue";
-                    badgeIcon = "check";
+                    bagdeContent = requestStatus;
                 } else validStatus = false
 
                 return validStatus 
                     ? `<div class="badge badge-${ bagdeTheme } p-2 w-100">
                             <i class="fas fa-${ badgeIcon } mr-1"></i>
-                            <span>${ requestStatus }</span>
+                            <span>${ bagdeContent }</span>
                         </div>` 
                     : `<div class="badge badge-light p-2 w-100">Invalid data</div>`
             }
         },
 
-        // Date Submitted
+        // Date Requested
         {
             data: null,
             render: data => {
                 const createdAt = data.created_at
                 return `
-                    <div>${ formatDateTime(createdAt, "Date") }</div>
+                    <div>${ formatDateTime(createdAt, "MMM. D, YYYY") }</div>
                     <div>${ formatDateTime(createdAt, "Time") }</div>
                     <div class="small text-secondary">${ fromNow(createdAt) }</div>
                 `
@@ -117,9 +120,7 @@ initDataTable('#manpowerRequestDT', {
 
 /** View Manpower Request */
 ifSelectorExist('#manpowerRequestFormDocument', () => {
-
     const requisitionID = window.location.pathname.split('/')[3];
-    
     GET_ajax(`${ DH_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
 
@@ -268,9 +269,6 @@ validateForm('#signatureForm', {
     }
 });
 
-/** Reset form if reject request modal has been hidden */
-onHideModal('#rejectRequestModal', () => resetForm('#rejectRequestForm'));
-
 /** Sign Requests Form */
 validateForm('#signRequestForm', {
     submitHandler: () => {
@@ -284,7 +282,7 @@ validateForm('#signRequestForm', {
             request_status: 'For approval'
         })
     }
-})
+});
 
 /** Reject Request Form */
 validateForm('#rejectRequestForm', {
@@ -304,6 +302,9 @@ validateForm('#rejectRequestForm', {
         return false;
     }
 });
+
+/** Reset form if reject request modal has been hidden */
+onHideModal('#rejectRequestModal', () => resetForm('#rejectRequestForm'));
 
 /** Sign Request */
 const signRequest = (data) => {

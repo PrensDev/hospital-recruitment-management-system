@@ -13,6 +13,9 @@ initDataTable('#manpowerRequestDT', {
         // Created At (For Default Sorting)
         { data: 'created_at', visible: false },
 
+        // Requisition No.
+        { data: 'requisition_no', class: 'text-nowrap'},
+
         // Requested By
         {
             data: null,
@@ -49,12 +52,6 @@ initDataTable('#manpowerRequestDT', {
                 staffsNeeded = data.staffs_needed;
                 return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`;
             }
-        },
-
-        // Request Nature
-        {
-            data: null,
-            render: data => { return `<div>${ data.request_nature }</div>` }
         },
 
         // Status

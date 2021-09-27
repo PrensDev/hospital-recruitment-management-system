@@ -12,6 +12,9 @@ initDataTable('#manpowerRequestDT', {
         // Created At (For Default Sorting)
         { data: 'created_at', visible: false },
 
+        // Requisition No.
+        { data: 'requisition_no', class: 'text-nowrap' },
+
         // Vacant Position
         {
             data: null,
@@ -46,13 +49,13 @@ initDataTable('#manpowerRequestDT', {
                 var badgeIcon;
                 let validStatus = true;
                 
-                if(requestStatus === "For Review") {
+                if(requestStatus === "For approval") {
                     bagdeTheme = "warning";
                     badgeIcon = "sync-alt";
                 } else if(requestStatus === "Approved") {
                     bagdeTheme = "success";
                     badgeIcon = "check";
-                } else if(requestStatus === "Rejected") {
+                } else if(requestStatus === "Rejected for approval") {
                     bagdeTheme = "danger";
                     badgeIcon = "times";
                 } else if(requestStatus === "Completed") {
@@ -75,7 +78,7 @@ initDataTable('#manpowerRequestDT', {
             render: data => {
                 const createdAt = data.created_at
                 return `
-                    <div>${ formatDateTime(createdAt, "DateTime") }<div>
+                    <div>${ formatDateTime(createdAt, "MMM. D, YYYY") }<div>
                     <div class="small text-secondary">${ fromNow(createdAt) }<div>
                 `
             }
@@ -85,7 +88,7 @@ initDataTable('#manpowerRequestDT', {
         { 
             data: null,
             render: data => {
-                requisitionID = data.requisition_id
+                const requisitionID = data.requisition_id;
                 return `
                     <div class="text-center dropdown">
                         <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
@@ -93,14 +96,13 @@ initDataTable('#manpowerRequestDT', {
                         </div>
 
                         <div class="dropdown-menu dropdown-menu-right">
-                            <div 
+                            <a 
                                 class="dropdown-item d-flex"
-                                onclick="viewManpowerRequest('${ requisitionID }')"
-                                role="button"
+                                href="${ H_WEB_ROUTE }manpower-requests/${ requisitionID }"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <span>View Details</span>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 `
@@ -148,10 +150,14 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics())
  */
 
 /** View Manpower Request */
-const viewManpowerRequest = (requisitionID) => {
+ifSelectorExist('#manpowerRequestFormDocument', () => {
+    const requisitionID = window.location.pathname.split('/')[3];
     GET_ajax(`${ H_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
             const requestedBy = result.manpower_request_by;
+
+            // Set Requisition No
+            setContent('#requisitionNo', result.requisition_no);
 
             // Set Requisition ID
             setValue('#requisitionID', result.requisition_id)
@@ -230,6 +236,39 @@ const viewManpowerRequest = (requisitionID) => {
                     }
             });
 
+            // Set Signed By
+            setContent('#signedBy', () => {
+                const signedBy = result.manpower_request_signed_by;
+                
+                if(result.request_status === "Rejected for signing")
+                    return `<div class="text-danger">This request has been rejected for signing</div>`
+                else if(isEmptyOrNull(signedBy))
+                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                else {
+                    const signedByFullName = formatName("L, F M., S", {
+                        firstName: signedBy.first_name,
+                        middleName: signedBy.middle_name,
+                        lastName: signedBy.last_name,
+                        suffixName: signedBy.suffix_name
+                    });
+                    return `
+                        <div>${ signedByFullName }</div>
+                        <div class="small text-secondary">${ signedBy.position.name }, ${ signedBy.position.department.name }</div>
+                    `
+                }
+            });
+
+            // Set Signed At
+            setContent('#signedAt', () => {
+                const signedAt = result.signed_at;
+                return isEmptyOrNull(signedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    : `
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
+                    `
+            });
+
             // Set Approved At
             setContent('#approvedAt', () => {
                 const approvedAt = result.reviewed_at;
@@ -268,46 +307,17 @@ const viewManpowerRequest = (requisitionID) => {
                 hideElement('#requestApprovalField');
                 modalFooterBtns = `<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>`;
             }
-            // else if(requestStatus === "Approved") {
-            //     $('#approveRequest').prop('checked', true);
-            //     modalFooterBtns = `
-            //         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            //         <button 
-            //             type="submit" 
-            //             class="btn btn-info"
-            //             id="updateBtn"
-            //             disabled
-            //         >
-            //             <span>Update</span>
-            //             <i class="fas fa-check ml-1"></i>
-            //         </button>
-            //     `
-            // } else if(requestStatus === "Rejected") {
-            //     $('#rejectRequest').prop('checked', true);
-            //     $('#remarksField').show();
-            //     setValue('#remarks', result.remarks);
-            //     modalFooterBtns = `
-            //         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            //         <button 
-            //             type="submit" 
-            //             class="btn btn-info"
-            //             id="updateBtn"
-            //             disabled
-            //         >
-            //             <span>Update</span>
-            //             <i class="fas fa-check ml-1"></i>
-            //         </button>
-            //     `
-            // }
-            
-            setContent('#viewManpowerRequestModalFooter', modalFooterBtns);
 
-            // Show View Manpower Request Modal
-            showModal('#viewManpowerRequestModal');
+            $('#approvalFormLoader').remove();
+
+            if(requestStatus === "Approved" || requestStatus === "Rejected for approval") 
+                $('#approvalForm').remove()
+            else if(requestStatus == "For approval")
+                showElement('#approvalForm');
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });
-}
+});
 
 /** Reset Update Request Status Form if its modal is going to be hide */
 onHideModal('#viewManpowerRequestModal', () => {
@@ -315,78 +325,108 @@ onHideModal('#viewManpowerRequestModal', () => {
     resetForm('#updateManpowerRequestStatusForm');
 });
 
-
 /**
  * ==============================================================================
- * UPDATE MANPOWER REQUEST STATUS
+ * APPROVAL FORM
  * ==============================================================================
  */
 
-/** If user select reject for manpower request */
-$("#approveRequest, #rejectRequest").on('change', () => {
-    const requestStatus = $(`input[name="requestStatus"]:checked`).val();
-    if(requestStatus == "Approved") $("#remarksField").hide();
-    if(requestStatus == "Rejected") $("#remarksField").show();
+/** Validate Approval Form */
+validateForm('#approvalForm', {
+    submitHandler: () => {
+        const requestStatus = generateFormData('#approvalForm').get('requestStatus');
 
-    ifSelectorExist('#updateBtn', () => enableElement('#updateBtn'));
-    ifSelectorExist('#submitBtn', () => enableElement('#submitBtn'));
+        if(requestStatus == "Approved")
+            showModal('#confirmApproveRequestModal')
+        else if(requestStatus == "Rejected for approval")
+            showModal('#rejectRequestModal')
+
+        return false;
+    }
 });
 
-/** Validate Manpower Request */
-validateForm('#updateManpowerRequestStatusForm', {
-    rules: {
-        requestStatus: {
-            required: true
-        },
-        remarks: {
-            required: true
-        }
-    }, 
-    messages: {
-        requestStatus: {
-            required: 'Please select an option'
-        },
-        remarks: {
-            required: 'Please type your reason in rejecting this request'
-        }
-    },
-    submitHandler: () => updateManpowerRequestStatus()
+/** Approve Requests Form */
+validateForm('#approveRequestForm', {
+    submitHandler: () => {
+        
+        // Buttons to loading state
+        btnToLoadingState('#submitApproveRequestBtn');
+        disableElement('#cancelApproveRequestBtn');
+
+        // Request Approval
+        requestApproval({request_status: 'Approved'});
+    }
 });
 
-/** Update Manpower Request Status */
-const updateManpowerRequestStatus = () => {
-    const formData = generateFormData('#updateManpowerRequestStatusForm');
+/** Reject Request Form */
+validateForm('#rejectRequestForm', {
+    rules: { remarks: { required: true }},
+    messages: { remarks: { required: 'Remarks is required' }},
+    submitHandler: () => {
 
-    const requestStatus = formData.get('requestStatus');
-    let remarks = formData.get('remarks');
+        // Buttons to loading state
+        btnToLoadingState('#submitRejectRequestBtn');
+        disableElement('#cancelRejectRequestBtn');
 
-    remarks = requestStatus === "Approved" ? null : remarks;
+        // Request Approval
+        requestApproval({
+            remarks: generateFormData('#rejectRequestForm').get('remarks'),
+            request_status: 'Rejected for approval'
+        });
+        return false;
+    }
+});
 
-    const data = {
-        request_status: requestStatus,
-        remarks: remarks,
-        reviewed_at: moment().format()
+/** Reset form if reject request modal has been hidden */
+onHideModal('#rejectRequestModal', () => resetForm('#rejectRequestForm'));
+
+/** Update Request For approval */
+const requestApproval = (data) => {
+    const requisitionID = window.location.pathname.split('/')[3];
+
+    const ifError = () => {
+        if(data.request_status == "Approved") {
+    
+            // Buttons to unload state
+            btnToUnloadState('#submitApproveRequestBtn', `
+                <span>Yes, approve it!</span>
+                <i class="fas fa-thumbs-up ml-1"></i>
+            `);
+            enableElement('#cancelSignRequestBtn');
+
+            // Hide modal
+            hideModal('#confirmSignRequestModal');
+        } else if(data.request_status == "Rejected for approval") {
+            
+            // Buttons to loading state
+            btnToLoadingState('#submitRejectRequestBtn', `
+                <span>Submit</span>
+                <i class="fas fa-check ml-1"></i>
+            `);
+            disableElement('#cancelRejectRequestBtn');
+
+            // Hide modal
+            hideModal('#rejectRequestModal');
+        }
     }
 
-    PUT_ajax(`${ H_API_ROUTE }requisitions/${ formData.get('requisitionID') }`, data, {
+    PUT_ajax(`${ H_API_ROUTE }requisitions/${ requisitionID }`, data, {
         success: result => {
             if(result) {
-                // Reload the DataTable
-                reloadDataTable('#manpowerRequestDT');
-
-                // Hide the modal
-                hideModal('#viewManpowerRequestModal');
-
-                // Reload Manpower Request Analytics
-                manpowerRequestAnalytics();
-
-                // Show alert
-                if(requestStatus == 'Approved')
-                    toastr.success('A manpower request has been approved successfully');
-                else if(requestStatus == 'Rejected')
-                    toastr.info('A manpower request has been rejected successfully');
-            }
+                if(data.request_status == "Approved")
+                    setSessionedAlertAndRedirect({
+                        theme: 'success',
+                        message: 'A manpower request is successfully approved',
+                        redirectURL: `${ H_WEB_ROUTE }manpower-requests`
+                    });
+                else if(data.request_status == "Rejected for approval")
+                    setSessionedAlertAndRedirect({
+                        theme: 'info',
+                        message: 'A manpower request has been rejected for approval',
+                        redirectURL: `${ H_WEB_ROUTE }manpower-requests`
+                    });
+            } else ifError()
         },
-        error: () => toastr.error('There was a problem while updating a manpower request')
-    })
+        error: () => ifError()
+    });
 }

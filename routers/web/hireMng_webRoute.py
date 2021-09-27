@@ -70,6 +70,30 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
         return await errTemplate.page_not_found(req)
 
 
+# View Manpower Requests
+@router.get("/manpower-requests/{requisition_id}", response_class=HTMLResponse)
+async def render(
+    requisition_id: str,
+    req: Request, 
+    db: Session = Depends(get_db), 
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
+        if not requisition:
+            return await errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse(TEMPLATES_PATH  + "view_manpower_request.html", {
+                "request": req,
+                "page_title": "Manpower Request Details",
+                "sub_title": "Manpower Request Details",
+                "active_navlink": "Manpower Requests"
+            })
+    else:
+        return await errTemplate.page_not_found(req)
+
+
+
 # ===========================================================
 # JOB POSTS
 # ===========================================================

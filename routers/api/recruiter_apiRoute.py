@@ -5,7 +5,7 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, authorized
-from schemas import db_schemas
+from schemas import db_schemas, user_schemas as user, recruiter_schemas as recruiter
 from datetime import date
 from sqlalchemy import or_
 
@@ -31,18 +31,18 @@ AUTHORIZED_USER = "Recruiter"
 
 
 # User Information
-@router.get("/info", response_model = db_schemas.UserInfo)
+@router.get("/info", response_model = user.ShowUser)
 def get_user_info(
     db: Session = Depends(get_db), 
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        user_info = db.query(User).filter(User.user_id == user_data.user_id)
-        if not user_info.first():
-            return "User does not exist"
-        else:
-            return user_info.first()
+        if(authorized(user_data, AUTHORIZED_USER)):
+            user_info = db.query(User).filter(User.user_id == user_data.user_id)
+            if not user_info.first():
+                return "User does not exist"
+            else:
+                return user_info.first()
     except Exception as e:
         print(e)
 
@@ -57,14 +57,14 @@ REQUISITION_NOT_FOUND_RESPONSE = {"message": "Requisition not found"}
 
 
 # Get All Approved Requisitions
-@router.get("/requisitions", response_model = List[db_schemas.ShowManpowerRequest])
+@router.get("/requisitions", response_model = List[recruiter.ShowManpowerRequest])
 def get_all_approved_requisitions(
     db: Session = Depends(get_db), 
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        return db.query(Requisition).filter(Requisition.request_status == "Approved").all()
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(Requisition).filter(Requisition.request_status == "Approved").all()
     except Exception as e:
         print(e)
 
@@ -73,7 +73,7 @@ def get_all_approved_requisitions(
 @router.get("/requisitions/analytics")
 def requisition_analytics(
     db: Session = Depends(get_db), 
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -93,7 +93,7 @@ def requisition_analytics(
 def get_one_approved_requisitions(
     requisition_id,
     db: Session = Depends(get_db), 
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -119,7 +119,7 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
 @router.get("/job-posts", response_model = List[db_schemas.ShowJobPost])
 def get_all_job_posts(
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -132,7 +132,7 @@ def get_all_job_posts(
 @router.get("/job-posts/analytics")
 async def job_posts_analytics(
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -157,7 +157,7 @@ async def job_posts_analytics(
 async def get_one_job_post(
     job_post_id,
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -175,7 +175,7 @@ async def get_one_job_post(
 async def post_vacant_job(
     req: db_schemas.CreateJobPost,
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -203,7 +203,7 @@ async def update_job_post(
     job_post_id: str,
     req: db_schemas.JobPost,
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -232,7 +232,7 @@ APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
 @router.get("/applicants", response_model = List[db_schemas.ShowApplicantInfo])
 async def get_all_applicants(
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -245,7 +245,7 @@ async def get_all_applicants(
 @router.get("/applicants/analytics")
 async def applicants_analytics(
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -281,7 +281,7 @@ async def applicants_analytics(
 async def get_all_applicants_per_job(
     job_post_id,
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -295,7 +295,7 @@ async def get_all_applicants_per_job(
 async def applicants_per_job_analytics(
     job_post_id,
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -352,7 +352,7 @@ async def applicants_per_job_analytics(
 async def for_evaluation_applicants(
     job_post_id,
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -369,7 +369,7 @@ async def for_evaluation_applicants(
 async def evaluated_applicants(
     job_post_id,
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -390,7 +390,7 @@ async def evaluated_applicants(
 async def rejected_applicants(
     job_post_id,
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -407,7 +407,7 @@ async def rejected_applicants(
 async def get_one_applicant(
     applicant_id,
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)
@@ -426,7 +426,7 @@ async def evaluate_applicant(
     applicant_id,
     req: db_schemas.ApplicantEvaluation,
     db: Session = Depends(get_db),
-    user_data: db_schemas.User = Depends(get_user)
+    user_data: user.UserData = Depends(get_user)
 ):
     try:
         authorized(user_data, AUTHORIZED_USER)

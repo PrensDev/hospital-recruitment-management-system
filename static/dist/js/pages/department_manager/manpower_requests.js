@@ -260,7 +260,7 @@ initDataTable('#manpowerRequestDT', {
                     badgeIcon = "sync-alt";
                 } else if(requestStatus === "Approved") {
                     bagdeTheme = "success";
-                    badgeIcon = "thumbs";
+                    badgeIcon = "thumbs-up";
                 } else if(requestStatus === "Rejected for signing" || requestStatus === "Rejected for approval") {
                     bagdeTheme = "danger";
                     badgeIcon = "times";
@@ -278,13 +278,13 @@ initDataTable('#manpowerRequestDT', {
             }
         },
 
-        // Date Submitted
+        // Date Requested
         {
             data: null,
             render: data => {
                 const createdAt = data.created_at
                 return `
-                    <div>${ formatDateTime(createdAt, "Date") }</div>
+                    <div>${ formatDateTime(createdAt, "MMM. D, YYYY") }</div>
                     <div>${ formatDateTime(createdAt, "Time") }</div>
                     <div class="small text-secondary">${ fromNow(createdAt) }</div>
                 `
@@ -409,12 +409,9 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
 
 /** View Manpower Request */
 ifSelectorExist('#manpowerRequestFormDocument', () => {
-
     const requisitionID = window.location.pathname.split('/')[3];
-    
     GET_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
-
             const requestedBy = result.manpower_request_by;
 
             // Set Requisition No
@@ -432,13 +429,19 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
             
             // Set Date Requested
-            setContent('#dateRequested', formatDateTime(result.created_at, "DateTime"));
+            setContent('#dateRequested', `
+                <div>${ formatDateTime(result.created_at, "Date") }</div>
+                <div>${ formatDateTime(result.created_at, "Time") }</div>
+            `);
             
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
                 if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No data</div>`
-                else return formatDateTime(result.deadline, "DateTime")
+                else return `
+                    <div>${ formatDateTime(deadline, "Date") }</div>
+                    <div>${ formatDateTime(deadline, "Time") }</div>
+                `
             });
 
             // Set Requested Position
@@ -472,6 +475,39 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             // Set Request Description
             setContent('#requestDescription', result.content);
 
+            // Set Signed By
+            setContent('#signedBy', () => {
+                const signedBy = result.manpower_request_signed_by;
+                
+                if(result.request_status === "Rejected for signing")
+                    return `<div class="text-danger">This request has been rejected for signing</div>`
+                else if(isEmptyOrNull(signedBy))
+                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                else {
+                    const signedByFullName = formatName("L, F M., S", {
+                        firstName: signedBy.first_name,
+                        middleName: signedBy.middle_name,
+                        lastName: signedBy.last_name,
+                        suffixName: signedBy.suffix_name
+                    });
+                    return `
+                        <div>${ signedByFullName }</div>
+                        <div class="small text-secondary">${ signedBy.position.name }, ${ signedBy.position.department.name }</div>
+                    `
+                }
+            });
+
+            // Set Signed At
+            setContent('#signedAt', () => {
+                const signedAt = result.signed_at;
+                return isEmptyOrNull(signedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    : `
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
+                    `
+            });
+
             // Set Approved By
             setContent('#approvedBy', () => {
                 const approvedBy = result.manpower_request_reviewed_by;
@@ -497,18 +533,24 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
 
             // Set Approved At
             setContent('#approvedAt', () => {
-                const approvedAt = result.approved_at;
+                const approvedAt = result.reviewed_at;
                 return isEmptyOrNull(approvedAt) 
                     ? `<div class="text-secondary font-italic">No status</div>` 
-                    : formatDateTime(approvedAt, "Date")
+                    : `
+                        <div class="text-nowrap">${ formatDateTime(approvedAt, "Date") }</div>
+                        <div class="text-nowrap">${ formatDateTime(approvedAt, "Time") }</div>
+                    `
             });
 
-            // Set Approved At
+            // Set Completed At
             setContent('#completedAt', () => {
                 const completedAt = result.completed_at;
                 return isEmptyOrNull(completedAt) 
                     ? `<div class="text-secondary font-italic">No status</div>` 
-                    : formatDateTime(completedAt, "DateTime")
+                    :  `
+                        <div class="text-nowrap">${ formatDateTime(completedAt, "Date") }</div>
+                        <div class="text-nowrap">${ formatDateTime(completedAt, "Time") }</div>
+                    `
             });
 
             // Set Date Requested For Timeline Humanized
@@ -555,7 +597,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                         <i class="fas fa-print ml-1"></i>
                     </div>
                 `
-                else if(requestStatus === "For approval" || requestStatus === "Approved") {
+                else {
                     $('#cancelManpowerRequestModal').remove();
                     
                     return `
@@ -565,7 +607,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                         </div>
                     `
                 }
-            })
+            });
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });

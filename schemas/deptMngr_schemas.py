@@ -44,9 +44,13 @@ class ShowManpowerRequest(BaseModel):
     content: str
     request_status: str
     deadline: Optional[datetime]
+    manpower_request_signed_by: Optional[ShowUser]
     manpower_request_reviewed_by: Optional[ShowUser]
+    manpower_request_rejected_by: Optional[ShowUser]
+    signed_at: Optional[datetime]
     reviewed_at: Optional[datetime]
     completed_at: Optional[datetime]
+    rejected_at: Optional[datetime]
     remarks: Optional[str]
     created_at: datetime
     updated_at: Optional[datetime]

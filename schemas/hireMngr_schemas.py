@@ -34,7 +34,7 @@ class ShowManpowerRequest(BaseModel):
         orm_mode = True
 
 
-# Sign Manpower Request
-class SignManpowerRequest(BaseModel):
+# Manpower Request Approval
+class ManpowerRequestApproval(BaseModel):
     request_status: str
     remarks: Optional[str]
