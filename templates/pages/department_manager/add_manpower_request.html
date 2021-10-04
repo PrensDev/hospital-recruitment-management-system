@@ -3,21 +3,21 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Content Header (Page header) #}
     <section class="content-header">
         <div class="container-fluid">
             
-            <!-- Title -->
+            {# Title #}
             <h1>{{ page_title }}</h1>
             <p class="text-muted">{{ sub_title }}</p>
 
         </div>
     </section>
 
-    <!-- Add Manpower Request Form -->
+    {# Add Manpower Request Form #}
     <section class="content px-3">
 
-        <!-- Loader -->
+        {# Loader #}
         <div class="card card-primary card-outline" id="addManpowerRequestFormLoader">
             <div class="card-header">
                 <div class="skeleton-loader w-50 m-0"></div>
@@ -75,7 +75,7 @@
             <div class="card-footer"></div>
         </div>
 
-        <!-- Form -->
+        {# Form #}
         <form id="addManpowerRequestForm" style="display: none;">
             <div class="card card-primary card-outline">
 
@@ -91,7 +91,7 @@
                 
                 <div class="card-body">
                     
-                    <!-- Requisition No -->
+                    {# Requisition No #}
                     <div class="form-group">
                         <label for="requisitionNo">Requisition no.</label>
                         <input type="text" class="form-control" id="requisitionNo" name="requisitionNo" readonly>
@@ -99,7 +99,7 @@
 
                     <div class="form-row">
 
-                        <!-- Vacant Position title -->
+                        {# Vacant Position title #}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="vacantPositionForAdd">
@@ -115,7 +115,7 @@
                             </div>
                         </div>
 
-                        <!-- Nature of Request -->
+                        {# Nature of Request #}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Nature of Request<span class="text-danger"> *</span></label>
@@ -132,7 +132,7 @@
                             </div>
                         </div>
 
-                        <!-- No. of Vacancy -->
+                        {# No. of Vacancy #}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="staffsNeeded">No. of Staffs needed<span class="text-danger"> *</span></label>
@@ -146,7 +146,7 @@
                             </div>
                         </div>
 
-                        <!-- Employment Type -->
+                        {# Employment Type #}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Employment Type <span class="text-danger">*</span></label>
@@ -165,7 +165,7 @@
                             </div>
                         </div>
                         
-                        <!-- Options -->
+                        {# Options #}
                         <div class="col-12">
                             <div class="form-group">
                                 <div class="icheck-primary d-inline mr-2">
@@ -179,7 +179,7 @@
                             </div>
                         </div>
 
-                        <!-- Deadline -->
+                        {# Deadline #}
                         <div class="col-lg-4" id="deadlineField" style="display: none">
                             <div class="form-group">
                                 <label for="deadline">
@@ -206,7 +206,7 @@
                         <div class="col-lg-8" id="salaryRangeField" style="display: none">
                             <div class="form-row">
 
-                                <!-- Minimum Salary -->
+                                {# Minimum Salary #}
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="minSalary">
@@ -232,7 +232,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Maximum Salary -->
+                                {# Maximum Salary #}
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="maxSalary">
@@ -260,7 +260,7 @@
     
                     </div>
 
-                    <!-- Request Description -->
+                    {# Request Description #}
                     <div class="form-row">
                         <div class="col-md-12">
                             <div class="form-group">

@@ -3,38 +3,25 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Content Header (Page header) #}
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
             
-            <!-- Title -->
-            <div class="col-sm-6">
-                <h1>{{ page_title }}</h1>
-                <p class="text-muted">{{ sub_title }}</p>
-            </div>
-    
-            <!-- Breadcrumb -->
-            <!-- <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Layout</a></li>
-                <li class="breadcrumb-item active">Fixed Layout</li>
-                </ol>
-            </div> -->
-    
-            </div>
+            {# Title #}
+            <h1>{{ page_title }}</h1>
+            <p class="text-muted">{{ sub_title }}</p>
+            
         </div>
     </section>
 
-    <!-- Main content -->
+    {# Main content #}
     <section class="content">
         <div class="container-fluid">
 
-            <!-- Applicants Analytics -->
+            {# Applicants Analytics #}
             <div class="row" id="applicantsAnalytics">
     
-                <!-- Total Applicants -->
+                {# Total Applicants #}
                 <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-primary"><i class="fas fa-users"></i></span>
@@ -46,7 +33,7 @@
                     </div>
                 </div>
                 
-                <!-- For Evauation -->
+                {# For Evauation #}
                 <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-warning"><i class="fas fa-redo"></i></span>
@@ -58,7 +45,7 @@
                     </div>
                 </div>
 
-                <!-- Hired Appplicants -->
+                {# Hired Appplicants #}
                 <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-success"><i class="fas fa-check"></i></span>
@@ -70,7 +57,7 @@
                     </div>
                 </div>
                 
-                <!-- For Screening -->
+                {# For Screening #}
                 <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-secondary"><i class="fas fa-search"></i></span>
@@ -82,7 +69,7 @@
                     </div>
                 </div>
 
-                <!-- For Interview -->
+                {# For Interview #}
                 <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fas fa-user-tie"></i></span>
@@ -94,7 +81,7 @@
                     </div>
                 </div>
 
-                <!-- Rejected -->
+                {# Rejected #}
                 <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-danger"><i class="fas fa-user-times"></i></span>
@@ -107,18 +94,17 @@
                 </div>
             </div>
 
-
-            <!-- Card -->
+            {# Card #}
             <div class="card card-primary card-outline">
 
-                <!-- Card Header -->
+                {# Card Header #}
                 <div class="card-header p-3 d-flex justify-content-between">
                     <div>
                         <h3 class="card-title">Lists of Applicants</h3>
                     </div>
                 </div>
 
-                <!-- Card Body -->
+                {# Card Body #}
                 <div class="card-body">
  
                     <div class="table-responsive">

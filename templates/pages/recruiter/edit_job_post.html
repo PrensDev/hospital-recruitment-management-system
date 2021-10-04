@@ -3,34 +3,22 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Content Header #}
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
             
-            <!-- Title -->
-            <div class="col-sm-6">
-                <h1>{{ page_title }}</h1>
-                <p class="text-muted">{{ sub_title }}</p>
-            </div>
+            {# Title #}
+            <h1>{{ page_title }}</h1>
+            <p class="text-muted">{{ sub_title }}</p>
 
-            <!-- Breadcrumb -->
-            <!-- <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Layout</a></li>
-                <li class="breadcrumb-item active">Fixed Layout</li>
-                </ol>
-            </div> -->
-
-            </div>
         </div>
     </section>
 
+    {# Content #}
     <section class="content px-3">
         <div class="form-row">
 
-            <!-- Create Job Post Form -->
+            {# Create Job Post Form #}
             <div class="col-lg-8">
                 <form class="card card-primary card-outline" id="editJobPostForm">
     
@@ -47,7 +35,7 @@
                     <div class="card-body">
                         <input type="hidden" id="jobPostID" name="jobPostID">
     
-                        <!-- Job Description -->
+                        {# Job Description #}
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -67,13 +55,13 @@
 
                         <div class="form-row">
 
-                            <!-- Options -->
+                            {# Options #}
                             <div class="col-lg-6">
                                 <label>Options</label>
 
                                 <div class="form-group">
 
-                                    <!-- Make Salary Range Visible -->
+                                    {# Make Salary Range Visible #}
                                     <div class="mb-2" id="salaryRangeField">
                                         <div class="icheck-primary d-inline">
                                             <input type="checkbox" id="salaryRangeIsVisible" name="salaryRangeIsVisible">
@@ -81,7 +69,7 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- Set Expiration Date -->
+                                    {# Set Expiration Date #}
                                     <div class="mb-2">
                                         <div class="icheck-primary d-inline">
                                             <input type="checkbox" id="expirationDate">
@@ -91,7 +79,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Open until -->
+                            {# Open until #}
                             <div class="col-lg-6" id="openUntilField" style="display: none">
                                 <div class="form-group">
                                     <label for="openUntil">Open until</label>
@@ -119,10 +107,10 @@
                 </form>
             </div>
             
-            <!-- Job Post Details & Manpower Request -->
+            {# Job Post Details & Manpower Request #}
             <div class="col-lg-4">
 
-                <!-- Job Post Details -->
+                {# Job Post Details #}
                 <div class="card card-primary card-outline">
                     <div class="card-header">
                         <div class="card-title">Job Post Details</div>
@@ -155,7 +143,7 @@
                     </div>
                 </div>
 
-                <!-- Manpower Request Summary -->
+                {# Manpower Request Summary #}
                 <div class="card card-primary card-outline">
                     <div class="card-header">
                         <div class="card-title">Manpower Request</div>
@@ -215,7 +203,6 @@
             </div>
         </div>
     </section>
-    
 {% endblock %}
 
 

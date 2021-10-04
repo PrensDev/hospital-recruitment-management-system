@@ -1,41 +1,32 @@
 {% extends "layouts/base.html" %}
 
 {% block body %}
-<body class="layout-top-nav control-sidebar-slide-open layout-navbar-fixed">
-    <div class="wrapper">
+    <body class="layout-top-nav control-sidebar-slide-open layout-navbar-fixed">
+        <div class="wrapper">
 
-        <!-- Preloader -->
-        <!-- <div class="preloader flex-column justify-content-center align-items-center">
-            <div 
-                class="spinner-border text-primary" 
-                role="status" 
-                style="width: 2.5rem; height: 2.5rem;"
-            ></div>
-        </div> -->
+            {% include 'pages/home/components/topbar.html' %}
+            
+            {# Content Wrapper. Contains page content #}
+            <div class="content-wrapper">
+                {% block content %}{% endblock %}
+            </div>
 
-        {% include 'pages/home/components/topbar.html' %}
-        
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            {% block content %}{% endblock %}
+            {# Main Footer #}
+            <footer class="main-footer">
+                
+                {# To the right #}
+                <div class="float-right d-none d-sm-inline">Anything you want</div>
+
+                {# Default to the left #}
+                <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+            </footer>
         </div>
 
-        <!-- Main Footer -->
-        <footer class="main-footer">
-            <!-- To the right -->
-            <div class="float-right d-none d-sm-inline">
-            Anything you want
-            </div>
-            <!-- Default to the left -->
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
-        </footer>
-    </div>
+
+        {% block page_modals %}{% endblock %}
 
 
-    {% block page_modals %}{% endblock %}
-
-
-    {% include 'layouts/_scripts.html' %}
-    {% block page_scripts %}{% endblock %}
-</body>
+        {% include 'layouts/_scripts.html' %}
+        {% block page_scripts %}{% endblock %}
+    </body>
 {% endblock %}

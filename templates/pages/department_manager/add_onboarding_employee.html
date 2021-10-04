@@ -3,26 +3,22 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Content Header #}
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
             
-                <!-- Title -->
-                <div class="col-sm-6">
-                    <h1>{{ page_title }}</h1>
-                    <p class="text-muted">{{ sub_title }}</p>
-                </div>
+            {# Title #}
+            <h1>{{ page_title }}</h1>
+            <p class="text-muted">{{ sub_title }}</p>
     
-            </div>
         </div>
     </section>
 
-    <!-- Main content -->
+    {# Main content #}
     <div class="content" id="availableJobDetails">
         <div class="container-fluid">
 
-            <!-- Details form -->
+            {# Details form #}
             <form class="card card-primary card-outline" id="addOnboardingEmployeeForm">
                 <div class="card-header">
                     <h3 class="card-title">Add Onboarding Employee</h3>
@@ -32,7 +28,7 @@
 
                     <div class="bs-stepper">
 
-                        <!-- Stepper Header -->
+                        {# Stepper Header #}
                         <div class="bs-stepper-header" role="tablist">
                             <div class="step" data-target="#applicantInformationPanel">
                                 <button 
@@ -63,10 +59,10 @@
                             </div>
                         </div>
 
-                        <!-- Stepper Content -->
+                        {# Stepper Content #}
                         <div class="bs-stepper-content mt-3">
 
-                            <!-- Applicant Information -->
+                            {# Applicant Information #}
                             <div 
                                 id="applicantInformationPanel" 
                                 class="content" 
@@ -88,10 +84,10 @@
                                         <p>Position: <span id="position"></span></p>
                                     </div>
 
-                                    <!-- Applicant's Name Field -->
+                                    {# Applicant's Name Field #}
                                     <div class="form-row mb-3">
                     
-                                        <!-- First name -->
+                                        {# First name #}
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="firstName">
@@ -108,7 +104,7 @@
                                             </div>
                                         </div>
                     
-                                        <!-- Middle Name -->
+                                        {# Middle Name #}
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="middleName">Middle Name</label>
@@ -122,7 +118,7 @@
                                             </div>
                                         </div>
                     
-                                        <!-- Last Name -->
+                                        {# Last Name #}
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="lastName">
@@ -139,7 +135,7 @@
                                             </div>
                                         </div>
                     
-                                        <!-- Suffix Name -->
+                                        {# Suffix Name #}
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="suffixName">Suffix Name</label>
@@ -154,10 +150,10 @@
                                         </div>
                                     </div>
                     
-                                    <!-- Contact Information Field -->
+                                    {# Contact Information Field #}
                                     <div class="form-row mb-3">
                     
-                                        <!-- Contact Number -->
+                                        {# Contact Number #}
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="contactNumber">
@@ -181,7 +177,7 @@
                                             </div>
                                         </div>
                     
-                                        <!-- Email -->
+                                        {# Email #}
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="email">
@@ -206,7 +202,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Start of Employment -->
+                                    {# Start of Employment #}
                                     <div class="form-row mb-3">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -233,7 +229,7 @@
                                 </div>
                             </div>
 
-                            <!-- Onboarding Tasks -->
+                            {# Onboarding Tasks #}
                             <div 
                                 id="onboardingtasksPanel" 
                                 class="content" 
@@ -242,7 +238,7 @@
                             >
                                 <div>
 
-                                    <!-- Genearal Onboarding Tasks -->
+                                    {# Genearal Onboarding Tasks #}
                                     <label>General Onboarding Task</label>
                                     <table class="table table-bordered mb-5">
                                         <thead>
@@ -270,7 +266,7 @@
                                         </tbody>
                                     </table>
 
-                                    <!-- Added Tasks -->
+                                    {# Added Tasks #}
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <div>
                                             <label>Added Tasks</label>

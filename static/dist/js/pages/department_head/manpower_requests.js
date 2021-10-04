@@ -123,7 +123,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
     const requisitionID = window.location.pathname.split('/')[3];
     GET_ajax(`${ DH_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
-
+            console.log(result);
             const requestedBy = result.manpower_request_by;
 
             // Set Requisition No
@@ -220,46 +220,113 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                     : formatDateTime(completedAt, "DateTime")
             });
 
-
             // Set Manpower Request Timeline
             let timelineData = [];
 
             const requestStatus = result.request_status;
             const rejectedAt = result.rejectedAt;
 
-            const createdAt = result.created_at
+            // Created
+            const createdAt = result.created_at;
+            const createdBy = result.manpower_request_by;
+            const createdByFullName = formatName('F M. L, S', {
+                firstName: createdBy.first_name,
+                middleName: createdBy.middle_name,
+                lastName: createdBy.last_name,
+                suffixName: createdBy.suffix_name
+            });
             timelineData.push({
                 icon: "edit",
                 iconTheme: "info",
                 dateTime: createdAt,
-                timelineTitle: 'Created at',
+                timelineTitle: 'Created',
                 timelineBody: `
-                    <div class="small">${ formatDateTime(createdAt, "Full Date") }</div>
-                    <div class="small">${ formatDateTime(createdAt, "Time") }</div>
+                    <div class="small mb-3">This request has been created by <b>${ createdByFullName }</b></div>
+                    <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
+                    <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
                 `
             });
 
+            // Signed
             const signedAt = result.signed_at;
             if(!isEmptyOrNull(signedAt)) {
+                const signedBy = result.manpower_request_signed_by;
+                const signedByFullName = formatName('F M. L, S', {
+                    firstName: signedBy.first_name,
+                    middleName: signedBy.middle_name,
+                    lastName: signedBy.last_name,
+                    suffixName: signedBy.suffix_name
+                })
                 timelineData.push({
                     icon: "file-signature",
                     iconTheme: "primary",
                     dateTime: signedAt,
-                    timelineTitle: 'Signed at',
+                    timelineTitle: 'Signed',
                     timelineBody: `
-                        <div class="small">${ formatDateTime(signedAt, "Full Date") }</div>
-                        <div class="small">${ formatDateTime(signedAt, "Time") }</div>
+                        <div class="small mb-3">This request has been signed by <b>${ signedByFullName }</b></div>
+                        <div class="small text-secondary">${ formatDateTime(signedAt, "Full Date") }</div>
+                        <div class="small text-secondary">${ formatDateTime(signedAt, "Time") }</div>
                     `
                 });
             } else if(requestStatus === "Rejected for signing") {
+                const rejectedBy = result.manpower_request_rejected_by;
+                const rejectedByFullName = formatName('F M. L, S', {
+                    firstName: rejectedBy.first_name,
+                    middleName: rejectedBy.middle_name,
+                    lastName: rejectedBy.last_name,
+                    suffixName: rejectedBy.suffix_name
+                });
                 timelineData.push({
                     icon: "times",
                     iconTheme: "danger",
                     dateTime: rejectedAt,
-                    timelineTitle: 'Rejected at',
+                    timelineTitle: 'Rejected',
                     timelineBody: `
-                        <div class="small">${ formatDateTime(rejectedAt, "Full Date") }</div>
-                        <div class="small">${ formatDateTime(rejectedAt, "Time") }</div>
+                        <div class="small mb-3">This request has been rejected for signing by <b>${ rejectedByFullName }</b></div>
+                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
+                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
+                    `
+                });
+            }
+
+            // Reviewed and approved
+            const reviewedAt = result.reviewed_at;
+            if(!isEmptyOrNull(reviewedAt)) {
+                const reviewedBy = result.manpower_request_reviewed_by;
+                const reviewedByFullName = formatName('F M. L, S', {
+                    firstName: reviewedBy.first_name,
+                    middleName: reviewedBy.middle_name,
+                    lastName: reviewedBy.last_name,
+                    suffixName: reviewedBy.suffix_name
+                });
+                timelineData.push({
+                    icon: "thumbs-up",
+                    iconTheme: "success",
+                    dateTime: reviewedAt,
+                    timelineTitle: 'Approved',
+                    timelineBody: `
+                        <div class="small mb-3">This request has been reviewed and approved by <b>${ reviewedByFullName }</b></div>
+                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
+                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
+                    `
+                });
+            } else if(requestStatus === "Rejected for approval") {
+                const rejectedBy = result.manpower_request_rejected_by;
+                const rejectedByFullName = formatName('F M. L, S', {
+                    firstName: rejectedBy.first_name,
+                    middleName: rejectedBy.middle_name,
+                    lastName: rejectedBy.last_name,
+                    suffixName: rejectedBy.suffix_name
+                });
+                timelineData.push({
+                    icon: "times",
+                    iconTheme: "danger",
+                    dateTime: rejectedAt,
+                    timelineTitle: 'Rejected',
+                    timelineBody: `
+                        <div class="small mb-3">This request has been rejected for approval by <b>${ rejectedByFullName }</b></div>
+                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
+                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
                     `
                 });
             }

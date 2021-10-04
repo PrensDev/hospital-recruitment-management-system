@@ -1,3 +1,4 @@
+{# Application Details Modal #}
 <div class="modal fade" id="applicantDetailsModal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <form class="modal-content" id="applicantEvaluationForm">
@@ -9,7 +10,7 @@
             </div>
             <div class="modal-body">
 
-                <!-- Applicant Details -->
+                {# Applicant Details #}
                 <table class="table border-bottom">
                     <tr>
                         <th>Applicant Name</th>
@@ -43,13 +44,13 @@
                     </tr>
                 </table>
 
-                <!-- Evaluation Field -->
+                {# Evaluation Field #}
                 <div id="evaluationField" display="style: none">
 
-                    <!-- Applicant ID -->
+                    {# Applicant ID #}
                     <input type="hidden" id="applicantID" name="applicantID">
     
-                    <!-- Reject or Approve -->
+                    {# Reject or Approve #}
                     <label class="mt-3">Select decision for evaluation</label>
                     <div class="form-group">
                         <div class="d-flex">
@@ -78,7 +79,7 @@
                         </div>
                     </div>
                     
-                    <!-- Textarea for Reason of Rejecting Request -->
+                    {# Textarea for Reason of Rejecting Request #}
                     <div class="mt-4" id="remarksField" style="display:none">
                         <div class="form-group">
                             <label for="reason">Please include reason for rejecting request<span class="text-danger"> *</span></label>

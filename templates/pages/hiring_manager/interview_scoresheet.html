@@ -3,29 +3,27 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Content Header (Page header) #}
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
                 
-                <!-- Title -->
-                <div class="col-sm-6">
-                    <h1>{{ page_title }}</h1>
-                    <p class="text-muted">{{ sub_title }}</p>
-                </div>
-    
+            {# Title #}
+            <div class="col-sm-6">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">{{ sub_title }}</p>
             </div>
+
         </div>
     </section>
 
-    <!-- Main content -->
+    {# Main content #}
     <section class="content">
         <div class="container-fluid">
 
             <div class="container-fluid">
                 <div class="row">
 
-                    <!-- Applicant Details -->
+                    {# Applicant Details #}
                     <div class="col-md-4">
                         <div class="card card-primary card-outline" id="applicantDetailsLoader">
                             <div class="card-body py-5">
@@ -45,7 +43,7 @@
                                     <p class="text-secondary small">Applicant</p>
                                 </div>
 
-                                <!-- Applicant Details -->
+                                {# Applicant Details #}
                                 <table class="table">
                                     <tr>
                                         <td>
@@ -105,7 +103,7 @@
                         </div>
                     </div>
 
-                    <!-- Interview Scoresheet -->
+                    {# Interview Scoresheet #}
                     <div class="col-md-8">
                         <form class="card card-primary card-outline" id="interviewScoresheetForm">
                             <div class="card-header align-items-center">
@@ -120,7 +118,7 @@
 
                             <div class="card-body">
 
-                                <!-- General Questions -->
+                                {# General Questions #}
                                 <label>General Questions</label>
                                 <table id="generalInterviewQuestionsForIntervieweeDT" class="table table-bordered w-100 mb-3" width="100" cellspacing="0">
                                     <thead>
@@ -144,7 +142,7 @@
                                     </tbody>
                                 </table>
 
-                                <!-- Added Questions -->
+                                {# Added Questions #}
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <div>
                                         <label>Added Questions</label>
@@ -198,11 +196,9 @@
 {% endblock %}
 
 
-
 {% block page_modals %}
     {% include "pages/hiring_manager/modals/interview_scoresheet_modal.html" %}
 {% endblock %}
-
 
 
 {% block page_scripts %}

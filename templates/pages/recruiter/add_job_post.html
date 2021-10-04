@@ -3,25 +3,24 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Content Header (Page header) #}
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row">
-            
-                <!-- Title -->
-                <div class="col-sm-6">
-                    <h1>{{ page_title }}</h1>
-                    <p class="text-muted">{{ sub_title }}</p>
-                </div>
-
+        
+            {# Title #}
+            <div class="col-sm-6">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">{{ sub_title }}</p>
             </div>
+
         </div>
     </section>
 
+    {# Content #}
     <section class="content px-3">
         <div class="form-row">
 
-            <!-- Create Job Post Form -->
+            {# Create Job Post Form #}
             <div class="col-md-8">
                 <form class="card card-primary card-outline" id="createJobPostForm">
     
@@ -38,7 +37,7 @@
                     <div class="card-body">
                         <input type="hidden" id="requisitionID" name="requisitionID">
     
-                        <!-- Job Description -->
+                        {# Job Description #}
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -56,10 +55,10 @@
                             </div>
                         </div>
 
-                        <!-- Options -->
+                        {# Options #}
                         <div class="form-row">
 
-                            <!-- Check boxes -->
+                            {# Check boxes #}
                             <div class="col">
                                 <label>Options</label>
                                 <div class="form-group">
@@ -78,7 +77,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Open until -->
+                            {# Open until #}
                             <div class="col" id="openUntilField" style="display: none">
                                 <div class="form-group">
                                     <label for="openUntil">Open until</label>
@@ -107,7 +106,7 @@
                 </form>
             </div>
             
-            <!-- Manpower Request Summary -->
+            {# Manpower Request Summary #}
             <div class="col-md-4">
                 <div class="card card-primary card-outline">
                     <div class="card-header align-items-center">
@@ -167,7 +166,6 @@
             </div>
         </div>
     </section>
-    
 {% endblock %}
 
 

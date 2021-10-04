@@ -136,7 +136,8 @@ ifSelectorExist('#availableJobDetails', () => {
                     `
             });
 
-            $('#availableJobDetailsPreloader').remove();
+            $('#vacantPositionLoader').remove();
+            $('#availableJobDetailsLoader').remove();
 
             showElement('#vacantPositionContainer');
             showElement('#availableJobDetails');

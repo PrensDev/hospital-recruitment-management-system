@@ -3,28 +3,28 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Content Header #}
     <section class="content-header">
         <div class="container-fluid">
             
-            <!-- Title -->
+            {# Title #}
             <h1>{{ page_title }}</h1>
             <p class="text-muted">{{ sub_title }}</p>
 
         </div>
     </section>
 
-    <!-- Main content -->
+    {# Main content #}
     <section class="content">
         <div class="container-fluid">
 
-            <!-- Manpower Requests Analytics -->
+            {# Manpower Requests Analytics #}
             <div class="row" id="manpowerRequestAnalytics">
 
-                <!-- Total Manpower Requests Count -->
+                {# Total Manpower Requests Count #}
                 <div class="col-md-6 col-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-info"><i class="fas fa-people-carry"></i></span>
+                        <span class="info-box-icon bg-info"><i class="fas fa-copy"></i></span>
         
                         <div class="info-box-content">
                             <span class="info-box-text">Total Manpower Requests</span>
@@ -32,11 +32,11 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- For Review Requests -->
+
+                {# For Review Requests #}
                 <div class="col-md-6 col-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-warning"><i class="fas fa-redo"></i></span>
+                        <span class="info-box-icon bg-warning"><i class="fas fa-sync-alt"></i></span>
         
                         <div class="info-box-content">
                             <span class="info-box-text">For Review</span>
@@ -45,10 +45,10 @@
                     </div>
                 </div>
 
-                <!-- Approved Requests -->
+                {# Approved Requests #}
                 <div class="col-md-6 col-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-success"><i class="fas fa-clipboard-check"></i></span>
+                        <span class="info-box-icon bg-success"><i class="fas fa-thumbs-up"></i></span>
         
                         <div class="info-box-content">
                             <span class="info-box-text">Approved Requests</span>
@@ -57,7 +57,7 @@
                     </div>
                 </div>
 
-                <!-- Rejected Requests -->
+                {# Rejected Requests #}
                 <div class="col-md-6 col-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-danger"><i class="fas fa-file-excel"></i></span>
@@ -70,17 +70,17 @@
                 </div>
             </div>
 
-            <!-- Card -->
+            {# Manpower Request List #}
             <div class="card card-primary card-outline">
 
-                <!-- Card Header -->
+                {# Card Header #}
                 <div class=" p-3 d-flex justify-content-between">
                     <div>
                         <h3 class="card-title">Lists of Manpower Requests</h3>
                     </div>
                 </div>
 
-                <!-- Card Body -->
+                {# Card Body #}
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="manpowerRequestDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">

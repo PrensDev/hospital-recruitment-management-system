@@ -3,25 +3,23 @@
 
 {% block content %}
     
-    <!-- Content Header (Page header) -->
+    {# Content Header (Page header) #}
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row">
             
-                <!-- Title -->
-                <div class="col-sm-6">
-                    <h1>{{ page_title }}</h1>
-                    <p class="text-muted">{{ sub_title }}</p>
-                </div>
-
+            {# Title #}
+            <div class="col-sm-6">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">{{ sub_title }}</p>
             </div>
+
         </div>
     </section>
 
     <section class="content px-3">
         <div class="form-row">
 
-            <!-- Create Job Post Form -->
+            {# Create Job Post Form #}
             <div class="col-lg-8 order-1 order-lg-0">
                 <form class="card card-primary card-outline" id="createInterviewScheduleForm">
     
@@ -41,7 +39,7 @@
                     <div class="card-body">
                         <input type="hidden" id="requisitionID" name="requisitionID">
     
-                        <!-- Date of Schedule -->
+                        {# Date of Schedule #}
                         <div class="form-group">
                             <label for="scheduledDate">On what date?</label>
                             <input 
@@ -52,10 +50,10 @@
                             >
                         </div>
 
-                        <!-- Session Range -->
+                        {# Session Range #}
                         <div class="form-row">
 
-                            <!-- Start of Session -->
+                            {# Start of Session #}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="startSession">Start of Session</label>
@@ -68,7 +66,7 @@
                                 </div>
                             </div>
 
-                            <!-- End of Session -->
+                            {# End of Session #}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="endSession">End of Session</label>
@@ -82,7 +80,7 @@
                             </div>
                         </div>
     
-                        <!-- Add Applicant -->
+                        {# Add Applicant #}
                         <div class="form-group">
                             <label for="selectApplicant">Choose applicants to be interview for this schedule</label>
                             <div class="input-group" style="width: 100%">
@@ -102,7 +100,7 @@
                             </div>
                         </div>
 
-                        <!-- Selected Applicants -->
+                        {# Selected Applicants #}
                         <table class="table table-bordered table-hover" id="selectedApplicantsDT">
                             <thead>
                                 <th>Applicant</th>
@@ -133,7 +131,7 @@
                 </form>
             </div>
             
-            <!-- Job Post Summary -->
+            {# Job Post Summary #}
             <div class="col-lg-4 order-0 order-lg-1">
 
                 <div class="card card-primary card-outline" id="jobPostSummaryLoader">
@@ -144,7 +142,7 @@
                     </div>
                 </div>
                 
-                <!-- Job Post Summary -->
+                {# Job Post Summary #}
                 <div class="card card-primary card-outline" id="jobPostSummary" style="display: none">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">

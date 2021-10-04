@@ -3,16 +3,19 @@
 
 {% block content %}
 
-    <div class="container" id="availableJobDetailsPreloader">
-        <div class="py-5 text-center">
-            <div class="spinner-border text-primary my-3">
-                <div class="sr-only">Loading ...</div>
+    {# Vacant Position Loader #}
+    <div class="container pt-4" id="vacantPositionLoader">
+        <div class="skeleton-loader w-50" style="height: 3rem"></div>
+        <div class="dropdown-divider"></div>
+        <div class="mb-3">
+            <div class="mb-3">
+                <div class="skeleton-loader sm w-25 d-block"></div>
+                <div class="skeleton-loader sm w-25 d-block"></div>
             </div>
-            <div class="text-secondary">Loading ...</div>
         </div>
     </div>
     
-    <!-- Content Header -->
+    {# Vacant Position Container #}
     <div class="container pt-4" id="vacantPositionContainer" style="display: none">
         <h1 id="vacantPosition"></h1>
         <div class="dropdown-divider"></div>
@@ -31,20 +34,115 @@
         </div>
     </div>
 
-    <!-- Main content -->
+    {# Available Job Details Loader #}
+    <div class="content" id="availableJobDetailsLoader">
+        <div class="container">
+            <div class="row">
+
+                {# Job Details & Application Form #}
+                <div class="col-lg-8 order-1 order-lg-0">
+
+                    {# Job Details #}
+                    <div class="mb-5">
+                        <div class="mb-3">
+                            <div class="mb-4">
+                                <div class="skeleton-loader"></div>
+                                <div class="skeleton-loader"></div>
+                                <div class="skeleton-loader"></div>
+                                <div class="skeleton-loader w-50"></div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="skeleton-loader"></div>
+                                <div class="skeleton-loader"></div>
+                                <div class="skeleton-loader"></div>
+                                <div class="skeleton-loader w-50"></div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="skeleton-loader"></div>
+                                <div class="skeleton-loader"></div>
+                                <div class="skeleton-loader"></div>
+                                <div class="skeleton-loader w-50"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Application Form #}
+                    <div class="mb-5">
+                        <div class="skeleton-loader" style="width: 10rem; height: 2.5rem"></div>
+                        <div class="dropdown-divider"></div>
+                        <div class="form-row my-3">
+                            <div class="col-md-6">
+                                <div class="skeleton-loader w-25"></div>
+                                <div class="skeleton-loader input"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="skeleton-loader w-25"></div>
+                                <div class="skeleton-loader input"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="skeleton-loader w-25"></div>
+                                <div class="skeleton-loader input"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="skeleton-loader w-25"></div>
+                                <div class="skeleton-loader input"></div>
+                            </div>
+                        </div>
+                        <div class="form-row my-3">
+                            <div class="col-md-6">
+                                <div class="skeleton-loader w-25"></div>
+                                <div class="skeleton-loader input"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="skeleton-loader w-25"></div>
+                                <div class="skeleton-loader input"></div>
+                            </div>
+                        </div>
+                        <div class="form-row my-3">
+                            <div class="col-12">
+                                <div class="skeleton-loader w-25"></div>
+                                <div class="skeleton-loader input"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Job Details Summary #}
+                <div class="col-lg-4 order-0 order-lg-1">
+                    <div class="mb-5">
+                        <div class="card card-primary card-outline mb-3">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <div class="skeleton-loader w-25"></div>
+                                    <div class="skeleton-loader"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="skeleton-loader w-25"></div>
+                                    <div class="skeleton-loader"></div>
+                                </div>
+                                <div class="skeleton-loader input"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Available Job Details #}
     <div class="content" id="availableJobDetails" style="display: none">
         <div class="container">
             <div class="row">
 
-                <!-- Job Description and Application Form -->
+                {# Job Description and Application Form #}
                 <div class="col-lg-8 order-1 order-lg-0">
 
-                    <!-- Job Description -->
+                    {# Job Description #}
                     <div class="mb-5">
                         <div class="mb-3" id="jobDescription"></div>
                     </div>
 
-                    <!-- Application form -->
+                    {# Application form #}
                     <form class="mb-5" id="applicationForm">
 
                         <h3 id="applyNow">Apply Here</h3>
@@ -53,10 +151,10 @@
 
                         <input type="hidden" id="jobPostID" name="jobPostID">
 
-                        <!-- Applicant's Name Field -->
+                        {# Applicant's Name Field #}
                         <div class="form-row my-3">
 
-                            <!-- First name -->
+                            {# First name #}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="firstName">
@@ -73,7 +171,7 @@
                                 </div>
                             </div>
     
-                            <!-- Middle Name -->
+                            {# Middle Name #}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="middleName">Middle Name</label>
@@ -87,7 +185,7 @@
                                 </div>
                             </div>
     
-                            <!-- Last Name -->
+                            {# Last Name #}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="lastName">
@@ -104,7 +202,7 @@
                                 </div>
                             </div>
     
-                            <!-- Suffix Name -->
+                            {# Suffix Name #}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="suffixName">Suffix Name</label>
@@ -119,10 +217,10 @@
                             </div>
                         </div>
 
-                        <!-- Contact Information Field -->
+                        {# Contact Information Field #}
                         <div class="form-row mb-3">
 
-                            <!-- Contact Number -->
+                            {# Contact Number #}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="contactNumber">
@@ -146,7 +244,7 @@
                                 </div>
                             </div>
     
-                            <!-- Email -->
+                            {# Email #}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="email">
@@ -171,7 +269,7 @@
                             </div>
                         </div>
 
-                        <!-- Resume -->
+                        {# Resume #}
                         <div class="form-group">
                             <label for="resume">
                                 <span>Upload your resume here</span>
@@ -191,14 +289,14 @@
                             </div>
                         </div>
 
-                        <!-- User Actions -->
+                        {# User Actions #}
                         <div class="form-group text-center">
                             <button class="btn btn-primary">Apply Now!</button>
                         </div>
                     </form>
                 </div>
 
-                <!-- JOb Details Summary -->
+                {# Job Details Summary #}
                 <div class="col-lg-4 order-0 order-lg-1">
                     <div class="card card-primary card-outline mb-3">
                         <div class="card-body">
@@ -233,8 +331,6 @@
             </div>
         </div>
     </div>
-        
-
 {% endblock %}
 
 
