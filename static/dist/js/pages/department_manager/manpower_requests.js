@@ -77,6 +77,8 @@ ifSelectorExist('#addManpowerRequestForm', () => {
     /** Remove loader */
     showElement('#addManpowerRequestForm');
     $('#addManpowerRequestFormLoader').remove();
+
+    alertBeforeUnload();
 });
 
 /** On Set Salary Range Change */
@@ -408,7 +410,7 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
  */
 
 /** View Manpower Request */
-ifSelectorExist('#manpowerRequestFormDocument', () => {
+ifSelectorExist('#manpowerRequestDocumentContainer', () => {
     const requisitionID = window.location.pathname.split('/')[3];
     GET_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
@@ -608,6 +610,16 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                     `
                 }
             });
+
+            // Remove Loaders
+            $('#manpowerRequestDocumentLoader').remove();
+            showElement('#manpowerRequestDocument');
+            
+            $('#optionsLoader').remove();
+            showElement('#optionsContainer');
+
+            $('#manpowerRequestTimelineLoader').remove();
+            showElement('#manpowerRequestTimeline');
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });

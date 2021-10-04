@@ -2,74 +2,73 @@
 <html lang="en" id="test">
 <head>
 
-    <!-- 
-     | ===========================================================================
-     | REQUIRED META TAGS
-     | ===========================================================================
-     -->
+    {# 
+    | ===========================================================================
+    | REQUIRED META TAGS
+    | ===========================================================================
+    #}
 
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Bandroite & PrensDev">
-    <meta name="description" content="Hospital Recruitment Management System">
+    <meta name="viewport"       content="width=device-width, initial-scale=1.0">
+    <meta name="author"         content="Bandroite & PrensDev">
+    <meta name="description"    content="Hospital Recruitment Management System">
 
-    <!-- 
-     | ===========================================================================
-     | PAGE TITLE AND WEBSITE ICON
-     | ===========================================================================
-     -->
+    {# 
+    | ===========================================================================
+    | PAGE TITLE AND WEBSITE ICON
+    | ===========================================================================
+    #}
 
-    <!-- Page Title -->
+    {# Page Title #}
     <title>{{ page_title }} | Hospital Recruitment Management System</title>
 
-    <!-- Website Icon -->
+    {# Website Icon #}
     <link rel="icon" href="{{url_for('static', path='/dist/img/AdminLTELogo.png')}}">
 
-    <!-- 
-     | ===========================================================================
-     | CSS LINKS
-     | ===========================================================================
-     -->
+    {# 
+    | ===========================================================================
+    | CSS LINKS
+    | ===========================================================================
+    #}
 
-    <!-- CSS Plugins -->
+    {# CSS Plugins #}
     
-    <!-- FontAwesome -->
+    {# FontAwesome #}
     <link rel="stylesheet" href="{{url_for('static', path='/plugins/fontawesome-free/css/all.min.css')}}">
     
-    <!-- icheck-bootstrap -->
+    {# icheck-bootstrap #}
     <link rel="stylesheet" href="{{url_for('static', path='/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
     
-    <!-- Overlay Scrollbars -->
+    {# Overlay Scrollbars #}
     <link rel="stylesheet" href="{{url_for('static', path='/plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
     
-    <!-- DataTables Bootstrap 4 -->
+    {# DataTables Bootstrap 4 #}
     <link rel="stylesheet" href="{{url_for('static', path='/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
     
-    <!-- DataTables Scroller Bootstrap 4 -->
+    {# DataTables Scroller Bootstrap 4 #}
     <link rel="stylesheet" href="{{url_for('static', path='/plugins/datatables-scroller/css/scroller.bootstrap4.min.css')}}">
     
-    <!-- DataTables Responsive Bootstrap 4 -->
+    {# DataTables Responsive Bootstrap 4 #}
     <link rel="stylesheet" href="{{url_for('static', path='/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
     
-    <!-- Buttons Bootstap 4 -->
+    {# Buttons Bootstap 4 #}
     <link rel="stylesheet" href="{{url_for('static', path='/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
     
-    <!-- Toaster -->
+    {# Toaster #}
     <link rel="stylesheet" href="{{url_for('static', path='/plugins/toastr/toastr.min.css')}}">
 
-    <!-- Select2 -->
+    {# Select2 #}
     <link rel="stylesheet" href="{{url_for('static', path='/plugins/select2/css/select2.min.css')}}">
     <link rel="stylesheet" href="{{url_for('static', path='/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
 
-    <!-- Summernote -->
+    {# Summernote #}
     <link rel="stylesheet" href="{{url_for('static', path='/plugins/summernote/summernote-bs4.min.css')}}">
 
-    <!-- BS Stepper -->
+    {# BS Stepper #}
     <link rel="stylesheet" href="{{url_for('static', path='plugins/bs-stepper/css/bs-stepper.min.css')}}">
 
-    <!-- AdminLTE CSS -->
+    {# AdminLTE CSS #}
     <link rel="stylesheet" href="{{url_for('static', path='/dist/css/adminlte.min.css')}}">
 
     <style>
@@ -94,7 +93,7 @@
 
         @keyframes shine {
             to {
-                background-position: 100% 0, /* move highlight to right */ 0 0;
+                background-position: 100% 0, 0 0;
             }
         }
 
@@ -103,10 +102,13 @@
         .skeleton-loader.w-25 { width: 25%; }
         .skeleton-loader.w-50 { width: 50%; }
         .skeleton-loader.w-75 { width: 75%; }
+
+        .wait { cursor: wait }
     </style>
 
 </head>
 
+{# If page disable JavaScript #}
 <noscript>
     <div class="preloader flex-column justify-content-center align-items-center">
         <div class="container text-center">

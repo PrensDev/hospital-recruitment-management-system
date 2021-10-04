@@ -3,11 +3,11 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Content Header (Page header) #}
     <section class="content-header">
         <div class="container-fluid">
             
-            <!-- Title -->
+            {# Title #}
             <div class="col-sm-6">
                 <h1>{{ page_title }}</h1>
                 <p class="text-muted">{{ sub_title }}</p>
@@ -16,30 +16,31 @@
         </div>
     </section>
 
-    <!-- Main content -->
+    {# Main content #}
     <section class="content">
         <div class="container-fluid">
 
-            <!-- Info Boxes -->
+            {# Info Boxes #}
             <div class="row">
-            <div class="col-md-4 col-12">
-                <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>150</h3>
 
-                    <p>Total Manpower Requests</p>
+                {# Total Manpower Requests #}
+                <div class="col-md-4 col-12">
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>150</h3>
+
+                            <p>Total Manpower Requests</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-people-carry"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <i class="fas fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-people-carry"></i>
-                </div>
-                <a href="#" class="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
-                </a>
-                </div>
-            </div>
-            <!-- ./col -->
+                
             <div class="col-md-4 col-12">
-                <!-- small card -->
                 <div class="small-box bg-success">
                 <div class="inner">
                     <h3>53<sup style="font-size: 20px">%</sup></h3>
@@ -54,9 +55,9 @@
                 </a>
                 </div>
             </div>
-            <!-- ./col -->
+            {# ./col #}
             <div class="col-md-4 col-12">
-                <!-- small card -->
+                {# small card #}
                 <div class="small-box bg-warning">
                 <div class="inner">
                     <h3>44</h3>
@@ -71,20 +72,19 @@
                 </a>
                 </div>
             </div>
-            <!-- ./col -->
-            </div>
-            <!-- / Info Boxes -->
 
-            <!-- Card -->
+            </div>
+            {# / Info Boxes #}
+
+            {# Card #}
             <div class="card card-primary card-outline">
 
-                <!-- Card Header -->
+                {# Card Header #}
                 <div class="card-header">
                     <h3 class="card-title">Card Title</h3>
                 </div>
-                <!-- /.card-header -->
 
-                <!-- Card Body -->
+                {# Card Body #}
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="blogsDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
@@ -100,14 +100,12 @@
                         </table>
                     </div>
                 </div>
-                <!-- /.card-body -->
 
             </div>
-            <!-- /.card -->
             
         </div>
     </section>
-    <!-- /. content -->
+    {# /. content #}
 
 {% endblock %}
 

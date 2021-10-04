@@ -15,7 +15,6 @@ GET_ajax(`${ DM_API_ROUTE }info`, {
                 lastName: result.last_name,
                 suffixName: result.suffix_name
             }));
-    
             $('#userFullNameLoader').remove();
             showElement('#userFullNameDisplay');
         } else toastr.error('There was an error while getting your information');

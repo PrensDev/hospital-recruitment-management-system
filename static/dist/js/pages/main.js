@@ -441,3 +441,66 @@ const setSessionedAlertAndRedirect = (data = {theme: "", message: "", redirectUR
     localStorage.setItem('sessioned_alert_message', data.message)
     location.assign(data.redirectURL)
 }
+
+
+/** Alert Before Unload */
+const alertBeforeUnload = () => $(window).on('beforeunload', () => { return 1 });
+
+
+/** Show Timeline */
+const setTimeline = (selector, attr = {
+    title: "",
+    timelineData: []
+}) => {
+    ifSelectorExist(selector, () => {
+        const timelineData = attr.timelineData;
+
+        let timelines = "";
+
+        const timelineComponent = (properties = {
+            icon: "",
+            iconTheme: "",
+            dateTime: "",
+            timelineTitle: "",
+            timelineBody: ""
+        }) => {
+            return `
+                <div>
+                    <i class="fas fa-${ properties.icon } bg-${ properties.iconTheme }"></i>
+                    <div class="timeline-item">
+                        <div class="time">
+                            <i class="fas fa-clock mr-1"></i>
+                            <span>${ fromNow(properties.dateTime) }</span>
+                        </div>
+                        
+                        <div class="timeline-header">${ properties.timelineTitle }</div>
+
+                        <div class="timeline-body">${ properties.timelineBody }</div>
+                    </div>
+                </div>
+            `
+        }
+
+        timelineData.forEach(t => {
+            timelines = timelineComponent({
+                icon: t.icon,
+                iconTheme: t.iconTheme,
+                dateTime: t.dateTime,
+                timelineTitle: t.timelineTitle,
+                timelineBody: t.timelineBody
+            }) + timelines;
+        });
+
+        setContent(selector, `
+            <div class="timeline">
+                <div class="time-label">
+                    <span class="bg-primary shadow-sm">${ attr.title }</span>
+                </div>
+                ${ timelines }
+                <div>
+                    <i class="fas fa-clock bg-secondary"></i>
+                </div>
+            </div>
+        `);
+    });
+}

@@ -1,12 +1,12 @@
+{# Base URL Routes #}
 {%  set BASE_URL_WEB = 'http://127.0.0.1:8000/' %}
-{%  set DH_WEB_ROUTE = BASE_URL_WEB + 'dh/' %}
-{%  set DM_WEB_ROUTE = BASE_URL_WEB + 'dm/' %}
-{%  set H_WEB_ROUTE = BASE_URL_WEB + 'h/' %}
-{%  set R_WEB_ROUTE = BASE_URL_WEB + 'r/' %}
+{%  set DH_WEB_ROUTE = BASE_URL_WEB + 'dh/'     %}
+{%  set DM_WEB_ROUTE = BASE_URL_WEB + 'dm/'     %}
+{%  set H_WEB_ROUTE  = BASE_URL_WEB + 'h/'      %}
+{%  set R_WEB_ROUTE  = BASE_URL_WEB + 'r/'      %}
 
 
+{# Base Layout #}
 {% include "layouts/_header.html" %}
-
 {% block body %}{% endblock %}
-
 {% include "layouts/_footer.html" %}

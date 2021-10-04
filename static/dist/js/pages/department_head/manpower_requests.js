@@ -220,29 +220,65 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                     : formatDateTime(completedAt, "DateTime")
             });
 
-            // Set Date Requested For Timeline Humanized
-            setContent('#dateRequestedForTimelineHumanized', fromNow(result.created_at));
 
-            // Set Date Requested For Timeline
-            setContent('#dateRequestedForTimeline', `
-                <div>${ formatDateTime(result.created_at, 'Full Date') }</div>
-                <div>${ formatDateTime(result.created_at, 'Time') }</div>
-            `)
+            // Set Manpower Request Timeline
+            let timelineData = [];
 
-            // Set Last Updated Humanized
-            setContent('#lastUpdatedHumanized', fromNow(result.updated_at));
+            const requestStatus = result.request_status;
+            const rejectedAt = result.rejectedAt;
 
-            // Set Last Updated
-            setContent('#lastUpdated', `
-                <div>${ formatDateTime(result.updated_at, 'Full Date') }</div>
-                <div>${ formatDateTime(result.updated_at, 'Time') }</div>
-            `)
+            const createdAt = result.created_at
+            timelineData.push({
+                icon: "edit",
+                iconTheme: "info",
+                dateTime: createdAt,
+                timelineTitle: 'Created at',
+                timelineBody: `
+                    <div class="small">${ formatDateTime(createdAt, "Full Date") }</div>
+                    <div class="small">${ formatDateTime(createdAt, "Time") }</div>
+                `
+            });
+
+            const signedAt = result.signed_at;
+            if(!isEmptyOrNull(signedAt)) {
+                timelineData.push({
+                    icon: "file-signature",
+                    iconTheme: "primary",
+                    dateTime: signedAt,
+                    timelineTitle: 'Signed at',
+                    timelineBody: `
+                        <div class="small">${ formatDateTime(signedAt, "Full Date") }</div>
+                        <div class="small">${ formatDateTime(signedAt, "Time") }</div>
+                    `
+                });
+            } else if(requestStatus === "Rejected for signing") {
+                timelineData.push({
+                    icon: "times",
+                    iconTheme: "danger",
+                    dateTime: rejectedAt,
+                    timelineTitle: 'Rejected at',
+                    timelineBody: `
+                        <div class="small">${ formatDateTime(rejectedAt, "Full Date") }</div>
+                        <div class="small">${ formatDateTime(rejectedAt, "Time") }</div>
+                    `
+                });
+            }
+
+            setTimeline('#manpowerRequestTimeline', {
+                title: "Manpower Request Timeline",
+                timelineData: timelineData
+            });
+
+            // Show signature form if request status is for signature
+            result.request_status === "For signature" ? showElement('#signatureForm') : $('#signatureForm').remove();
+
+            // Remove Manpower Request Document Loader
+            $('#manpowerRequestDocumentLoader').remove();
+            showElement('#manpowerRequestDocument');
             
-            // Remove Loader
-            showElement('#signatureForm');
-            $('#signatureFormLoader').remove();
-
-            if(result.request_status !== "For signature") $('#signatureForm').remove();
+            // Remove Manpower Request Timeline Loader
+            $('#manpowerRequestTimelineLoader').remove();
+            showElement('#manpowerRequestTimeline');
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });
