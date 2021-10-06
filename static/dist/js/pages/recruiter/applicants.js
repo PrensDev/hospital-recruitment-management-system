@@ -4,6 +4,7 @@
  * ==============================================================================
 */
 
+/** Job Post ID from the URL */
 const jobPostID = window.location.pathname.split("/")[3];
 
 
@@ -602,6 +603,22 @@ const evaluateApplicant = () => {
         remarks: remarks
     }
 
+    const ifError = () => {
+
+        // Hide Applicant Details Modal
+        hideModal('#applicantDetailsModal');
+
+        // Set modal buttons to unload state
+        btnToUnloadState('#submitBtn', `
+            <span>Submit</span>
+            <i class="fas fa-check ml-1"></i>
+        `);
+        enableElement('#applicationDetailsCloseModalBtn');
+
+        // Show error alert
+        toastr.error('There was an error while updating applicant evaluation');
+    }
+
     PUT_ajax(`${ R_API_ROUTE }applicants/${ get('applicantID') }`, data, {
         success: result => {
             if(result) {
@@ -624,23 +641,9 @@ const evaluateApplicant = () => {
 
                 // Show Info Alert
                 toastr.info('An applicant is successfully evaluated');
-            }
+            } else ifError()
         },
-        error: () => {
-
-            // Hide Applicant Details Modal
-            hideModal('#applicantDetailsModal');
-
-            // Set modal buttons to unload state
-            btnToUnloadState('#submitBtn', `
-                <span>Submit</span>
-                <i class="fas fa-check ml-1"></i>
-            `);
-            enableElement('#applicationDetailsCloseModalBtn');
-
-            // Show error alert
-            toastr.error('There was an error while updating applicant evaluation');
-        }
+        error: () => ifError()
     });
 }
 

@@ -53,11 +53,7 @@ ifSelectorExist('#addManpowerRequestForm', () => {
     $('#requestDescription').summernote({
         height: 500,
         placeholder: "Write the description of your request here",
-        toolbar: [
-            ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'clear']],
-            ['para', ['ol', 'ul', 'paragraph']],
-            ['table', ['table']]
-        ]
+        toolbar: SUMMERNOTE_TOOLBAR
     });
 
     
@@ -769,11 +765,7 @@ ifSelectorExist('#editManpowerRequestForm', () => {
     $('#requestDescription').summernote({
         height: 500,
         placeholder: "Write the description of your request here",
-        toolbar: [
-            ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'clear']],
-            ['para', ['ol', 'ul', 'paragraph']],
-            ['table', ['table']]
-        ]
+        toolbar: SUMMERNOTE_TOOLBAR
     });
 
     /** 

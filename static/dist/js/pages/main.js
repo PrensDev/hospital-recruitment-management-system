@@ -429,7 +429,7 @@ $(() => {
             localStorage.removeItem('sessioned_alert');
             localStorage.removeItem('sessioned_alert_theme');
             localStorage.removeItem('sessioned_alert_message');
-        }, 1500);
+        }, 500);
     }
 })
 

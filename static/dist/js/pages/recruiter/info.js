@@ -17,5 +17,5 @@ GET_ajax(`${ R_API_ROUTE }info`, {
         $('#userFullNameLoader').remove();
         showElement('#userFullNameDisplay');
     },
-    error: () => toastr.error('There was an error while getting your information')
+    error: () => toastr.error('There was an error while getting information')
 });

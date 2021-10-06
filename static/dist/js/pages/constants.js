@@ -30,7 +30,7 @@ const API_AUTH_ROUTE = `${ BASE_URL_API }auth/`;
 
 
 // Configurations
-IF_SELECTOR_EXIST_DEBUG_MODE = false
+IF_SELECTOR_EXIST_DEBUG_MODE = false;
 
 
 // AJAX Header
@@ -38,3 +38,14 @@ const AJAX_HEADERS = {
     Accept: 'application/json',
     Authorization: `Bearer ${ localStorage.getItem('access_token') }`
 }
+
+
+// Summernote Toolbar
+const SUMMERNOTE_TOOLBAR = [
+    ['view' , ['undo','redo']],
+    ['font' , ['bold', 'italic', 'underline', 'clear']],
+    ['font' , ['strikethrough', 'superscript', 'subscript']],
+    ['para' , ['ol', 'ul', 'paragraph', 'height']],
+    ['table', ['table']],
+    ['view' , ['help']],
+]

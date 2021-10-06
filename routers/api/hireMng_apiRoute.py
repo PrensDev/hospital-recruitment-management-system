@@ -1,6 +1,6 @@
 # Import Packages
 from typing import List
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -9,19 +9,7 @@ from oauth2 import get_user, authorized
 from schemas import db_schemas, user_schemas as user, hireMngr_schemas as hireMngr
 from datetime import date
 from sqlalchemy import or_
-
-import models
-
-
-# Models
-User                = models.User
-Requisition         = models.Requisition
-JobPost             = models.JobPost
-Applicant           = models.Applicant
-Interviewee         = models.Interviewee
-InterviewScore      = models.InterviewScore
-InterviewQuestion   = models.InterviewQuestion
-InterviewSchedule   = models.InterviewSchedule
+from models import *
 
 
 # Router Instance
@@ -43,11 +31,11 @@ def get_user_info(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            user_info = db.query(User).filter(User.user_id == user_data.user_id)
-            if not user_info.first():
-                return "User does not exist"
+            user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+            if not user_info:
+                raise HTTPException(status_code = 404, detail = {"message": "User does not exists"})
             else:
-                return user_info.first()
+                return user_info
     except Exception as e:
         print(e)
 
@@ -169,15 +157,14 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post Not Found"}
 
 
 # Job Posts
-@router.get("/job-posts", response_model=List[db_schemas.ShowJobPost])
+@router.get("/job-posts", response_model=List[hireMngr.ShowJobPost])
 async def get_all_job_posts(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        job_posts = db.query(JobPost).all()
-        return job_posts
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(JobPost).all()
     except Exception as e:
         print(e)
 
@@ -189,37 +176,39 @@ async def job_posts_analytics(
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        query = db.query(JobPost)
-        total = query.count()
-        on_going = query.filter(or_(
-            JobPost.expiration_date >= date.today(), 
-            JobPost.expiration_date == None
-        )).count()
-        ended = query.filter(JobPost.expiration_date < date.today()).count()
-        return {
-            "total": total,
-            "on_going": on_going,
-            "ended": ended
-        }
+        if(authorized(user_data, AUTHORIZED_USER)):
+            query = db.query(JobPost)
+
+            total = query.count()
+            on_going = query.filter(or_(
+                JobPost.expiration_date >= date.today(), 
+                JobPost.expiration_date == None
+            )).count()
+            ended = query.filter(JobPost.expiration_date < date.today()).count()
+            
+            return {
+                "total": total,
+                "on_going": on_going,
+                "ended": ended
+            }
     except Exception as e:
         print(e)   
 
 
 # Get One Job Posts
-@router.get("/job-posts/{job_post_id}", response_model = db_schemas.ShowJobPost)
+@router.get("/job-posts/{job_post_id}", response_model = hireMngr.ShowJobPost)
 async def get_one_job_post(
-    job_post_id,
+    job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
-        if not job_post:
-            raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
-        else:
-            return job_post
+        if(authorized(user_data, AUTHORIZED_USER)):
+            job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+            if not job_post:
+                raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
+            else:
+                return job_post
     except Exception as e:
         print(e)
 
@@ -228,6 +217,7 @@ async def get_one_job_post(
 # APPLICANTS
 # ====================================================================
 
+
 # Applicants Not Found Response
 APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant Not Found"}
 
@@ -235,13 +225,13 @@ APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant Not Found"}
 # Get All Applicants Per Job
 @router.get("/job-posts/{job_post_id}/applicants", response_model = List[db_schemas.ShowApplicantInfo])
 async def get_all_applicants_per_job(
-    job_post_id,
+    job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        return db.query(Applicant).filter(Applicant.job_post_id == job_post_id).all()
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(Applicant).filter(Applicant.job_post_id == job_post_id).all()
     except Exception as e:
         print(e)
 
@@ -249,7 +239,7 @@ async def get_all_applicants_per_job(
 # Get One Applicant
 @router.get("/applicants/{applicant_id}", response_model = db_schemas.ShowApplicantInfo)
 async def get_one_applicant(
-    applicant_id,
+    applicant_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -257,7 +247,7 @@ async def get_one_applicant(
         authorized(user_data, AUTHORIZED_USER)
         applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id).first()
         if not applicant:
-            return APPLICANT_NOT_FOUND_RESPONSE
+            raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
         else:
             return applicant
     except Exception as e:

@@ -38,3 +38,44 @@ class ShowManpowerRequest(BaseModel):
 class ManpowerRequestApproval(BaseModel):
     request_status: str
     remarks: Optional[str]
+
+
+# Applicant
+class Applicant(BaseModel):
+    applicant_id: str
+
+    class Config():
+        orm_mode = True
+
+
+# Show Job Post
+class ShowJobPost(BaseModel):
+    job_post_id: str
+    manpower_request: ShowManpowerRequest
+    salary_is_visible: bool
+    content: str
+    expiration_date: Optional[datetime]
+    applicants: Optional[List[Applicant]]
+    job_posted_by: ShowUser
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+
+# Show Applicant
+class ShowApplicant(Applicant):
+    applicant_id: str
+    applied_job: ShowJobPost
+    status: str
+    evaluation_done_by: Optional[ShowUser]
+    evaluated_at: Optional[datetime]
+    screening_done_by: Optional[ShowUser]
+    screened_at: Optional[datetime]
+    rejected_by: Optional[ShowUser]
+    rejected_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True

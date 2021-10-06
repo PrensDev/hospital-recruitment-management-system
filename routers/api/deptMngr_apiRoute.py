@@ -6,8 +6,8 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import authorized, get_user
-from schemas import db_schemas, user_schemas as user, deptMngr_schemas as deptMngr
-from models import User, Position, Requisition, Department, JobPost, Applicant, OnboardingTask, OnboardingEmployee, OnboardingEmployeeTask
+from schemas import user_schemas as user, deptMngr_schemas as deptMngr
+from models import *
 
 
 # Router Instance
@@ -31,7 +31,7 @@ async def get_user_info(
         if(authorized(user_data, AUTHORIZED_USER)):
             user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
             if not user_info:
-                return "User does not exist"
+                raise HTTPException(status_code = 404, detail = {"message": "User does not exist"})
             else:
                 return user_info
     except Exception as e:

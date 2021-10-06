@@ -16,7 +16,116 @@
 
     {# Content #}
     <section class="content px-3">
-        <div class="form-row">
+        
+        {# Edit Job Post Form Loader #}
+        <div class="form-row" id="editJobPostFormLoader">
+
+            {# Form #}
+            <div class="col-lg-8">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <div class="skeleton-loader w-50 m-0"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="skeleton-loader w-50"></div>
+                                    <div class="skeleton-loader" style="height: 50rem"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="skeleton-loader w-50"></div>
+                                    <div class="skeleton-loader input"></div>
+                                    <div class="skeleton-loader input"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+
+            {# Details #}
+            <div class="col-lg-4">
+
+                {# Job Post Summary #}
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <div class="skeleton-loader w-50 m-0"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="skeleton-loader w-50"></div>
+                            <div class="skeleton-loader"></div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="skeleton-loader w-50"></div>
+                            <div class="skeleton-loader"></div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="skeleton-loader w-50"></div>
+                            <div class="skeleton-loader"></div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="skeleton-loader w-50"></div>
+                            <div class="skeleton-loader"></div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="skeleton-loader w-50"></div>
+                            <div class="skeleton-loader"></div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Job Post Timeline #}
+                <div class="timeline wait">
+                    <div class="time-label">
+                        <div class="skeleton-loader mb-0 shadow-sm w-75" style="height: 30px"></div>
+                    </div>
+                    <div>
+                        <i class="fas fa-circle bg-secondary"></i>
+                        <div class="timeline-item">
+                            
+                            <div class="timeline-header">
+                                <div class="skeleton-loader sm w-50 mb-0"></div>
+                            </div>
+
+                            <div class="timeline-body">
+                                <div class="small">
+                                    <div class="skeleton-loader sm"></div>
+                                    <div class="skeleton-loader sm w-50"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <i class="fas fa-circle bg-secondary"></i>
+                        <div class="timeline-item">
+                            
+                            <div class="timeline-header">
+                                <div class="skeleton-loader sm w-50 mb-0"></div>
+                            </div>
+
+                            <div class="timeline-body">
+                                <div class="small">
+                                    <div class="skeleton-loader sm"></div>
+                                    <div class="skeleton-loader sm w-50"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <i class="fas fa-clock bg-secondary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Edit Job Post Form Container #}
+        <div class="form-row" id="editJobPostFormContainer" style="display: none">
 
             {# Create Job Post Form #}
             <div class="col-lg-8">
@@ -110,39 +219,6 @@
             {# Job Post Details & Manpower Request #}
             <div class="col-lg-4">
 
-                {# Job Post Details #}
-                <div class="card card-primary card-outline">
-                    <div class="card-header">
-                        <div class="card-title">Job Post Details</div>
-
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <table class="table">
-                            <tr>
-                                <td>
-                                    <h6 class="mb-1">Posted at</h6>
-                                    <div id="postedAtDate"></div>
-                                    <div id="postedAtTime"></div>
-                                    <div class="small text-secondary" id="postedAtHumanized"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h6 class="mb-1">Last updated</h6>
-                                    <div id="lastUpdatedDate"></div>
-                                    <div id="lastUpdatedTime"></div>
-                                    <div class="small text-secondary" id="lastUpdatedHumanized"></div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
                 {# Manpower Request Summary #}
                 <div class="card card-primary card-outline">
                     <div class="card-header">
@@ -199,6 +275,9 @@
                         </table>
                     </div>
                 </div>
+
+                {# Job Post Timeline #}
+                <div class="timeline" id="jobPostTimeline"></div>
 
             </div>
         </div>

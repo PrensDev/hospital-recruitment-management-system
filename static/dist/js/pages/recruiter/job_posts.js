@@ -11,11 +11,7 @@ ifSelectorExist('#createJobPostForm', () => {
     $('#jobDescription').summernote({
         height: 750,
         placeholder: "Write the description of job here",
-        toolbar: [
-            ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'clear']],
-            ['para', ['ol', 'ul', 'paragraph']],
-            ['table', ['table']]
-        ]
+        toolbar: SUMMERNOTE_TOOLBAR
     });
 
     // Get the requisition ID from the URL
@@ -170,9 +166,7 @@ ifSelectorExist('#createJobPostForm', () => {
 });
 
 /** Set Expriration Date On Change */
-$('#expirationDate').on('change', () => isChecked('#expirationDate') 
-    ? showElement('#openUntilField') 
-    : hideElement('#openUntilField'))
+$('#expirationDate').on('change', () => isChecked('#expirationDate') ? showElement('#openUntilField') : $('#openUntilField').remove())
 
 /** Validate Add Job Post Form */
 validateForm('#createJobPostForm', {
@@ -219,6 +213,11 @@ onClick('#confirmPostNewJobPostBtn', () => {
         expiration_date: expirationDate,
     }
 
+    const ifError = () => {
+        hideModal('#confirmPostNewJobModal');
+        toastr.error('There was an error in posting new job')
+    } 
+
     POST_ajax(`${ R_API_ROUTE }job-posts`, data, {
         success: result => {
             if(result) {
@@ -227,12 +226,9 @@ onClick('#confirmPostNewJobPostBtn', () => {
                     message: 'A new available job is successfully posted',
                     redirectURL: `${ R_WEB_ROUTE }job-posts`
                 });
-            }
+            } else ifError()
         },
-        error: () => {
-            hideModal('#confirmPostNewJobModal');
-            toastr.error('There was an error in posting new job')
-        }
+        error: () => ifError()
     })
 });
 
@@ -253,20 +249,7 @@ initDataTable('#jobPostsDT', {
         { data: 'created_at', visible: false },
 
         // View Manpower Request
-        {
-            data: null,
-            render: data => {
-                return `
-                    <button 
-                        class="btn btn-sm btn-light btn-block"
-                        onclick="viewManpowerRequestDetails('${ data.manpower_request.requisition_id }')"
-                    >
-                        <i class="fas fa-file-alt mr-1"></i>
-                        <span>View request</span>
-                    </button
-                `
-            }
-        },
+        { data: 'manpower_request.requisition_no', class: 'text-nowrap' },
 
         // Vacant Position
         { data: "manpower_request.vacant_position.name" },
@@ -490,11 +473,7 @@ ifSelectorExist('#editJobPostForm', () => {
     $('#jobDescription').summernote({
         height: 750,
         placeholder: "Write the description of job here",
-        toolbar: [
-            ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'clear']],
-            ['para', ['ol', 'ul', 'paragraph']],
-            ['table', ['table']]
-        ]
+        toolbar: SUMMERNOTE_TOOLBAR
     });
 
     /** Get Job Post ID from the URL */
@@ -503,16 +482,15 @@ ifSelectorExist('#editJobPostForm', () => {
     /** Get Job Post Information */
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
-            // console.log(result)
+
+            /** SET JOB POST CONTENT */
 
             const manpowerRequest = result.manpower_request;
-
             const minSalary = manpowerRequest.min_monthly_salary;
             const maxSalary = manpowerRequest.max_monthly_salary;
 
-            // Set Job Post ID
+            // Set Job Post ID for form submission
             setValue('#jobPostID', result.job_post_id);
-
 
             /** FOR MANPOWER REQUEST SUMMARY */
 
@@ -635,19 +613,50 @@ ifSelectorExist('#editJobPostForm', () => {
             });
 
 
-            /** FOR JOB POST DETAILS */
+            /** FOR JOB POST TIMELINE */
 
-            // Set Posted At
+            let timelineData = [];
+            const jobPostedBy = result.job_posted_by;
+            const jobPostedByFullName = formatName('F M. L, S', {
+                firstName: jobPostedBy.first_name,
+                middleName: jobPostedBy.middle_name,
+                lastName: jobPostedBy.last_name,
+                suffix_name: jobPostedBy.suffix_name
+            });
+
+            // Created
             const createdAt = result.created_at;
-            setContent("#postedAtDate", formatDateTime(createdAt, "Full Date"));
-            setContent("#postedAtTime", formatDateTime(createdAt, "Time"));
-            setContent("#postedAtHumanized", fromNow(createdAt));
+            timelineData.push({
+                icon: "edit",
+                iconTheme: "info",
+                dateTime: createdAt,
+                timelineTitle: 'Created',
+                timelineBody: `
+                    <div class="small mb-3">You created this job post</div>
+                    <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
+                    <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
+                `
+            });
 
-            // Set Last Updated
+            // Last Updated
             const lastUpdated = result.updated_at;
-            setContent("#lastUpdatedDate", formatDateTime(lastUpdated, "Full Date"));
-            setContent("#lastUpdatedTime", formatDateTime(lastUpdated, "Time"));
-            setContent("#lastUpdatedHumanized", fromNow(lastUpdated));
+            timelineData.push({
+                icon: "edit",
+                iconTheme: "info",
+                dateTime: lastUpdated,
+                timelineTitle: 'Last Updated',
+                timelineBody: `
+                    <div class="small mb-3">You are the last person updated this job post</div>
+                    <div class="small text-secondary">${ formatDateTime(lastUpdated, "Full Date") }</div>
+                    <div class="small text-secondary">${ formatDateTime(lastUpdated, "Time") }</div>
+                `
+            });
+
+            // Set Timeline
+            setTimeline('#jobPostTimeline', {
+                title: 'Job Post Timeline',
+                timelineData: timelineData
+            });
 
 
             /** SET INPUTS */
@@ -664,6 +673,9 @@ ifSelectorExist('#editJobPostForm', () => {
                 setValue('#openUntil', result.expiration_date);
             }
 
+            /** Remove Loaders */
+            $('#editJobPostFormLoader').remove();
+            showElement('#editJobPostFormContainer');
         },
         error: () => toastr.error('There was an error in getting job post details')
     });

@@ -39,18 +39,14 @@ initDataTable('#manpowerRequestDT', {
             }
         },
 
-        // Vacant Position
+        // Staff Needed
         {
             data: null,
-            render: data => { return `<div>${ data.vacant_position.name }</div>` }
-        },
-
-        // Staffs Needed
-        {
-            data: null,
-            render: data => {
-                staffsNeeded = data.staffs_needed;
-                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`;
+            render: data => { 
+                return `
+                    <div>${ data.vacant_position.name }</div>
+                    <div class="small text-secondary">${ data.staffs_needed } new staff${ data.staffs_needed > 1 ? 's' : '' }</div>
+                `
             }
         },
 
@@ -139,7 +135,7 @@ initDataTable('#manpowerRequestDT', {
  * ==============================================================================
  */
 
-// Manpower Request Analytics
+// Set Content for Manpower Request Analytics
 const manpowerRequestAnalytics = () => {
     GET_ajax(`${ R_API_ROUTE }requisitions/analytics`, {
         success: result => {
@@ -155,6 +151,7 @@ const manpowerRequestAnalytics = () => {
     });
 }
 
+// Manpower Request Analytics
 ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
 
 
@@ -168,8 +165,6 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
 const viewManpowerRequest = (requisitionID) => {
     GET_ajax(`${ R_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
-            // console.log(result);
-
             const requestedBy = result.manpower_request_by;
             
             // Set Requestor Name

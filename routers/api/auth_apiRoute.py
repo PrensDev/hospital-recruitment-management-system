@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database import get_db
 from hashing import Hash
-from models import User
+from models import *
 
 
 # Router Instance

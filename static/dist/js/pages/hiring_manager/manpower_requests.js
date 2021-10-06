@@ -36,9 +36,6 @@ initDataTable('#manpowerRequestDT', {
             }
         },
 
-        // Request Nature
-        { data: "request_nature"},
-
         // Request Status
         {
             data: null,
@@ -127,7 +124,15 @@ const manpowerRequestAnalytics = () => {
             setContent('#totalManpowerRequestsCount', formatNumber(result.total));
 
             // Set For Review Requests
-            setContent('#forReviewRequestsCount', formatNumber(result.for_review));
+            setContent('#forReviewRequestsCount', () => {
+                const forReviewCount = result.for_review;
+                return forReviewCount > 0
+                    ? `
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        <span>${ formatNumber(forReviewCount) }</span>
+                    `
+                    : 0
+            });
 
             // Set Approved Requests
             setContent('#approvedRequestsCount', formatNumber(result.approved));
@@ -154,6 +159,9 @@ ifSelectorExist('#manpowerRequestDocument', () => {
     const requisitionID = window.location.pathname.split('/')[3];
     GET_ajax(`${ H_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
+
+            /** SET MANPOWER REQUEST CONTENTS */
+
             const requestedBy = result.manpower_request_by;
 
             // Set Requisition No
@@ -313,9 +321,10 @@ ifSelectorExist('#manpowerRequestDocument', () => {
             else if(requestStatus == "For approval")
                 showElement('#approvalForm');
 
-            // Set Manpower Request Timeline
-            let timelineData = [];
 
+            /** FOR MANPOWER REQUEST TIMELINE */
+
+            let timelineData = [];
             const rejectedAt = result.rejectedAt;
 
             // Created
@@ -406,6 +415,9 @@ ifSelectorExist('#manpowerRequestDocument', () => {
                 title: "Manpower Request Timeline",
                 timelineData: timelineData
             });
+
+
+            /** REMOVE LOADERS */
             
             // Remove Manpower Request Document Loader
             $('#manpowerRequestDocumentLoader').remove();
@@ -425,6 +437,7 @@ onHideModal('#viewManpowerRequestModal', () => {
     $('#remarksField').hide();
     resetForm('#updateManpowerRequestStatusForm');
 });
+
 
 /**
  * ==============================================================================

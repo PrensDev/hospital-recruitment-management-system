@@ -8,15 +8,16 @@
 ifSelectorExist('#jobPostsAnalytics', () => {
     GET_ajax(`${ H_API_ROUTE }job-posts/analytics`, {
         success: result => {
+            if(result) {
+                // Set Total Job Post
+                setContent('#totalJobPostsCount', result.total);
 
-            // Set Total Job Post
-            setContent('#totalJobPostsCount', result.total);
+                // Set On Going Job Posts
+                setContent('#ongoingJobPostsCount', result.on_going);
 
-            // Set On Going Job Posts
-            setContent('#ongoingJobPostsCount', result.on_going);
-
-            // Set Ended Job Posts
-            setContent('#endedJobPostsCount', result.ended);
+                // Set Ended Job Posts
+                setContent('#endedJobPostsCount', result.ended);
+            } else toastr.error('There was an error in getting job posts analytics')
         },
         error: () => toastr.error('There was an error in getting job posts analytics')
     })
@@ -31,7 +32,6 @@ ifSelectorExist('#jobPostsAnalytics', () => {
 
 /** Initialize Job Posts DataTable */
 initDataTable('#jobPostsDT', {
-    // debugMode: true,
     url: `${ H_API_ROUTE }job-posts`,
     columns: [
 
