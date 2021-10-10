@@ -308,7 +308,7 @@ async def evaluate_applicant(
                 if req.status == "For screening":
                     applicant.update({
                         "evaluated_by": user_data.user_id,
-                        "evaluated_at": req.evaluated_at,
+                        "evaluated_at": text('NOW()'),
                         "status": req.status
                     })
                     db.commit()
@@ -318,7 +318,7 @@ async def evaluate_applicant(
                 elif req.status == "Rejected from evaluation":
                     applicant.update({
                         "rejected_by": user_data.user_id,
-                        "rejected_at": req.rejected_at,
+                        "rejected_at": text('NOW()'),
                         "status": req.status,
                         "remarks": req.remarks
                     })
@@ -354,36 +354,52 @@ async def applicants_per_job_analytics(
         if(authorized(user_data, AUTHORIZED_USER)):
             query = db.query(Applicant)
             
+            # Total Applicants
             total = query.filter(Applicant.job_post_id == job_post_id).count()
+
+            # For Evaluation
             for_evaluation = query.filter(
                 Applicant.status == "For evaluation",
                 Applicant.job_post_id == job_post_id
             ).count()
+
+            # For Screening
             for_screening = query.filter(
                 Applicant.status == "For screening",
                 Applicant.job_post_id == job_post_id
             ).count()
+
+            # For Interview
             for_interview = query.filter(
                 Applicant.status == "For interview",
                 Applicant.job_post_id == job_post_id
             ).count()
             
-            rejected_from_evalution = query.filter(
-                Applicant.status == "Rejected from evaluation",
-                Applicant.job_post_id == job_post_id
-            ).count()
-            rejected_from_screening = query.filter(
-                Applicant.status == "Rejected from screening",
-                Applicant.job_post_id == job_post_id
-            ).count()
-            rejected_from_intreview = query.filter(
-                Applicant.status == "Rejected from interview",
-                Applicant.job_post_id == job_post_id
-            ).count()
+            # Hired
             hired = query.filter(
                 Applicant.status == "Hired",
                 Applicant.job_post_id == job_post_id
             ).count()
+            
+            # Rejected From Evaluation
+            rejected_from_evalution = query.filter(
+                Applicant.status == "Rejected from evaluation",
+                Applicant.job_post_id == job_post_id
+            ).count()
+
+            # Rejected From Screening
+            rejected_from_screening = query.filter(
+                Applicant.status == "Rejected from screening",
+                Applicant.job_post_id == job_post_id
+            ).count()
+
+            # Rejected From Interview
+            rejected_from_intreview = query.filter(
+                Applicant.status == "Rejected from interview",
+                Applicant.job_post_id == job_post_id
+            ).count()
+
+            # Total Rejected
             total_rejected = rejected_from_evalution + rejected_from_screening + rejected_from_intreview
             
             return {
@@ -433,8 +449,10 @@ async def evaluated_applicants(
                 Applicant.job_post_id == job_post_id,
                 or_(
                     Applicant.status == 'For screening',
+                    Applicant.status == 'Rejected from screening',
                     Applicant.status == 'For interview',
-                    Applicant.status == 'Hired',
+                    Applicant.status == 'Rejected from interview',
+                    Applicant.status == 'Hired'
                 )
             ).all()
     except Exception as e:
@@ -444,7 +462,7 @@ async def evaluated_applicants(
 # Get All Applicants Per Job (Rejected)
 @router.get("/job-posts/{job_post_id}/applicants/rejected", response_model = List[recruiter.ShowApplicant])
 async def rejected_applicants(
-    job_post_id,
+    job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):

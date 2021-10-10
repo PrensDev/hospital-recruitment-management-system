@@ -6,7 +6,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, authorized
-from schemas import db_schemas, user_schemas as user, hireMngr_schemas as hireMngr
+from schemas import user_schemas as user, hireMngr_schemas as hireMngr
 from datetime import date
 from sqlalchemy import or_
 from models import *
@@ -223,7 +223,7 @@ APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant Not Found"}
 
 
 # Get All Applicants Per Job
-@router.get("/job-posts/{job_post_id}/applicants", response_model = List[db_schemas.ShowApplicantInfo])
+@router.get("/job-posts/{job_post_id}/applicants", response_model = List[hireMngr.ShowApplicant])
 async def get_all_applicants_per_job(
     job_post_id: str,
     db: Session = Depends(get_db),
@@ -237,37 +237,37 @@ async def get_all_applicants_per_job(
 
 
 # Get One Applicant
-@router.get("/applicants/{applicant_id}", response_model = db_schemas.ShowApplicantInfo)
+@router.get("/applicants/{applicant_id}", response_model = hireMngr.ShowApplicant)
 async def get_one_applicant(
     applicant_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id).first()
-        if not applicant:
-            raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
-        else:
-            return applicant
+        if(authorized(user_data, AUTHORIZED_USER)):
+            applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id).first()
+            if not applicant:
+                raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
+            else:
+                return applicant
     except Exception as e:
         print(e)
 
 
 # Get One Interviewee
-@router.get("/applicants/{applicant_id}/interviewee-info", response_model = db_schemas.ShowIntervieweeInfo)
+@router.get("/applicants/{applicant_id}/interviewee-info", response_model = hireMngr.ShowIntervieweeInfo)
 async def get_one_applicant(
-    applicant_id,
+    applicant_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id).first()
-        if not applicant:
-            return APPLICANT_NOT_FOUND_RESPONSE
-        else:
-            return applicant
+        if(authorized(user_data, AUTHORIZED_USER)):
+            applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id).first()
+            if not applicant:
+                raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
+            else:
+                return applicant
     except Exception as e:
         print(e)
 
@@ -285,229 +285,231 @@ async def applicants_per_job_analytics(
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        query = db.query(Applicant)
+        if(authorized(user_data, AUTHORIZED_USER)):
+            query = db.query(Applicant)
 
-        total = query.filter(Applicant.job_post_id == job_post_id).count()
+            total = query.filter(Applicant.job_post_id == job_post_id).count()
 
-        for_evaluation = query.filter(
-            Applicant.status == "For evaluation",
-            Applicant.job_post_id == job_post_id
-        ).count()
+            for_evaluation = query.filter(
+                Applicant.status == "For evaluation",
+                Applicant.job_post_id == job_post_id
+            ).count()
 
-        for_screening = query.filter(
-            Applicant.status == "For screening",
-            Applicant.job_post_id == job_post_id
-        ).count()
+            for_screening = query.filter(
+                Applicant.status == "For screening",
+                Applicant.job_post_id == job_post_id
+            ).count()
 
-        for_interview = query.filter(
-            Applicant.status == "For interview",
-            Applicant.job_post_id == job_post_id
-        ).outerjoin(Interviewee).filter(Interviewee.is_interviewed == None).count()
+            for_interview = query.filter(
+                Applicant.status == "For interview",
+                Applicant.job_post_id == job_post_id
+            ).outerjoin(Interviewee).filter(Interviewee.is_interviewed == None).count()
 
-        interviewed = query.filter(
-            Applicant.status == "For interview",
-            Applicant.job_post_id == job_post_id
-        ).join(Interviewee).filter(Interviewee.is_interviewed == True).count()
+            interviewed = query.filter(
+                Applicant.status == "For interview",
+                Applicant.job_post_id == job_post_id
+            ).join(Interviewee).filter(Interviewee.is_interviewed == True).count()
 
-        rejected_from_evalution = query.filter(
-            Applicant.status == "Rejected from evaluation",
-            Applicant.job_post_id == job_post_id
-        ).count()
+            rejected_from_evalution = query.filter(
+                Applicant.status == "Rejected from evaluation",
+                Applicant.job_post_id == job_post_id
+            ).count()
 
-        rejected_from_screening = query.filter(
-            Applicant.status == "Rejected from screening",
-            Applicant.job_post_id == job_post_id
-        ).count()
+            rejected_from_screening = query.filter(
+                Applicant.status == "Rejected from screening",
+                Applicant.job_post_id == job_post_id
+            ).count()
 
-        rejected_from_intreview = query.filter(
-            Applicant.status == "Rejected from interview",
-            Applicant.job_post_id == job_post_id
-        ).count()
+            rejected_from_intreview = query.filter(
+                Applicant.status == "Rejected from interview",
+                Applicant.job_post_id == job_post_id
+            ).count()
 
-        hired = query.filter(
-            Applicant.job_post_id == job_post_id,
-            or_(
-                Applicant.status == "Hired",
-                Applicant.status == "Onboarding"
-            )
-        ).count()
+            hired = query.filter(
+                Applicant.job_post_id == job_post_id,
+                or_(
+                    Applicant.status == "Hired",
+                    Applicant.status == "Onboarding"
+                )
+            ).count()
 
-        total_rejected = rejected_from_evalution + rejected_from_screening + rejected_from_intreview
-        
-        return {
-            "total": total,
-            "for_evaluation": for_evaluation,
-            "for_screening": for_screening,
-            "for_interview": for_interview,
-            "interviewed": interviewed,
-            "hired": hired,
-            "rejected": {
-                "total": total_rejected,
-                "from_evaluation": rejected_from_evalution,
-                "from_screening": rejected_from_screening,
-                "from_interview": rejected_from_intreview
+            total_rejected = rejected_from_evalution + rejected_from_screening + rejected_from_intreview
+            
+            return {
+                "total": total,
+                "for_evaluation": for_evaluation,
+                "for_screening": for_screening,
+                "for_interview": for_interview,
+                "interviewed": interviewed,
+                "hired": hired,
+                "rejected": {
+                    "total": total_rejected,
+                    "from_evaluation": rejected_from_evalution,
+                    "from_screening": rejected_from_screening,
+                    "from_interview": rejected_from_intreview
+                }
             }
-        }
     except Exception as e:
         print(e)
 
 
 # Get All Applicants Per Job (For Screening)
-@router.get("/job-posts/{job_post_id}/applicants/for-screening", response_model = List[db_schemas.ShowApplicantInfo])
+@router.get("/job-posts/{job_post_id}/applicants/for-screening", response_model=List[hireMngr.ShowApplicant])
 async def evaluated_applicants(
-    job_post_id,
+    job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        return db.query(Applicant).filter(
-            Applicant.job_post_id == job_post_id,
-            Applicant.status == 'For screening'
-        ).all()
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(Applicant).filter(
+                Applicant.job_post_id == job_post_id,
+                Applicant.status == 'For screening'
+            ).all()
     except Exception as e:
         print(e)
 
 
 # Get All Applicants Per Job (For Interview)
-@router.get("/job-posts/{job_post_id}/applicants/for-interview", response_model = List[db_schemas.ShowIntervieweeInfo])
+@router.get("/job-posts/{job_post_id}/applicants/for-interview", response_model=List[hireMngr.ShowIntervieweeInfo])
 async def evaluated_applicants(
-    job_post_id,
+    job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        return db.query(Applicant).filter(
-            Applicant.job_post_id == job_post_id,
-            Applicant.status == 'For interview'
-        ).outerjoin(Interviewee).filter(Interviewee.is_interviewed == None).all()
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(Applicant).filter(
+                Applicant.job_post_id == job_post_id,
+                Applicant.status == 'For interview'
+            ).outerjoin(Interviewee).filter(Interviewee.is_interviewed == None).all()
     except Exception as e:
         print(e)
 
 
 # Get All Applicants Per Job (Interviewed)
-@router.get("/job-posts/{job_post_id}/applicants/interviewed", response_model = List[db_schemas.ShowIntervieweeInfo])
+@router.get("/job-posts/{job_post_id}/applicants/interviewed", response_model=List[hireMngr.ShowIntervieweeInfo])
 async def evaluated_applicants(
-    job_post_id,
+    job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        return db.query(Applicant).filter(
-            Applicant.job_post_id == job_post_id,
-            Applicant.status == 'For interview'
-        ).join(Interviewee).filter(Interviewee.is_interviewed == True).all()
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(Applicant).filter(
+                Applicant.job_post_id == job_post_id,
+                Applicant.status == 'For interview'
+            ).join(Interviewee).filter(Interviewee.is_interviewed == True).all()
     except Exception as e:
         print(e)
 
 
 # Get All Applicants Per Job (Hired)
-@router.get("/job-posts/{job_post_id}/applicants/hired", response_model = List[db_schemas.ShowApplicantInfo])
+@router.get("/job-posts/{job_post_id}/applicants/hired", response_model=List[hireMngr.ShowApplicant])
 async def evaluated_applicants(
-    job_post_id,
+    job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        return db.query(Applicant).filter(
-            Applicant.job_post_id == job_post_id,
-            or_(
-                Applicant.status == 'Hired',
-                Applicant.status == 'Onboarding'
-            )
-        ).all()
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(Applicant).filter(
+                Applicant.job_post_id == job_post_id,
+                or_(
+                    Applicant.status == 'Hired',
+                    Applicant.status == 'Onboarding'
+                )
+            ).all()
     except Exception as e:
         print(e)
 
 
 # Get All Applicants Per Job (Rejected)
-@router.get("/job-posts/{job_post_id}/applicants/rejected", response_model = List[db_schemas.ShowApplicantInfo])
+@router.get("/job-posts/{job_post_id}/applicants/rejected", response_model=List[hireMngr.ShowApplicant])
 async def evaluated_applicants(
-    job_post_id,
+    job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        return db.query(Applicant).filter(
-            Applicant.job_post_id == job_post_id,
-            or_(
-                Applicant.status == 'Rejected from screening',
-                Applicant.status == 'Rejected from interview'
-            )
-        ).all()
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(Applicant).filter(
+                Applicant.job_post_id == job_post_id,
+                or_(
+                    Applicant.status == 'Rejected from screening',
+                    Applicant.status == 'Rejected from interview'
+                )
+            ).all()
     except Exception as e:
         print(e)
 
 
 # Screen Applicant
-@router.put("/applicants/{applicant_id}/screen", status_code = 202)
+@router.put("/applicants/{applicant_id}/screen", status_code=202)
 async def update_applicant_status(
     applicant_id: str,
-    req: db_schemas.ApplicantScreening,
+    req: hireMngr.UpdateApplicantStatus,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
-        if not applicant.first():
-            raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
-        else:
-            if req.status == "For interview":
-                applicant.update({
-                    "screened_by": user_data.user_id,
-                    "screened_at": req.screened_at,
-                    "status": req.status
-                })
-                db.commit()
-                return {"message": "An applicant is screened and ready for interiew"}
-            elif req.status == "Rejected from screening":
-                applicant.update({
-                    "rejected_by": user_data.user_id,
-                    "rejected_at": req.rejected_at,
-                    "status": req.status,
-                    "remarks": req.remarks
-                })
-                db.commit()
-                return {"message": "An applicant is rejected from screening"}
+        if(authorized(user_data, AUTHORIZED_USER)):
+            applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
+            if not applicant.first():
+                raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
+            else:
+                if req.status == "For interview":
+                    applicant.update({
+                        "screened_by": user_data.user_id,
+                        "screened_at": text('NOW()'),
+                        "status": req.status
+                    })
+                    db.commit()
+                    return {"message": "An applicant is screened and ready for interiew"}
+                elif req.status == "Rejected from screening":
+                    applicant.update({
+                        "rejected_by": user_data.user_id,
+                        "rejected_at": text('NOW()'),
+                        "status": req.status,
+                        "remarks": req.remarks
+                    })
+                    db.commit()
+                    return {"message": "An applicant is rejected from screening"}
     except Exception as e:
         print(e)
 
 
 # Hired Applicant
-@router.put("/applicants/{applicant_id}/hire", status_code = 202)
+@router.put("/applicants/{applicant_id}/hire", status_code=202)
 async def update_applicant_status(
     applicant_id: str,
-    req: db_schemas.ApplicantHiring,
+    req: hireMngr.UpdateApplicantStatus,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
-        if not applicant.first():
-            raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
-        else:
-            if req.status == "Hired":
-                applicant.update({
-                    "status": req.status
-                })
-                db.commit()
-                return {"message": "An applicant is successfully hired"}
-            elif req.status == "Rejected from interview":
-                applicant.update({
-                    "rejected_by": user_data.user_id,
-                    "rejected_at": req.rejected_at,
-                    "status": req.status,
-                    "remarks": req.remarks
-                })
-                db.commit()
-                return {"message": "An applicant is rejected from interview"}
+        if(authorized(user_data, AUTHORIZED_USER)):
+            applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
+            if not applicant.first():
+                raise HTTPException(status_code = 404, detail = APPLICANT_NOT_FOUND_RESPONSE)
+            else:
+                if req.status == "Hired":
+                    applicant.update({
+                        "hired_by": user_data.user_id,
+                        "hired_at": text('NOW()'),
+                        "status": req.status
+                    })
+                    db.commit()
+                    return {"message": "An applicant is successfully hired"}
+                elif req.status == "Rejected from interview":
+                    applicant.update({
+                        "rejected_by": user_data.user_id,
+                        "rejected_at": text('NOW()'),
+                        "status": req.status,
+                        "remarks": req.remarks
+                    })
+                    db.commit()
+                    return {"message": "An applicant is rejected from interview"}
     except Exception as e:
         print(e)
 
@@ -529,151 +531,149 @@ INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE = {"message": "Interview Schedule not foun
 
 
 # Interview Schedules Per Job
-@router.get("/job-posts/{job_post_id}/interview-schedules", response_model = List[db_schemas.ShowInterviewScheduleInfo])
+@router.get("/job-posts/{job_post_id}/interview-schedules", response_model=List[hireMngr.ShowInterviewScheduleInfo])
 async def get_interview_schedules_per_job_post(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        job_post = db.query(JobPost).filter(
-            JobPost.job_post_id == job_post_id).first()
-        if not job_post:
-            raise HTTPException(status_code=404, detail = JOB_POST_NOT_FOUND_RESPONSE)
-        else:
-            interview_schedules = db.query(InterviewSchedule).filter(
-                InterviewSchedule.job_post_id == job_post_id,
-                InterviewSchedule.set_by == user_data.user_id
-            ).all()
-            return interview_schedules
+        if(authorized(user_data, AUTHORIZED_USER)):
+            job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+            if not job_post:
+                raise HTTPException(status_code=404, detail=JOB_POST_NOT_FOUND_RESPONSE)
+            else:
+                interview_schedules = db.query(InterviewSchedule).filter(
+                    InterviewSchedule.job_post_id == job_post_id,
+                    InterviewSchedule.set_by == user_data.user_id
+                ).all()
+                return interview_schedules
     except Exception as e:
         print(e)
 
 
 # Create Interview Question
-@router.post("/interview-questions", status_code = 201)
+@router.post("/interview-questions", status_code=201)
 async def create_interview_question(
-    req: db_schemas.CreateInterviewQuestion,
+    req: hireMngr.CreateInterviewQuestion,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        new_interview_question = InterviewQuestion(
-            question = req.question,
-            type = req.type,
-            added_by = user_data.user_id,
-            updated_by = user_data.user_id
-        )
-        db.add(new_interview_question)
-        db.commit()
-        db.refresh(new_interview_question)
-        return {
-            "data": new_interview_question,
-            "message": "A new interview question has been created"
-        }
+        if(authorized(user_data, AUTHORIZED_USER)):
+            new_interview_question = InterviewQuestion(
+                question = req.question,
+                type = req.type,
+                added_by = user_data.user_id,
+                updated_by = user_data.user_id
+            )
+            db.add(new_interview_question)
+            db.commit()
+            db.refresh(new_interview_question)
+            return {
+                "data": new_interview_question,
+                "message": "A new interview question has been created"
+            }
     except Exception as e:
         print(e)
 
 
 # Get All General Interview Questions
-@router.get("/interview-questions/general", response_model = List[db_schemas.ShowInterviewQuestion])
+@router.get("/interview-questions/general", response_model=List[hireMngr.ShowInterviewQuestion])
 async def get_all_general_interview_questions(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        general_questions = db.query(InterviewQuestion).filter(InterviewQuestion.type == "General").all()
-        return general_questions
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(InterviewQuestion).filter(InterviewQuestion.type == "General").all()
     except Exception as e:
         print(e)
 
 
 # Get One Interview Question
-@router.get("/interview-questions/{interview_question_id}", response_model = db_schemas.ShowInterviewQuestion)
+@router.get("/interview-questions/{interview_question_id}", response_model=hireMngr.ShowInterviewQuestion)
 async def get_one_interview_question(
     interview_question_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        interview_question = db.query(InterviewQuestion).filter(InterviewQuestion.interview_question_id == interview_question_id).first()
-        if not interview_question:
-            raise HTTPException(status_code = 404, detail = INTERVIEW_QUESTION_NOT_FOUND_RESPONSE)
-        else:
-            return interview_question
+        if(authorized(user_data, AUTHORIZED_USER)):
+            interview_question = db.query(InterviewQuestion).filter(InterviewQuestion.interview_question_id == interview_question_id).first()
+            if not interview_question:
+                raise HTTPException(status_code=404, detail=INTERVIEW_QUESTION_NOT_FOUND_RESPONSE)
+            else:
+                return interview_question
     except Exception as e:
         print(e)
 
 
 # Create Interview Schedule
-@router.post("/interview-schedule", status_code = 201)
+@router.post("/interview-schedule", status_code=201)
 async def create_interview_schedule(
-    req: db_schemas.CreateInterviewSchedule,
+    req: hireMngr.CreateInterviewSchedule,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        new_interview_schedule = InterviewSchedule(
-            job_post_id = req.job_post_id,
-            scheduled_date = req.scheduled_date,
-            start_session = req.start_session,
-            end_session = req.end_session,
-            set_by = user_data.user_id
-        )
-        db.add(new_interview_schedule)
-        db.commit()
-        db.refresh(new_interview_schedule)
-        interview_schedule_id = (new_interview_schedule.interview_schedule_id)
-        for a in req.interviewees:
-            new_interviewee = Interviewee(
-                applicant_id = a.applicant_id,
-                interview_schedule_id = interview_schedule_id
+        if(authorized(user_data, AUTHORIZED_USER)):
+            new_interview_schedule = InterviewSchedule(
+                job_post_id = req.job_post_id,
+                scheduled_date = req.scheduled_date,
+                start_session = req.start_session,
+                end_session = req.end_session,
+                set_by = user_data.user_id
             )
-            db.add(new_interviewee)
+            db.add(new_interview_schedule)
             db.commit()
-            db.refresh(new_interviewee)
-        return {"message": "Interview schedule is successfully created"}
+            db.refresh(new_interview_schedule)
+            interview_schedule_id = (new_interview_schedule.interview_schedule_id)
+            for a in req.interviewees:
+                new_interviewee = Interviewee(
+                    applicant_id = a.applicant_id,
+                    interview_schedule_id = interview_schedule_id
+                )
+                db.add(new_interviewee)
+                db.commit()
+                db.refresh(new_interviewee)
+            return {"message": "Interview schedule is successfully created"}
     except Exception as e:
         print(e)
 
 
 # Get Interview Schedule and Applicants
-@router.get("/interview-schedules/{interview_schedule_id}", response_model=db_schemas.ShowInterviewScheduleInfo)
+@router.get("/interview-schedules/{interview_schedule_id}", response_model=hireMngr.ShowInterviewScheduleInfo)
 async def interview_schedules_and_applicants(
     interview_schedule_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
-        if not interview_schedule_id:
-            raise HTTPException(status_code = 404, detail = INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE)
-        else:
-            return interview_schedule
+        if(authorized(user_data, AUTHORIZED_USER)):
+            interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
+            if not interview_schedule:
+                raise HTTPException(status_code=404, detail=INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE)
+            else:
+                return interview_schedule
     except Exception as e:
         print(e)
 
 
 # Get Interviewees per Schedule
-@router.get("/interview-schedules/{interview_schedule_id}/interviewees", response_model=List[db_schemas.IntervieweeInfo])
+@router.get("/interview-schedules/{interview_schedule_id}/interviewees", response_model=List[hireMngr.IntervieweeInfo])
 async def interviewees_per_schedule(
     interview_schedule_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
-        if not interview_schedule_id:
-            raise HTTPException(status_code = 404, detail = INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE)
-        else:
-            return interview_schedule.interviewees
+        if(authorized(user_data, AUTHORIZED_USER)):
+            interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
+            if not interview_schedule_id:
+                raise HTTPException(status_code=404, detail=INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE)
+            else:
+                return interview_schedule.interviewees
     except Exception as e:
         print(e)
 
@@ -682,71 +682,68 @@ async def interviewees_per_schedule(
 @router.post("/interview-scores/{interviewee_id}", status_code=201)
 async def create_general_interviewee_scores(
     interviewee_id: str,
-    req: db_schemas.CreateGeneralIntervieweeScore,
+    req: hireMngr.CreateGeneralIntervieweeScore,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
-        if not interviewee:
-            raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
-        else:
-            new_interview_score = InterviewScore(
-                interviewee_id = interviewee_id,
-                interview_question_id = req.interview_question_id,
-                score = req.score,
-                scored_by = user_data.user_id
-            )
-            db.add(new_interview_score)
-            db.commit()
-            db.refresh(new_interview_score)
-            return {
-                "data": new_interview_score,
-                "message": "General Interview Scores are recorded"
-            }
+        if(authorized(user_data, AUTHORIZED_USER)):
+            interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
+            if not interviewee:
+                raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
+            else:
+                new_interview_score = InterviewScore(
+                    interviewee_id = interviewee_id,
+                    interview_question_id = req.interview_question_id,
+                    score = req.score,
+                    scored_by = user_data.user_id
+                )
+                db.add(new_interview_score)
+                db.commit()
+                db.refresh(new_interview_score)
+                return {"message": "General Interview Scores are recorded"}
     except Exception as e:
         print(e)
 
 
 # Get One Interviewee
-@router.get("/interviewee/{interviewee_id}", response_model = db_schemas.IntervieweeInfo)
+@router.get("/interviewee/{interviewee_id}", response_model=hireMngr.IntervieweeInfo)
 async def get_one_intervieweee(
     interviewee_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
-        if not interviewee:
-            raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
-        else:
-            return interviewee
+        if(authorized(user_data, AUTHORIZED_USER)):
+            interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
+            if not interviewee:
+                raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
+            else:
+                return interviewee
     except Exception as e:
         print(e)
 
 
 # Update Interviewee Status
-@router.put("/interviewee/{interviewee_id}")
+@router.put("/interviewee/{interviewee_id}", status_code=202)
 async def update_interviewee(
     interviewee_id: str,
-    req: db_schemas.UpdateInterviewee,
+    req: hireMngr.UpdateInterviewee,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id)
-        if not interviewee.first():
-            raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
-        else:
-            interviewee.update({
-                "is_interviewed": req.is_interviewed,
-                "interviewed_at": req.interviewed_at,
-                "remarks": req.remarks
-            })
-            db.commit()
-            return {"message": "An interviewee record is updated"}
+        if(authorized(user_data, AUTHORIZED_USER)):
+            interviewee = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id)
+            if not interviewee.first():
+                raise HTTPException(status_code=404, detail=INTERVIEWEE_NOT_FOUND_RESPONSE)
+            else:
+                interviewee.update({
+                    "is_interviewed": req.is_interviewed,
+                    "interviewed_at": req.interviewed_at,
+                    "remarks": req.remarks
+                })
+                db.commit()
+                return {"message": "An interviewee record is updated"}
     except Exception as e:
         print(e)

@@ -3,18 +3,35 @@
 
 {% block content %}
 
-    <!-- Job Post Summary -->
+    {# Job Post Summary #}
     <section class="content-header">
         <div class="container-fluid">
 
+            {# Job Post Summary Loader #}
             <div class="card card-primary card-outline" id="jobPostSummaryLoader">
-                <div class="card-body py-5 text-center">
-                    <div class="spinner-border text-primary my-3" role="status">
-                        <span class="sr-only">Loading ...</span>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="skeleton-loader" style="height: 35px"></div>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+
+                    <div class="dropdown-divider"></div>
+
+                    <div class="mb-3">
+                        <div class="skeleton-loader" style="width: 15rem"></div>
+                    </div>
+                    
+                    <div>
+                        <div class="skeleton-loader" style="width: 12rem"></div>
+                        <div class="skeleton-loader" style="width: 12rem"></div>
+                        <div class="skeleton-loader" style="width: 12rem"></div>
                     </div>
                 </div>
             </div>
 
+            {# Job Post Summary Card #}
             <div class="card card-primary card-outline" id="jobPostSummary" style="display: none">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
@@ -50,105 +67,162 @@
         </div>
     </section>
 
-    <!-- Main content -->
+    {# Main content #}
     <section class="content">
         <div class="container-fluid">
 
             <div class="form-row">
 
-                <!-- Menu -->
+                {# Menu #}
                 <div class="col-lg-3">
-                    <div class="row">
-                        <div class="col-12 order-lg-0">
-                            <div class="card card-primary card-outline">
-                                <div class="card-header align-items-center">
-                                    <h3 class="card-title">Menus</h3>
-                    
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                        <i class="fas fa-minus"></i>
-                                        </button>
+
+                    {# Menu Loader #}
+                    <div class="card card-primary card-outline" id="menuLoader">
+                        <div class="card-header align-items-center">
+                            <div class="skeleton-loader mb-0" style="height: 28px; width: 8rem"></div>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="nav nav-pills flex-column" id="applicantsMenu">
+                                <li class="nav-item">
+                                    <div class="d-flex py-2 px-3">
+                                        <div>
+                                            <div class="skeleton-loader mb-0 mr-2" style="height: 25px; width: 25px"></div>
+                                        </div>
+                                        <div>
+                                            <div class="skeleton-loader mb-0" style="height: 25px; width: 10rem"></div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="card-body p-0">
-                                    <ul class="nav nav-pills flex-column" id="applicantsMenu">
+                                </li>
+                                <li class="nav-item">
+                                    <div class="d-flex py-2 px-3">
+                                        <div>
+                                            <div class="skeleton-loader mb-0 mr-2" style="height: 25px; width: 25px"></div>
+                                        </div>
+                                        <div>
+                                            <div class="skeleton-loader mb-0" style="height: 25px; width: 10rem"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <div class="d-flex py-2 px-3">
+                                        <div>
+                                            <div class="skeleton-loader mb-0 mr-2" style="height: 25px; width: 25px"></div>
+                                        </div>
+                                        <div>
+                                            <div class="skeleton-loader mb-0" style="height: 25px; width: 10rem"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <div class="d-flex py-2 px-3">
+                                        <div>
+                                            <div class="skeleton-loader mb-0 mr-2" style="height: 25px; width: 25px"></div>
+                                        </div>
+                                        <div>
+                                            <div class="skeleton-loader mb-0" style="height: 25px; width: 10rem"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <div class="d-flex py-2 px-3">
+                                        <div>
+                                            <div class="skeleton-loader mb-0 mr-2" style="height: 25px; width: 25px"></div>
+                                        </div>
+                                        <div>
+                                            <div class="skeleton-loader mb-0" style="height: 25px; width: 10rem"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                        </div>
+                    </div>
 
-                                        <!-- For screening link -->
-                                        <li class="nav-item">
-                                            <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-screening" class="nav-link">
-                                                <i class="fas fa-search" style="width: 1.5rem"></i>
-                                                <span>For screening</span>
-                                                <span 
-                                                    class="badge bg-warning float-right" 
-                                                    id="forScreeningCount" 
-                                                    style="display: none"
-                                                >0</span>
-                                            </a>
-                                        </li>
-
-                                        <!-- For interview link -->
-                                        <li class="nav-item">
-                                            <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-interview" class="nav-link">
-                                                <i class="fas fa-user-friends" style="width: 1.5rem"></i>
-                                                <span>For interview</span>
-                                                <span 
-                                                    class="badge bg-info float-right" 
-                                                    id="forInterviewCount" 
-                                                    style="display: none"
-                                                >0</span>
-                                            </a>
-                                        </li>
-
-                                        <!-- Interviewed Applicants link -->
-                                        <li class="nav-item">
-                                            <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/interviewed" class="nav-link">
-                                                <i class="fas fa-user-check" style="width: 1.5rem"></i>
-                                                <span>Interviewed applicants</span>
-                                                <span 
-                                                    class="badge bg-info float-right"
-                                                    id="interviewedApplicantsCount" 
-                                                    style="display: none"
-                                                >0</span>
-                                            </a>
-                                        </li>
-
-                                        <!-- Hired Applcants link -->
-                                        <li class="nav-item">
-                                            <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/hired" class="nav-link">
-                                                <i class="fas fa-handshake" style="width: 1.5rem"></i>
-                                                <span>Hired applicants</span>
-                                                <span 
-                                                    class="badge bg-success float-right" 
-                                                    id="hiredCount" 
-                                                    style="display: none"
-                                                >0</span>
-                                            </a>
-                                        </li>
-        
-                                        <!-- Rejected Applcants link -->
-                                        <li class="nav-item">
-                                            <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/rejected" class="nav-link">
-                                                <i class="fas fa-user-times" style="width: 1.5rem"></i>
-                                                <span>Rejected applicants</span>
-                                                <span 
-                                                    class="badge bg-danger float-right"
-                                                    id="rejectedCount" 
-                                                    style="display: none"
-                                                >0</span>
-                                            </a>
-                                        </li>
-        
-                                    </ul>
-                                </div>
+                    {# Menu List #}
+                    <div class="card card-primary card-outline" id="menu" style="display: none">
+                        <div class="card-header align-items-center">
+                            <h3 class="card-title">Menus</h3>
+            
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                                </button>
                             </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="nav nav-pills flex-column" id="applicantsMenu">
+
+                                {# For screening link #}
+                                <li class="nav-item">
+                                    <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-screening" class="nav-link">
+                                        <i class="fas fa-search" style="width: 1.5rem"></i>
+                                        <span>For screening</span>
+                                        <span 
+                                            class="badge bg-warning float-right" 
+                                            id="forScreeningCount" 
+                                            style="display: none"
+                                        >0</span>
+                                    </a>
+                                </li>
+
+                                {# For interview link #}
+                                <li class="nav-item">
+                                    <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-interview" class="nav-link">
+                                        <i class="fas fa-user-friends" style="width: 1.5rem"></i>
+                                        <span>For interview</span>
+                                        <span 
+                                            class="badge bg-info float-right" 
+                                            id="forInterviewCount" 
+                                            style="display: none"
+                                        >0</span>
+                                    </a>
+                                </li>
+
+                                {# Interviewed Applicants link #}
+                                <li class="nav-item">
+                                    <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/interviewed" class="nav-link">
+                                        <i class="fas fa-user-check" style="width: 1.5rem"></i>
+                                        <span>Interviewed applicants</span>
+                                        <span 
+                                            class="badge bg-info float-right"
+                                            id="interviewedApplicantsCount" 
+                                            style="display: none"
+                                        >0</span>
+                                    </a>
+                                </li>
+
+                                {# Hired Applcants link #}
+                                <li class="nav-item">
+                                    <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/hired" class="nav-link">
+                                        <i class="fas fa-handshake" style="width: 1.5rem"></i>
+                                        <span>Hired applicants</span>
+                                        <span 
+                                            class="badge bg-success float-right" 
+                                            id="hiredCount" 
+                                            style="display: none"
+                                        >0</span>
+                                    </a>
+                                </li>
+
+                                {# Rejected Applcants link #}
+                                <li class="nav-item">
+                                    <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/rejected" class="nav-link">
+                                        <i class="fas fa-user-times" style="width: 1.5rem"></i>
+                                        <span>Rejected applicants</span>
+                                        <span 
+                                            class="badge bg-danger float-right"
+                                            id="rejectedCount" 
+                                            style="display: none"
+                                        >0</span>
+                                    </a>
+                                </li>
+
+                            </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- Applicant List -->
+                {# Applicant List #}
                 <div class="col-lg-9">
-                    {% block dataTable %}
-                    {% endblock %}
+                    {% block dataTable %}{% endblock %}
                 </div>
             </div>
 

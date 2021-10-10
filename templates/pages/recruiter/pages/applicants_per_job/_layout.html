@@ -7,14 +7,31 @@
     <section class="content-header">
         <div class="container-fluid">
             
+            {# Job Post Summary Loader #}
             <div class="card card-primary card-outline" id="jobPostSummaryLoader">
-                <div class="card-body py-5 text-center">
-                    <div class="spinner-border text-primary my-3" role="status">
-                        <span class="sr-only">Loading ...</span>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="skeleton-loader" style="height: 35px"></div>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+
+                    <div class="dropdown-divider"></div>
+
+                    <div class="mb-3">
+                        <div class="skeleton-loader" style="width: 15rem"></div>
+                    </div>
+                    
+                    <div>
+                        <div class="skeleton-loader" style="width: 12rem"></div>
+                        <div class="skeleton-loader" style="width: 12rem"></div>
+                        <div class="skeleton-loader" style="width: 12rem"></div>
                     </div>
                 </div>
             </div>
 
+            {# Job Post Summary #}
             <div class="card card-primary card-outline" id="jobPostSummary" style="display: none">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">

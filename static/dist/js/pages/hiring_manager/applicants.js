@@ -96,6 +96,10 @@ const applicantsPerJobAnalytics = () => {
             // Set Rejected Count
             const rejected = result.rejected.from_screening + result.rejected.from_interview;
             a('#rejectedCount', formatNumber(rejected));
+
+            // Remove Loader in the menus
+            $('#menuLoader').remove();
+            showElement('#menu');
         },
         error: () => toastr.error('There was an error in getting applciants analytics')
     });

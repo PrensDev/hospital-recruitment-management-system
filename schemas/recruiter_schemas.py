@@ -106,7 +106,7 @@ class ShowApplicant(Applicant):
     evaluated_at: Optional[datetime]
     screening_done_by: Optional[ShowUser]
     screened_at: Optional[datetime]
-    rejected_by: Optional[ShowUser]
+    rejection_done_by: Optional[ShowUser]
     rejected_at: Optional[datetime]
 
     class Config():
@@ -116,6 +116,4 @@ class ShowApplicant(Applicant):
 # Applicant Evaluation
 class ApplicantEvaluation(BaseModel):
     status: str
-    evaluated_at: Optional[datetime]
-    rejected_at: Optional[datetime]
     remarks: Optional[str]

@@ -238,9 +238,13 @@ async def delete_requisition(
         print(e) 
 
 
-# # ====================================================================
-# # DEPARTMENT POSITIONS
-# # ====================================================================
+# ====================================================================
+# DEPARTMENT POSITIONS
+# ====================================================================
+
+
+# Department Not Found Response
+DEPARTMENT_NOT_FOUND_RESPONSE = {"message": "Department not found"}
 
 
 # Department Positions
@@ -253,16 +257,16 @@ async def department_positions(
         if(authorized(user_data, AUTHORIZED_USER)):
             department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, User.position_id == Position.position_id).first()
             if not department:
-                raise HTTPException(status_code = 404, detail = DEPARTMENT_NOT_FOUND_RESPONSE)
+                raise HTTPException(status_code=404, detail=DEPARTMENT_NOT_FOUND_RESPONSE)
             else:
                 return db.query(Position).join(Department).filter(Department.department_id == department.department_id).all()
     except Exception as e:
         print(e)
 
 
-# # ====================================================================
-# #  APPLICANTS
-# # ====================================================================
+# ====================================================================
+#  APPLICANTS
+# ====================================================================
 
 
 # # Get One Hired Applicant
@@ -630,14 +634,14 @@ async def department_positions(
 #     db: Session = Depends(get_db),
 #     user_data: user.UserData = Depends(get_user)
 # ):
-    try:
-        authorized(user_data, AUTHORIZED_USER)
-        onboarding_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id)
-        if not onboarding_task.first():
-            raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
-        else:
-            onboarding_task.update(req.dict())
-            db.commit()
-            return {"message": "An onboarding employee task has been updated"}
-    except Exception as e:
-        print(e)
+    # try:
+    #     authorized(user_data, AUTHORIZED_USER)
+    #     onboarding_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id)
+    #     if not onboarding_task.first():
+    #         raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
+    #     else:
+    #         onboarding_task.update(req.dict())
+    #         db.commit()
+    #         return {"message": "An onboarding employee task has been updated"}
+    # except Exception as e:
+    #     print(e)

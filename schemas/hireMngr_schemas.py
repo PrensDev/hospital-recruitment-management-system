@@ -43,6 +43,13 @@ class ManpowerRequestApproval(BaseModel):
 # Applicant
 class Applicant(BaseModel):
     applicant_id: str
+    first_name: str
+    middle_name: Optional[str]
+    last_name: str
+    suffix_name: Optional[str]
+    contact_number: str
+    email: str
+    resume: str
 
     class Config():
         orm_mode = True
@@ -74,8 +81,127 @@ class ShowApplicant(Applicant):
     evaluated_at: Optional[datetime]
     screening_done_by: Optional[ShowUser]
     screened_at: Optional[datetime]
-    rejected_by: Optional[ShowUser]
+    rejection_done_by: Optional[ShowUser]
     rejected_at: Optional[datetime]
+    created_at: datetime
+    updated_at: Optional[datetime]
 
     class Config():
         orm_mode = True
+
+
+# Interviewee
+class Interviewee(BaseModel):
+    applicant_id: str
+
+
+
+# Interview Schedule
+class InterviewSchedule(BaseModel):
+    scheduled_date: date
+    start_session: time
+    end_session: time
+
+
+# Create Interview Schedule
+class CreateInterviewSchedule(InterviewSchedule):
+    job_post_id: str
+    interviewees: List[Interviewee]
+
+
+# Interview Schedule Info
+class InterviewScheduleInfo(InterviewSchedule):
+    schedule_for: ShowJobPost
+
+    class Config():
+        orm_mode = True
+
+
+# Interview Question
+class InterviewQuestion(BaseModel):
+    question: str
+    type: str
+
+    class Config():
+        orm_mode = True
+
+
+# Interviewee Score
+class IntervieweeScore(BaseModel):
+    interview_question: InterviewQuestion
+    score: float
+    scored_by_hiring_manager: ShowUser
+
+    class Config():
+        orm_mode = True
+
+
+# Create General Interviewee Score
+class CreateGeneralIntervieweeScore(BaseModel):
+    interview_question_id: str
+    score: float
+
+
+# Interviewee Info
+class IntervieweeInfo(BaseModel):
+    interviewee_id: str
+    interviewee_schedule: Optional[InterviewScheduleInfo]
+    interviewee_score: List[Optional[IntervieweeScore]]
+    is_interviewed: Optional[bool]
+    interviewed_at: Optional[datetime]
+    remarks: Optional[str]
+    created_at: datetime
+    updated_at: datetime
+
+    class Config():
+        orm_mode = True
+
+
+# Show Interviewee Info
+class ShowIntervieweeInfo(ShowApplicant):
+    interviewee_info: List[IntervieweeInfo]
+
+    class Config():
+        orm_mod =  True
+
+
+# Show Interview Schedule Info
+class ShowInterviewScheduleInfo(InterviewScheduleInfo):
+    interview_schedule_id: str
+    interviewees: List[IntervieweeInfo]
+    
+    class Config():
+        orm_mode = True
+
+
+# Show Interview Question
+class ShowInterviewQuestion(BaseModel):
+    interview_question_id: str
+    question: str
+    type: str
+    interview_question_added_by: ShowUser
+    interview_question_updated_by: ShowUser
+    created_at: datetime
+    updated_at: datetime
+
+    class Config():
+        orm_mode = True
+
+
+# Create Interview Question
+class CreateInterviewQuestion(BaseModel):
+    question: str
+    type: str
+
+
+# Update Interviewee
+class UpdateInterviewee(BaseModel):
+    is_interviewed: Optional[bool]
+    interviewed_at: Optional[datetime]
+    remarks: Optional[str]
+
+
+# Update Applicant Status
+class UpdateApplicantStatus(BaseModel):
+    status: str
+    remarks: Optional[str]

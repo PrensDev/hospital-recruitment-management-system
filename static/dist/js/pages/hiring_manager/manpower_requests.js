@@ -386,10 +386,12 @@ ifSelectorExist('#manpowerRequestDocument', () => {
                     timelineTitle: 'Approved',
                     timelineBody: `
                         <div class="small mb-3">This request has been reviewed and approved by <b>${ reviewedByFullName }</b></div>
-                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
-                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
+                        <div class="small text-secondary">${ formatDateTime(reviewedAt, "Full Date") }</div>
+                        <div class="small text-secondary">${ formatDateTime(reviewedAt, "Time") }</div>
                     `
                 });
+
+            // Rejected For Approval
             } else if(requestStatus === "Rejected for approval") {
                 const rejectedBy = result.manpower_request_rejected_by;
                 const rejectedByFullName = formatName('F M. L, S', {

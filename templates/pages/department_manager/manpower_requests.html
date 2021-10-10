@@ -3,27 +3,22 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Content Header #}
     <section class="content-header">
         <div class="container-fluid">
-            
-            <!-- Title -->
-            <div class="col-sm-6">
-                <h1>{{ page_title }}</h1>
-                <p class="text-muted">{{ sub_title }}</p>
-            </div>
-    
+            <h1>{{ page_title }}</h1>
+            <p class="text-muted">{{ sub_title }}</p>
         </div>
     </section>
 
-    <!-- Main content -->
+    {# Main content #}
     <section class="content">
         <div class="container-fluid">
 
-            <!-- Manpower Requests Analytics -->
+            {# Manpower Requests Analytics #}
             <div class="row" id="manpowerRequestAnalytics">
 
-                <!-- Total Manpower Requests -->
+                {# Total Manpower Requests #}
                 <div class="col-md-6">
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fas fa-people-carry"></i></span>
@@ -35,7 +30,7 @@
                     </div>
                 </div>
                 
-                <!-- Completed Requests -->
+                {# Completed Requests #}
                 <div class="col-md-6">
                     <div class="info-box">
                         <span class="info-box-icon bg-success"><i class="fas fa-calendar-check"></i></span>
@@ -47,7 +42,7 @@
                     </div>
                 </div>
 
-                <!-- Signed Requests -->
+                {# Signed Requests #}
                 <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-secondary"><i class="fas fa-file-signature"></i></span>
@@ -59,7 +54,7 @@
                     </div>
                 </div>
 
-                <!-- Approved Requests -->
+                {# Approved Requests #}
                 <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-warning"><i class="fas fa-check-double"></i></span>
@@ -71,7 +66,7 @@
                     </div>
                 </div>
 
-                <!-- Rejected Requests -->
+                {# Rejected Requests #}
                 <div class="col-md-4">
                     <div class="info-box">
                         <span class="info-box-icon bg-danger"><i class="fas fa-file-excel"></i></span>
@@ -84,10 +79,10 @@
                 </div>
             </div>
 
-            <!-- Manpower Request Card -->
+            {# Manpower Request Card #}
             <div class="card card-primary card-outline">
 
-                <!-- Card Header -->
+                {# Card Header #}
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -102,7 +97,7 @@
                     </div>
                 </div>
 
-                <!-- Card Body -->
+                {# Card Body #}
                 <div class="card-body">
                     
                     <div class="table-responsive">
@@ -115,13 +110,18 @@
                                     <th>Nature of Request</th>
                                     <th>Status</th>
                                     <th>Date Requested</th>
-                                    <th>Actions</th>
+                                    <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td colspan="7">
-                                        <div class="py-5 text-secondary"></div>
+                                        <div class="text-center py-5">
+                                            <div class="spinner-border text-primary my-3" role="status">
+                                                <span class="sr-only">Loading ...</span>
+                                            </div>
+                                            <div class="text-secondary">Loading ...</div>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>

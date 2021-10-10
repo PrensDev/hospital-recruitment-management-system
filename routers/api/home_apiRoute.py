@@ -1,16 +1,15 @@
 # Import Packages
-from routers.api.recruiter_apiRoute import JOB_POST_NOT_FOUND_RESPONSE
 from typing import List
-from fastapi import APIRouter, Depends, Request, UploadFile, File
+from fastapi import APIRouter, Depends, UploadFile, File
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-from schemas import db_schemas
+from schemas import career_schemas as careers
 from datetime import date
 from sqlalchemy import or_
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from dotenv import dotenv_values
-from models import JobPost, Requisition, Position, Applicant
+from models import *
 import shutil
 import uuid
 
@@ -26,16 +25,16 @@ env = dotenv_values(".env")
 
 
 # Mail Configuration
-mail_config = ConnectionConfig(
-    MAIL_USERNAME = env['MAIL_EMAIL'],
-    MAIL_PASSWORD = env['MAIL_PASSWORD'],
-    MAIL_FROM = env['MAIL_EMAIL'],
-    MAIL_PORT = 587,
-    MAIL_SERVER = env['MAIL_SERVER'],
-    MAIL_TLS = True,
-    MAIL_SSL = False,
-    USE_CREDENTIALS = True
-)
+# mail_config = ConnectionConfig(
+#     MAIL_USERNAME = env['MAIL_EMAIL'],
+#     MAIL_PASSWORD = env['MAIL_PASSWORD'],
+#     MAIL_FROM = env['MAIL_EMAIL'],
+#     MAIL_PORT = 587,
+#     MAIL_SERVER = env['MAIL_SERVER'],
+#     MAIL_TLS = True,
+#     MAIL_SSL = False,
+#     USE_CREDENTIALS = True
+# )
 
 
 # ====================================================================
@@ -48,7 +47,7 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
 
 
 # Get All Job Posts
-@router.get("/job-posts", response_model = List[db_schemas.ShowJobPostForApplicants])
+@router.get("/job-posts", response_model = List[careers.ShowJobPost])
 async def get_all_job_posts(db: Session = Depends(get_db)):
     try:
         return db.query(JobPost).filter(or_(
@@ -60,8 +59,8 @@ async def get_all_job_posts(db: Session = Depends(get_db)):
 
 
 # Search Job Post
-@router.post("/job-posts/search", response_model = List[db_schemas.ShowJobPostForApplicants])
-async def search_job_post(req: db_schemas.Search, db: Session = Depends(get_db)):
+@router.post("/job-posts/search", status_code=202, response_model=List[careers.ShowJobPost])
+async def search_job_post(req: careers.Search, db: Session = Depends(get_db)):
     try:
         return db.query(JobPost).join(Requisition).join(Position).filter(Position.name.contains(req.query)).all()
     except Exception as e:
@@ -69,12 +68,12 @@ async def search_job_post(req: db_schemas.Search, db: Session = Depends(get_db))
 
 
 # Get One Job Post
-@router.get("/job-posts/{job_post_id}", response_model = db_schemas.ShowJobPostForApplicants)
+@router.get("/job-posts/{job_post_id}", response_model=careers.ShowJobPost)
 async def get_one_job_post(job_post_id: str, db: Session = Depends(get_db)):
     try:
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
         if not job_post:
-            return HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
+            return HTTPException(status_code=404, detail=JOB_POST_NOT_FOUND_RESPONSE)
         else:
             return job_post
     except Exception as e:
@@ -87,7 +86,7 @@ async def get_one_job_post(job_post_id: str, db: Session = Depends(get_db)):
 
 
 # Upload Resume
-@router.post("/upload/resume")
+@router.post("/upload/resume", status_code=202)
 async def upload_resume(file: UploadFile = File(...)):
     try:
         orig_filename = f"{file.filename}"
@@ -107,8 +106,8 @@ async def upload_resume(file: UploadFile = File(...)):
 
 
 #  Apply for a job
-@router.post("/apply")
-async def apply(req: db_schemas.Applicant, db: Session = Depends(get_db)):
+@router.post("/apply", status_code=202)
+async def apply(req: careers.Applicant, db: Session = Depends(get_db)):
     try:
         new_applicant = Applicant(
             job_post_id = req.job_post_id,

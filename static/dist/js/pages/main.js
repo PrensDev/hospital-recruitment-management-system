@@ -59,13 +59,13 @@ const initDataTable = (selector = "", dtOptions = { debugMode: false, url: "", c
                 </div>
             `,
             loadingRecords: `
-                <div class="p-5">
+                <div class="p-5 wait">
                     <div class="spinner-border text-primary mb-3" role="status"></div>
                     <div class="text-secondary">Please wait while loading records ...</div>
                 </div>
             `,
             processing: `
-                <div class="p-5">
+                <div class="p-5 wait">
                     <div class="spinner-border text-primary mb-3" role="status"></div>
                     <div class="text-secondary">Processing, please wait ...</div>
                 </div>
