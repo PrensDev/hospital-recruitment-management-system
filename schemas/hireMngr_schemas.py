@@ -2,6 +2,7 @@
 from datetime import datetime, date, time
 from typing import List, Optional
 from pydantic import BaseModel
+from schemas.db_schemas import UserInfo
 from schemas.user_schemas import ShowUser, ShowPosition
 
 
@@ -81,6 +82,8 @@ class ShowApplicant(Applicant):
     evaluated_at: Optional[datetime]
     screening_done_by: Optional[ShowUser]
     screened_at: Optional[datetime]
+    hired_at: Optional[datetime]
+    hiring_done_by: Optional[ShowUser]
     rejection_done_by: Optional[ShowUser]
     rejected_at: Optional[datetime]
     created_at: datetime
@@ -145,6 +148,7 @@ class CreateGeneralIntervieweeScore(BaseModel):
 # Interviewee Info
 class IntervieweeInfo(BaseModel):
     interviewee_id: str
+    applicant_info: ShowApplicant
     interviewee_schedule: Optional[InterviewScheduleInfo]
     interviewee_score: List[Optional[IntervieweeScore]]
     is_interviewed: Optional[bool]

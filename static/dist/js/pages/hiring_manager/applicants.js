@@ -600,26 +600,31 @@ validateForm('#applicantScreeningForm', {
 /** Screen Applicant */
 const screenApplicant = () => {
 
+    // Set Buttons to loading state
     btnToLoadingState('#submitBtn');
     disableElement('#closeApplicantDetailsModalBtn');
 
+    // Generate form data
     const formData = generateFormData('#applicantScreeningForm');
     const get = (name) => { return formData.get(name) }
 
+    // Get data
     const applicantStatus = get('applicantStatus');
-    const isRejected = applicantStatus === 'Rejected from screening';
+    const remarks = applicantStatus === 'Rejected from screening' ? get('remarks') : null;
 
-    const screenedAt = isRejected ? null : formatDateTime(moment());
-    const rejectedAt = isRejected ? formatDateTime(moment()) : null;
-    const remarks = isRejected ? get('remarks') : null;
-
+    // Set Data
     const data = {
         status: applicantStatus,
-        screened_at: screenedAt,
-        rejected_at: rejectedAt,
         remarks: remarks
     }
 
+    // If error
+    const ifError = () => {
+        hideModal('#applicantDetailsModal');
+        toastr.error('There was an error while updating applicant evaluation');
+    }
+
+    // Update applicant status
     PUT_ajax(`${ H_API_ROUTE }applicants/${ get('applicantID') }/screen`, data, {
         success: result => {
             if(result) {
@@ -632,7 +637,7 @@ const screenApplicant = () => {
                 // Hide Applicant Details Modal
                 hideModal('#applicantDetailsModal');
 
-                // Set to default
+                // Set buttons to default
                 setContent('#submitBtn', `
                     <span>Submit</span>
                     <i class="fas fa-check ml-1"></i>
@@ -644,12 +649,9 @@ const screenApplicant = () => {
 
                 // Reload DataTable
                 reloadDataTable('#applicantsForScreeningDT');
-            }
+            } else ifError()
         },
-        error: () => {
-            hideModal('#applicantDetailsModal');
-            toastr.error('There was an error while updating applicant evaluation');
-        }
+        error: () => ifError()
     });
 }
 
@@ -760,12 +762,13 @@ initDataTable('#applicantsForInterviewDT', {
 const getInterviewSchedulesPerJobPost = () => {
     GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }/interview-schedules`, {
         success: result => {
-            console.log(result);
-
             if(result) {
+
+                // Set Schedules
                 let schedules = '';
                 if(result.length > 0) {
                     
+                    // Set number of schedules
                     setContent('#scheduleCountDetails', () => {
                         const c = result.length;
                         return `You already have ${ c } schedule${ c > 1 ? 's' : '' } in total.`
@@ -776,21 +779,29 @@ const getInterviewSchedulesPerJobPost = () => {
                         const endSession = moment(`${ r.scheduled_date } ${ r.end_session }`);
                         
                         const momentDetails = () => {
-                            if(moment().isSame(r.scheduled_date)) {
-                                if(isAfterToday(startSession)) {
+                            if(moment().isSame(r.scheduled_date, 'date')) {
+                                if(isAfterToday(startSession) && isAfterToday(endSession)) {
                                     return `
-                                        <div class="badge badge-primary mr-2">Today</div>
-                                        <div class="small text-secondary">${ fromNow(startSession) }</div>
+                                        <div class="badge badge-warning mr-2">Will happen soon</div>
+                                        <div class="small text-secondary">Started ${ fromNow(startSession) }</div>
+                                    `
+                                } else if(isBeforeToday(startSession) && isAfterToday(endSession)) {
+                                    return `
+                                        <div class="badge badge-info mr-2">On going</div>
+                                        <div class="small text-secondary">Started ${ fromNow(startSession) }</div>
+                                    `
+                                } else {
+                                    return `
+                                        <div class="badge badge-danger mr-2">Ended today</div>
+                                        <div class="small text-secondary">${ fromNow(endSession) }</div>
                                     `
                                 }
                             } else if(isAfterToday(startSession)) {
-                                return `
-                                    <div class="small text-secondary">${ fromNow(startSession) }</div>
-                                `
+                                return `<div class="small text-secondary">${ fromNow(startSession) }</div>`
                             } else {
                                 return `
                                     <div class="badge badge-danger mr-2">Ended</div>
-                                    <div class="small text-secondary">${ fromNow(startSession) }</div>
+                                    <div class="small text-secondary">${ fromNow(endSession) }</div>
                                 `
                             }
                         }
@@ -835,11 +846,9 @@ const getInterviewSchedulesPerJobPost = () => {
                     `
                 }
                 setContent('#interviewSchedules', schedules);
-            }
+            } else toastr.error('There was an error in getting interview schedules')
         },
-        error: () => {
-            toastr.error('There was an error in getting interview schedules')
-        }
+        error: () => toastr.error('There was an error in getting interview schedules')
     });
 }
 

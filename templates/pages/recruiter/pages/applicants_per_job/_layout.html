@@ -3,7 +3,7 @@
 
 {% block content %}
 
-    <!-- Job Post Summary -->
+    {# Job Post Summary #}
     <section class="content-header">
         <div class="container-fluid">
             
@@ -67,20 +67,21 @@
         </div>
     </section>
 
-    <!-- Main content -->
+    {# Main content #}
     <section class="content">
         <div class="container-fluid">
 
             <div class="form-row">
 
-                <!-- Menu -->
+                {# Menu #}
                 <div class="col-lg-3">
-
                     <div class="row">
+
+                        {# Total Applicants #}
                         <div class="col-12 order-lg-1">
                             <div class="info-box">
                                 <span class="info-box-icon bg-primary"><i class="fas fa-users"></i></span>
-                
+
                                 <div class="info-box-content">
                                     <span class="info-box-text">Total Applicants</span>
                                     <span class="info-box-number" id="totalApplicantsCount">0</span>
@@ -88,8 +89,51 @@
                             </div>
                         </div>
 
+                        {# Menus #}
                         <div class="col-12 order-lg-0">
-                            <div class="card card-primary card-outline">
+
+                            {# Menu Loader #}
+                            <div class="card card-primary card-outline" id="menuLoader">
+                                <div class="card-header align-items-center">
+                                    <div class="skeleton-loader mb-0" style="height: 28px; width: 8rem"></div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <ul class="nav nav-pills flex-column" id="applicantsMenu">
+                                        <li class="nav-item">
+                                            <div class="d-flex py-2 px-3">
+                                                <div>
+                                                    <div class="skeleton-loader mb-0 mr-2" style="height: 25px; width: 25px"></div>
+                                                </div>
+                                                <div>
+                                                    <div class="skeleton-loader mb-0" style="height: 25px; width: 10rem"></div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="nav-item">
+                                            <div class="d-flex py-2 px-3">
+                                                <div>
+                                                    <div class="skeleton-loader mb-0 mr-2" style="height: 25px; width: 25px"></div>
+                                                </div>
+                                                <div>
+                                                    <div class="skeleton-loader mb-0" style="height: 25px; width: 10rem"></div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="nav-item">
+                                            <div class="d-flex py-2 px-3">
+                                                <div>
+                                                    <div class="skeleton-loader mb-0 mr-2" style="height: 25px; width: 25px"></div>
+                                                </div>
+                                                <div>
+                                                    <div class="skeleton-loader mb-0" style="height: 25px; width: 10rem"></div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                </div>
+                            </div>
+                            
+                            {# Menu #}
+                            <div class="card card-primary card-outline" id="menu" style="display: none">
                                 <div class="card-header">
                                     <h3 class="card-title">Menus</h3>
                     
@@ -102,7 +146,7 @@
                                 <div class="card-body p-0">
                                     <ul class="nav nav-pills flex-column" id="applicantsMenu">
         
-                                        <!-- For evaluation link -->
+                                        {# For evaluation link #}
                                         <li class="nav-item">
                                             <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-evaluation" class="nav-link">
                                                 <i class="fas fa-sync-alt" style="width: 1.5rem"></i>
@@ -115,7 +159,7 @@
                                             </a>
                                         </li>
         
-                                        <!-- Evaluated link -->
+                                        {# Evaluated link #}
                                         <li class="nav-item">
                                             <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/evaluated" class="nav-link">
                                                 <i class="fas fa-check" style="width: 1.5rem"></i>
@@ -128,7 +172,7 @@
                                             </a>
                                         </li>
         
-                                        <!-- Rejected link -->
+                                        {# Rejected link #}
                                         <li class="nav-item">
                                             <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/rejected" class="nav-link">
                                                 <i class="fas fa-times" style="width: 1.5rem"></i>
@@ -140,7 +184,6 @@
                                                 >0</span>
                                             </a>
                                         </li>
-        
                                     </ul>
                                 </div>
                             </div>
@@ -148,7 +191,7 @@
                     </div>
                 </div>
 
-                <!-- Applicant List -->
+                {# Applicant List #}
                 <div class="col-lg-9">
                     {% block dataTable %}
                     {% endblock %}

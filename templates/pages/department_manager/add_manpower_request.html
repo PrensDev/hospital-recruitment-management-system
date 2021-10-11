@@ -27,40 +27,24 @@
                             <div class="skeleton-loader" style="height: 35px"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <div class="skeleton-loader w-50"></div>
-                            <div class="skeleton-loader" style="height: 35px"></div>
+                    
+                    {% for i in range(4) %}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="skeleton-loader w-50"></div>
+                                <div class="skeleton-loader" style="height: 35px"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <div class="skeleton-loader w-50"></div>
-                            <div class="skeleton-loader" style="height: 35px"></div>
+                    {% endfor %}
+
+                    {% for i in range(2) %}
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="skeleton-loader"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <div class="skeleton-loader w-50"></div>
-                            <div class="skeleton-loader" style="height: 35px"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <div class="skeleton-loader w-50"></div>
-                            <div class="skeleton-loader" style="height: 35px"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <div class="skeleton-loader"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <div class="skeleton-loader"></div>
-                        </div>
-                    </div>
+                    {% endfor %}
+
                     <div class="col-md-12">
                         <div class="form-group">
                             <div class="skeleton-loader w-50"></div>

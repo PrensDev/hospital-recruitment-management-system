@@ -272,12 +272,12 @@ const viewApplicantDetails = (applicantID) => {
                     suffixName: hiredBy.suffix_name
                 });
                 timelineData.push({
-                    icon: "check",
-                    iconTheme: "warning",
+                    icon: "handshake",
+                    iconTheme: "success",
                     dateTime: hiredAt,
-                    timelineTitle: 'Screened',
+                    timelineTitle: 'Hired',
                     timelineBody: `
-                        <div class="small mb-3">Screening was done by <b>${ hiredByFullName }</b></div>
+                        <div class="small mb-3">Hiring was done by <b>${ hiredByFullName }</b></div>
                         <div class="small text-secondary">${ formatDateTime(hiredAt, "Full Date") }</div>
                         <div class="small text-secondary">${ formatDateTime(hiredAt, "Time") }</div>
                     `
@@ -411,7 +411,7 @@ const applicantsPerJobAnalytics = () => {
 
             // Show Count or Hide Element
             const a = (s, c) => { if(c > 0) {
-                setContent(s, formatNumber(c))
+                setContent(s, formatNumber(c));
                 showElement(s);
             }}
 
@@ -427,6 +427,10 @@ const applicantsPerJobAnalytics = () => {
 
             // Set Rejected From Evaluation Count
             a('#rejectedCount', result.rejected.from_evaluation);
+
+            // Remove Loader
+            $('#menuLoader').remove();
+            showElement('#menu');
         },
         error: () => toastr.error('There was an error in getting applciants analytics')
     });
@@ -717,16 +721,18 @@ const evaluateApplicant = () => {
     btnToLoadingState('#submitBtn');
     disableElement('#applicationDetailsCloseModalBtn');
 
+    // Get Form Data
     const formData = generateFormData('#applicantEvaluationForm');
     const get = (name) => { return formData.get(name) }
 
+    // Get Data
     const applicantStatus = get('applicantStatus');
-
     const data = {
         status: applicantStatus,
         remarks: applicantStatus === 'Rejected from evaluation' ? get('remarks') : null
     }
 
+    // If error
     const ifError = () => {
 
         // Hide Applicant Details Modal
@@ -743,6 +749,7 @@ const evaluateApplicant = () => {
         toastr.error('There was an error while updating applicant evaluation');
     }
 
+    // Evaluate applicant
     PUT_ajax(`${ R_API_ROUTE }applicants/${ get('applicantID') }`, data, {
         success: result => {
             if(result) {

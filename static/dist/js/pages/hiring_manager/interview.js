@@ -274,11 +274,7 @@ ifSelectorExist('#interviewScheduleDetails', () => {
     GET_ajax(`${ H_API_ROUTE }interview-schedules/${ interviewScheduleID }`, {
         success: result => {
 
-            /**
-             * ==============================================================================
-             * SCHEDULE DETAILS
-             * ==============================================================================
-             */
+            /** SCHEDULE DETAILS */
 
             const scheduledDate = result.scheduled_date;
             const startSession = moment(`${ scheduledDate } ${ result.start_session }`);
@@ -288,19 +284,44 @@ ifSelectorExist('#interviewScheduleDetails', () => {
             setContent('#scheduledDate', formatDateTime(scheduledDate, 'Full Date'));
 
             // Set Session Range
-            setContent('#sessionRange', `${ formatDateTime(startSession, 'Time') } - ${ formatDateTime(endSession, 'Time') }`)
-
+            setContent('#sessionRange', `${ formatDateTime(startSession, 'Time') } - ${ formatDateTime(endSession, 'Time') }`);
+            
             // Set Session Humanized
-            setContent('#scheduledDateHumanized', `${ fromNow(startSession) }`)
+            const momentDetails = () => {
+                if(moment().isSame(scheduledDate, 'date')) {
+                    if(isAfterToday(startSession) && isAfterToday(endSession)) {
+                        return `
+                            <div class="badge badge-warning p-2 mr-2">Will happen soon</div>
+                            <div class="small text-secondary">Started ${ fromNow(startSession) }</div>
+                        `
+                    } else if(isBeforeToday(startSession) && isAfterToday(endSession)) {
+                        return `
+                            <div class="badge badge-info p-2 mr-2">On going</div>
+                            <div class="small text-secondary">Started ${ fromNow(startSession) }</div>
+                        `
+                    } else {
+                        return `
+                            <div class="badge badge-danger p-2 mr-2">Ended today</div>
+                            <div class="small text-secondary">${ fromNow(endSession) }</div>
+                        `
+                    }
+                } else if(isAfterToday(startSession)) {
+                    return `<div class="small text-secondary">${ fromNow(startSession) }</div>`
+                } else {
+                    return `
+                        <div class="badge badge-danger p-2 mr-2">Ended</div>
+                        <div class="small text-secondary">${ fromNow(endSession) }</div>
+                    `
+                }
+            }
+            setContent('#scheduledDateHumanized', momentDetails())
 
+            // Remove Loaders
             $('#interviewScheduleDetailsLoader').remove();
             showElement('#interviewScheduleDetails');
 
-            /**
-             * ==============================================================================
-             * JOB POST DETAILS
-             * ==============================================================================
-             */
+            
+            /** JOB POST DETAILS */
 
             const jobPost = result.schedule_for;
 
@@ -321,15 +342,14 @@ ifSelectorExist('#interviewScheduleDetails', () => {
             // Set Deadline
             const deadline = jobPost.manpower_request.deadline;
             isEmptyOrNull(deadline)
-                ? setContent('#deadline', `<div class="text-secondary font-italic">No deadline</div>`)
+                ? setContent('#deadline', `<span class="text-secondary font-italic">No deadline</span>`)
                 : setContent('#deadline', formatDateTime(deadline, 'Full DateTime'))
 
+                // Remove loaders
             $('#jobPostSummaryLoader').remove();
             showElement('#jobPostSummary');
         },
-        error: () => {
-            toastr.error('There was an error in getting interview schedule details')
-        }
+        error: () => toastr.error('There was an error in getting interview schedule details')
     });
 });
 
@@ -347,7 +367,6 @@ initDataTable('#intervieweesDT', {
             data: null,
             render: data => {
                 const applicant = data.applicant_info;
-
                 return formatName('F M. L, S', {
                     firstName: applicant.first_name,
                     middleName: applicant.middle_name,
@@ -762,7 +781,6 @@ const removeGeneralQuestion = () => {
     showModal('#confirmRemoveGeneralQuestionModal');
     setValue('#', )
 }
-
 
 /** Remove Added Question */
 const removeAddedQuestion = (inputName) => {

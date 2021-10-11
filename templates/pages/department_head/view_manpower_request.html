@@ -3,7 +3,7 @@
 
 {% block content %}
 
-    {# Content Header (Page header) #}
+    {# Content Header #}
     <section class="content-header">
         <div class="container-fluid">
             <h1>{{ page_title }}</h1>
@@ -41,47 +41,21 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                            <div class="skeleton-loader sm w-75"></div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                        </div>
-                                    </td>
-                                </tr>
+
+                                {% for i range(2) %}
+                                    <tr>
+                                        {% for j in range(3) %}
+                                            <td>
+                                                <div class="skeleton-loader" style="width: 8rem"></div>
+                                                <div class="mx-3 small text-secondary">
+                                                    <div class="skeleton-loader"></div>
+                                                    <div class="skeleton-loader sm w-75"></div>
+                                                </div>
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+
                                 <tr>
                                     <td>
                                         <div class="skeleton-loader" style="width: 8rem"></div>
@@ -128,38 +102,26 @@
                                         </div>
                                     </th>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                            <div class="skeleton-loader sm w-75"></div>
-                                        </div>
-                                    </td>
-                                    <td colspan="2">
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                            <div class="skeleton-loader sm w-75"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                            <div class="skeleton-loader sm w-75"></div>
-                                        </div>
-                                    </td>
-                                    <td colspan="2">
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                            <div class="skeleton-loader sm w-75"></div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                
+                                {% for i in range(2) %}
+                                    <tr>
+                                        <td>
+                                            <div class="skeleton-loader" style="width: 8rem"></div>
+                                            <div class="mx-3 small text-secondary">
+                                                <div class="skeleton-loader"></div>
+                                                <div class="skeleton-loader sm w-75"></div>
+                                            </div>
+                                        </td>
+                                        <td colspan="2">
+                                            <div class="skeleton-loader" style="width: 8rem"></div>
+                                            <div class="mx-3 small text-secondary">
+                                                <div class="skeleton-loader"></div>
+                                                <div class="skeleton-loader sm w-75"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
                                 <tr>
                                     <td colspan="3">
                                         <div class="skeleton-loader" style="width: 8rem"></div>

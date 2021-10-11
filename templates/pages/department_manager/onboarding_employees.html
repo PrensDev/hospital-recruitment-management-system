@@ -3,24 +3,19 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Content Header #}
     <section class="content-header">
         <div class="container-fluid">
-            
-            <!-- Title -->
-            <div class="col-sm-6">
-                <h1>{{ page_title }}</h1>
-                <p class="text-muted">{{ sub_title }}</p>
-            </div>
-        
+            <h1>{{ page_title }}</h1>
+            <p class="text-muted">{{ sub_title }}</p>
         </div>
     </section>
 
-    <!-- Main content -->
+    {# Main content #}
     <section class="content">
         <div class="container-fluid">
 
-            <!-- Info Boxes -->
+            {# Info Boxes #}
             <div class="row" id="onboardingEmployeesAnalyticsContainer">
                 <div class="col-12">
                     <div class="info-box">
@@ -37,7 +32,7 @@
 
             <section class="content">
 
-                <!-- Default box -->
+                {# Default box #}
                 <div class="card card-primary card-outline">
                     <div class="card-header">
                         <h3 class="card-title">Onboarding Employees</h3>
@@ -47,7 +42,7 @@
                         <table class="table table-bordered table-hoverable" id="onboardingEmployeesDT" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>#</th>
                                     <th>Onboarding Employee</th>
                                     <th>No. of Tasks</th>
                                     <th>Task Progress</th>

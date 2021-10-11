@@ -44,47 +44,21 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                            <div class="skeleton-loader sm w-75"></div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                        </div>
-                                    </td>
-                                </tr>
+
+                                {% for i range(2) %}
+                                    <tr>
+                                        {% for j in range(3) %}
+                                            <td>
+                                                <div class="skeleton-loader" style="width: 8rem"></div>
+                                                <div class="mx-3 small text-secondary">
+                                                    <div class="skeleton-loader"></div>
+                                                    <div class="skeleton-loader sm w-75"></div>
+                                                </div>
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                
                                 <tr>
                                     <td>
                                         <div class="skeleton-loader" style="width: 8rem"></div>
@@ -131,38 +105,26 @@
                                         </div>
                                     </th>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                            <div class="skeleton-loader sm w-75"></div>
-                                        </div>
-                                    </td>
-                                    <td colspan="2">
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                            <div class="skeleton-loader sm w-75"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                            <div class="skeleton-loader sm w-75"></div>
-                                        </div>
-                                    </td>
-                                    <td colspan="2">
-                                        <div class="skeleton-loader" style="width: 8rem"></div>
-                                        <div class="mx-3 small text-secondary">
-                                            <div class="skeleton-loader"></div>
-                                            <div class="skeleton-loader sm w-75"></div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                
+                                {% for i in range(2) %}
+                                    <tr>
+                                        <td>
+                                            <div class="skeleton-loader" style="width: 8rem"></div>
+                                            <div class="mx-3 small text-secondary">
+                                                <div class="skeleton-loader"></div>
+                                                <div class="skeleton-loader sm w-75"></div>
+                                            </div>
+                                        </td>
+                                        <td colspan="2">
+                                            <div class="skeleton-loader" style="width: 8rem"></div>
+                                            <div class="mx-3 small text-secondary">
+                                                <div class="skeleton-loader"></div>
+                                                <div class="skeleton-loader sm w-75"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
                                 <tr>
                                     <td colspan="3">
                                         <div class="skeleton-loader" style="width: 8rem"></div>
@@ -371,40 +333,26 @@
                     <div class="time-label">
                         <div class="skeleton-loader mb-0 shadow-sm w-75" style="height: 30px"></div>
                     </div>
-                    <div>
-                        <i class="fas fa-circle bg-secondary"></i>
-                        <div class="timeline-item">
-                            
-                            <div class="timeline-header">
-                                <div class="skeleton-loader sm w-50 mb-0"></div>
-                            </div>
 
-                            <div class="timeline-body">
-                                <div class="small">
-                                    <div class="skeleton-loader sm mb-3"></div>
-                                    <div class="skeleton-loader sm w-75"></div>
-                                    <div class="skeleton-loader sm w-75"></div>
+                    {% for i in range(2) %}
+                        <div>
+                            <i class="fas fa-circle bg-secondary"></i>
+                            <div class="timeline-item">
+                                
+                                <div class="timeline-header">
+                                    <div class="skeleton-loader sm w-50 mb-0"></div>
+                                </div>
+
+                                <div class="timeline-body">
+                                    <div class="small">
+                                        <div class="skeleton-loader sm mb-3"></div>
+                                        <div class="skeleton-loader sm w-75"></div>
+                                        <div class="skeleton-loader sm w-75"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <i class="fas fa-circle bg-secondary"></i>
-                        <div class="timeline-item">
-                            
-                            <div class="timeline-header">
-                                <div class="skeleton-loader sm w-50 mb-0"></div>
-                            </div>
-
-                            <div class="timeline-body">
-                                <div class="small">
-                                    <div class="skeleton-loader sm mb-3"></div>
-                                    <div class="skeleton-loader sm w-75"></div>
-                                    <div class="skeleton-loader sm w-75"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
 
                     <div>
                         <i class="fas fa-clock bg-secondary"></i>
