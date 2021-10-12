@@ -572,7 +572,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
 
                     <hr>
 
-                    <div class="btn btn-sm btn-secondary btn-block">
+                    <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
                         <span>Print Manpower Request Form</span>
                         <i class="fas fa-print ml-1"></i>
                     </div>
@@ -581,7 +581,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                     $('#cancelManpowerRequestModal').remove();
                     
                     return `
-                        <div class="btn btn-sm btn-secondary btn-block">
+                        <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
                             <span>Print Manpower Request Form</span>
                             <i class="fas fa-print ml-1"></i>
                         </div>
@@ -707,7 +707,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
 
             // Remove Loaders
             $('#manpowerRequestDocumentLoader').remove();
-            showElement('#manpowerRequestDocument');
+            showElement('#manpowerRequestDocumentContainer');
             
             $('#optionsLoader').remove();
             showElement('#optionsContainer');
@@ -718,6 +718,48 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });
 });
+
+/** Print Manpower Request */
+const printManpowerRequest = () => {
+    var w = window.open();
+    var html = $("#manpowerRequestDocument").html();
+    w.document.write(`
+        <html>
+            <head>
+                <style>
+                    * {
+                        font-family: 'Segoe UI'
+                    }
+                    .font-weight-bold {
+                        font-weight: bold;
+                    }
+                    .bg-light {
+                        background: #eee;
+                    }
+                    .text-secondary {
+                        color: grey;
+                    }
+                    .small {
+                        font-size: 80%;
+                    }
+                    table {
+                        border-collapse: collapse;
+                    }
+                    table tr {
+                        border: solid grey 1px;
+                    }
+                    table th, td {
+                        padding: .75rem;
+                    }
+                    .font-italic {
+                        font-style: italic;
+                    }
+                </style>
+            </head>
+            <body onload="window.print()"> ${ html } </body>
+        </html>`);
+    w.print();
+}
 
 
 /** 
