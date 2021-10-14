@@ -1,30 +1,40 @@
 /**
  * ==============================================================================
+ * VARIABLES
+ * ==============================================================================
+ */
+
+const urlParams = new URLSearchParams(window.location.search);
+const query = urlParams.get('query');
+const page = urlParams.get('page') == null ? 1 : urlParams.get('page');
+
+/**
+ * ==============================================================================
  * GET ALL AVAILABLE JOBS
  * ==============================================================================
  */
 
 /** Get All Jobs */
 ifSelectorExist('#availableJobList', () => {
+
+    // Get all job post per page
     $.ajax({
-        url: `${ BASE_URL_API }home/job-posts`,
+        url: `${ BASE_URL_API }home/job-posts?page=${ page }`,
         type: 'GET',
         success: result => {
-            // console.log(result)
-            
             let jobList = '';
 
             if(result.length > 0) {
                 result.forEach(r => {
                     const manpowerRequest = r.manpower_request;
-    
+
                     const salaryRange = r.salary_is_visible 
                         ? `<div>
                                 <i style="width: 2rem" class="fas fa-money-bill-wave text-success"></i>
                                 <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
                             </div>`
                         : '';
-    
+
                     const expirationDate = isEmptyOrNull(r.expiration_date) 
                         ? `<div>
                                 <i style="width: 2rem" class="fas fa-clock text-danger"></i>
@@ -34,12 +44,12 @@ ifSelectorExist('#availableJobList', () => {
                                 <i style="width: 2rem" class="fas fa-clock text-danger"></i>
                                 <span>Open until August 31, 2021</span>
                             </div>`
-    
+
                     jobList += `
                         <div class="col-md-6 col-12 mb-3">
                             <div class="card card-primary card-outline h-100">
                                 <div class="card-body d-flex flex-column justify-content-between h-100">
-    
+
                                     <div>
                                         <div class="mb-3">
                                             <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="h5 text-primary mb-0">${ manpowerRequest.vacant_position.name }</a>
@@ -49,7 +59,7 @@ ifSelectorExist('#availableJobList', () => {
                                                 <span>${ fromNow(r.created_at) }</span>
                                             </div>
                                         </div>
-    
+
                                         <div class="mb-3">
                                             <div>
                                                 <i style="width: 2rem" class="fas fa-user-tie text-success"></i>
@@ -82,6 +92,30 @@ ifSelectorExist('#availableJobList', () => {
             setContent('#availableJobList', jobList);
         },
         error: () => toastr.error('There was an error in getting all job posts')
+    });
+
+    // Get job post analytics
+    $.ajax({
+        url: `${ BASE_URL_API }home/job-posts/analytics`,
+        type: 'GET',
+        success: result => {
+            const total = result.total;
+
+            if(total > 0) {
+                setContent('#rowsDisplay', `Showing ${ FETCH_ROWS } out of ${ total }`);
+                setContent('#pageDisplay', `Page ${ page } out of ${ Math.ceil(total/FETCH_ROWS) }`);
+    
+                setPagination('#pagination', {
+                    query: `${ BASE_URL_WEB }careers?page=[page]`,
+                    totalRows: total,
+                    currentPage: page
+                });
+                showElement('#pagination');
+            } else {
+                setContent('#rowsDisplay', `No result`);
+                setContent('#pageDisplay', `No pages to be display`);
+            }
+        }
     })
 });
 
@@ -361,27 +395,25 @@ validateForm('#searchJobForm', {
         const searchQuery = formData.get('searchQuery');
         isEmptyOrNull(searchQuery) 
             ? location.assign(`${ BASE_URL_WEB }careers`)
-            : location.assign(`${ BASE_URL_WEB }careers/?query=${ searchQuery }`)
+            : location.assign(`${ BASE_URL_WEB }careers/search?query=${ searchQuery }`)
         return false;
     }
 });
 
 /** For Search Result */
 ifSelectorExist('#searchResultList', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const query = urlParams.get('query');
-
     setValue('#searchQuery', query);
 
+    const data = JSON.stringify({query: query});
+
+    // Get Search Results
     $.ajax({
-        url: `${ BASE_URL_API }home/job-posts/search`,
+        url: `${ BASE_URL_API }home/job-posts/search?page=${ page }`,
         type: "POST",
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify({query: query}),
+        data: data,
         success: result => {
-            console.log(result)
-
             let jobList = '';
 
             if(result.length > 0) {
@@ -453,5 +485,32 @@ ifSelectorExist('#searchResultList', () => {
             setContent('#searchResultList', jobList);
         },
         error: () => toastr.error('There was an error in getting search results')
+    });
+
+    // Get Search Result Analytics
+    $.ajax({
+        url: `${ BASE_URL_API }home/job-posts/search/analytics`,
+        type: "POST",
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: data,
+        success: result => {
+            const total = result.total;
+
+            if(total > 0) {
+                setContent('#rowsDisplay', `Showing ${ FETCH_ROWS } out of ${ total }`);
+                setContent('#pageDisplay', `Page ${ page } out of ${ Math.ceil(total/FETCH_ROWS) }`);
+
+                setPagination('#pagination', {
+                    query: `${ BASE_URL_WEB }careers/search?query=${ query }&page=[page]`,
+                    totalRows: total,
+                    currentPage: page
+                });
+                showElement('#pagination');
+            } else {
+                setContent('#rowsDisplay', `No result`);
+                setContent('#pageDisplay', `No pages to be displayed`);
+            }
+        }
     });
 });

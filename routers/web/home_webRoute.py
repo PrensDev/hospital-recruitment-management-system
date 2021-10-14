@@ -65,7 +65,7 @@ async def redirect(req: Request, user_data: dict = Depends(get_token)):
 
 # Careers
 @router.get("/careers")
-async def careers(req: Request):
+async def careers(req: Request, page: Optional[int] = None):
     try:
         return templates.TemplateResponse("pages/home/careers.html", {
             "request": req,
@@ -76,11 +76,11 @@ async def careers(req: Request):
 
 
 # Search Job
-@router.get("/careers/")
-async def search(req: Request, query: Optional[str]):
+@router.get("/careers/search")
+async def search(req: Request, query: str, page: Optional[int] = 1):
     try:
         if not query:
-            return errTemplate.page_not_found(req)
+            return await errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse("pages/home/search_result.html", {
                 "request": req,

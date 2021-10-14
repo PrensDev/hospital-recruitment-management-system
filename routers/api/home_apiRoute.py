@@ -1,5 +1,5 @@
 # Import Packages
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends, UploadFile, File
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
@@ -37,6 +37,9 @@ env = dotenv_values(".env")
 # )
 
 
+FETCH_ROW = 10;
+
+
 # ====================================================================
 # JOB POSTS
 # ====================================================================
@@ -48,21 +51,49 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
 
 # Get All Job Posts
 @router.get("/job-posts", response_model = List[careers.ShowJobPost])
-async def get_all_job_posts(db: Session = Depends(get_db)):
+async def get_all_job_posts(page: Optional[int] = None, db: Session = Depends(get_db)):
     try:
-        return db.query(JobPost).filter(or_(
+        query = db.query(JobPost).filter(or_(
             JobPost.expiration_date > date.today(), 
             JobPost.expiration_date == None
-        )).order_by(JobPost.created_at.desc()).all()
+        )).order_by(JobPost.created_at.desc())
+
+        return query.limit(FETCH_ROW).offset(FETCH_ROW * (page - 1)).all()
+    except Exception as e:
+        print(e)
+
+
+# Job Post Analytics
+@router.get("/job-posts/analytics")
+async def job_posts_analytics(db: Session = Depends(get_db)):
+    try:
+        total = db.query(JobPost).filter(or_(
+            JobPost.expiration_date > date.today(), 
+            JobPost.expiration_date == None
+        )).order_by(JobPost.created_at.desc()).count()
+
+        return {"total": total}
     except Exception as e:
         print(e)
 
 
 # Search Job Post
 @router.post("/job-posts/search", status_code=202, response_model=List[careers.ShowJobPost])
-async def search_job_post(req: careers.Search, db: Session = Depends(get_db)):
+async def search_job_post(page: Optional[int], req: careers.Search, db: Session = Depends(get_db)):
     try:
-        return db.query(JobPost).join(Requisition).join(Position).filter(Position.name.contains(req.query)).all()
+        return db.query(JobPost).join(Requisition).join(Position).filter(
+                Position.name.contains(req.query)
+            ).limit(FETCH_ROW).offset(FETCH_ROW * (page - 1)).all()
+    except Exception as e:
+        print(e)
+
+
+# Search Job Post Analytics
+@router.post("/job-posts/search/analytics", status_code=202)
+async def search_job_post_analytics(req: careers.Search, db: Session = Depends(get_db)):
+    try:
+        total = db.query(JobPost).join(Requisition).join(Position).filter(Position.name.contains(req.query)).count()
+        return {"total": total}
     except Exception as e:
         print(e)
 

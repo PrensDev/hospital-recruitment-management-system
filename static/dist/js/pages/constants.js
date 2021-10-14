@@ -49,3 +49,7 @@ const SUMMERNOTE_TOOLBAR = [
     ['table', ['table']],
     ['view' , ['help']],
 ]
+
+
+// Fetch Rows
+FETCH_ROWS = 10;

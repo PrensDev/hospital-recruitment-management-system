@@ -504,3 +504,76 @@ const setTimeline = (selector, attr = {
         `);
     });
 }
+
+
+/** Set Pagination */
+const setPagination = (selector, attr = {
+    query: '',
+    totalRows: 0, 
+    currentPage: 0 
+}) => {
+    const totalRows = parseInt(attr.totalRows);
+    const currentPage = parseInt(attr.currentPage);
+    const query = attr.query;
+
+    const getLink = (pageNumber) => { return query.replace('[page]', pageNumber); }
+
+    const totalPages = Math.ceil(totalRows / FETCH_ROWS);
+    
+    let paginationItems = '';
+    
+    const appendPageItem = (page) => {
+        paginationItems += `
+            <div class="page-item${ page == currentPage ? ' active' : '' }">
+                <a class="page-link" href="${ getLink(page) }">${ page }</a>
+            </div>
+        `;
+    }
+    
+    const appendDisabledPageItem = () => {
+        paginationItems += `
+            <div class="page-item disabled">
+                <div class="page-link">
+                    <i class="fas fa-ellipsis-h"></i>
+                </div>
+            </div>
+        `;
+    }
+
+    paginationItems += `
+        <div class="page-item${ currentPage == 1 ? ' disabled' : '' }">
+            <a class="page-link" href="${ getLink(currentPage-1) }">
+                <i class="fas fa-caret-left"></i>
+            </a>
+        </div>
+    `;
+
+    if(currentPage > 3 && totalPages > 5) {
+        appendPageItem(1);
+        appendDisabledPageItem()
+    }
+
+    if(currentPage < 3) 
+        for(let i = 1; i <= 5 && i <= totalPages; i++) appendPageItem(i)
+    else if(currentPage <= totalPages-2) 
+        for(let i = currentPage-2; i <= currentPage+2 && i <= totalPages; i++) appendPageItem(i);
+    else if(totalPages > 5)
+        for(let i = totalPages - 4; i <= totalPages; i++) appendPageItem(i)
+    else 
+        for(let i = 1; i <= totalPages; i++) appendPageItem(i)
+    
+    if(currentPage < totalPages-2 && totalPages > 5) {
+        appendDisabledPageItem()
+        appendPageItem(totalPages);
+    }
+
+    paginationItems += `
+        <div class="page-item${ currentPage == totalPages ? ' disabled' : '' }">
+            <a class="page-link" href="${ getLink(currentPage+1) }">
+                <i class="fas fa-caret-right"></i>
+            </a>
+        </div>
+    `;
+
+    if(currentPage > 0 && currentPage <= totalPages) setContent(selector, paginationItems);
+}
