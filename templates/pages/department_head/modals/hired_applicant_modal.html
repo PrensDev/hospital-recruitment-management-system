@@ -12,7 +12,7 @@
 
                 {# Tabs #}
                 <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
-    
+
                     {# Applicant Details #}
                     <li class="nav-item">
                         <a 
@@ -125,6 +125,51 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{# Upload Signed Contract Modal #}
+<div class="modal fade" id="uploadSignedContractModal" data-backdrop="static">
+    <div class="modal-dialog modal modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="signedContractForm">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-file-alt text-secondary mr-1"></i>
+                    <span>Upload Signed Contract</span>
+                </div>
+            </div>
+            <div class="modal-body">
+
+                {# Upload Signed Contract #}
+                <div class="form-group">
+                    <label for="resume">
+                        <span>Please upload the signed contract here</span>
+                        <small>in PDF file format</small>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                        <div class="custom-file">
+                            <input 
+                                type="file" 
+                                class="custom-file-input" 
+                                id="signedContract"
+                                name="signedContract"
+                            >
+                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelSubmitContractBtn">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="submitContractBtn">
+                    <i class="fas fa-file-export mr-1"></i>
+                    <span>Submit</span>
+                </button>
             </div>
         </form>
     </div>

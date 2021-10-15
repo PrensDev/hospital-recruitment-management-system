@@ -1,7 +1,7 @@
 # Import Packages
 from sqlalchemy.sql.expression import or_
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File
 from fastapi.exceptions import HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -9,6 +9,8 @@ from database import get_db
 from oauth2 import authorized, get_user
 from schemas import user_schemas as user, deptHead_schemas as deptHead
 from models import *
+import shutil
+import uuid
 
 
 # Router Instance
@@ -167,9 +169,14 @@ async def sign_requisition(
 # HIRED APPLICANTS
 # ====================================================================
 
+
+# Applicant Not Found Response
+APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
+
+
 # Get all hired applicants
 @router.get("/hired-applicants", response_model=List[deptHead.ShowHiredApplicant])
-async def sign_requisition(
+async def get_all_hired_applicants(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -178,3 +185,45 @@ async def sign_requisition(
             return db.query(Applicant).filter(Applicant.status == "Hired").all()
     except Exception as e:
         print(e)
+
+
+# Get one hired applicant
+@router.get("/hired-applicants/{applicant_id}", response_model=deptHead.ShowHiredApplicant)
+async def get_one_hired_applicant(
+    applicant_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            hired_applicant = db.query(Applicant).filter(Applicant.status == "Hired", Applicant.applicant_id == applicant_id).first()
+            if not hired_applicant:
+                raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
+            else:
+                return hired_applicant
+    except Exception as e:
+        print(e)
+
+
+# Upload Signed Contract
+@router.post("/upload/employment-contract", status_code=202)
+async def upload_employment_contract(
+    file: UploadFile = File(...), 
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            orig_filename = f"{file.filename}"
+            file_extension = orig_filename.split('.')[-1]
+            new_filename = uuid.uuid4().hex
+            file_location = f"static/app/files/employment_contracts/{new_filename}.{file_extension}"
+            with open(file_location, "wb") as fileObj:
+                shutil.copyfileobj(file.file, fileObj)
+            return {
+                "original_file": orig_filename,
+                "new_file": f"{new_filename}.{file_extension}"
+            }
+    except Exception as e:
+        print(e)
+    finally:
+        file.file.close()

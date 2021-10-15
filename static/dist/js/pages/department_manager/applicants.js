@@ -16,7 +16,6 @@ const requisitionID = window.location.pathname.split("/")[3];
 
 /** Initialize Hired Applicants DataTable */
 initDataTable('#hiredApplicantsDT', {
-    // debugMode: true,
     url: `${ DM_API_ROUTE }requisitions/hired-applicants/${ requisitionID }`,
     columns: [
 
@@ -126,5 +125,4 @@ initDataTable('#hiredApplicantsDT', {
  */
 
 const viewApplicantDetails = (applicantID) => {
-    alert(applicantID);
 }

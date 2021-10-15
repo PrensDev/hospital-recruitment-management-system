@@ -336,12 +336,13 @@ const viewApplicantDetails = (applicantID) => {
                 hideElement('#submitBtn')
             }
 
+            /** Show Modal */
             showModal('#applicantDetailsModal');
         },
         error: () => {
             toastr.error('There was an error in getting applicant details')
         }
-    })
+    });
 }
 
 

@@ -961,7 +961,7 @@ onClick('#createScheduleBtn', () => {
 
     let interviewees = [];
     selectedApplicants.forEach(a => interviewees.push({applicant_id: a}));
- 
+
     const data = {
         job_post_id: jobPostID,
         scheduled_date: get('scheduledDate'),

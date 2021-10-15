@@ -21,20 +21,26 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hoverable w-100" cellspacing="0" id="hiredApplicantsDT" width="100%">
+                        <table 
+                            id="hiredApplicantsDT" 
+                            class="table table-bordered table-hover w-100" 
+                            cellspacing="0" 
+                            width="100%"
+                        >
                             <thead>
                                 <tr>
-                                    <td>#</td>
-                                    <td>Applicant Name</td>
-                                    <td>Position</td>
-                                    <td>Applied at</td>
-                                    <td>Hired at</td>
-                                    <td>Actions</td>
+                                    <th class="text-center">#</th>
+                                    <th>Applicant Name</th>
+                                    <th>Position</th>
+                                    <th>Applied at</th>
+                                    <th>Hired at</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="6">
+                                    <td colspan="7">
                                         <div class="text-center py-5">
                                             <div class="spinner-border text-primary my-3" role="status">
                                                 <span class="sr-only">Loading ...</span>
@@ -54,6 +60,7 @@
 
 
 {% block page_modals %}
+    {% include "pages/department_head/modals/hired_applicant_modal.html" %}
 {% endblock %}
 
 

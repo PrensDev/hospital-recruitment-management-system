@@ -3,6 +3,7 @@ from datetime import datetime, date, time
 from typing import List, Optional
 from pydantic import BaseModel
 from schemas.user_schemas import ShowUser, ShowPosition
+from schemas.recruiter_schemas import JobPost
 
 
 # Show Manpower Request
@@ -40,6 +41,14 @@ class SignManpowerRequest(BaseModel):
     remarks: Optional[str]
 
 
+# ShowJobPost
+class ShowJobPost(JobPost):
+    manpower_request: ShowManpowerRequest
+
+    class Config():
+        orm_mode = True
+
+
 # Show Hired Applicant
 class ShowHiredApplicant(BaseModel):
     applicant_id: str
@@ -61,6 +70,7 @@ class ShowHiredApplicant(BaseModel):
     rejected_at: Optional[datetime]
     created_at: datetime
     updated_at: Optional[datetime]
+    applied_job: ShowJobPost
 
     class Config():
         orm_mode = True
