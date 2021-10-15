@@ -479,7 +479,7 @@ async def update_applicant_status(
         print(e)
 
 
-# Hired Applicant
+# Hire Applicant
 @router.put("/applicants/{applicant_id}/hire", status_code=202)
 async def update_applicant_status(
     applicant_id: str,

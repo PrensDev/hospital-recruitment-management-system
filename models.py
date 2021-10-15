@@ -130,10 +130,10 @@ class User(Base):
         back_populates = "interview_question_updated_by",
         foreign_keys = "InterviewQuestion.updated_by"
     )
-    added_onboarding_employees = relationship(
+    signed_onboarding_employees = relationship(
         "OnboardingEmployee",
-        back_populates = "onboarding_employee_added_by",
-        foreign_keys = "OnboardingEmployee.added_by"
+        back_populates = "onboarding_employee_signed_by",
+        foreign_keys = "OnboardingEmployee.signed_by"
     )
     updated_onboarding_employees = relationship(
         "OnboardingEmployee",
@@ -853,7 +853,12 @@ class OnboardingEmployee(Base):
         Date,
         nullable = True
     )
-    added_by = Column(
+    employment_contract = Column(
+        String(255),
+        unique = True,
+        nullable = False
+    )
+    signed_by = Column(
         String(36),
         ForeignKey("users.user_id"),
         nullable = False
@@ -879,10 +884,10 @@ class OnboardingEmployee(Base):
         "Position",
         back_populates = "onboarding_employees"
     )
-    onboarding_employee_added_by = relationship(
+    onboarding_employee_signed_by = relationship(
         "User",
-        back_populates = "added_onboarding_employees",
-        foreign_keys = "OnboardingEmployee.added_by"
+        back_populates = "signed_onboarding_employees",
+        foreign_keys = "OnboardingEmployee.signed_by"
     )
     onboarding_employee_updated_by = relationship(
         "User",

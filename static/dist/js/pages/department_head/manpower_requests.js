@@ -6,7 +6,6 @@
 
 /** ManPower Requests DataTable */
 initDataTable('#manpowerRequestDT', {
-    // debugMode: true,
     url: `${ DH_API_ROUTE }requisitions`,
     columns: [
 

@@ -161,3 +161,20 @@ async def sign_requisition(
                 return {"message": "A manpower request has been signed"}
     except Exception as e:
         print(e)
+
+
+# ====================================================================
+# HIRED APPLICANTS
+# ====================================================================
+
+# Get all hired applicants
+@router.get("/hired-applicants", response_model=List[deptHead.ShowHiredApplicant])
+async def sign_requisition(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(Applicant).filter(Applicant.status == "Hired").all()
+    except Exception as e:
+        print(e)

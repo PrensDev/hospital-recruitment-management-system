@@ -90,3 +90,18 @@ async def render(
         return await errTemplate.page_not_found(req)
 
 
+# ===========================================================
+# HIRED APPLICANTS
+# ===========================================================
+@router.get("/hired-applicants", response_class=HTMLResponse)
+async def render(req: Request, user_data: dict = Depends(get_token)):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        return templates.TemplateResponse(TEMPLATES_PATH  + "hired_applicants.html", {
+            "request": req,
+            "page_title": "Hired Applicants",
+            "sub_title": "Hired Applicants",
+            "active_navlink": "Hired Applicants"
+        })
+    else:
+        return await errTemplate.page_not_found(req)
+

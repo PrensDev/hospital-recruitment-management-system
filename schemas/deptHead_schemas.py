@@ -38,3 +38,29 @@ class ShowManpowerRequest(BaseModel):
 class SignManpowerRequest(BaseModel):
     request_status: str
     remarks: Optional[str]
+
+
+# Show Hired Applicant
+class ShowHiredApplicant(BaseModel):
+    applicant_id: str
+    first_name: str
+    middle_name: Optional[str]
+    last_name: str
+    suffix_name: Optional[str]
+    contact_number: str
+    email: str
+    resume: str
+    status: str
+    evaluation_done_by: Optional[ShowUser]
+    evaluated_at: Optional[datetime]
+    screening_done_by: Optional[ShowUser]
+    screened_at: Optional[datetime]
+    hired_at: Optional[datetime]
+    hiring_done_by: Optional[ShowUser]
+    rejection_done_by: Optional[ShowUser]
+    rejected_at: Optional[datetime]
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True

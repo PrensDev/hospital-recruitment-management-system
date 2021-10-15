@@ -1,0 +1,62 @@
+{% extends "pages/department_head/_layout.html" %} 
+
+
+{% block content %}
+
+    {# Content Header #}
+    <section class="content-header">
+        <div class="container-fluid">
+            <h1>{{ page_title }}</h1>
+            <p class="text-muted">{{ sub_title }}</p>
+        </div>
+    </section>
+
+    {# Main content #}
+    <section class="content">
+        <div class="container-fluid">
+
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <div class="card-title">List of Hired Applicants</div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hoverable w-100" cellspacing="0" id="hiredApplicantsDT" width="100%">
+                            <thead>
+                                <tr>
+                                    <td>#</td>
+                                    <td>Applicant Name</td>
+                                    <td>Position</td>
+                                    <td>Applied at</td>
+                                    <td>Hired at</td>
+                                    <td>Actions</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="text-center py-5">
+                                            <div class="spinner-border text-primary my-3" role="status">
+                                                <span class="sr-only">Loading ...</span>
+                                            </div>
+                                            <div class="text-secondary">Loading ...</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> 
+{% endblock %}
+
+
+{% block page_modals %}
+{% endblock %}
+
+
+{% block page_scripts %}
+    <script src="{{url_for('static', path='/dist/js/pages/department_head/applicants.js')}}"></script>
+{% endblock %}

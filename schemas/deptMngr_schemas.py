@@ -100,7 +100,6 @@ class Applicant(BaseModel):
 
 # Show Applicant
 class ShowApplicant(Applicant):
-    applicant_id: str
     status: str
     evaluation_done_by: Optional[ShowUser]
     evaluated_at: Optional[datetime]

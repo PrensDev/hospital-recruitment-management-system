@@ -114,6 +114,158 @@ ifSelectorExist('#applicantsMenu', () => applicantsPerJobAnalytics());
  * ==============================================================================
 */
 
+/** Set Applicant Details */
+const setApplicantDetailsAndTimeline = (result) => {
+
+
+    /** APPLICANT DETAILS */
+
+    // Set Applicant Full Name
+    setContent('#applicantFullName', formatName('F M. L, S', {
+        firstName: result.first_name,
+        middleName: result.middle_name,
+        lastName: result.last_name,
+        suffixName: result.suffixName
+    }));
+
+    // Set Applicant Contact Number
+    setContent("#applicantContactNumber", result.contact_number);
+
+    // Set Applicant Email
+    setContent("#applicantEmail", result.email);
+
+    // Set Resume
+    $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
+
+
+    /** APPLICANT TIMELINE */
+
+    let timelineData = [];
+
+    // Applied
+    const createdAt = result.created_at;
+    timelineData.push({
+        icon: "file-export",
+        iconTheme: "primary",
+        dateTime: createdAt,
+        timelineTitle: 'Applied',
+        timelineBody: `
+            <div class="small mb-3">Application was submitted by <b>${ applicantFullName }</b></div>
+            <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
+            <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
+        `
+    });
+
+    // Evaluated
+    const evaluatedAt = result.evaluated_at;
+    const evaluatedBy = result.evaluation_done_by;
+    if(!isEmptyOrNull(evaluatedAt) && !isEmptyOrNull(evaluatedBy)) {
+        const evaluatedByFullName = formatName('F M. L, S', {
+            firstName: evaluatedBy.first_name,
+            middleName: evaluatedBy.middle_name,
+            lastName: evaluatedBy.last_name,
+            suffixName: evaluatedBy.suffix_name
+        });
+        timelineData.push({
+            icon: "check",
+            iconTheme: "success",
+            dateTime: evaluatedAt,
+            timelineTitle: 'Evaluated',
+            timelineBody: `
+                <div class="small mb-3">Evaluation was done by <b>${ evaluatedByFullName }</b></div>
+                <div class="small text-secondary">${ formatDateTime(evaluatedAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(evaluatedAt, "Time") }</div>
+            `
+        });
+    }
+
+    // Screened
+    const screenedAt = result.screened_at;
+    const screenedBy = result.screening_done_by;
+    if(!isEmptyOrNull(screenedAt) && !isEmptyOrNull(screenedBy)) {
+        const screenedByFullName = formatName('F M. L, S', {
+            firstName: screenedBy.first_name,
+            middleName: screenedBy.middle_name,
+            lastName: screenedBy.last_name,
+            suffixName: screenedBy.suffix_name
+        });
+        timelineData.push({
+            icon: "check",
+            iconTheme: "warning",
+            dateTime: screenedAt,
+            timelineTitle: 'Screened',
+            timelineBody: `
+                <div class="small mb-3">Screening was done by <b>${ screenedByFullName }</b></div>
+                <div class="small text-secondary">${ formatDateTime(screenedAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(screenedAt, "Time") }</div>
+            `
+        });
+    }
+
+    // Hired
+    const hiredAt = result.hired_at;
+    const hiredBy = result.hiring_done_by;
+    if(!isEmptyOrNull(hiredAt) && !isEmptyOrNull(hiredBy)) {
+        const hiredByFullName = formatName('F M. L, S', {
+            firstName: hiredBy.first_name,
+            middleName: hiredBy.middle_name,
+            lastName: hiredBy.last_name,
+            suffixName: hiredBy.suffix_name
+        });
+        timelineData.push({
+            icon: "handshake",
+            iconTheme: "success",
+            dateTime: hiredAt,
+            timelineTitle: 'Hired',
+            timelineBody: `
+                <div class="small mb-3">Hiring was done by <b>${ hiredByFullName }</b></div>
+                <div class="small text-secondary">${ formatDateTime(hiredAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(hiredAt, "Time") }</div>
+            `
+        });
+    }
+
+    // Rejected
+    const status = result.status;
+    if(
+        status === "Rejected from evaluation" || 
+        status === "Rejected from screening"  || 
+        status === "Rejected from interview" 
+    ) {
+        const rejectedAt = result.rejected_at;
+        const rejectedBy = result.rejection_done_by;
+        if(!isEmptyOrNull(rejectedAt) && !isEmptyOrNull(rejectedBy)) {
+            const rejectedByFullName = formatName('F M. L, S', {
+                firstName: rejectedBy.first_name,
+                middleName: rejectedBy.middle_name,
+                lastName: rejectedBy.last_name,
+                suffixName: rejectedBy.suffix_name
+            });
+            timelineData.push({
+                icon: "times",
+                iconTheme: "danger",
+                dateTime: rejectedAt,
+                timelineTitle: status,
+                timelineBody: `
+                    <div class="small mb-3">Applicant was ${ status.toLowerCase() } by <b>${ rejectedByFullName }</b></div>
+                    <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
+                    <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
+                `
+            });
+        }
+    }
+
+    // Set Applicant Timeline
+    setTimeline('#applicantTimeline', {
+        title: "Applicant Timeline",
+        timelineData: timelineData
+    });
+
+    // Remove Applicant Timeline Loader
+    hideElement('#applicantTimelineLoader');
+    showElement('#applicantTimeline');
+}
+
 /** View Screening Applicant Details */
 const viewScreeningApplicantDetails = (applicantID) => {
     GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }`, {
@@ -122,59 +274,8 @@ const viewScreeningApplicantDetails = (applicantID) => {
             // Set Applicant ID
             setValue('#applicantID', result.applicant_id)
 
-            // Set Applicant Full Name
-            setContent('#applicantFullName', formatName('F M. L, S', {
-                firstName: result.first_name,
-                middleName: result.middle_name,
-                lastName: result.last_name,
-                suffixName: result.suffixName
-            }));
-
-            // Set Applicant Contact Number
-            setContent("#applicantContactNumber", result.contact_number);
-
-            // Set Applicant Email
-            setContent("#applicantEmail", result.email);
-
-            // Set Resume
-            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
-
-            // Set Applicant Date Applied
-            setContent("#applicantDateApplied", `
-                <div>${ formatDateTime(result.created_at, "Full Date") }</div>
-                <div>${ formatDateTime(result.created_at, "Time") }</div>
-                <div class="small text-secondary">${  fromNow(result.created_at) }</div>
-            `);
-
-            // Set Evaluated By
-            setContent('#applicantEvaluatedBy', () => {
-                const evaluatedBy = result.evaluation_done_by;
-
-                const evaluatorName = formatName('F M. L, S', {
-                    firstName: evaluatedBy.first_name,
-                    middleName: evaluatedBy.middle_name,
-                    lastName: evaluatedBy.last_name,
-                    suffixName: evaluatedBy.suffix_name
-                });
-
-                const evaluatorPosition = evaluatedBy.position;
-
-                return `
-                    <div>${ evaluatorName }</div>
-                    <div class="small text-secondary">${ evaluatorPosition.name }, ${ evaluatorPosition.department.name }</div>
-                `
-            });
-
-            // Set Evauated At
-            setContent('#applicantEvaluatedAt', () => {
-                const evaluatedAt = result.evaluated_at;
-
-                return `
-                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
-                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
-                `
-            });
+            // Set Applicants Details and Timeline
+            setApplicantDetailsAndTimeline(result);
 
             // Show Applicants Details Modal
             showModal('#applicantDetailsModal');
@@ -189,91 +290,10 @@ const viewForInterviewApplicantDetails = (applicantID) => {
         success: result => {
 
             // Set Applicant ID
-            setValue('#applicantID', result.applicant_id)
+            setValue('#applicantID', result.applicant_id);
 
-            // Set Applicant Full Name
-            setContent('#applicantFullName', formatName('F M. L, S', {
-                firstName: result.first_name,
-                middleName: result.middle_name,
-                lastName: result.last_name,
-                suffixName: result.suffixName
-            }));
-
-            // Set Applicant Contact Number
-            setContent("#applicantContactNumber", result.contact_number);
-
-            // Set Applicant Email
-            setContent("#applicantEmail", result.email);
-
-            // Set Resume
-            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
-
-            // Set Applicant Date Applied
-            setContent("#applicantDateApplied", `
-                <div>${ formatDateTime(result.created_at, "Full Date") }</div>
-                <div>${ formatDateTime(result.created_at, "Time") }</div>
-                <div class="small text-secondary">${  fromNow(result.created_at) }</div>
-            `);
-
-            // Set Evaluated By
-            setContent('#applicantEvaluatedBy', () => {
-                const evaluatedBy = result.evaluation_done_by;
-
-                const evaluatorName = formatName('F M. L, S', {
-                    firstName: evaluatedBy.first_name,
-                    middleName: evaluatedBy.middle_name,
-                    lastName: evaluatedBy.last_name,
-                    suffixName: evaluatedBy.suffix_name
-                });
-
-                const evaluatorPosition = evaluatedBy.position;
-
-                return `
-                    <div>${ evaluatorName }</div>
-                    <div class="small text-secondary">${ evaluatorPosition.name }, ${ evaluatorPosition.department.name }</div>
-                `
-            });
-
-            // Set Evauated At
-            setContent('#applicantEvaluatedAt', () => {
-                const evaluatedAt = result.evaluated_at;
-
-                return `
-                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
-                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
-                `
-            });
-
-            // Set Screening Done By
-            setContent('#applicantScreenedBy', () => {
-                const screenedBy = result.screening_done_by;
-
-                const screenedByFullName = formatName('F M. L, S', {
-                    firstName: screenedBy.first_name,
-                    middleName: screenedBy.middle_name,
-                    lastName: screenedBy.last_name,
-                    suffixName: screenedBy.suffix_name
-                });
-
-                const screenedByPosition = screenedBy.position;
-
-                return `
-                    <div>${ screenedByFullName }</div>
-                    <div class="small text-secondary">${ screenedByPosition.name }, ${ screenedByPosition.department.name }</div>
-                `
-            });
-
-            // Set Screening Done At
-            setContent('#applicantScreenedAt', () => {
-                const evaluatedAt = result.screened_at;
-
-                return `
-                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
-                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
-                `
-            });
+            // Set Applicant Details and Timeline
+            setApplicantDetailsAndTimeline(result);
 
             // Show Applicants Details Modal
             showModal('#applicantDetailsModal');
@@ -282,94 +302,57 @@ const viewForInterviewApplicantDetails = (applicantID) => {
     });
 }
 
+/** View Interviewed Applicant Details */
+const viewInterviewedApplicantDetails = (applicantID) => {
+    GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }/interviewee-info`, {
+        success: result => {
+            
+            // Set Applicant ID
+            setValue('#applicantID', result.applicant_id);
+
+            // Set Applicant Details and Timeline
+            setApplicantDetailsAndTimeline(result);
+
+            // Set ScoreSheet
+            setContent('#applicantScoresheet', '');
+            const scores = result.interviewee_info[0].interviewee_score;
+            let sum = 0;
+            let count = 1;
+            scores.forEach(s => {
+                const score = s.score;
+                sum+=score;
+                $('#applicantScoresheet').append(`
+                    <tr>
+                        <td class="text-right">${ count }</td>
+                        <td>${ s.interview_question.question }</td>
+                        <td class="text-right">${ formatNumber(score) }%</td>
+                    </tr>
+                `);
+                count++;
+            });
+
+            $('#applicantScoresheet').append(`
+                <tr>
+                    <td colspan="2" class="text-right font-weight-bold">Average</td>
+                    <td class="text-right font-weight-bold">${ formatNumber(sum/scores.length) }%</td>
+                </tr>
+            `);
+
+            showModal('#applicantDetailsModal');
+        },
+        error: () => {
+            toastr.error('There was a problem in getting the applicant details');
+        }
+    })
+}
+
 /** View Hired Applicant Details */
 const viewHiredApplicantDetails = (applicantID) => {
     GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }`, {
         success: result => {
             
-            // Set Applicant Full Name
-            setContent('#applicantFullName', formatName('F M. L, S', {
-                firstName: result.first_name,
-                middleName: result.middle_name,
-                lastName: result.last_name,
-                suffixName: result.suffixName
-            }));
-
-            // Set Applicant Contact Number
-            setContent("#applicantContactNumber", result.contact_number);
-
-            // Set Applicant Email
-            setContent("#applicantEmail", result.email);
-
-            // Set Resume
-            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
-
-            // Set Applicant Date Applied
-            setContent("#applicantDateApplied", `
-                <div>${ formatDateTime(result.created_at, "Full Date") }</div>
-                <div>${ formatDateTime(result.created_at, "Time") }</div>
-                <div class="small text-secondary">${  fromNow(result.created_at) }</div>
-            `);
-
-            // Set Evaluated By
-            setContent('#applicantEvaluatedBy', () => {
-                const evaluatedBy = result.evaluation_done_by;
-
-                const evaluatorName = formatName('F M. L, S', {
-                    firstName: evaluatedBy.first_name,
-                    middleName: evaluatedBy.middle_name,
-                    lastName: evaluatedBy.last_name,
-                    suffixName: evaluatedBy.suffix_name
-                });
-
-                const evaluatorPosition = evaluatedBy.position;
-
-                return `
-                    <div>${ evaluatorName }</div>
-                    <div class="small text-secondary">${ evaluatorPosition.name }, ${ evaluatorPosition.department.name }</div>
-                `
-            });
-
-            // Set Evauated At
-            setContent('#applicantEvaluatedAt', () => {
-                const evaluatedAt = result.evaluated_at;
-
-                return `
-                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
-                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
-                `
-            });
-
-            // Set Screening Done By
-            setContent('#applicantScreenedBy', () => {
-                const screenedBy = result.screening_done_by;
-
-                const screenedByFullName = formatName('F M. L, S', {
-                    firstName: screenedBy.first_name,
-                    middleName: screenedBy.middle_name,
-                    lastName: screenedBy.last_name,
-                    suffixName: screenedBy.suffix_name
-                });
-
-                const screenedByPosition = screenedBy.position;
-
-                return `
-                    <div>${ screenedByFullName }</div>
-                    <div class="small text-secondary">${ screenedByPosition.name }, ${ screenedByPosition.department.name }</div>
-                `
-            });
-
-            // Set Screening Done At
-            setContent('#applicantScreenedAt', () => {
-                const evaluatedAt = result.screened_at;
-
-                return `
-                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
-                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
-                `
-            });
+            // Set Applicant Details and Timeline
+            setApplicantDetailsAndTimeline(result);
 
             // Show Applicants Details Modal
             showModal('#applicantDetailsModal');
@@ -382,90 +365,9 @@ const viewHiredApplicantDetails = (applicantID) => {
 const viewRejectedApplicantDetails = (applicantID) => {
     GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }`, {
         success: result => {
-            
-            // Set Applicant Full Name
-            setContent('#applicantFullName', formatName('F M. L, S', {
-                firstName: result.first_name,
-                middleName: result.middle_name,
-                lastName: result.last_name,
-                suffixName: result.suffixName
-            }));
 
-            // Set Applicant Contact Number
-            setContent("#applicantContactNumber", result.contact_number);
-
-            // Set Applicant Email
-            setContent("#applicantEmail", result.email);
-
-            // Set Resume
-            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
-
-            // Set Applicant Date Applied
-            setContent("#applicantDateApplied", `
-                <div>${ formatDateTime(result.created_at, "Full Date") }</div>
-                <div>${ formatDateTime(result.created_at, "Time") }</div>
-                <div class="small text-secondary">${  fromNow(result.created_at) }</div>
-            `);
-
-            // Set Evaluated By
-            setContent('#applicantEvaluatedBy', () => {
-                const evaluatedBy = result.evaluation_done_by;
-
-                const evaluatorName = formatName('F M. L, S', {
-                    firstName: evaluatedBy.first_name,
-                    middleName: evaluatedBy.middle_name,
-                    lastName: evaluatedBy.last_name,
-                    suffixName: evaluatedBy.suffix_name
-                });
-
-                const evaluatorPosition = evaluatedBy.position;
-
-                return `
-                    <div>${ evaluatorName }</div>
-                    <div class="small text-secondary">${ evaluatorPosition.name }, ${ evaluatorPosition.department.name }</div>
-                `
-            });
-
-            // Set Evauated At
-            setContent('#applicantEvaluatedAt', () => {
-                const evaluatedAt = result.evaluated_at;
-
-                return `
-                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
-                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
-                `
-            });
-
-            // Set Screening Done By
-            setContent('#applicantScreenedBy', () => {
-                const screenedBy = result.screening_done_by;
-
-                const screenedByFullName = formatName('F M. L, S', {
-                    firstName: screenedBy.first_name,
-                    middleName: screenedBy.middle_name,
-                    lastName: screenedBy.last_name,
-                    suffixName: screenedBy.suffix_name
-                });
-
-                const screenedByPosition = screenedBy.position;
-
-                return `
-                    <div>${ screenedByFullName }</div>
-                    <div class="small text-secondary">${ screenedByPosition.name }, ${ screenedByPosition.department.name }</div>
-                `
-            });
-
-            // Set Screening Done At
-            setContent('#applicantScreenedAt', () => {
-                const evaluatedAt = result.screened_at;
-
-                return `
-                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
-                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
-                `
-            });
+            // Set Applicant Details and Timeline
+            setApplicantDetailsAndTimeline(result);
 
             // Show Applicants Details Modal
             showModal('#applicantDetailsModal');
@@ -1183,131 +1085,6 @@ initDataTable('#interviewedApplicantsDT', {
     ]
 });
 
-/** View Interviewed Applicant Details */
-const viewInterviewedApplicantDetails = (applicantID) => {
-    GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }/interviewee-info`, {
-        success: result => {
-
-            // Set Applicant ID
-            setValue('#applicantID', result.applicant_id);
-
-            // Set applicant full name
-            setContent('#applicantFullName', formatName('F M. L, S', {
-                firstName: result.first_name,
-                middleName: result.middle_name,
-                lastName: result.last_name,
-                suffix_name: result.suffix_name
-            }));
-
-            // Set Applicant Email
-            setContent('#applicantEmail', result.email);
-
-            // Set Contact Number
-            setContent('#applicantContactNumber', result.contact_number);
-
-            // Set Resume Link
-            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
-
-             // Set Applicant Date Applied
-             setContent("#applicantDateApplied", `
-                <div>${ formatDateTime(result.created_at, "Full Date") }</div>
-                <div>${ formatDateTime(result.created_at, "Time") }</div>
-                <div class="small text-secondary">${  fromNow(result.created_at) }</div>
-            `);
-
-            // Set Evaluated By
-            setContent('#applicantEvaluatedBy', () => {
-                const evaluatedBy = result.evaluation_done_by;
-
-                const evaluatorName = formatName('F M. L, S', {
-                    firstName: evaluatedBy.first_name,
-                    middleName: evaluatedBy.middle_name,
-                    lastName: evaluatedBy.last_name,
-                    suffixName: evaluatedBy.suffix_name
-                });
-
-                const evaluatorPosition = evaluatedBy.position;
-
-                return `
-                    <div>${ evaluatorName }</div>
-                    <div class="small text-secondary">${ evaluatorPosition.name }, ${ evaluatorPosition.department.name }</div>
-                `
-            });
-
-            // Set Evauated At
-            setContent('#applicantEvaluatedAt', () => {
-                const evaluatedAt = result.evaluated_at;
-
-                return `
-                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
-                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
-                `
-            });
-
-            // Set Screening Done By
-            setContent('#applicantScreenedBy', () => {
-                const screenedBy = result.screening_done_by;
-
-                const screenedByFullName = formatName('F M. L, S', {
-                    firstName: screenedBy.first_name,
-                    middleName: screenedBy.middle_name,
-                    lastName: screenedBy.last_name,
-                    suffixName: screenedBy.suffix_name
-                });
-
-                const screenedByPosition = screenedBy.position;
-
-                return `
-                    <div>${ screenedByFullName }</div>
-                    <div class="small text-secondary">${ screenedByPosition.name }, ${ screenedByPosition.department.name }</div>
-                `
-            });
-
-            // Set Screening Done At
-            setContent('#applicantScreenedAt', () => {
-                const evaluatedAt = result.screened_at;
-
-                return `
-                    <div>${ formatDateTime(evaluatedAt, "Full Date") }</div>
-                    <div>${ formatDateTime(evaluatedAt, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(evaluatedAt) }</div>
-                `
-            });
-
-            // Set ScoreSheet
-            setContent('#applicantScoresheet', '');
-            const scores = result.interviewee_info[0].interviewee_score;
-            let sum = 0;
-            let count = 1;
-            scores.forEach(s => {
-                const score = s.score;
-                sum+=score;
-                $('#applicantScoresheet').append(`
-                    <tr>
-                        <td class="text-right">${ count }</td>
-                        <td>${ s.interview_question.question }</td>
-                        <td class="text-right">${ formatNumber(score) }%</td>
-                    </tr>
-                `);
-                count++;
-            });
-
-            $('#applicantScoresheet').append(`
-                <tr>
-                    <td colspan="2" class="text-right font-weight-bold">Average</td>
-                    <td class="text-right font-weight-bold">${ formatNumber(sum/scores.length) }%</td>
-                </tr>
-            `);
-
-            showModal('#applicantDetailsModal');
-        },
-        error: () => {
-            toastr.error('There was a problem in getting the applicant details');
-        }
-    })
-}
-
 /** If reject interview or hide applicant has been selected */
 $('#rejectFromInterview, #hiredApplicant').on('change', () => {
     const requestStatus = $(`input[name="applicantStatus"]:checked`).val();
@@ -1350,12 +1127,15 @@ validateForm('#applicantHiringForm', {
 /** Hire or reject applicant */
 const hireOrRejectApplicant = () => {
 
+    // Set buttons to loading state
     btnToLoadingState('#submitBtn');
     disableElement('#cancelApplicantHiringBtn');
 
+    // Get form data
     const formData = generateFormData('#applicantHiringForm');
     const get = (n) => { return formData.get(n) }
 
+    // Get applicant data
     const applicantStatus = get('applicantStatus');
     const isRejected = applicantStatus === 'Rejected from interview';
 
@@ -1384,6 +1164,9 @@ const hireOrRejectApplicant = () => {
                     <i class="fas fa-check ml-1"></i>
                 `);
                 enableElement('#cancelApplicantHiringBtn');
+
+                // Reload analytics
+                applicantsPerJobAnalytics();
 
                 // Show alert
                 isRejected 
