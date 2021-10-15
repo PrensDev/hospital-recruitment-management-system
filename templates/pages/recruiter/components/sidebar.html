@@ -3,20 +3,23 @@
     
     {# Sidebar user #}
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        {# <div class="image">
-        <img src="../../dist/img/user2-160x160.jpg" class="img-circle border" alt="User Image">
-        </div> #}
+        
+        {# User Image #}
+        <div class="image">
+            <img src="{{BASE_URL_WEB}}static/dist/img/user2-160x160.jpg" class="img-circle border" alt="User Image">
+        </div>
 
         {# User Full Name Loader #}
-        <div class="text-center" style="width: 100%" id="userFullNameLoader">
+        <div class="info mr-1" style="width: 100%" id="userFullNameLoader">
             <div class="skeleton-loader mb-0 w-75"></div>
+            <div class="skeleton-loader sm mb-0 w-50"></div>
         </div>
         
         {# User Full Name Display #}
         <div class="info mr-1" id="userFullNameDisplay" style="display: none">
             <a href="#" class="d-block text-truncate">
                 <div id="userFullName"></div>
-                <div class="small text-secondary" id="userPosition"></div>
+                <div class="small text-secondary" id="userPosition">Recruiter</div>
             </a>
         </div>
     </div>
@@ -24,6 +27,7 @@
     {# Sidebar Menu #}
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            
             <li class="nav-header">CORE</li>
             <li class="nav-item">
                 <a href="{{R_WEB_ROUTE}}" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">

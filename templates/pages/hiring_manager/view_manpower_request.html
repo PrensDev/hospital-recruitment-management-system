@@ -6,13 +6,11 @@
     {# Content Header (Page header) #}
     <section class="content-header">
         <div class="container-fluid">
-            
-            {# Title #}
             <h1>{{ page_title }}</h1>
             <p class="text-muted">{{ sub_title }}</p>
-
         </div>
     </section>
+
 
     {# Content #}
     <section class="content px-3">
@@ -45,7 +43,7 @@
                                     </td>
                                 </tr>
 
-                                {% for i range(2) %}
+                                {% for i in range(2) %}
                                     <tr>
                                         {% for j in range(3) %}
                                             <td>

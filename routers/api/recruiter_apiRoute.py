@@ -382,7 +382,7 @@ async def applicants_per_job_analytics(
             ).count()
             
             # Rejected From Evaluation
-            rejected_from_evalution = query.filter(
+            rejected_from_evaluation = query.filter(
                 Applicant.status == "Rejected from evaluation",
                 Applicant.job_post_id == job_post_id
             ).count()
@@ -400,7 +400,7 @@ async def applicants_per_job_analytics(
             ).count()
 
             # Total Rejected
-            total_rejected = rejected_from_evalution + rejected_from_screening + rejected_from_intreview
+            total_rejected = rejected_from_evaluation + rejected_from_screening + rejected_from_intreview
             
             return {
                 "total": total,
@@ -410,7 +410,7 @@ async def applicants_per_job_analytics(
                 "hired": hired,
                 "rejected": {
                     "total": total_rejected,
-                    "from_evaluation": rejected_from_evalution,
+                    "from_evaluation": rejected_from_evaluation,
                     "from_screening": rejected_from_screening,
                     "from_interview": rejected_from_intreview
                 }

@@ -410,6 +410,9 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
     const requisitionID = window.location.pathname.split('/')[3];
     GET_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
+
+            /** MANPOWER REQUEST DETAILS */
+
             const requestedBy = result.manpower_request_by;
 
             // Set Requisition No
@@ -509,11 +512,16 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             // Set Approved By
             setContent('#approvedBy', () => {
                 const approvedBy = result.manpower_request_reviewed_by;
-                return isEmptyOrNull(approvedBy)
+                return isEmptyOrNull(approvedBy) && !(
+                        result.request_status === "Rejected for approval" ||
+                        result.request_status === "Rejected for signing"
+                    )
                     ? `<div class="text-secondary font-italic">Not yet approved</div>`
                     : () => {
-                        if(result.request_status === "Rejected")
+                        if(result.request_status === "Rejected for signing")
                             return `<div class="text-danger">This request has been rejected</div>`
+                        else if(result.request_status === "Rejected for approval")
+                            return `<div class="text-danger">This request has been rejected for approval</div>`
                         else {
                             const approvedByFullName = formatName("L, F M., S", {
                                 firstName: approvedBy.first_name,
@@ -588,8 +596,10 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                     `
                 }
             });
+            
 
-            // Set Manpower Request Timeline
+            /** MANPOWER REQUEST TIMELINE */
+
             let timelineData = [];
 
             const requestStatus = result.request_status;

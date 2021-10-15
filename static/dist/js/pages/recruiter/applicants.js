@@ -422,7 +422,7 @@ const applicantsPerJobAnalytics = () => {
             a('#forEvaluationCount', result.for_evaluation);
 
             // Set Evaluated Applicants Count
-            const evaluatedCount = result.for_screening + result.for_interview + result.hired;
+            const evaluatedCount = result.for_screening + result.for_interview + result.hired + result.rejected.from_screening + result.rejected.from_interview;
             a('#evaluatedCount', evaluatedCount);
 
             // Set Rejected From Evaluation Count
@@ -447,7 +447,6 @@ ifSelectorExist('#applicantsMenu', () => applicantsPerJobAnalytics());
 
 /** Applicants for Evaluation DataTable */
 initDataTable('#applicantsForEvaluationDT', {
-    // debugMode: true,
     url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/for-evaluation`,
     columns: [
         

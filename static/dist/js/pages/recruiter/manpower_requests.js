@@ -6,7 +6,6 @@
 
 /** Initialize Manpower Request DataTable */
 initDataTable('#manpowerRequestDT', {
-    // debugMode: true,
     url: `${ R_API_ROUTE }requisitions`,
     columns: [
 
@@ -218,6 +217,39 @@ const viewManpowerRequest = (requisitionID) => {
 
             // Set Request Description
             setContent('#requestDescription', result.content);
+
+            // Set Signed By
+            setContent('#signedBy', () => {
+                const signedBy = result.manpower_request_signed_by;
+                
+                if(result.request_status === "Rejected for signing")
+                    return `<div class="text-danger">This request has been rejected for signing</div>`
+                else if(isEmptyOrNull(signedBy))
+                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                else {
+                    const signedByFullName = formatName("L, F M., S", {
+                        firstName: signedBy.first_name,
+                        middleName: signedBy.middle_name,
+                        lastName: signedBy.last_name,
+                        suffixName: signedBy.suffix_name
+                    });
+                    return `
+                        <div>${ signedByFullName }</div>
+                        <div class="small text-secondary">${ signedBy.position.name }, ${ signedBy.position.department.name }</div>
+                    `
+                }
+            });
+
+            // Set Signed At
+            setContent('#signedAt', () => {
+                const signedAt = result.signed_at;
+                return isEmptyOrNull(signedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    : `
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
+                    `
+            });
 
             // Set Approved By
             setContent('#approvedBy', () => {

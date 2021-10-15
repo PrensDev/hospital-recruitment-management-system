@@ -17,27 +17,31 @@
     <aside class="main-sidebar main-sidebar-custom sidebar-light-primary">
 
       {# Brand Logo #}
-      <a href="../../index3.html" class="brand-link">
-        {# <img src="../../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle border"
-          style="opacity: .8"> #}
-        <span class="brand-text font-weight-light">AdminLTE 3</span>
-      </a>
+      <div class="brand-link">
+        <img 
+          src="{{BASE_URL_WEB}}static/dist/img/AdminLTELogo.png" 
+          alt="AdminLTE Logo" 
+          class="brand-image img-circle"
+          style="opacity: .8"
+        >
+        <span class="brand-text font-weight-light">HoMIES</span>
+      </div>
 
       {% block sidebar %}{% endblock %}
 
     </aside>
 
     {# Content Wrapper. Contains page content #}
-    <div class="content-wrapper">
+    <div class="content-wrapper pb-3">
       {% block content %}{% endblock %}
     </div>
 
     {# Main Footer #}
-    <footer class="main-footer">
+    <footer class="main-footer text-sm">
       <div class="float-right d-none d-sm-block">
-        <b>Version</b> 1.0.0
+        <span>v 1.0.0</span>
       </div>
-      <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+      <strong>Copyright &copy; 2021 {{BRAND_NAME}}</strong> All rights reserved.
     </footer>
   </div>
 

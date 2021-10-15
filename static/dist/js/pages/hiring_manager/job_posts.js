@@ -39,20 +39,7 @@ initDataTable('#jobPostsDT', {
         { data: 'created_at', visible: false },
 
         // View Manpower Request
-        {
-            data: null,
-            render: data => {
-                return `
-                    <button 
-                        class="btn btn-sm btn-light btn-block"
-                        onclick="viewManpowerRequestDetails('${ data.manpower_request.requisition_id }')"
-                    >
-                        <i class="fas fa-file-alt mr-1"></i>
-                        <span>View request</span>
-                    </button
-                `
-            }
-        },
+        { data: 'manpower_request.requisition_no', class: 'text-nowrap' },
 
         // Vacant Position
         { data: "manpower_request.vacant_position.name" },

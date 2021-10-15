@@ -890,12 +890,11 @@ ifSelectorExist('#createInterviewScheduleForm', () => {
                         selectApplicant.append(`<option value="${ i.applicant_id }">${ applicantName }</option>`);
                     }
                 });
-
-                $('#selectApplicant').select2({
-                    placeholder: "Please select applicant here and add",
-                });
-            }
+            } else selectApplicant.append(`<option disabled>No applicants were found</option>`);
             
+            $('#selectApplicant').select2({
+                placeholder: "Please select applicant here and add",
+            });
         },
         error: () => toastr.error('There was an error in getting applicants')
     });

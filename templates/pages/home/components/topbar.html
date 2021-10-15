@@ -1,21 +1,35 @@
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
     <div class="container">
-        <a href="../../index3.html" class="navbar-brand">
-            {# <img src="../../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8"> #}
-            <span class="brand-text font-weight-light">AdminLTE 3</span>
+
+        {# Brand #}
+        <a href="{{BASE_URL_WEB}}" class="navbar-brand">
+            <img 
+                src="{{BASE_URL_WEB}}static/dist/img/AdminLTELogo.png" 
+                alt="{{BRAND_NAME}}" 
+                class="brand-image img-circle" 
+                style="opacity: .8"
+            >
+            <span class="brand-text font-weight-light">{{BRAND_NAME}}</span>
         </a>
 
-        <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+        {# Navbar Toggler #}
+        <button 
+            class="navbar-toggler order-1" 
+            type="button" 
+            data-toggle="collapse" 
+            data-target="#navbarCollapse" 
+            aria-controls="navbarCollapse" 
+            aria-expanded="false" 
+            aria-label="Toggle navigation"
+        >
+            <i class="fas fa-bars"></i>
         </button>
 
+        {# Navbar #}
         <div class="collapse navbar-collapse order-3" id="navbarCollapse">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a href="index3.html" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Search Job</a>
+                    <a href="#" class="nav-link text-primary">Careers</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Dropdown</a>

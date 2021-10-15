@@ -4,23 +4,24 @@
     {# Sidebar user #}
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
 
-        {# <div class="image">
-        <img src="../../dist/img/user2-160x160.jpg" class="img-circle border" alt="User Image">
-        </div> #}
+        {# User Image #}
+        <div class="image">
+            <img src="{{BASE_URL_WEB}}static/dist/img/user2-160x160.jpg" class="img-circle border" alt="User Image">
+        </div>
 
         {# User Full Name Loader #}
-        <div class="text-center" style="width: 100%" id="userFullNameLoader">
-            <div class="skeleton-loader mb-0 w-75"></div>
+        <div class="info mr-1" style="width: 100%" id="userFullNameLoader">
+            <div class="skeleton-loader w-75"></div>
+            <div class="skeleton-loader sm mb-0 w-50"></div>
         </div>
         
         {# User Full Name #}
         <div class="info mr-1" id="userFullNameDisplay" style="display: none">
             <a href="#" class="d-block text-truncate">
                 <div id="userFullName"></div>
-                <div class="small text-secondary" id="userPosition"></div>
+                <div class="small text-secondary" id="userPosition">Department Head</div>
             </a>
         </div>
-        
     </div>
 
     {# Sidebar Menu #}
@@ -51,24 +52,6 @@
             </p>
             </a>
         </li>
-
-        <li class="nav-header">ON BOARD</li>
-        <li class="nav-item">
-            <a href="{{DH_WEB_ROUTE}}onboarding-employees" class="nav-link{% if active_navlink == "Onboarding Employees" %} active{% endif %}">
-            <i class="fas fa-clipboard nav-icon"></i>
-            <p>Onboarding Employees</p>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="{{DH_WEB_ROUTE}}general-tasks" class="nav-link{% if active_navlink == "General Tasks" %} active{% endif %}">
-            <i class="fas fa-tasks nav-icon"></i>
-            <p>General Tasks</p>
-            </a>
-        </li>
-        </ul>
-    </nav>
-
 </div>
 
 {# Sidebar Custom #}
