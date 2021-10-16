@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 16, 2021 at 07:04 AM
+-- Generation Time: Oct 16, 2021 at 01:04 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.4.23
 
@@ -60,7 +60,7 @@ INSERT INTO `applicants` (`applicant_id`, `job_post_id`, `first_name`, `middle_n
 ('3483c99b-268f-11ec-816e-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Evelyn', 'Cardenas', 'Brown', '', 'b22cc79e6da8479f99c4f6c53e80ae47.pdf', '812-369-3802', 'evelyn.brown@gmail.com', 'For screening', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 16:46:36', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-10-06 18:21:44', '2021-10-10 16:46:36'),
 ('55da70c0-268f-11ec-816e-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Loretta', 'Flynn', 'Bradshaw', '', 'd442f6761d4b4d8990e5246f29246cc8.pdf', '479-857-7614', 'loretta.bradshaw@email.com', 'Contract signed', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 16:46:29', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 16:47:26', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-15 16:04:15', NULL, NULL, NULL, '2021-10-06 18:22:40', '2021-10-16 10:32:20'),
 ('85d93147-268f-11ec-816e-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Robert', '', 'Stark', '', '47148ed23fc84c65b6bbc28e410802f7.pdf', '763-792-6052', 'robert.stark@gmail.com', 'For interview', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 18:24:24', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 18:43:09', NULL, NULL, NULL, NULL, NULL, '2021-10-06 18:24:00', '2021-10-10 18:43:09'),
-('a10a74e8-268f-11ec-816e-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Carole', '', 'Martineau', '', '0a5fa5cf72cb4c3496fadf31a978c43b.pdf', '806-832-3513', 'carole.martineau@gmail.com', 'For interview', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-06 20:26:04', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 16:47:20', NULL, NULL, NULL, NULL, NULL, '2021-10-06 18:24:46', '2021-10-10 16:47:20'),
+('a10a74e8-268f-11ec-816e-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Carole', '', 'Martineau', '', '0a5fa5cf72cb4c3496fadf31a978c43b.pdf', '806-832-3513', 'carole.martineau@gmail.com', 'Contract signed', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-06 20:26:04', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 16:47:20', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 18:07:12', NULL, NULL, NULL, '2021-10-06 18:24:46', '2021-10-16 18:16:30'),
 ('a6269768-29b6-11ec-a0b9-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Christopher', '', 'Balasa', '', '6789a2d45132473db2eac255cd76e1cb.pdf', '352-548-5542', 'christopher.balasa@gmail.com', 'Rejected from screening', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 18:41:57', NULL, NULL, NULL, NULL, '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 18:43:22', 'Not qualified', '2021-10-10 18:41:38', '2021-10-10 18:43:22'),
 ('c04b9f76-2683-11ec-816e-6c626d3a5d34', 'e09ef8f4-251c-11ec-94e2-6c626d3a5d34', 'Wilma', '', 'Smith', '', 'b8d42b9ab01b4d85a74f9591e3dd3d5e.pdf', '267-316-5341', 'wilma.smith@gmail.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-10-06 16:59:45', '2021-10-06 16:59:45');
 
@@ -251,7 +251,8 @@ CREATE TABLE `onboarding_employees` (
 --
 
 INSERT INTO `onboarding_employees` (`onboarding_employee_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `contact_number`, `email`, `position_id`, `employment_start_date`, `employment_contract`, `status`, `signed_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-('4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', 'Loretta', 'Flynn', 'Bradshaw', '', '479-857-7614', 'loretta.bradshaw@email.com', 'b4ef84d2-1b94-11ec-9d57-6c626d3a5d34', NULL, 'a657ad5369c94dd6b34924e15b19d5d5.pdf', 'Pending', '3bbe4e8b-1b87-11ec-9d57-6c626d3a5d34', NULL, '2021-10-16 10:32:20', '2021-10-16 10:32:20');
+('2157ec35-2e6a-11ec-9eaa-6c626d3a5d34', 'Carole', '', 'Martineau', '', '806-832-3513', 'carole.martineau@gmail.com', 'b4ef84d2-1b94-11ec-9d57-6c626d3a5d34', NULL, '9a84334621f84f8d964be015c5d629e1.pdf', 'Pending', '3bbe4e8b-1b87-11ec-9d57-6c626d3a5d34', NULL, '2021-10-16 18:16:30', '2021-10-16 18:16:30'),
+('4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', 'Loretta', 'Flynn', 'Bradshaw', '', '479-857-7614', 'loretta.bradshaw@email.com', 'b4ef84d2-1b94-11ec-9d57-6c626d3a5d34', '2021-10-16', 'a657ad5369c94dd6b34924e15b19d5d5.pdf', 'Onboarding', '3bbe4e8b-1b87-11ec-9d57-6c626d3a5d34', NULL, '2021-10-16 10:32:20', '2021-10-16 17:56:17');
 
 -- --------------------------------------------------------
 
@@ -273,6 +274,17 @@ CREATE TABLE `onboarding_employee_task` (
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `onboarding_employee_task`
+--
+
+INSERT INTO `onboarding_employee_task` (`onboarding_employee_task_id`, `onboarding_employee_id`, `onboarding_task_id`, `start_at`, `end_at`, `assigned_by`, `status`, `completed_at`, `completed_by`, `created_at`, `updated_at`) VALUES
+('4f12c0bb-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '23ec55f2-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-17 17:55:00', '2021-10-18 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'Pending', NULL, NULL, '2021-10-16 17:56:18', '2021-10-16 17:56:18'),
+('4f57d688-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '88d93ef2-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-20 17:55:00', '2021-10-21 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'Pending', NULL, NULL, '2021-10-16 17:56:18', '2021-10-16 17:56:18'),
+('50231866-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '4b38a039-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-19 17:55:00', '2021-10-20 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'Pending', NULL, NULL, '2021-10-16 17:56:20', '2021-10-16 17:56:20'),
+('502cac58-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '3ca8d340-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-18 17:55:00', '2021-10-19 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'Pending', NULL, NULL, '2021-10-16 17:56:20', '2021-10-16 17:56:20'),
+('5081e94e-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '96c75c35-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-22 17:55:00', '2021-10-23 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'Pending', NULL, NULL, '2021-10-16 17:56:20', '2021-10-16 17:56:20');
+
 -- --------------------------------------------------------
 
 --
@@ -291,6 +303,18 @@ CREATE TABLE `onboarding_tasks` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `onboarding_tasks`
+--
+
+INSERT INTO `onboarding_tasks` (`onboarding_task_id`, `title`, `description`, `task_type`, `is_general`, `department_id`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+('23ec55f2-2e4a-11ec-9eaa-6c626d3a5d34', 'Fill up onboarding forms', 'Fill up and sign onboarding forms', 'For new employees', 1, '649c149d-1b7a-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 14:27:30', '2021-10-16 14:27:30'),
+('3ca8d340-2e4a-11ec-9eaa-6c626d3a5d34', 'Introduce yourself', 'Introduce yourself to the team', 'For new employees', 1, '649c149d-1b7a-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 14:28:12', '2021-10-16 14:28:12'),
+('4b38a039-2e4a-11ec-9eaa-6c626d3a5d34', 'Welcome new employee', 'Welcome new employee to the team', 'For the team', 1, '649c149d-1b7a-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 14:28:36', '2021-10-16 14:28:36'),
+('509c5fc8-2e67-11ec-9eaa-6c626d3a5d34', 'Read guidelines for first month of onboarding', 'Read guidelines for first month of onboarding', 'For new employees', 0, '649c149d-1b7a-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 17:56:21', '2021-10-16 17:56:21'),
+('88d93ef2-2e4a-11ec-9eaa-6c626d3a5d34', 'Provide onboarding forms and documents', 'Provide onboarding forms and documents to be fill up by onboarding employee', 'For department manager', 1, '649c149d-1b7a-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 14:30:20', '2021-10-16 14:30:20'),
+('96c75c35-2e4a-11ec-9eaa-6c626d3a5d34', 'Introduce rules, regulations, and policies', 'Introduce rules, regulations, and policies to new onboarding employee', 'For department manager', 1, '649c149d-1b7a-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 14:30:43', '2021-10-16 14:30:43');
 
 -- --------------------------------------------------------
 
