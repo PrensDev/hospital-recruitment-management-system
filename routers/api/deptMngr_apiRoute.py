@@ -140,49 +140,6 @@ async def requisition_analytics(
         print(e)
 
 
-# Requisitions and Hired Applicants
-@router.get("/requisitions/hired-applicants", response_model=List[deptMngr.ManpowerRequestsWithHiredApplicants])
-async def get_all_requisitions_and_hired_applicants(
-    db: Session = Depends(get_db),
-    user_data: user.UserData = Depends(get_user)
-):
-    try:
-        if(authorized(user_data, AUTHORIZED_USER)):
-            return db.query(Requisition).filter(
-                Requisition.requested_by == user_data.user_id
-            ).join(JobPost).filter(
-                JobPost.requisition_id == Requisition.requisition_id
-            ).join(Applicant).filter(
-                Applicant.job_post_id == JobPost.job_post_id, 
-                Applicant.status == "Hired"
-            ).all()
-    except Exception as e:
-        print(e)
-
-
-# Hired Applicants Per Request
-@router.get("/requisitions/hired-applicants/{requisition_id}")
-async def get_all_applicants_per_request(
-    requisition_id: str,
-    db: Session = Depends(get_db),
-    user_data: user.UserData = Depends(get_user)
-):
-    try:
-        if(authorized(user_data, AUTHORIZED_USER)):
-            requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
-            if not requisition:
-                raise HTTPException(status_code=404, detail=REQUISITION_NOT_FOUND_RESPONSE)
-            else:
-                return db.query(Applicant).filter(
-                    or_(
-                        Applicant.status == "Hired",
-                        Applicant.status == "Onboarding"
-                    )
-                ).join(JobPost).filter(JobPost.job_post_id == Applicant.job_post_id).join(Requisition).filter(Requisition.requisition_id == requisition_id).all()
-    except Exception as e:
-        print(e)
-
-
 # Get One Manpower Request
 @router.get("/requisitions/{requisition_id}", response_model = deptMngr.ShowManpowerRequest)
 async def get_one_requisition(
@@ -267,63 +224,6 @@ async def department_positions(
                 raise HTTPException(status_code=404, detail=DEPARTMENT_NOT_FOUND_RESPONSE)
             else:
                 return db.query(Position).join(Department).filter(Department.department_id == department.department_id).all()
-    except Exception as e:
-        print(e)
-
-
-# ====================================================================
-#  APPLICANTS
-# ====================================================================
-
-
-# Applicant not found response
-APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
-
-
-# Get One Hired Applicant
-@router.get("/hired-applicants/{applicant_id}")
-async def get_one_hired_applicant(
-    applicant_id: str,
-    db: Session = Depends(get_db),
-    user_data: user.UserData = Depends(get_user)
-):
-    try:
-        if(authorized(user_data, AUTHORIZED_USER)):
-            applicant = db.query(Applicant).filter(
-                Applicant.applicant_id == applicant_id,
-                Applicant.status == "Hired"
-            ).first()
-            if not applicant:
-                raise HTTPException(status_code=404, detail = APPLICANT_NOT_FOUND_RESPONSE)
-            else:
-                job_post = db.query(JobPost).filter(JobPost.job_post_id == applicant.job_post_id).first()
-                manpower_request = db.query(Requisition).filter(Requisition.requisition_id == job_post.requisition_id).first()
-                position = db.query(Position).filter(Position.position_id == manpower_request.position_id).first()
-                return {
-                    "applicant": applicant,
-                    "position": position
-                }
-    except Exception as e:
-        print(e)
-
-
-# Change Applicant Status
-@router.put("/applicants/{applicant_id}")
-async def change_applicant_status(
-    applicant_id: str,
-    req: db_schemas.ChangeApplicantStatus,
-    db: Session = Depends(get_db),
-    user_data: user.UserData = Depends(get_user)
-):
-    try:
-        if(authorized(user_data, AUTHORIZED_USER)):
-            applicant = db.query(Applicant).filter(Applicant.applicant_id == applicant_id)
-            if not applicant.first():
-                raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
-            else:
-                applicant.update(req.dict())
-                db.commit()
-                return {"message": "Applicant status has been updated"}
     except Exception as e:
         print(e)
 
@@ -440,6 +340,28 @@ async def get_one_onboarding_task(
 
 
 # ====================================================================
+# HIRED APPLICANTS
+# ====================================================================
+
+
+# Applicant not found response
+APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
+
+
+# Get all hired applicants
+@router.get("/hired-applicants", response_model=List[deptMngr.ShowHiredApplicant])
+async def get_all_hired_applicants(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(OnboardingEmployee).filter(OnboardingEmployee.status == "Pending").all()
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
 # ONBOARDING EMPLOYEE
 # ====================================================================
 
@@ -544,7 +466,7 @@ async def get_one_onboarding_employee(
 
 
 # ====================================================================
-# ONBOARDING TASKS
+# ONBOARDING EMPLOYEE TASKS
 # ====================================================================
 
 
@@ -585,7 +507,7 @@ async def add_employee_onboarding_task(
         print(e)
 
 
-# Get All Onabording Employee Task
+# Get All Onboarding Employee Task
 @router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_model=List[db_schemas.ShowOnboardingEmployeeTask])
 async def get_all_onboarding_employee_tasks(
     onboarding_employee_id: str,

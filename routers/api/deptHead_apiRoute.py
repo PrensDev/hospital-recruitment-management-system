@@ -1,4 +1,5 @@
 # Import Packages
+from os import stat
 from sqlalchemy.sql.expression import or_
 from typing import List
 from fastapi import APIRouter, Depends, UploadFile, File
@@ -182,7 +183,10 @@ async def get_all_hired_applicants(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            return db.query(Applicant).filter(Applicant.status == "Hired").all()
+            return db.query(Applicant).filter(or_(
+                Applicant.status == "Hired",
+                Applicant.status == "Contract signed",
+            )).all()
     except Exception as e:
         print(e)
 
@@ -227,3 +231,57 @@ async def upload_employment_contract(
         print(e)
     finally:
         file.file.close()
+
+
+# ====================================================================
+# ONBOARDING EMPLOYEES
+# ====================================================================
+
+
+# Add onboarding employee
+@router.post("/onboarding-employees", status_code=202)
+async def add_onboarding_employee(
+    req: deptHead.CreateOnboardingEmployee,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            applicantQuery = db.query(Applicant).filter(
+                Applicant.applicant_id == req.applicant_id,
+                Applicant.status == "Hired"
+            )
+            applicant = applicantQuery.first()
+            if not applicant:
+                raise HTTPException(status_code=404, detail = APPLICANT_NOT_FOUND_RESPONSE)
+            else:
+
+                # Trace and get position
+                job_post = db.query(JobPost).filter(JobPost.job_post_id == applicant.job_post_id).first()
+                manpower_request = db.query(Requisition).filter(Requisition.requisition_id == job_post.requisition_id).first()
+                position = db.query(Position).filter(Position.position_id == manpower_request.position_id).first()
+                
+                # New onboarding employee
+                new_onboarding_employee = OnboardingEmployee(
+                    first_name = applicant.first_name,
+                    middle_name = applicant.middle_name,
+                    last_name = applicant.last_name,
+                    suffix_name = applicant.suffix_name,
+                    contact_number = applicant.contact_number,
+                    email = applicant.email,
+                    position_id = position.position_id,
+                    employment_contract = req.employment_contract,
+                    status = "Pending",
+                    signed_by = user_data.user_id
+                )
+
+                # Update Applicant Status
+                applicantQuery.update({"status": "Contract signed"})
+
+                # Add new onboarding employee to database
+                db.add(new_onboarding_employee)
+                db.commit()
+                db.refresh(new_onboarding_employee)
+                return new_onboarding_employee
+    except Exception as e:
+        print(e)

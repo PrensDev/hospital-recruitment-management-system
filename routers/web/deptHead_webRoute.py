@@ -6,11 +6,7 @@ from routers.web import errPages_templates as errTemplate
 from jwt_token import get_token
 from sqlalchemy.orm import Session
 from database import get_db
-import schemas, models
-
-
-# Models
-Requisition = models.Requisition
+from models import *
 
 
 # Router
@@ -24,8 +20,11 @@ router = APIRouter(
 templates = Jinja2Templates(directory = "templates")
 
 
-# Constants
+# Templates Path
 TEMPLATES_PATH = "/pages/department_head/"
+
+
+# Authorized User
 AUTHORIZED_USER = "Department Head"
 
 

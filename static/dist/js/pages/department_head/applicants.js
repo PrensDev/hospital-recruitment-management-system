@@ -66,11 +66,13 @@ initDataTable('#hiredApplicantsDT', {
                         <i class="fas fa-file-signature mr-1"></i>
                         <span>For signing</span>
                     `)
-                else if(status === "For onboarding" || status === "Onboarding")
+                else if(status === "Contract signed")
                     return dtBadge('success', `
                         <i class="fas fa-check mr-1"></i>
                         <span>Signed</span>
                     `)
+                else 
+                    return dtBadge('light', `Invalid data`)
             }
         },
 
@@ -291,7 +293,7 @@ const getHiredApplicantDetails = (applicantID) => {
 
 /** Mark Contract as Signed */
 const markContractAsSigned = (applicantID) => {
-    console.log(applicantID);
+    setValue('#applicantID', applicantID);
     showModal('#uploadSignedContractModal');
 }
 
@@ -316,6 +318,10 @@ validateForm('#signedContractForm', {
     },
     submitHandler: () => {
 
+        // Set button to loading state
+        btnToLoadingState('#submitContractBtn');
+        disableElement('#cancelSubmitContractBtn');
+
         // Generate Form Data
         const formData = generateFormData('#signedContractForm');
         const get = (name) => { return formData.get(name) }
@@ -334,7 +340,36 @@ validateForm('#signedContractForm', {
             contentType: false,
             data: fd,
             success: result => {
-                console.log(result);
+
+                const data = {
+                    applicant_id: get('applicantID'),
+                    employment_contract: result.new_file
+                }
+                
+                // Add applicant as onboarding employee
+                POST_ajax(`${ DH_API_ROUTE }onboarding-employees`, data, {
+                    success: result => {
+                        if(result) {
+
+                            // Reload DataTable
+                            reloadDataTable('#hiredApplicantsDT');
+
+                            // Hide Modal
+                            hideModal('#uploadSignedContractModal');
+
+                            // Set buttons to unload state
+                            btnToUnloadState('#submitContractBtn', `
+                                <i class="fas fa-file-export mr-1"></i>
+                                <span>Submit</span>
+                            `);
+                            enableElement('#cancelSubmitContractBtn');
+
+                            // Show alert
+                            toastr.success('Employment Contact is successfully uploaded')
+                        }
+                    },
+                    error: () => toastr.error('There was an error in uploading signed contract')
+                })
             },
             error: () => toastr.error('There was an error in uploading employment contract')
         });

@@ -74,3 +74,9 @@ class ShowHiredApplicant(BaseModel):
 
     class Config():
         orm_mode = True
+
+
+# Create Onboarding Employee
+class CreateOnboardingEmployee(BaseModel):
+    applicant_id: str
+    employment_contract: str

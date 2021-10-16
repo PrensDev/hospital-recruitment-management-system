@@ -6,14 +6,7 @@ from fastapi.templating import Jinja2Templates
 from routers.web import errPages_templates as errTemplate
 from sqlalchemy.orm import Session
 from jwt_token import get_token
-import models
-
-
-# Models
-Requisition         = models.Requisition
-JobPost             = models.JobPost
-Interviewee         = models.Interviewee
-InterviewSchedule   = models.InterviewSchedule
+from models import *
 
 
 # Router
@@ -29,6 +22,9 @@ templates = Jinja2Templates(directory = "templates")
 
 # Templates Path
 TEMPLATES_PATH = "/pages/hiring_manager/"
+
+
+# Authorized User
 AUTHORIZED_USER = "Hiring Manager"
 
 
@@ -320,6 +316,7 @@ async def render(
 # INTERVIEW SCHEDULES
 # ===========================================================
 
+
 # Interview Schedules
 @router.get("/interview-schedules/{interview_schedule_id}", response_class=HTMLResponse)
 async def render(
@@ -346,6 +343,7 @@ async def render(
 # ===========================================================
 # INTERVIEW
 # ===========================================================
+
 
 # Interview Schedules
 @router.get("/interview/{interviewee_id}", response_class=HTMLResponse)

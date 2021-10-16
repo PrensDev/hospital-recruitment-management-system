@@ -3,14 +3,22 @@
 
 {% block content %}
 
+    {# Content Header #}
+    <section class="content-header">
+        <div class="container-fluid">
+            <h1>{{ page_title }}</h1>
+            <p class="text-muted">{{ sub_title }}</p>
+        </div>
+    </section>
+
     {# Main content #}
     <section class="content">
         <div class="container-fluid">
 
             <div class="form-row">
 
-                {# Menu #}
-                <div class="col-lg-3">
+                {# Menu List #}
+                <div class="col-md-3">
 
                     {# Menu Loader #}
                     <div class="card card-primary card-outline" id="menuLoader">
@@ -20,6 +28,7 @@
                         <div class="card-body p-0">
                             <ul class="nav nav-pills flex-column" id="applicantsMenu">
                                 
+                                {% for i in range(3) %}
                                     <li class="nav-item">
                                         <div class="d-flex py-2 px-3">
                                             <div>
@@ -37,7 +46,7 @@
                     </div>
 
                     {# Menu List #}
-                    <div class="card card-primary card-outline" id="menu" style="display: none">
+                    <div class="card card-primary card-outline" id="menu">
                         <div class="card-header align-items-center">
                             <h3 class="card-title">Menus</h3>
 
@@ -50,11 +59,11 @@
                         <div class="card-body p-0">
                             <ul class="nav nav-pills flex-column" id="applicantsMenu">
 
-                                {# For onboarding employee #}
+                                {# For new employees link #}
                                 <li class="nav-item">
-                                    <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-screening" class="nav-link">
-                                        <i class="fas fa-search" style="width: 1.5rem"></i>
-                                        <span>For onboading employee</span>
+                                    <a href="{{ DM_WEB_ROUTE }}general-tasks/for-new-employees" class="nav-link">
+                                        <i class="fas fa-user" style="width: 1.5rem"></i>
+                                        <span>For new employees</span>
                                         <span 
                                             class="badge bg-warning float-right" 
                                             id="forScreeningCount" 
@@ -63,10 +72,10 @@
                                     </a>
                                 </li>
 
-                                {# For the team #}
+                                {# For the team link #}
                                 <li class="nav-item">
-                                    <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-interview" class="nav-link">
-                                        <i class="fas fa-user-friends" style="width: 1.5rem"></i>
+                                    <a href="{{ DM_WEB_ROUTE }}general-tasks/for-the-team" class="nav-link">
+                                        <i class="fas fa-users" style="width: 1.5rem"></i>
                                         <span>For the team</span>
                                         <span 
                                             class="badge bg-info float-right" 
@@ -76,11 +85,11 @@
                                     </a>
                                 </li>
 
-                                {# For department head #}
+                                {# Department Manager Tasks link #}
                                 <li class="nav-item">
-                                    <a href="{{ H_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/interviewed" class="nav-link">
-                                        <i class="fas fa-user-check" style="width: 1.5rem"></i>
-                                        <span>For department head</span>
+                                    <a href="{{ DM_WEB_ROUTE }}general-tasks/my-tasks" class="nav-link">
+                                        <i class="fas fa-user-tie" style="width: 1.5rem"></i>
+                                        <span>My tasks</span>
                                         <span 
                                             class="badge bg-info float-right"
                                             id="interviewedApplicantsCount" 
@@ -88,13 +97,15 @@
                                         >0</span>
                                     </a>
                                 </li>
+
                             </ul>
                         </div>
                     </div>
+
                 </div>
 
-                {# Applicant List #}
-                <div class="col-lg-9">
+                {# General Tasks #}
+                <div class="col-md-9">
                     {% block dataTable %}{% endblock %}
                 </div>
             </div>
@@ -104,6 +115,11 @@
 {% endblock %}
 
 
-{# block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/hiring_manager/applicants.js')}}"></script>
-{% endblock #}
+{% block page_modals %}
+    {% include "pages/department_manager/modals/onboarding_tasks_modal.html" %}
+{% endblock %}
+
+
+{% block page_scripts %}
+    <script src="{{url_for('static', path='/dist/js/pages/department_manager/onboarding.js')}}"></script>
+{% endblock %}

@@ -6,12 +6,7 @@ from fastapi.templating import Jinja2Templates
 from routers.web import errPages_templates as errTemplate
 from sqlalchemy.orm import Session
 from jwt_token import get_token
-import models
-
-
-# Models
-Requisition = models.Requisition
-JobPost = models.JobPost
+from models import *
 
 
 # Router
@@ -20,14 +15,16 @@ router = APIRouter(
     tags = ["Recruiter Web Routes"]
 )
 
+
 # Templates
 templates = Jinja2Templates(directory = "templates")
+
 
 # Templates Path
 TEMPLATES_PATH = "/pages/recruiter/"
 
 
-# Auuthorized User
+# Authorized User
 AUTHORIZED_USER = "Recruiter"
 
 

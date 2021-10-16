@@ -9,18 +9,13 @@ from routers.web import errPages_templates as errTemplate
 from jwt_token import get_token
 from sqlalchemy.orm import Session
 from database import get_db
-
-import models
+from models import *
 
 
 # Router
 router = APIRouter(
     tags = ["Authentication Web Route"]
 )
-
-
-# Models
-JobPost = models.JobPost
 
 
 # Templates

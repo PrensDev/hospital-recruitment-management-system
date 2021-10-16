@@ -20,7 +20,7 @@
 
                 {# Card Header #}
                 <div class="card-header p-3 d-flex justify-content-between">
-                    <h3 class="card-title">Lists of Requisitions</h3>
+                    <h3 class="card-title">List of Hired Applicants</h3>
                 </div>
 
                 {# Card Body #}
@@ -30,12 +30,12 @@
                         <table id="hiredApplicantsDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th class="text-center">#</th>
+                                    <th>Applicant Name</th>
                                     <th>Position</th>
-                                    <th>Employment Type</th>
-                                    <th>Nature of Request</th>
-                                    <th>Staffs Needed</th>
-                                    <th>Hired Applicants</th>
+                                    <th>Email</th>
+                                    <th>Contact Number</th>
+                                    <th>Contract Signed at</th>
                                     <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
@@ -61,5 +61,5 @@
 
 
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/department_manager/manpower_requests.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/pages/department_manager/applicants.js')}}"></script>
 {% endblock %}

@@ -858,6 +858,10 @@ class OnboardingEmployee(Base):
         unique = True,
         nullable = False
     )
+    status = Column(
+        String(255),
+        nullable = False
+    )
     signed_by = Column(
         String(36),
         ForeignKey("users.user_id"),

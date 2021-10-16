@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 15, 2021 at 03:48 PM
+-- Generation Time: Oct 16, 2021 at 07:04 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.4.23
 
@@ -58,7 +58,7 @@ CREATE TABLE `applicants` (
 INSERT INTO `applicants` (`applicant_id`, `job_post_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `resume`, `contact_number`, `email`, `status`, `evaluated_by`, `evaluated_at`, `screened_by`, `screened_at`, `hired_by`, `hired_at`, `rejected_by`, `rejected_at`, `remarks`, `created_at`, `updated_at`) VALUES
 ('2b3d8f97-299b-11ec-a0b9-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Juan', 'Dela', 'Cruz', 'III', 'ed5e459a59ea49b489d9254d10887156.pdf', '123-456-7890', 'juancruz@gmail.com', 'Rejected from evaluation', NULL, NULL, NULL, NULL, NULL, NULL, '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 15:28:39', 'Illegitimate details', '2021-10-10 15:24:56', '2021-10-10 15:28:39'),
 ('3483c99b-268f-11ec-816e-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Evelyn', 'Cardenas', 'Brown', '', 'b22cc79e6da8479f99c4f6c53e80ae47.pdf', '812-369-3802', 'evelyn.brown@gmail.com', 'For screening', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 16:46:36', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-10-06 18:21:44', '2021-10-10 16:46:36'),
-('55da70c0-268f-11ec-816e-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Loretta', 'Flynn', 'Bradshaw', '', 'd442f6761d4b4d8990e5246f29246cc8.pdf', '479-857-7614', 'loretta.bradshaw@email.com', 'Hired', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 16:46:29', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 16:47:26', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-15 16:04:15', NULL, NULL, NULL, '2021-10-06 18:22:40', '2021-10-15 16:04:15'),
+('55da70c0-268f-11ec-816e-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Loretta', 'Flynn', 'Bradshaw', '', 'd442f6761d4b4d8990e5246f29246cc8.pdf', '479-857-7614', 'loretta.bradshaw@email.com', 'Contract signed', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 16:46:29', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 16:47:26', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-15 16:04:15', NULL, NULL, NULL, '2021-10-06 18:22:40', '2021-10-16 10:32:20'),
 ('85d93147-268f-11ec-816e-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Robert', '', 'Stark', '', '47148ed23fc84c65b6bbc28e410802f7.pdf', '763-792-6052', 'robert.stark@gmail.com', 'For interview', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 18:24:24', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 18:43:09', NULL, NULL, NULL, NULL, NULL, '2021-10-06 18:24:00', '2021-10-10 18:43:09'),
 ('a10a74e8-268f-11ec-816e-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Carole', '', 'Martineau', '', '0a5fa5cf72cb4c3496fadf31a978c43b.pdf', '806-832-3513', 'carole.martineau@gmail.com', 'For interview', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-06 20:26:04', '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 16:47:20', NULL, NULL, NULL, NULL, NULL, '2021-10-06 18:24:46', '2021-10-10 16:47:20'),
 ('a6269768-29b6-11ec-a0b9-6c626d3a5d34', '273d454f-2689-11ec-816e-6c626d3a5d34', 'Christopher', '', 'Balasa', '', '6789a2d45132473db2eac255cd76e1cb.pdf', '352-548-5542', 'christopher.balasa@gmail.com', 'Rejected from screening', '898c51c6-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 18:41:57', NULL, NULL, NULL, NULL, '6bfa042c-1b87-11ec-9d57-6c626d3a5d34', '2021-10-10 18:43:22', 'Not qualified', '2021-10-10 18:41:38', '2021-10-10 18:43:22'),
@@ -239,11 +239,19 @@ CREATE TABLE `onboarding_employees` (
   `position_id` varchar(36) NOT NULL,
   `employment_start_date` date DEFAULT NULL,
   `employment_contract` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
   `signed_by` varchar(36) NOT NULL,
   `updated_by` varchar(36) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `onboarding_employees`
+--
+
+INSERT INTO `onboarding_employees` (`onboarding_employee_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `contact_number`, `email`, `position_id`, `employment_start_date`, `employment_contract`, `status`, `signed_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+('4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', 'Loretta', 'Flynn', 'Bradshaw', '', '479-857-7614', 'loretta.bradshaw@email.com', 'b4ef84d2-1b94-11ec-9d57-6c626d3a5d34', NULL, 'a657ad5369c94dd6b34924e15b19d5d5.pdf', 'Pending', '3bbe4e8b-1b87-11ec-9d57-6c626d3a5d34', NULL, '2021-10-16 10:32:20', '2021-10-16 10:32:20');
 
 -- --------------------------------------------------------
 

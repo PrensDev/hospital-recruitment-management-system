@@ -1,0 +1,51 @@
+{% extends "pages/department_manager/pages/general_tasks/_layout.html" %} 
+
+
+{% block dataTable %}
+
+    {# Card #}
+    <div class="card card-primary card-outline">
+
+        {# Card Header #}
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="card-title">General Tasks for the team</h3>
+                </div>
+                <div>
+                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addGeneralTaskModal">
+                        <span class="d-none d-sm-inline-block">Add new task</span>
+                        <i class="fas fa-plus ml-sm-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {# Card Body #}
+        <div class="card-body">
+            <table id="generalTasksDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Task Name & Description</th>
+                        <th>Date Added</th>
+                        <th>Added By</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6">
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary my-3" role="status">
+                                    <span class="sr-only">Loading ...</span>
+                                </div>
+                                <div>Loading ...</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

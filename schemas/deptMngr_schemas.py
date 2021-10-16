@@ -116,31 +116,25 @@ class ShowApplicant(Applicant):
         orm_mode = True
 
 
-# Hired Applicants
-class HiredApplicants(ShowApplicant):
-    applied_job: ShowJobPostForApplicantInfo
-    status: str
-    evaluation_done_by: Optional[ShowUser]
-    evaluated_at: Optional[datetime]
-    screening_done_by: Optional[ShowUser]
-    screened_at: Optional[datetime]
-
-    class Config():
-        orm_mode = True
-
-
-# Job Post For Hired Applicants
-class JobpostForHiredApplicants(BaseModel):
-    applicants: List[HiredApplicants]
-
-    class Config():
-        orm_mode = True
+# OnboardingEmployee
+class OnboardingEmployee(BaseModel):
+    onboarding_employee_id: str
+    first_name: str
+    middle_name: Optional[str]
+    last_name: str
+    suffix_name: Optional[str]
+    onboarding_employee_position: ShowPosition
+    contact_number: str
+    email: str
+    employment_contract: str
+    employment_start_date: Optional[date]
+    onboarding_employee_signed_by: ShowUser
+    created_at: datetime
+    updated_at: Optional[datetime]
 
 
-# Manpower Request With Hired Applicants
-class ManpowerRequestsWithHiredApplicants(ShowManpowerRequest):
-    job_post: List[JobpostForHiredApplicants]
-
+# Show Hired Applicant
+class ShowHiredApplicant(OnboardingEmployee):
     class Config():
         orm_mode = True
 

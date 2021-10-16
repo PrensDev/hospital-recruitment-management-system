@@ -8,6 +8,9 @@
 const requisitionID = window.location.pathname.split("/")[3];
 
 
+/** Employment Contract Path */
+const EMPLOYMENT_CONTRACT_PATH = `${ BASE_URL_WEB }static/app/files/employment_contracts/`;
+
 /**
  * ==============================================================================
  * HIRED APPLICANTS DATATABLE
@@ -16,13 +19,14 @@ const requisitionID = window.location.pathname.split("/")[3];
 
 /** Initialize Hired Applicants DataTable */
 initDataTable('#hiredApplicantsDT', {
-    url: `${ DM_API_ROUTE }requisitions/hired-applicants/${ requisitionID }`,
+    // debugMode: true,
+    url: `${ DM_API_ROUTE }hired-applicants`,
     columns: [
 
         // Updated at (Hidden for default sorting)
-        { data: 'updated_at', visible: false},
+        { data: 'created_at', visible: false},
 
-        // Applicant
+        // Applicant Name
         {
             data: null,
             render: data => {
@@ -35,13 +39,16 @@ initDataTable('#hiredApplicantsDT', {
             }
         },
 
+        // Position
+        { data: 'onboarding_employee_position.name' },
+
         // Email
         { data: 'email' },
 
         // Contact Number
         { data: 'contact_number' },
 
-        // Date Applied
+        // Contract Signed at
         {
             data: null,
             render: data => {
@@ -54,44 +61,11 @@ initDataTable('#hiredApplicantsDT', {
             }
         },
 
-        // Status
-        {
-            data: null,
-            render: data => {
-                const status = data.status;
-                if(status === "Hired") 
-                    return dtBadge('success', `
-                        <i class="fas fa-handshake mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                else if(status === "Onboarding") 
-                    return dtBadge('info', `
-                    <i class="fas fa-clipboard-list mr-1"></i>
-                    <span>${ status }</span>
-                `);
-                else return dtBadge('light', `Invalid Data`);
-            }
-        },
-
         // Action
         {
             data: null,
             render: data => {
-                const applicantID = data.applicant_id;
-
-                const onboardEmployeeLink = () => {
-                    return data.status === "Hired"
-                        ? `
-                            <a 
-                                class="dropdown-item d-flex"
-                                href="${ DM_WEB_ROUTE }add-onboarding-employee/${ applicantID }"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-user-tie mr-1"></i></div>
-                                <span>Onboard this applicant</span>
-                            </a>
-                        `
-                        : ''
-                }
+                const onboardingEmployeeID = data.onboarding_employee_id;
 
                 return `
                     <div class="text-center dropdown">
@@ -103,12 +77,26 @@ initDataTable('#hiredApplicantsDT', {
                             <div 
                                 class="dropdown-item d-flex"
                                 role="button"
-                                onclick="viewApplicantDetails('${ applicantID }')"
+                                onclick="viewApplicantDetails('${ onboardingEmployeeID }')"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <span>View applicant details</span>
                             </div>
-                            ${ onboardEmployeeLink() }
+                            <a 
+                                href="${ EMPLOYMENT_CONTRACT_PATH + data.employment_contract }"
+                                class="dropdown-item d-flex"
+                                target="_blank"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
+                                <span>View contract</span>
+                            </a>
+                            <a 
+                                href="${ DM_WEB_ROUTE }onboard-employee/${ onboardingEmployeeID }"
+                                class="dropdown-item d-flex"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-user-tie mr-1"></i></div>
+                                <span>Onboard this applicant</span>
+                            </a>
                         </div>
                     </div>
                 `
