@@ -116,29 +116,6 @@ class ShowApplicant(Applicant):
         orm_mode = True
 
 
-# OnboardingEmployee
-class OnboardingEmployee(BaseModel):
-    onboarding_employee_id: str
-    first_name: str
-    middle_name: Optional[str]
-    last_name: str
-    suffix_name: Optional[str]
-    onboarding_employee_position: ShowPosition
-    contact_number: str
-    email: str
-    employment_contract: str
-    employment_start_date: Optional[date]
-    onboarding_employee_signed_by: ShowUser
-    created_at: datetime
-    updated_at: Optional[datetime]
-
-
-# Show Hired Applicant
-class ShowHiredApplicant(OnboardingEmployee):
-    class Config():
-        orm_mode = True
-
-
 # Create Onboarding Tasks
 class CreateOnboardingTask(BaseModel):
     title: str
@@ -174,3 +151,59 @@ class ShowOnboardingTask(BaseModel):
 
     class Config():
         orm_mode = True
+
+
+# OnboardingEmployee
+class OnboardingEmployee(BaseModel):
+    onboarding_employee_id: str
+    first_name: str
+    middle_name: Optional[str]
+    last_name: str
+    suffix_name: Optional[str]
+    onboarding_employee_position: ShowPosition
+    contact_number: str
+    email: str
+    employment_contract: str
+    employment_start_date: Optional[date]
+    onboarding_employee_signed_by: ShowUser
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+
+# Show Hired Applicant
+class ShowHiredApplicant(OnboardingEmployee):
+    class Config():
+        orm_mode = True
+
+
+# Show Onbaording Employee Task
+class ShowOnboardingEmployeeTask(BaseModel):
+    onboarding_employee_task_id: str
+    status: str
+    start_at: datetime
+    end_at: datetime
+    onboarding_employee_task_assigned_by: ShowUser
+    onboarding_task: ShowOnboardingTask
+
+    class Config():
+        orm_mode = True
+
+
+# Show Onboarding Employee
+class ShowOnboardingEmployee(OnboardingEmployee):
+    onboarding_employee_tasks: List[ShowOnboardingEmployeeTask]
+
+    class Config():
+        orm_mode = True
+
+
+# Update Onboarding Employee
+class UpdateOnboardingEmployee(BaseModel):
+    first_name: str
+    middle_name: Optional[str]
+    last_name: str
+    suffix_name: Optional[str]
+    contact_number: str
+    email: str
+    employment_start_date: Optional[date]
+    status: str

@@ -13,7 +13,7 @@
                     <h3 class="card-title">General Tasks for the team</h3>
                 </div>
                 <div>
-                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addGeneralTaskModal">
+                    <button class="btn btn-sm btn-primary" onclick="addGeneralTask('For the team')">
                         <span class="d-none d-sm-inline-block">Add new task</span>
                         <i class="fas fa-plus ml-sm-1"></i>
                     </button>
@@ -23,7 +23,7 @@
 
         {# Card Body #}
         <div class="card-body">
-            <table id="generalTasksDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
+            <table id="generalTasksForTeamDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
                 <thead>
                     <tr>
                         <th>#</th>

@@ -212,9 +212,9 @@ async def render(
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "onboard_employee.html", {
                     "request": req,
-                    "page_title": "On board new employee",
+                    "page_title": "On-board new employee",
                     "sub_title": "Review details and update tasks to on board new employee",
-                    "active_navlink": "Onboard Employees"
+                    "active_navlink": "Onboarding Employees"
                 })
     else:
         return await errTemplate.page_not_found(req)
@@ -282,24 +282,24 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
 
 
 # Onboarding Employee Tasks
-@router.get("/onboarding-employees/{onboarding_employee_task_id}/onboarding-tasks", response_class=HTMLResponse)
+@router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_class=HTMLResponse)
 async def render(
-    onboarding_employee_task_id: str, 
+    onboarding_employee_id: str, 
     req: Request, 
     db: Session = Depends(get_db), 
     user_data: dict = Depends(get_token)
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
-        if not onboarding_employee_task_id:
+        if not onboarding_employee_id:
             return await errTemplate.page_not_found(req)
         else:
-            onboarding_employee_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id).first()
-            if not onboarding_employee_task:
+            onboarding_employee_id = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
+            if not onboarding_employee_id:
                 return await errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
                     "request": req,
-                    "page_title": "Onboarding Tasks",
+                    "page_title": "On-boarding Tasks",
                     "sub_title": "Manage employee tasks and monitor performance",
                     "active_navlink": "Onboarding Employees"
                 })

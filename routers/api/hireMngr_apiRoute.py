@@ -329,7 +329,7 @@ async def applicants_per_job_analytics(
                 Applicant.job_post_id == job_post_id,
                 or_(
                     Applicant.status == "Hired",
-                    Applicant.status == "Onboarding"
+                    Applicant.status == "Contract signed"
                 )
             ).count()
 
@@ -417,7 +417,7 @@ async def evaluated_applicants(
                 Applicant.job_post_id == job_post_id,
                 or_(
                     Applicant.status == 'Hired',
-                    Applicant.status == 'Onboarding'
+                    Applicant.status == 'Contract signed'
                 )
             ).all()
     except Exception as e:

@@ -4,6 +4,16 @@
  * ==============================================================================
  */
 
+// Get the onboardingEmployeeID from the URL
+const onboardingEmployeeID = window.location.pathname.split('/')[3];
+
+
+/**
+ * ==============================================================================
+ * ADD ONBOARDING EMPLOYEE
+ * ==============================================================================
+ */
+
 // Onboarding Tasks Array
 let generalOnboardingTasks = [];
 let addedOnboardingTasks = [];
@@ -53,44 +63,41 @@ const checkIfNoTasks = () => {
         : enableElement('#addOnboardingEmployeeSubmitBtn')
 }
 
-// Get the applicantID from the URL
-const applicantID = window.location.pathname.split('/')[3];
-
 /** Get Hired Applicant Details */
 ifSelectorExist('#addOnboardingEmployeeForm', () => {
 
     // Get applicant information
-    GET_ajax(`${ DM_API_ROUTE }hired-applicants/${ applicantID }`, {
+    GET_ajax(`${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }`, {
         success: result => {
 
-            const applicant = result.applicant;
+            const onboardingEmployeePosition = result.onboarding_employee_position;
 
             // Set Position
-            setContent('#position', result.position.name);
-            setValue('#positionID', result.position.position_id);
+            setContent('#position', onboardingEmployeePosition.name);
+            setValue('#positionID', onboardingEmployeePosition.position_id);
 
             // Set First Name
-            setValue('#firstName', applicant.first_name);
+            setValue('#firstName', result.first_name);
             
             // Set Middle Name
-            setValue('#middleName', applicant.middle_name);
+            setValue('#middleName', result.middle_name);
 
             // Set Last Name
-            setValue('#lastName', applicant.last_name);
+            setValue('#lastName', result.last_name);
 
             // Set Suffix Name
-            setValue('#suffixName', applicant.suffix_name);
+            setValue('#suffixName', result.suffix_name);
 
             // Set Contact Number
-            setValue('#contactNumber', applicant.contact_number);
+            setValue('#contactNumber', result.contact_number);
 
             // Set Email
-            setValue('#email', applicant.email);
+            setValue('#email', result.email);
 
-            $('#applicantInfoFormLoader').remove();
-            showElement('#applicantInfoForm');
+            $('#onboardingEmployeeFormLoader').remove();
+            showElement('#onboardingEmployeeForm');
         },
-        error: () => toastr.error('There was an error in getting hired applicant details')
+        error: () => toastr.error('There was an error in getting hired onboardingEmployee details')
     });
 
     // Get general onboarding tasks
@@ -106,10 +113,20 @@ ifSelectorExist('#addOnboardingEmployeeForm', () => {
                     const startAtInputName = `startAt${ uniqueSuffix }`;
                     const endAtInputName = `endAt${ uniqueSuffix }`;
 
+                    const taskType = () => {
+                        const taskType = t.task_type;
+                        var theme;
+                        if(taskType === "For new employees") theme = "success"
+                        else if(taskType === "For the team") theme = "info"
+                        else if(taskType === "For department manager") theme = "warning"
+                        return `<span class="badge border border-${ theme } text-${ theme }">${ taskType }</span>`
+                    }
+
                     $('#generalOnboardingTasksDTBody').append(`
                         <tr id="generalTaskRow${ uniqueSuffix }">
                             <td>
                                 <div>${ t.title }</div>
+                                <div>${ taskType() }</div>
                                 <div class="small text-secondary">${ t.description }</div>
                             </td>
                             <td>
@@ -205,6 +222,12 @@ ifSelectorExist('#addOnboardingEmployeeForm', () => {
         },
         error: () => toastr.error('There was an error in getting general onboarding tasks')
     });
+
+    /** Assign Task To For Add Select 2 */
+    $('#assignTaskTo').select2({
+        placeholder: "Please select for whom the task for",
+        minimumResultsForSearch: -1
+    });
 });
 
 /** Remove General Task */
@@ -265,6 +288,9 @@ onClick('#nextBtnForApplicantInformation', () => {
 /** Validate Add Onboarding Task Form */
 validateForm('#addOnboardingTaskForm', {
     rules: {
+        assignTaskTo: {
+            required: true
+        },
         taskTitle: {
             required: true
         },
@@ -273,6 +299,9 @@ validateForm('#addOnboardingTaskForm', {
         }
     },
     messages: {
+        assignTaskTo: {
+            required: 'Please select to whom is the task for'
+        },
         taskTitle: {
             required: 'Task title is required'
         },
@@ -282,6 +311,8 @@ validateForm('#addOnboardingTaskForm', {
     },
     submitHandler: () => {
         const formData = generateFormData('#addOnboardingTaskForm');
+
+        const assignTaskTo = formData.get('assignTaskTo');
         const taskTitle = formData.get('taskTitle');
         const taskDescription = formData.get('description');
 
@@ -290,12 +321,21 @@ validateForm('#addOnboardingTaskForm', {
         const startAtInputName = `startAt${ uniqueSuffix }`;
         const endAtInputName = `endAt${ uniqueSuffix }`;
 
+        const taskType = () => {
+            var theme;
+            if(assignTaskTo === "For new employees") theme = "success"
+            else if(assignTaskTo === "For the team") theme = "info"
+            else if(assignTaskTo === "For department manager") theme = "warning"
+            return `<span class="badge border border-${ theme } text-${ theme }">${ assignTaskTo }</span>`
+        }
+
         if(addedOnboardingTasks.length == 0) $('#addedOnboardingTasksDTBody').empty();
 
         $('#addedOnboardingTasksDTBody').append(`
             <tr id="addedTaskRow${ uniqueSuffix }">
                 <td>
                     <div>${ taskTitle }</div>
+                    <div>${ taskType() }</div>
                     <div class="small text-secondary">${ taskDescription }</div>
                 </td>
                 <td>
@@ -378,6 +418,7 @@ validateForm('#addOnboardingTaskForm', {
         // Push Added Task to array
         addedOnboardingTasks.push({
             id: uniqueSuffix,
+            task_type: assignTaskTo,
             task_title: taskTitle,
             description: taskDescription
         });
@@ -394,7 +435,10 @@ validateForm('#addOnboardingTaskForm', {
 });
 
 /** When add onbaording task modal is hidden */
-onHideModal('#addOnboardingTaskModal', () => resetForm('#addOnboardingTaskForm'));
+onHideModal('#addOnboardingTaskModal', () => {
+    $('#assignTaskTo').val('').trigger('change');
+    resetForm('#addOnboardingTaskForm');
+});
 
 /** Edit Added Task */
 const editAddedTask = (id) => {
@@ -436,7 +480,7 @@ validateForm('#editAddedOnboardingTaskForm', {
 
 /** Remove Added Task */
 const removeAddedTask = (id) => {
-    setValue('#addedTaskID', id);
+    setValue('#addedTaskIDForRemove', id);
     showModal('#confirmRemoveAddedTaskModal');
 }
 
@@ -458,7 +502,7 @@ validateForm('#confirmRemoveAddedTaskForm', {
     submitHandler: () => {
 
         // Get added task ID from the form
-        const addedTaskID = generateFormData('#confirmRemoveAddedTaskForm').get('addedTaskID');
+        const addedTaskID = generateFormData('#confirmRemoveAddedTaskForm').get('addedTaskIDForRemove');
         
         // Remove the row from the table
         $(`#addedTaskRow${ addedTaskID }`).remove();
@@ -508,9 +552,11 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
     btnToLoadingState('#confirmOnboardingEmployeeBtn');
     disableElement('#cancelConfirmOnboardingEmployeeBtn');
 
+    // Get form data
     const formData = generateFormData('#addOnboardingEmployeeForm');
     const get = (n) => { return formData.get(n) }
 
+    // Set Data
     const onboardingEmployeeData = {
         first_name: get('firstName'),
         middle_name: get('middleName'),
@@ -518,69 +564,77 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
         suffix_name: get('suffixName'),
         contact_number: get('contactNumber'),
         email: get('email'),
-        position_id: get('positionID'),
-        employment_start_date: get('employmentStartDate')
+        employment_start_date: get('employmentStartDate'),
+        status: 'Onboarding'
     }
 
-    // Add onboarding employee
-    POST_ajax(`${ DM_API_ROUTE }onboarding-employees`, onboardingEmployeeData, {
+    // Update onboarding employee informations
+    PUT_ajax(`${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }`, onboardingEmployeeData, {
         success: result => {
             if(result) {
-                const onboardingEmployeeID = result.data.onboarding_employee_id;
                 
                 // Add general tasks to employee
                 if(generalOnboardingTasks.length > 0) generalOnboardingTasks.forEach(t => {
-                    let generalTasksData = {
+                    
+                    // Set General Task Data 
+                    const generalTasksData = {
                         onboarding_employee_id: onboardingEmployeeID,
                         onboarding_task_id: t.onboarding_task_id,
                         start_at: get(`startAt${ t.id }`),
                         end_at: get(`endAt${ t.id }`)
                     }
-    
-                    POST_ajax(`${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, generalTasksData, {
-                        success: () => {},
-                        error: () => {
-                            toastr.error('There was an error in creating onbaording tasks to onboarding employee')
+
+                    // Create onboarding employee task 
+                    POST_ajax(
+                        `${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, 
+                            generalTasksData, {
+                            success: () => {},
+                            error: () => {
+                                toastr.error('There was an error in creating onbaording tasks to onboarding employee')
+                            }
                         }
-                    });
+                    );
                 });
 
                 // Create and add onboarding tasks to employee
                 if(addedOnboardingTasks.length > 0) addedOnboardingTasks.forEach(t => {
+
+                    // Set added task data
                     const addedTasksData = {
                         title: t.task_title,
                         description: t.description,
-                        task_type: 'Added'
+                        task_type: t.task_type,
+                        is_general: false
                     }
                     
+                    // Create added task
                     POST_ajax(`${ DM_API_ROUTE }onboarding-tasks`, addedTasksData, {
                         success: result2 => {
-                            const onboardingTaskID = result2.data.onboarding_task_id;
 
-                            const addedOnboardingTaskData = {
+                            // Set Added employee task data
+                            const addedEmployeeTaskData = {
                                 onboarding_employee_id: onboardingEmployeeID,
-                                onboarding_task_id: onboardingTaskID,
+                                onboarding_task_id: result2.data.onboarding_task_id,
                                 start_at: get(`startAt${ t.id }`),
                                 end_at: get(`endAt${ t.id }`)
                             }
 
-                            POST_ajax(`${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, addedOnboardingTaskData, {
-                                success: () => {},
-                                error: () => {
-                                    toastr.error('There was an error in creating onbaording tasks to onboarding employee')
+                            // Create added employee task
+                            POST_ajax(
+                                `${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, 
+                                addedEmployeeTaskData, 
+                                {
+                                    success: () => {},
+                                    error: () => {
+                                        toastr.error('There was an error in creating onbaording tasks to onboarding employee')
+                                    }
                                 }
-                            });
+                            );
                         },
                         error: () => {
                             toastr.error('There was an error in adding onboarding task');
                         }
                     });
-                });
-
-                // Update applicant status
-                PUT_ajax(`${ DM_API_ROUTE }applicants/${ applicantID }`, {status: 'Onboarding'}, {
-                    success: () => {},
-                    error: () => toastr.error('There was an error in updating applicant status')
                 });
 
                 // Set sessioned alert and redirect
@@ -604,9 +658,26 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
  * ==============================================================================
  */
 
+/** Add general task */
+const addGeneralTask = (taskType = '') => {
+    setValue('#taskType', taskType);
+    setContent('#onboardingTaskDescription', () => {
+        if(taskType === "For new employees")
+            return "Add general task for new employees"
+        else if(taskType === "For the team")
+            return "Add general task for the team"
+        else if(taskType === "For department manager")
+            return "Add your general task as a department manager here"
+    });
+    showModal('#addGeneralTaskModal');
+}
+
 /** Validate Add General Task Form */
 validateForm('#addGeneralTaskForm', {
     rules: {
+        taskType: {
+            required: true
+        },
         taskTitle: {
             required: true
         },
@@ -615,6 +686,9 @@ validateForm('#addGeneralTaskForm', {
         }
     },
     messages: {
+        taskType: {
+            required: 'Task Type must have value'
+        },
         taskTitle: {
             required: 'Task title is required'
         },
@@ -644,7 +718,7 @@ const addOnboardingTask = () => {
     const data = {
         title: get('taskTitle'),
         description: get('description'),
-        task_type: 'General'
+        task_type: get('taskType')
     }
 
     POST_ajax(`${ DM_API_ROUTE }onboarding-tasks`, data, {
@@ -662,7 +736,9 @@ const addOnboardingTask = () => {
                 enableElement('#cancelAddGeneralTaskBtn');
 
                 // Reload datatable
-                reloadDataTable('#generalTasksDT');
+                ifSelectorExist('#generalTasksForNewEmployeesDT', () => reloadDataTable('#generalTasksForNewEmployeesDT'));
+                ifSelectorExist('#generalTasksForTeamDT', () => reloadDataTable('#generalTasksForTeamDT'));
+                ifSelectorExist('#generalTasksForDepartmentManagerDT', () => reloadDataTable('#generalTasksForDepartmentManagerDT'));
 
                 // Show success alert
                 toastr.success('A new general onboarding task is successfully added');
@@ -693,83 +769,102 @@ const addOnboardingTask = () => {
  * ==============================================================================
  */
 
-/** General Tasks DataTable */
-initDataTable('#generalTasksDT', {
-    // debugMode: true,
-    url: `${ DM_API_ROUTE }onboarding-tasks/general`,
-    columns: [
-
-        // Created at (Hidden for default sorting)
-        { data: 'created_at', visible: false },
-
-        // Task Title
-        {
-            data: null,
-            render: data => {
-                return `
-                    <div>${ data.title }</div>
-                    <div class="small text-secondary">${ data.description }</div>
-                `
-            }
-        },
-
-        // Date Added
-        {
-            data: null,
-            render: data => {
-                const dateAdded = data.created_at;
-                return `
-                    <div>${ formatDateTime(dateAdded, 'MMM. D, YYYY') }</div>
-                    <div class="small text-secondary">${ fromNow(dateAdded) }</div>
-                `
-            }
-        },
-
-        // Added By
-        {
-            data: null,
-            render: data => {
-                const addedBy = data.onboarding_task_added_by;
-
-                return formatName('F M. L, S', {
-                    firstName: addedBy.first_name,
-                    middleName: addedBy.middle_name,
-                    lastName: addedBy.last_name,
-                    suffixName: addedBy.suffix_name
-                });
-            }
-        },
-
-        // Actions
-        {
-            data: null,
-            render: data => {
-                const onboardingTaskID = data.onboarding_task_id;
-
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex"
-                                role="button"
-                                onclick="viewOnboardingTaskDetails('${ onboardingTaskID }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <span>View Details</span>
+/** Initialize General Tasks DataTable */
+const initGeneralTaskDT = (selector, url) => {
+    initDataTable(selector, {
+        url: url,
+        columns: [
+    
+            // Created at (Hidden for default sorting)
+            { data: 'created_at', visible: false },
+    
+            // Task Title
+            {
+                data: null,
+                render: data => {
+                    return `
+                        <div>${ data.title }</div>
+                        <div class="small text-secondary">${ data.description }</div>
+                    `
+                }
+            },
+    
+            // Date Added
+            {
+                data: null,
+                render: data => {
+                    const dateAdded = data.created_at;
+                    return `
+                        <div>${ formatDateTime(dateAdded, 'MMM. D, YYYY') }</div>
+                        <div class="small text-secondary">${ fromNow(dateAdded) }</div>
+                    `
+                }
+            },
+    
+            // Added By
+            {
+                data: null,
+                render: data => {
+                    const addedBy = data.onboarding_task_added_by;
+    
+                    return formatName('F M. L, S', {
+                        firstName: addedBy.first_name,
+                        middleName: addedBy.middle_name,
+                        lastName: addedBy.last_name,
+                        suffixName: addedBy.suffix_name
+                    });
+                }
+            },
+    
+            // Actions
+            {
+                data: null,
+                render: data => {
+                    const onboardingTaskID = data.onboarding_task_id;
+    
+                    return `
+                        <div class="text-center dropdown">
+                            <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </div>
+    
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <div 
+                                    class="dropdown-item d-flex"
+                                    role="button"
+                                    onclick="viewOnboardingTaskDetails('${ onboardingTaskID }')"
+                                >
+                                    <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                    <span>View Details</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `
+                    `
+                }
             }
-        }
-    ]
-});
+        ]
+    });
+}
 
-/** View Onaborading Task Details */
+/** For New Employees DataTable */
+ifSelectorExist('#generalTasksForNewEmployeesDT', () => initGeneralTaskDT(
+    '#generalTasksForNewEmployeesDT', 
+    `${ DM_API_ROUTE }onboarding-tasks/general/for-new-employees`
+));
+
+/** For New Employees DataTable */
+ifSelectorExist('#generalTasksForTeamDT', () => initGeneralTaskDT(
+    '#generalTasksForTeamDT', 
+    `${ DM_API_ROUTE }onboarding-tasks/general/for-the-team`
+));
+
+/** For Department Manager DataTable */
+ifSelectorExist('#generalTasksForDepartmentManagerDT', () => initGeneralTaskDT(
+    '#generalTasksForDepartmentManagerDT', 
+    `${ DM_API_ROUTE }onboarding-tasks/general/for-department-manager`
+));
+
+/** View Onboarding Task Details */
 const viewOnboardingTaskDetails = (onboardingTaskID) => {
     GET_ajax(`${ DM_API_ROUTE }onboarding-tasks/${ onboardingTaskID }`, {
         success: result => {
@@ -966,9 +1061,6 @@ initDataTable('#onboardingEmployeesDT', {
  * ==============================================================================
  */
 
-// Get the onboardingEmployeeID from the URL
-const onboardingEmployeeID = window.location.pathname.split('/')[3];
-
 /** Initialize Onboarding Employee Tasks DataTable */
 initDataTable('#onboardingEmployeeTasksDT', {
     url: `${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`,
@@ -982,8 +1074,19 @@ initDataTable('#onboardingEmployeeTasksDT', {
             data: null,
             render: data => {
                 const task = data.onboarding_task;
+
+                const taskType = () => {
+                    const taskType = task.task_type;
+                    var theme;
+                    if(taskType === "For new employees") theme = "success"
+                    else if(taskType === "For the team") theme = "info"
+                    else if(taskType === "For department manager") theme = "warning"
+                    return `<span class="badge border border-${ theme } text-${ theme }">${ taskType }</span>`
+                }
+
                 return `
                     <div>${ task.title }</div>
+                    <div>${ taskType() }</div>
                     <div class="small text-secondary">${ task.description }</div>
                 `
             }

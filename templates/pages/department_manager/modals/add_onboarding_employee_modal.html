@@ -1,4 +1,4 @@
-<!-- Confirm Add Onboarding Employee Modal -->
+{# Confirm Add Onboarding Employee Modal #}
 <div class="modal" id="confirmAddOnboardingEmployeeModal" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
@@ -25,7 +25,8 @@
     </div>
 </div>
 
-<!-- Add Onboarding Task Modal -->
+
+{# Add Onboarding Task Modal #}
 <div class="modal" id="addOnboardingTaskModal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form class="modal-content" id="addOnboardingTaskForm">
@@ -37,7 +38,23 @@
             </div>
             <div class="modal-body">
 
-                <!-- Task Title -->
+                {# To whom assigned #}
+                <div class="form-group">
+                    <label>Assign task to<span class="text-danger"> *</span></label>
+                    <select 
+                        name="assignTaskTo" 
+                        id="assignTaskTo"
+                        class="form-control select2" 
+                        style="width: 100%"
+                    >
+                        <option></option>
+                        <option value="For new employees">New employee</option>
+                        <option value="For the team">Team</option>
+                        <option value="For department manager">Me (Department Manager)</option>
+                    </select>
+                </div>
+
+                {# Task Title #}
                 <div class="form-group">
                     <label for="taskTitle">Task Title <span class="text-danger">*</span></label>
                     <input 
@@ -49,7 +66,7 @@
                     >
                 </div>
                 
-                <!-- Description -->
+                {# Description #}
                 <div class="form-group">
                     <label for="descriptionForAdd">Description <span class="text-danger">*</span></label>
                     <textarea 
@@ -76,7 +93,8 @@
     </div>
 </div>
 
-<!-- Edit Onboarding Task Modal -->
+
+{# Edit Added Onboarding Task Modal #}
 <div class="modal" id="editAddedOnboardingTaskModal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form class="modal-content" id="editAddedOnboardingTaskForm">
@@ -88,10 +106,10 @@
             </div>
             <div class="modal-body">
 
-                <!-- Added Task ID -->
-                <input type="text" id="addedTaskID" name="addedTaskID">
+                {# Added Task ID #}
+                <input type="text" id="addedTaskIDForEdit" name="addedTaskIDForEdit">
 
-                <!-- Task Title -->
+                {# Task Title #}
                 <div class="form-group">
                     <label for="taskTitleForEdit">Task Title <span class="text-danger">*</span></label>
                     <input 
@@ -103,7 +121,7 @@
                     >
                 </div>
                 
-                <!-- Description -->
+                {# Description #}
                 <div class="form-group">
                     <label for="descriptionForEdit">Description <span class="text-danger">*</span></label>
                     <textarea 
@@ -130,7 +148,8 @@
     </div>
 </div>
 
-<!-- Confirm Remove Added Task -->
+
+{# Confirm Remove Added Task #}
 <div class="modal" id="confirmRemoveAddedTaskModal" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form class="modal-content" id="confirmRemoveAddedTaskForm">
@@ -143,7 +162,7 @@
             </div>
 
             <div class="modal-body">
-                <input type="hidden" id="addedTaskID" name="addedTaskID">
+                <input type="hidden" id="addedTaskIDForRemove" name="addedTaskIDForRemove">
                 <p>Are you sure you want to remove it now?</p>
             </div>
 
@@ -158,7 +177,8 @@
     </div>
 </div>
 
-<!-- Confirm Remove General Task -->
+
+{# Confirm Remove General Task #}
 <div class="modal" id="confirmRemoveGeneralTaskModal" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form class="modal-content" id="confirmRemoveGeneralTaskForm">
