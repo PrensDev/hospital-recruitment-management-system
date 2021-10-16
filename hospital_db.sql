@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 16, 2021 at 01:04 PM
+-- Generation Time: Oct 16, 2021 at 03:18 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.4.23
 
@@ -281,9 +281,9 @@ CREATE TABLE `onboarding_employee_task` (
 INSERT INTO `onboarding_employee_task` (`onboarding_employee_task_id`, `onboarding_employee_id`, `onboarding_task_id`, `start_at`, `end_at`, `assigned_by`, `status`, `completed_at`, `completed_by`, `created_at`, `updated_at`) VALUES
 ('4f12c0bb-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '23ec55f2-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-17 17:55:00', '2021-10-18 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'Pending', NULL, NULL, '2021-10-16 17:56:18', '2021-10-16 17:56:18'),
 ('4f57d688-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '88d93ef2-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-20 17:55:00', '2021-10-21 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'Pending', NULL, NULL, '2021-10-16 17:56:18', '2021-10-16 17:56:18'),
-('50231866-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '4b38a039-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-19 17:55:00', '2021-10-20 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'Pending', NULL, NULL, '2021-10-16 17:56:20', '2021-10-16 17:56:20'),
-('502cac58-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '3ca8d340-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-18 17:55:00', '2021-10-19 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'Pending', NULL, NULL, '2021-10-16 17:56:20', '2021-10-16 17:56:20'),
-('5081e94e-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '96c75c35-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-22 17:55:00', '2021-10-23 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'Pending', NULL, NULL, '2021-10-16 17:56:20', '2021-10-16 17:56:20');
+('50231866-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '4b38a039-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-19 17:55:00', '2021-10-20 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'On Going', NULL, NULL, '2021-10-16 17:56:20', '2021-10-16 17:56:20'),
+('502cac58-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '3ca8d340-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-18 17:55:00', '2021-10-19 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'On Going', NULL, NULL, '2021-10-16 17:56:20', '2021-10-16 17:56:20'),
+('5081e94e-2e67-11ec-9eaa-6c626d3a5d34', '4976ca7c-2e29-11ec-9eaa-6c626d3a5d34', '96c75c35-2e4a-11ec-9eaa-6c626d3a5d34', '2021-10-22 17:55:00', '2021-10-23 17:55:00', '07431c30-1b87-11ec-9d57-6c626d3a5d34', 'Completed', '2021-10-22 19:50:43', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 17:56:20', '2021-10-16 17:56:20');
 
 -- --------------------------------------------------------
 
@@ -309,6 +309,7 @@ CREATE TABLE `onboarding_tasks` (
 --
 
 INSERT INTO `onboarding_tasks` (`onboarding_task_id`, `title`, `description`, `task_type`, `is_general`, `department_id`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+('005bdffb-2e7a-11ec-9eaa-6c626d3a5d34', 'First week of work', 'Start your first week of work', 'For new employees', 1, '649c149d-1b7a-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 20:10:06', '2021-10-16 20:10:06'),
 ('23ec55f2-2e4a-11ec-9eaa-6c626d3a5d34', 'Fill up onboarding forms', 'Fill up and sign onboarding forms', 'For new employees', 1, '649c149d-1b7a-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 14:27:30', '2021-10-16 14:27:30'),
 ('3ca8d340-2e4a-11ec-9eaa-6c626d3a5d34', 'Introduce yourself', 'Introduce yourself to the team', 'For new employees', 1, '649c149d-1b7a-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 14:28:12', '2021-10-16 14:28:12'),
 ('4b38a039-2e4a-11ec-9eaa-6c626d3a5d34', 'Welcome new employee', 'Welcome new employee to the team', 'For the team', 1, '649c149d-1b7a-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '07431c30-1b87-11ec-9d57-6c626d3a5d34', '2021-10-16 14:28:36', '2021-10-16 14:28:36'),

@@ -262,7 +262,6 @@ async def add_onboarding_task(
                     else:
                         new_onboarding_task = OnboardingTask(
                             **req.dict(),
-                            is_general = True,
                             department_id = department_id,
                             added_by = user_data.user_id,
                             updated_by = user_data.user_id
@@ -596,7 +595,7 @@ async def add_employee_onboarding_task(
                 db.refresh(new_onboarding_employee_task)
                 return {
                     "data": new_onboarding_employee_task,
-                    "message": "New onboarding task is added"
+                    "message": "New onboarding employee task is added"
                 }
     except Exception as e:
         print(e)

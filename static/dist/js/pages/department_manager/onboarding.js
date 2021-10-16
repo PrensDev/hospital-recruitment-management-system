@@ -718,7 +718,8 @@ const addOnboardingTask = () => {
     const data = {
         title: get('taskTitle'),
         description: get('description'),
-        task_type: get('taskType')
+        task_type: get('taskType'),
+        is_general: true
     }
 
     POST_ajax(`${ DM_API_ROUTE }onboarding-tasks`, data, {
@@ -1074,6 +1075,55 @@ initDataTable('#onboardingEmployeeTasksDT', {
             data: null,
             render: data => {
                 const task = data.onboarding_task;
+                const status = data.status;
+                const startAt = data.start_at;
+                const deadline = data.end_at;
+
+                const getStatus = () => {
+                    if(status == "Pending") {
+                        if(isAfterToday(startAt) && isAfterToday(deadline))
+                            return `
+                                <span class="badge badge-secondary p-2">
+                                    <i class="fas fa-stopwatch mr-1"></i>
+                                    <span>Soon<span>
+                                </span>
+                            `
+                        else if(isBeforeToday(startAt) && isAfterToday(deadline))
+                            return `
+                                <span class="badge badge-danger p-2">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                    <span>Must working<span>
+                                </span<
+                            `
+                        else 
+                            return `
+                                <span class="badge badge-danger p-2">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                    <span>Not worked<span>
+                                </span>
+                            `
+                    } else if(status == "On Going") 
+                        return isAfterToday(deadline)
+                            ? `<span class="badge badge-info p-2">
+                                    <i class="fas fa-sync-alt mr-1"></i>
+                                    <span>On Going<span>
+                                </span>`
+                            : `<span class="badge badge-danger p-2">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                    <span>Must be done<span>
+                                </span>`
+                    else if(status == "Completed") 
+                        return moment(data.completed_at).isAfter(moment(deadline))
+                            ? `<span class="badge badge-success p-2">
+                                    <i class="fas fa-check mr-1"></i>
+                                    <span>Conpleted (On Time)<span>
+                                <span>`
+                            : `<span class="badge badge-success p-2">
+                                    <i class="fas fa-check mr-1"></i>
+                                    <span>Completed (Late)<span>
+                                <span>`
+                    else return `<span class="badge badge-light p-2">Invalid data</span>`
+                }
 
                 const taskType = () => {
                     const taskType = task.task_type;
@@ -1085,86 +1135,23 @@ initDataTable('#onboardingEmployeeTasksDT', {
                 }
 
                 return `
-                    <div>${ task.title }</div>
-                    <div>${ taskType() }</div>
-                    <div class="small text-secondary">${ task.description }</div>
+                    <div>
+                        <div>
+                            <span>${ task.title }</span>
+                            <span class="ml-1">${ taskType() }</span>
+                        </div>
+                        <div class="small text-secondary mb-3">${ task.description }</div>
+                        <div class="small d-flex mb-2">
+                            <div class="mr-1">
+                                <i class="fas fa-clock text-secondary"></i>
+                            </div>
+                            <div>
+                                <span>${ formatDateTime(startAt, 'DateTime') } - ${ formatDateTime(deadline, 'DateTime') }</span>
+                            </div>
+                        </div>
+                        <div>${ getStatus() }</div>
+                    </div>
                 `
-            }
-        },
-
-        // Start
-        {
-            data: null,
-            class: 'text-nowrap',
-            render: data => {
-                const startAt = data.start_at;
-                return `
-                    <div>${ formatDateTime(startAt, 'MMM. D, YYYY') }</div>
-                    <div>${ formatDateTime(startAt, 'Time') }</div>
-                    <div class="small text-secondary">${ fromNow(startAt) }</div>
-                `
-            }
-        },
-
-        // Deadline
-        {
-            data: null,
-            class: 'text-nowrap',
-            render: data => {
-                const endAt = data.end_at;
-                return `
-                    <div>${ formatDateTime(endAt, 'MMM. D, YYYY') }</div>
-                    <div>${ formatDateTime(endAt, 'Time') }</div>
-                    <div class="small text-secondary">${ fromNow(endAt) }</div>
-                `
-            }
-        },
-
-        // Status
-        {
-            data: null,
-            render: data => {
-                const status = data.status;
-                const startAt = data.start_at;
-                const deadline = data.end_at;
-
-                if(status == "Pending") {
-                    if(isAfterToday(startAt) && isAfterToday(deadline))
-                        return dtBadge('secondary', `
-                            <i class="fas fa-stopwatch mr-1"></i>
-                            <span>Soon<span>
-                        `)
-                    else if(isBeforeToday(startAt) && isAfterToday(deadline))
-                        return dtBadge('danger', `
-                            <i class="fas fa-exclamation-triangle mr-1"></i>
-                            <span>Must working<span>
-                        `)
-                    else 
-                        return dtBadge('danger', `
-                            <i class="fas fa-exclamation-triangle mr-1"></i>
-                            <span>Not worked<span>
-                        `)
-                } else if(status == "On Going") 
-                    return isAfterToday(deadline)
-                        ? dtBadge('info', `
-                            <i class="fas fa-sync-alt mr-1"></i>
-                            <span>On Going<span>
-                        `)
-                        : dtBadge('danger', `
-                            <i class="fas fa-exclamation-triangle mr-1"></i>
-                            <span>Must be done<span>
-                        `)
-                else if(status == "Completed") 
-                    return moment(data.completed_at).isAfter(moment(dealine))
-                        ? dtBadge('success', `
-                            <i class="fas fa-check mr-1"></i>
-                            <span>Conpleted (On Time)<span>
-                        `)
-                        : dtBadge('success', `
-                            <i class="fas fa-check mr-1"></i>
-                            <span>Completed (Late)<span>
-                        `)
-                else return dtBadge('light', 'Invalid data')
             }
         },
 

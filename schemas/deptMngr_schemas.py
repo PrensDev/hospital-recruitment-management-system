@@ -121,6 +121,7 @@ class CreateOnboardingTask(BaseModel):
     title: str
     description: str
     task_type: str
+    is_general: bool
 
 
 # Department Schema
