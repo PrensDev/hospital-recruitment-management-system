@@ -14,80 +14,80 @@
     {# Main content #}
     <section class="content">
         <div class="container-fluid">
-            <div class="container-fluid">
-                <div class="row">
+            <div class="row">
 
-                    {# Onboarding Employee Details #}
-                    <div class="col-lg-4">
+                {# Onboarding Employee Details #}
+                <div class="col-lg-4">
 
-                        {# Loader #}
-                        <div class="card card-primary card-outline" id="onboardingEmployeeDetailsLoader">
-                            <div class="card-body py-5">
-                                <div class="my-5 py-5 text-center">
-                                    <div class="spinner-border text-primary my-3">
-                                        <div class="sr-only">Loading ...</div>
-                                    </div>
+                    {# Loader #}
+                    <div class="card card-primary card-outline" id="onboardingEmployeeDetailsLoader">
+                        <div class="card-body py-5">
+                            <div class="my-5 py-5 text-center">
+                                <div class="spinner-border text-primary my-3">
+                                    <div class="sr-only">Loading ...</div>
                                 </div>
-                            </div>
-                        </div>
-                        
-                        {# Details #}
-                        <div class="card card-primary card-outline" id="onboardingEmployeeDetails" style="display: none">
-                            <div class="card-body box-profile">
-                                <h3 class="profile-username text-center mb-0" id="employeeFullName"></h3>
-                                <p class="text-muted text-center" id="employeePosition"></p>
-
-                                {# Progress Bar #}
-                                <div class="mb-3">
-                                    <label>Tasks Progress</label>
-                                    <div id="taskProgress"></div>
-                                    <canvas id="donutChart" style="min-height: 200px; height: 200px; max-height: 200px; max-width: 100%;"></canvas>
-                                </div>
-
-                                {# Applicant Details #}
-                                <table class="table">
-                                    <tr>
-                                        <td>
-                                            <div class="font-weight-bold">
-                                                <i class="fas fa-envelope mr-1 text-secondary"></i>
-                                                <span>Email</span>
-                                            </div>
-                                            <div id="employeeEmail"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="font-weight-bold">
-                                                <i class="fas fa-phone mr-1 text-secondary"></i>
-                                                <span>Contact Number</span>
-                                            </div>
-                                            <div id="employeeContactNumber"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="font-weight-bold">
-                                                <i class="fas fa-calendar-alt mr-1 text-secondary"></i>
-                                                <span>Start of employment</span>
-                                            </div>
-                                            <div>
-                                                <div id="startOfEmploymentDate"></div>
-                                                <div class="small text-secondary" id="startOfEmploymentHumanized"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
                             </div>
                         </div>
                     </div>
                     
-                    {# List of Tasks #}
-                    <div class="col-lg-8">
-                        <div class="card card-primary card-outline">
-                            <div class="card-header align-items-center">
-                                <h3 class="card-title">Lists of On-boarding Tasks</h3>
+                    {# Details #}
+                    <div class="card card-primary card-outline" id="onboardingEmployeeDetails" style="display: none">
+                        <div class="card-body box-profile">
+                            <h3 class="profile-username text-center mb-0" id="employeeFullName"></h3>
+                            <p class="text-muted text-center" id="employeePosition"></p>
 
-                                <div class="card-tools">
+                            {# Progress Bar #}
+                            <div class="mb-3">
+                                <label>Tasks Progress</label>
+                                <div id="taskProgress"></div>
+                                <canvas id="donutChart" style="min-height: 200px; height: 200px; max-height: 200px; max-width: 100%;"></canvas>
+                            </div>
+
+                            {# Applicant Details #}
+                            <table class="table">
+                                <tr>
+                                    <td>
+                                        <div class="font-weight-bold">
+                                            <i class="fas fa-envelope mr-1 text-secondary"></i>
+                                            <span>Email</span>
+                                        </div>
+                                        <div id="employeeEmail"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="font-weight-bold">
+                                            <i class="fas fa-phone mr-1 text-secondary"></i>
+                                            <span>Contact Number</span>
+                                        </div>
+                                        <div id="employeeContactNumber"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="font-weight-bold">
+                                            <i class="fas fa-calendar-alt mr-1 text-secondary"></i>
+                                            <span>Start of employment</span>
+                                        </div>
+                                        <div>
+                                            <div id="startOfEmploymentDate"></div>
+                                            <div class="small text-secondary" id="startOfEmploymentHumanized"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                {# List of Tasks #}
+                <div class="col-lg-8">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="card-title">Lists of On-boarding Tasks</h3>
+    
+                                <div>
                                     <button type="button" class="btn btn-sm btn-tool" data-card-widget="maximize">
                                         <i class="fas fa-expand"></i>
                                     </button>
@@ -97,30 +97,30 @@
                                     </button>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="card-body">
-                                <table id="onboardingEmployeeTasksDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>On-boarding Tasks</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="6">
-                                                <div class="text-center py-5">
-                                                    <div class="spinner-border text-primary my-3" role="status">
-                                                        <span class="sr-only">Loading ...</span>
-                                                    </div>
-                                                    <div class="text-secondary">Loading ...</div>
+                        <div class="card-body">
+                            <table id="onboardingEmployeeTasksDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>On-boarding Tasks</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="text-center py-5">
+                                                <div class="spinner-border text-primary my-3" role="status">
+                                                    <span class="sr-only">Loading ...</span>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                                <div class="text-secondary">Loading ...</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

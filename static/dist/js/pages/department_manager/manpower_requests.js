@@ -263,7 +263,7 @@ initDataTable('#manpowerRequestDT', {
                     bagdeTheme = "danger";
                     badgeIcon = "times";
                 } else if(requestStatus === "Completed") {
-                    bagdeTheme = "blue";
+                    bagdeTheme = "info";
                     badgeIcon = "check";
                 } else validStatus = false
 
@@ -685,8 +685,8 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                     timelineTitle: 'Approved',
                     timelineBody: `
                         <div class="small mb-3">This request has been reviewed and approved by <b>${ reviewedByFullName }</b></div>
-                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
-                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
+                        <div class="small text-secondary">${ formatDateTime(reviewedAt, "Full Date") }</div>
+                        <div class="small text-secondary">${ formatDateTime(reviewedAt, "Time") }</div>
                     `
                 });
             } else if(requestStatus === "Rejected for approval") {
@@ -697,6 +697,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                     lastName: rejectedBy.last_name,
                     suffixName: rejectedBy.suffix_name
                 });
+
                 timelineData.push({
                     icon: "times",
                     iconTheme: "danger",
@@ -709,6 +710,22 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                     `
                 });
             }
+
+            // Completed
+            const completedAt = result.completed_at;
+            if(!isEmptyOrNull(completedAt)) {
+                timelineData.push({
+                    icon: "check",
+                    iconTheme: "info",
+                    dateTime: completedAt,
+                    timelineTitle: 'Completed',
+                    timelineBody: `
+                        <div class="small mb-3">This request had been marked as completed</b></div>
+                        <div class="small text-secondary">${ formatDateTime(completedAt, "Full Date") }</div>
+                        <div class="small text-secondary">${ formatDateTime(completedAt, "Time") }</div>
+                    `
+                });
+            } 
 
             setTimeline('#manpowerRequestTimeline', {
                 title: "Manpower Request Timeline",

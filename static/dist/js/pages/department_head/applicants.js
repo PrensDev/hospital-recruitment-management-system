@@ -84,8 +84,8 @@ initDataTable('#hiredApplicantsDT', {
                 const applicantID = data.applicant_id;
 
                 const markContractAsSigned = () => {
-                    if(data.status === "Hired") return `
-                        <div
+                    return data.status === "Hired"
+                        ? `<div
                             role="button"
                             class="dropdown-item d-flex"
                             onclick="markContractAsSigned('${ applicantID }')"
@@ -94,8 +94,8 @@ initDataTable('#hiredApplicantsDT', {
                                 <i class="fas fa-check mr-1"></i>
                             </div>
                             <span>Mark contract as signed</span>
-                        </div>
-                        `
+                        </div>`
+                        : ''
                 } 
 
                 return `
