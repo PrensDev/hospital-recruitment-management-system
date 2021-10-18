@@ -1,5 +1,5 @@
-{# Confirm Mark As Completed Modal #}
-<div class="modal" id="changeTaskStatusModal" data-backdrop="static">
+{# Change Task Progress Modal #}
+<div class="modal fade" id="changeTaskStatusModal" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form class="modal-content" id="updateTaskStatusForm">
 
@@ -71,6 +71,7 @@
     </div>
 </div>
 
+
 {# Onboarding Employee Task Details Modal #}
 <div class="modal fade" id="onboardingEmployeeTaskDetailsModal">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -82,48 +83,112 @@
                 </div>
             </div>
             <div class="modal-body">
-                <table class="table">
-                    <tr>
-                        <th>Task Title</th>
-                        <td id="taskTitle"></td>
-                    </tr>
-                    <tr>
-                        <th>Description</th>
-                        <td id="taskDescription"></td>
-                    </tr>
-                    <tr>
-                        <th>Progress</th>
-                        <td id="taskProgress"></td>
-                    </tr>
-                    <tr>
-                        <th>Task Status</th>
-                        <td id="taskStatus"></td>
-                    </tr>
-                    <tr>
-                        <th>Assigned By</th>
-                        <td id="assignedBy"></td>
-                    </tr>
-                    <tr>
-                        <th>Added At</th>
-                        <td id="addedAt"></td>
-                    </tr>
-                    <tr>
-                        <th>Completed By</th>
-                        <td id="completedBy"></td>
-                    </tr>
-                    <tr>
-                        <th>Completed At</th>
-                        <td id="completedAt"></td>
-                    </tr>
-                    <tr>
-                        <th>Last updated By</th>
-                        <td id="lastUpdatedBy"></td>
-                    </tr>
-                    <tr>
-                        <th>Last Updated At</th>
-                        <td id="lastUpdatedAt"></td>
-                    </tr>
-                </table>
+                
+                {# Tabs #}
+                <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
+    
+                    {# Applicant Details #}
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link active" 
+                            id="applicantDetailsTab" 
+                            data-toggle="pill" 
+                            href="#applicantDetailsPane" 
+                            role="tab" 
+                            aria-controls="custom-content-below-home" 
+                            aria-selected="true"
+                        >Applicant Details</a>
+                    </li>
+
+                    {# Timeline #}
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link" 
+                            id="applicantTimelineTab" 
+                            data-toggle="pill" 
+                            href="#applicantTimelinePane" 
+                            role="tab" 
+                            aria-controls="#applicantTimelinePane" 
+                            aria-selected="false"
+                        >Timeline</a>
+                    </li>
+                </ul>
+
+                {# Panes #}
+                <div class="tab-content" id="custom-content-below-tabContent">
+
+                    {# Applicant Details #}
+                    <div 
+                        class="tab-pane fade show active py-3" 
+                        id="applicantDetailsPane" 
+                        role="tabpanel" 
+                        aria-labelledby="applicantDetailsTab"
+                    >
+                        <table class="table">
+                            <tr>
+                                <th>Task Title</th>
+                                <td id="taskTitle"></td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td id="taskDescription"></td>
+                            </tr>
+                            <tr>
+                                <th>Assigned for</th>
+                                <td id="taskType"></td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td id="taskStatus"></td>
+                            </tr>
+                            <tr>
+                                <th>Progress</th>
+                                <td id="progress"></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    {# Onboarding Employee Task Timeline #}
+                    <div 
+                        class="tab-pane fade py-3" 
+                        id="applicantTimelinePane" 
+                        role="tabpanel" 
+                        aria-labelledby="applicantTimelineTab"
+                    >
+                        {# Timeline Loader #}
+                        <div class="timeline wait" id="onboardingEmployeeTaskTimelineLoader">
+                            <div class="time-label">
+                                <div class="skeleton-loader mb-0 shadow-sm w-75" style="height: 30px"></div>
+                            </div>
+                            
+                            {% for i in range(2) %}
+                                <div>
+                                    <i class="fas fa-circle bg-secondary"></i>
+                                    <div class="timeline-item">
+                                        
+                                        <div class="timeline-header">
+                                            <div class="skeleton-loader sm w-50 mb-0"></div>
+                                        </div>
+
+                                        <div class="timeline-body">
+                                            <div class="small">
+                                                <div class="skeleton-loader sm"></div>
+                                                <div class="skeleton-loader sm w-50"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                            <div>
+                                <i class="fas fa-clock bg-secondary"></i>
+                            </div>
+                        </div>
+
+                        {# Timeline #}
+                        <div class="timeline" id="onboardingEmployeeTaskTimeline" style="display: none;"></div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button 
@@ -136,6 +201,7 @@
     </div>
 </div>
 
+
 {# Add Onboarding Task Modal #}
 <div class="modal fade" id="addOnboardingEmployeeTaskModal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -147,6 +213,22 @@
                 </div>
             </div>
             <div class="modal-body">
+
+                {# To whom assigned #}
+                <div class="form-group">
+                    <label>Assign task to<span class="text-danger"> *</span></label>
+                    <select 
+                        name="assignTaskTo" 
+                        id="assignTaskTo"
+                        class="form-control select2" 
+                        style="width: 100%"
+                    >
+                        <option></option>
+                        <option value="For new employees">New employee</option>
+                        <option value="For the team">Team</option>
+                        <option value="For department manager">Me (Department Manager)</option>
+                    </select>
+                </div>
 
                 {# Task Title #}
                 <div class="form-group">

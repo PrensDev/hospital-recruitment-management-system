@@ -39,7 +39,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
             "request": req,
-            "page_title": user_data['user_type'],
+            "page_title": "Dashboard",
             "sub_title": "Manage your tasks and activities here using this dashboard",
             "active_navlink": "Dashboard"
         })
@@ -88,10 +88,7 @@ async def render(
     else:
         return await errTemplate.page_not_found(req)
 
-
-# ===========================================================
-# HIRED APPLICANTS
-# ===========================================================
+# Hired Applicants
 @router.get("/hired-applicants", response_class=HTMLResponse)
 async def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
@@ -104,3 +101,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
     else:
         return await errTemplate.page_not_found(req)
 
+
+# ===========================================================
+# HIRED APPLICANTS
+# ===========================================================

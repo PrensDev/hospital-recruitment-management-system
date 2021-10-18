@@ -782,6 +782,7 @@ const initGeneralTaskDT = (selector, url) => {
             // Task Title
             {
                 data: null,
+                class: 'w-100',
                 render: data => {
                     return `
                         <div>${ data.title }</div>
@@ -793,27 +794,13 @@ const initGeneralTaskDT = (selector, url) => {
             // Date Added
             {
                 data: null,
+                class: 'text-nowrap',
                 render: data => {
                     const dateAdded = data.created_at;
                     return `
                         <div>${ formatDateTime(dateAdded, 'MMM. D, YYYY') }</div>
                         <div class="small text-secondary">${ fromNow(dateAdded) }</div>
                     `
-                }
-            },
-    
-            // Added By
-            {
-                data: null,
-                render: data => {
-                    const addedBy = data.onboarding_task_added_by;
-    
-                    return formatName('F M. L, S', {
-                        firstName: addedBy.first_name,
-                        middleName: addedBy.middle_name,
-                        lastName: addedBy.last_name,
-                        suffixName: addedBy.suffix_name
-                    });
                 }
             },
     
@@ -990,6 +977,7 @@ initDataTable('#onboardingEmployeesDT', {
         // Task Progress
         {
             data: null,
+            class: 'text-nowrap',
             render: data => {
                 let completed = 0;
 
@@ -1062,6 +1050,15 @@ initDataTable('#onboardingEmployeesDT', {
  * ==============================================================================
  */
 
+/** Assign Task To For Add Select 2 */
+ifSelectorExist('#onboardingEmployeeTasksDT', () => {
+    $('#assignTaskTo').select2({
+        placeholder: "Please select for whom the task for",
+        minimumResultsForSearch: -1
+    });
+});
+
+
 /** Initialize Onboarding Employee Tasks DataTable */
 initDataTable('#onboardingEmployeeTasksDT', {
     url: `${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`,
@@ -1073,57 +1070,11 @@ initDataTable('#onboardingEmployeeTasksDT', {
         // Tasks
         {
             data: null,
+            class: 'w-100',
             render: data => {
                 const task = data.onboarding_task;
-                const status = data.status;
                 const startAt = data.start_at;
                 const deadline = data.end_at;
-
-                const getStatus = () => {
-                    if(status == "Pending") {
-                        if(isAfterToday(startAt) && isAfterToday(deadline))
-                            return `
-                                <span class="badge badge-secondary p-2">
-                                    <i class="fas fa-stopwatch mr-1"></i>
-                                    <span>Soon<span>
-                                </span>
-                            `
-                        else if(isBeforeToday(startAt) && isAfterToday(deadline))
-                            return `
-                                <span class="badge badge-danger p-2">
-                                    <i class="fas fa-exclamation-triangle mr-1"></i>
-                                    <span>Must working<span>
-                                </span<
-                            `
-                        else 
-                            return `
-                                <span class="badge badge-danger p-2">
-                                    <i class="fas fa-exclamation-triangle mr-1"></i>
-                                    <span>Not worked<span>
-                                </span>
-                            `
-                    } else if(status == "On Going") 
-                        return isAfterToday(deadline)
-                            ? `<span class="badge badge-info p-2">
-                                    <i class="fas fa-sync-alt mr-1"></i>
-                                    <span>On Going<span>
-                                </span>`
-                            : `<span class="badge badge-danger p-2">
-                                    <i class="fas fa-exclamation-triangle mr-1"></i>
-                                    <span>Must be done<span>
-                                </span>`
-                    else if(status == "Completed") 
-                        return moment(data.completed_at).isAfter(moment(deadline))
-                            ? `<span class="badge badge-success p-2">
-                                    <i class="fas fa-check mr-1"></i>
-                                    <span>Conpleted (On Time)<span>
-                                <span>`
-                            : `<span class="badge badge-success p-2">
-                                    <i class="fas fa-check mr-1"></i>
-                                    <span>Completed (Late)<span>
-                                <span>`
-                    else return `<span class="badge badge-light p-2">Invalid data</span>`
-                }
 
                 const taskType = () => {
                     const taskType = task.task_type;
@@ -1138,7 +1089,7 @@ initDataTable('#onboardingEmployeeTasksDT', {
                     <div>
                         <div>
                             <span>${ task.title }</span>
-                            <span class="ml-1">${ taskType() }</span>
+                            <span class="ml-sm-1">${ taskType() }</span>
                         </div>
                         <div class="small text-secondary mb-3">${ task.description }</div>
                         <div class="small d-flex mb-2">
@@ -1149,7 +1100,7 @@ initDataTable('#onboardingEmployeeTasksDT', {
                                 <span>${ formatDateTime(startAt, 'DateTime') } - ${ formatDateTime(deadline, 'DateTime') }</span>
                             </div>
                         </div>
-                        <div>${ getStatus() }</div>
+                        <div>${ getOnboardingEmployeeTaskStatus(data.status, startAt, deadline, data.completed_at) }</div>
                     </div>
                 `
             }
@@ -1268,9 +1219,7 @@ const getOnboardingEmployeeDetails = () => {
             $('#onboardingEmployeeDetailsLoader').remove();
             showElement('#onboardingEmployeeDetails');
         },
-        error: () => {
-            toastr.error('There was an error in getting onboarding employee details')
-        }
+        error: () => toastr.error('There was an error in getting onboarding employee details')
     });
 }
 
@@ -1286,57 +1235,90 @@ const changeProgressStatus = (onboardingEmployeeTaskID) => {
 /** When confirm mark as completed modal was hidden */
 onHideModal('#changeTaskStatusModal', () => resetForm('#markAsCompletedForm'));
 
-/** Validate Makr As Completed Form */
-validateForm('#markAsCompletedForm', {
-    submitHandler: () => markTaskAsCompleted()
-});
-
-/** Mark Task As Completed */
-const markTaskAsCompleted = () => {
-
-    // Set buttons to loading state
-    btnToLoadingState('#confimMarkAsCompletedBtn');
-    disableElement('#cancelConfimMarkAsCompletedBtn');
-
-    const onboardingEmployeeTaskID = generateFormData('#markAsCompletedForm').get('onboardingEmployeeTaskID');
-
-    const data = {status: 'Completed'}
-
-    PUT_ajax(`${ DM_API_ROUTE }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, data, {
-        success: result => {
-
-            // Hide Modal
-            hideModal('#confirmMarkAsCompletedModal');
-
-            // Reload DataTable
-            reloadDataTable('#onboardingEmployeeTasksDT');
-
-            // Reload Onboarding Employee Details
-            getOnboardingEmployeeDetails();
-
-            // Set buttons to unload state
-            btnToUnloadState('#confimMarkAsCompletedBtn', `
-                <span>Yes, mark it!</span>
-                <i class="fas fa-check ml-1"></i>
-            `);
-            enableElement('#cancelConfimMarkAsCompletedBtn');
-
-            toastr.success('An onboarding task is successfully completed');
-        },
-        error: () => {
-            // Set buttons to unload state
-            btnToUnloadState('#confimMarkAsCompletedBtn', `
-                <span>Yes, mark it!</span>
-                <i class="fas fa-check ml-1"></i>
-            `);
-            enableElement('#cancelConfimMarkAsCompletedBtn');
-
-            toastr.error('There was an error in updating onboarding employee task status');
-        }
-    })
-}
-
 /** View Onboarding Employee Task Details */
 const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
+    GET_ajax(`${ DM_API_ROUTE }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, {
+        success: result => {
+            console.log(result);
+
+            /** ONBOARDING EMPLOYEE TASK DETAILS */
+
+            const onboardingTask = result.onboarding_task;
+
+            // Task Title
+            setContent('#taskTitle', onboardingTask.title);
+
+            // Task Description
+            setContent('#taskDescription', onboardingTask.description);
+
+            // Asssigned for
+            setContent('#taskType', onboardingTask.task_type);
+
+            // Task Status
+            setContent('#taskStatus', result.status);
+
+            // Progress
+            setContent('#progress', getOnboardingEmployeeTaskStatus(result.status, result.start_at, result.end_at, result.completed_at));
+
+
+            /** ONBOARDING EMPLOYEE TASK TIMELINE */
+            let timelineData = [];
+
+            // Assigned
+            const assignedAt = result.created_at;
+            const assignedBy = result.onboarding_employee_task_assigned_by;
+            const assignedByFullName = formatName('F M. L, S', {
+                firstName: assignedBy.first_name,
+                middleName: assignedBy.middle_name,
+                lastName: assignedBy.last_name,
+                suffixName: assignedBy.suffix_name
+            });
+            timelineData.push({
+                icon: "clipboard",
+                iconTheme: "primary",
+                dateTime: assignedAt,
+                timelineTitle: 'Assigned',
+                timelineBody: `
+                    <div class="small mb-3">Task was created and assigned by <b>${ assignedByFullName }</b></div>
+                    <div class="small text-secondary">${ formatDateTime(assignedAt, "Full Date") }</div>
+                    <div class="small text-secondary">${ formatDateTime(assignedAt, "Time") }</div>
+                `
+            });
+
+            // Completed
+            const completedAt = result.completed_at;
+            const completedBy = result.onboarding_employee_task_completed_by;
+            if(!isEmptyOrNull(completedAt) && !isEmptyOrNull(completedBy)) {
+                const completedByFullName = formatName('F M. L, S', {
+                    firstName: completedBy.first_name,
+                    middleName: completedBy.middle_name,
+                    lastName: completedBy.last_name,
+                    suffixName: completedBy.suffix_name
+                });
+                timelineData.push({
+                    icon: "check",
+                    iconTheme: "success",
+                    dateTime: completedAt,
+                    timelineTitle: 'Completed',
+                    timelineBody: `
+                        <div class="small mb-3">Task was completed marked by <b>${ completedByFullName }</b></div>
+                        <div class="small text-secondary">${ formatDateTime(completedAt, "Full Date") }</div>
+                        <div class="small text-secondary">${ formatDateTime(completedAt, "Time") }</div>
+                    `
+                });
+            }
+
+            // Set Onboarding Employee Task Timeline
+            setTimeline('#onboardingEmployeeTaskTimeline', {
+                title: 'Onboarding Task Timeline',
+                timelineData: timelineData
+            });
+
+            // Set Onboarding Employee Task
+            $('#onboardingEmployeeTaskTimelineLoader').remove();
+            showElement('#onboardingEmployeeTaskTimeline');
+        },
+        error: () => toastr.error('There was an error in getting onboarding employee task details')
+    })
     showModal('#onboardingEmployeeTaskDetailsModal');
 }

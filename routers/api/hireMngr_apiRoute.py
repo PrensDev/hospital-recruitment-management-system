@@ -609,6 +609,26 @@ async def get_one_interview_question(
         print(e)
 
 
+# Update Interview Question
+@router.put("/interview-question/{interview_question_id}", status_code=202)
+async def update_interview_question(
+    interview_question_id: str,
+    req: hireMngr.UpdateInterviewQuestion,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            interview_question = db.query(InterviewQuestion).filter(InterviewQuestion.interview_question_id == interview_question_id).first()
+            if not interview_question:
+                raise HTTPException(status_code=404, detail=INTERVIEW_QUESTION_NOT_FOUND_RESPONSE)
+            else:
+                InterviewQuestion.update(req.dict())
+                db.commit()
+                return {"message": "An interview"}
+    except Exception as e:
+        print(e)
+
 # Create Interview Schedule
 @router.post("/interview-schedule", status_code=201)
 async def create_interview_schedule(

@@ -26,34 +26,12 @@ initDataTable('#generalInterviewQuestionsDT', {
         { data: 'created_at' , visible: false },
 
         // Question
-        { data: 'question' },
-
-        // Added By
-        {
-            data: null,
-            class: 'text-nowrap',
-            render: data => {
-                const addedBy = data.interview_question_added_by;
-
-                const addedByFullName = formatName('F M. L, S', {
-                    firstName: addedBy.first_name,
-                    middleName: addedBy.middle_name,
-                    lastName: addedBy.last_name,
-                    suffixName: addedBy.suffix_name
-                });
-
-                const addedByPosition = addedBy.position;
-
-                return `
-                    <div>${ addedByFullName }</div>
-                    <div class="small text-secondary">${ addedByPosition.name }, ${ addedByPosition.department.name }</div>
-                `
-            }
-        },
+        { data: 'question', class: 'w-100' },
 
         // Added At
         {
             data: null,
+            class: 'text-nowrap',
             render: data => {
                 const addedAt = data.created_at;
                 
@@ -88,7 +66,7 @@ initDataTable('#generalInterviewQuestionsDT', {
                             <div 
                                 class="dropdown-item d-flex"
                                 role="button"
-                                onclick=""
+                                onclick="editGenInterviewQuestion('${ interviewQuestionID }')"
                             >
                                 <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
                                 <div>Edit Question</div>
@@ -262,6 +240,56 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
     })
 }
 
+
+/** Edit General Interview Question */
+const editGenInterviewQuestion = (interviewQuestionID) => {
+    GET_ajax(`${ H_API_ROUTE }interview-questions/${ interviewQuestionID }`, {
+        success: result => {
+
+            // Set Interview Question ID
+            setValue('#interviewQuestionID', result.interview_question_id);
+
+            // Set Value
+            setValue('#questionForEdit', result.question);
+
+            // Show Modal
+            showModal('#editGeneralInterviewQuestionModal');
+        },
+        error: () => toastr.error('There was an erro in getting general interview question details')
+    });
+}
+
+
+/** On edit general interview question modal has been hidden*/
+onHideModal('#editGeneralInterviewQuestionModal', () => resetForm('#editGeneralInterviewQuestionForm'));
+
+validateForm('#editGeneralInterviewQuestionForm', {
+    rules: {
+        question: {
+            required: true
+        }
+    },
+    messages: {
+        question: {
+            required: 'Interview question is required'
+        }
+    },
+    submitHandler: () => {
+        const formData = generateFormData('#editGeneralInterviewQuestionForm');
+        const data = {
+            question: formData.get('question')
+        }
+
+        PUT_ajax(`${ H_API_ROUTE }interview-question/${ formData.get('interviewQuestionID') }`, data, {
+            success: result => {
+                console.log(result)
+            },
+            error: () => toastr.error('There was an error in updating interview question')
+        });
+
+        return false;
+    }
+})
 
 /**
  * ==============================================================================

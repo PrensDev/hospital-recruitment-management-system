@@ -192,6 +192,11 @@ class ShowInterviewQuestion(BaseModel):
         orm_mode = True
 
 
+# Update Interview Question
+class UpdateInterviewQuestion(BaseModel):
+    question: str
+
+
 # Create Interview Question
 class CreateInterviewQuestion(BaseModel):
     question: str

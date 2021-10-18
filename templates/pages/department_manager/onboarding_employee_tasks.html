@@ -88,39 +88,41 @@
                                 <h3 class="card-title">Lists of On-boarding Tasks</h3>
     
                                 <div>
-                                    <button type="button" class="btn btn-sm btn-tool" data-card-widget="maximize">
+                                    <button type="button" class="btn btn-sm btn-default" data-card-widget="maximize">
                                         <i class="fas fa-expand"></i>
                                     </button>
                                     <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addOnboardingEmployeeTaskModal">
-                                        <span>Add Task</span>
-                                        <i class="fas fa-plus ml-1"></i>
+                                        <span class="d-none d-sm-inline-block">Add Task</span>
+                                        <i class="fas fa-plus ml-sm-1"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
 
                         <div class="card-body">
-                            <table id="onboardingEmployeeTasksDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>On-boarding Tasks</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="6">
-                                            <div class="text-center py-5">
-                                                <div class="spinner-border text-primary my-3" role="status">
-                                                    <span class="sr-only">Loading ...</span>
+                            <div class="table-responsive">
+                                <table id="onboardingEmployeeTasksDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>On-boarding Tasks</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="6">
+                                                <div class="text-center py-5">
+                                                    <div class="spinner-border text-primary my-3" role="status">
+                                                        <span class="sr-only">Loading ...</span>
+                                                    </div>
+                                                    <div class="text-secondary">Loading ...</div>
                                                 </div>
-                                                <div class="text-secondary">Loading ...</div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

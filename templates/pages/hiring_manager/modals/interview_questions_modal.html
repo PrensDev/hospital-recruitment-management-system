@@ -76,3 +76,45 @@
         </div>
     </div>
 </div>
+
+
+{# Edit General Interview Question Modal #}
+<div 
+    class="modal fade" 
+    id="editGeneralInterviewQuestionModal" 
+    data-backdrop="static" 
+    data-keyboard="false"
+>
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="editGeneralInterviewQuestionForm">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-file-alt text-secondary mr-2"></i>
+                    <span>Edit General Interview Question</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                {# Interview Question ID #}
+                <input type="hidden" id="interviewQuestionID" name="interviewQuestionID">
+
+                {# Question #}
+                <div class="form-group">
+                    <label for="question">Question</label>
+                    <textarea class="form-control" rows="3" id="questionForEdit" name="question" placeholder="Please type new interview question here"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button 
+                    type="button" 
+                    class="btn btn-default" 
+                    data-dismiss="modal" 
+                    id="cancelGeneralInterviewQuestionBtn"
+                >Cancel</button>
+                <button type="submit" id="editGeneralInterviewQuestionBtn" class="btn btn-info">
+                    <span>Save</span>
+                    <i class="fas fa-check ml-1"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -22,13 +22,15 @@
 
                     {# Menu List #}
                     <div class="card card-primary card-outline" id="menu">
-                        <div class="card-header align-items-center">
-                            <h3 class="card-title">Menus</h3>
-
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                                </button>
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="card-title">Menus</h3>
+    
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-sm btn-default" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body p-0">
@@ -36,7 +38,7 @@
 
                                 {# For new employees link #}
                                 <li class="nav-item">
-                                    <a href="{{ DM_WEB_ROUTE }}general-tasks/for-new-employees" class="nav-link">
+                                    <a href="{{ DM_WEB_ROUTE }}general-tasks/for-new-employees" class="nav-link{% if active_menu == 'For new employees' %} text-primary{% endif %}">
                                         <i class="fas fa-user" style="width: 1.5rem"></i>
                                         <span>For new employees</span>
                                         <span 
@@ -49,7 +51,7 @@
 
                                 {# For the team link #}
                                 <li class="nav-item">
-                                    <a href="{{ DM_WEB_ROUTE }}general-tasks/for-the-team" class="nav-link">
+                                    <a href="{{ DM_WEB_ROUTE }}general-tasks/for-the-team" class="nav-link{% if active_menu == 'For the team' %} text-primary{% endif %}">
                                         <i class="fas fa-users" style="width: 1.5rem"></i>
                                         <span>For the team</span>
                                         <span 
@@ -62,7 +64,7 @@
 
                                 {# Department Manager Tasks link #}
                                 <li class="nav-item">
-                                    <a href="{{ DM_WEB_ROUTE }}general-tasks/my-tasks" class="nav-link">
+                                    <a href="{{ DM_WEB_ROUTE }}general-tasks/my-tasks" class="nav-link{% if active_menu == 'For department manager' %} text-primary{% endif %}">
                                         <i class="fas fa-user-tie" style="width: 1.5rem"></i>
                                         <span>My tasks</span>
                                         <span 

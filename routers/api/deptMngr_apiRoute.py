@@ -456,6 +456,27 @@ async def get_all_hired_applicants(
         print(e)
 
 
+# Get one hired applicant
+@router.get("/hired-applicants/{onboarding_employee_id}", response_model=deptMngr.ShowHiredApplicant)
+async def get_all_hired_applicants(
+    onboarding_employee_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee = db.query(OnboardingEmployee).filter(
+                OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
+                OnboardingEmployee.status == "Pending"
+            ).first()
+            if not onboarding_employee: 
+                raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
+            else:
+                return onboarding_employee
+    except Exception as e:
+        print(e)
+
+
 # ====================================================================
 # ONBOARDING EMPLOYEE
 # ====================================================================
@@ -602,37 +623,37 @@ async def add_employee_onboarding_task(
 
 
 # Get All Onboarding Employee Task
-@router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_model=List[db_schemas.ShowOnboardingEmployeeTask])
+@router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_model=List[deptMngr.ShowOnboardingEmployeeTask])
 async def get_all_onboarding_employee_tasks(
     onboarding_employee_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
-        if not onboarding_employee:
-            raise HTTPException(status_code = 404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
-        else:
-            return db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_id == onboarding_employee_id).all()
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
+            if not onboarding_employee:
+                raise HTTPException(status_code = 404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
+            else:
+                return db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_id == onboarding_employee_id).all()
     except Exception as e:
         print(e)
 
 
 # Get One Onboarding Employee Task
-@router.get("/onboarding-employee-tasks/{onboarding_employee_task_id}", response_model=db_schemas.ShowOnboardingEmployeeTask)
+@router.get("/onboarding-employee-tasks/{onboarding_employee_task_id}", response_model=deptMngr.ShowOnboardingEmployeeTask)
 async def get_one_onboarding_employee_tasks(
     onboarding_employee_task_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        authorized(user_data, AUTHORIZED_USER)
-        onboarding_employee_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id).first()
-        if not onboarding_employee_task:
-            raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
-        else:
-            return onboarding_employee_task
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id).first()
+            if not onboarding_employee_task:
+                raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
+            else:
+                return onboarding_employee_task
     except Exception as e:
         print(e)
 

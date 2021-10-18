@@ -28,48 +28,47 @@
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-        <li class="nav-header">HUMAN RESOURCE CORE</li>
-        <li class="nav-item">
-            <a href="{{ DM_WEB_ROUTE }}" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">
-            <i class="nav-icon fas fa-chart-line"></i>
-            <p>Dashboard</p>
-            </a>
-        </li>
+            <li class="nav-header">CORE</li>
+            <li class="nav-item">
+                <a href="{{ DM_WEB_ROUTE }}" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">
+                <i class="nav-icon fas fa-chart-pie"></i>
+                <p>Dashboard</p>
+                </a>
+            </li>
 
-        <li class="nav-header">RECRUITMENT</li>
-        <li class="nav-item">
-            <a href="{{ DM_WEB_ROUTE }}manpower-requests" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
-            <i class="nav-icon fas fa-people-carry"></i>
-            <p>Manpower Requests</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{{DM_WEB_ROUTE}}hired-applicants" class="nav-link{% if active_navlink == "Hired Applicants" %} active{% endif %}">
-            <i class="nav-icon fas fa-user-tie"></i>
-            <p>
-                Hired Applicants
-                {# <span class="right badge badge-primary">99+</span> #}
-            </p>
-            </a>
-        </li>
+            <li class="nav-header">RECRUITMENT</li>
+            <li class="nav-item">
+                <a href="{{ DM_WEB_ROUTE }}manpower-requests" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
+                <i class="nav-icon fas fa-copy"></i>
+                <p>Manpower Requests</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{DM_WEB_ROUTE}}hired-applicants" class="nav-link{% if active_navlink == "Hired Applicants" %} active{% endif %}">
+                <i class="nav-icon fas fa-handshake"></i>
+                <p>
+                    Hired Applicants
+                    {# <span class="right badge badge-primary">99+</span> #}
+                </p>
+                </a>
+            </li>
 
-        <li class="nav-header">ON-BOARDING</li>
-        <li class="nav-item">
-            <a href="{{DM_WEB_ROUTE}}onboarding-employees" class="nav-link{% if active_navlink == "Onboarding Employees" %} active{% endif %}">
-            <i class="fas fa-clipboard nav-icon"></i>
-            <p>Onboarding Employees</p>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="{{DM_WEB_ROUTE}}general-tasks" class="nav-link{% if active_navlink == "General Tasks" %} active{% endif %}">
-            <i class="fas fa-tasks nav-icon"></i>
-            <p>General Tasks</p>
-            </a>
-        </li>
+            <li class="nav-header">ON-BOARDING</li>
+            <li class="nav-item">
+                <a href="{{DM_WEB_ROUTE}}onboarding-employees" class="nav-link{% if active_navlink == "Onboarding Employees" %} active{% endif %}">
+                <i class="fas fa-user-tie nav-icon"></i>
+                <p>Onboarding Employees</p>
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a href="{{DM_WEB_ROUTE}}general-tasks" class="nav-link{% if active_navlink == "General Tasks" %} active{% endif %}">
+                <i class="fas fa-tasks nav-icon"></i>
+                <p>General Tasks</p>
+                </a>
+            </li>
         </ul>
     </nav>
-
 </div>
 
 {# Sidebar Custom #}

@@ -138,12 +138,19 @@ class ShowDepartment(Department):
         orm_mode = True
 
 
-# Show Onboarding Tasks
-class ShowOnboardingTask(BaseModel):
+# Onboarding Task
+class OnboardingTask(BaseModel):
     onboarding_task_id: str
     title: str
     description: str
     task_type: str
+
+    class Config():
+        orm_mode = True
+
+
+# Show Onboarding Tasks
+class ShowOnboardingTask(OnboardingTask):
     onboarding_task_for_department: ShowDepartment
     onboarding_task_added_by: ShowUser
     onboarding_task_updated_by: Optional[ShowUser]
@@ -177,14 +184,18 @@ class ShowHiredApplicant(OnboardingEmployee):
         orm_mode = True
 
 
-# Show Onbaording Employee Task
+# Show Onboarding Employee Task
 class ShowOnboardingEmployeeTask(BaseModel):
     onboarding_employee_task_id: str
     status: str
     start_at: datetime
     end_at: datetime
+    onboarding_task: OnboardingTask
     onboarding_employee_task_assigned_by: ShowUser
-    onboarding_task: ShowOnboardingTask
+    onboarding_employee_task_completed_by: Optional[ShowUser]
+    completed_at: Optional[datetime]
+    created_at: datetime
+    updated_at: Optional[datetime]
 
     class Config():
         orm_mode = True

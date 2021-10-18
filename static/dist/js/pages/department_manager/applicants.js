@@ -29,24 +29,24 @@ initDataTable('#hiredApplicantsDT', {
         // Applicant Name
         {
             data: null,
+            class: "w-100",
             render: data => {
-                return formatName('F M. L, S', {
+                const applicantFullName = formatName('F M. L, S', {
                     firstName: data.first_name,
                     middleName: data.middle_name,
                     lastName: data.last_name,
                     suffixName: data.suffix_name
-                })
+                });
+                return `
+                    <div>${ applicantFullName }</div>
+                    <div class="small text-secondary">${ data.email }</div>
+                    <div class="small text-secondary">${ data.contact_number }</div>
+                `
             }
         },
 
         // Position
         { data: 'onboarding_employee_position.name' },
-
-        // Email
-        { data: 'email' },
-
-        // Contact Number
-        { data: 'contact_number' },
 
         // Contract Signed at
         {
@@ -69,8 +69,10 @@ initDataTable('#hiredApplicantsDT', {
 
                 return `
                     <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
+                        <div class="d-block d-md-inline-block btn btn-sm btn-default" data-toggle="dropdown" role="button">
+                            <i class="fas fa-ellipsis-v d-none d-md-inline-block"></i>
+                            <i class="fas fa-ellipsis-h d-md-none mr-1 mr-md-0"></i>
+                            <span class="d-md-none">More</span>
                         </div>
 
                         <div class="dropdown-menu dropdown-menu-right">
@@ -108,9 +110,49 @@ initDataTable('#hiredApplicantsDT', {
 
 /**
  * ==============================================================================
- * VIEW APPLICANT DETAILS
+ * APPLICANT DETAILS
  * ==============================================================================
  */
 
-const viewApplicantDetails = (applicantID) => {
+/** View Applicant Details */
+const viewApplicantDetails = (onboardingEmployeeID) => {
+    GET_ajax(`${ DM_API_ROUTE }hired-applicants/${ onboardingEmployeeID }`, {
+        success: result => {
+
+            console.log(result)
+            
+            /** APPLICANT DETAILS */
+            
+            // const applicantFullName = formatName('F M. L, S', {
+            //     firstName: result.first_name,
+            //     middleName: result.middle_name,
+            //     lastName: result.last_name,
+            //     suffixName: result.suffixName
+            // });
+
+            // // Set Applicant Full Name
+            // setContent('#applicantFullName', applicantFullName);
+
+            // // Set Applicant Contact Number
+            // setContent("#applicantContactNumber", result.contact_number);
+
+            // // Set Applicant Email
+            // setContent("#applicantEmail", result.email);
+
+            // // Set Resume Link
+            // $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
+
+
+            // /** APPLICANT TIMELINE */
+            // setApplicantTimeline('#applicantTimeline', result);
+
+            // // Remove Applicant Timeline Loader
+            // hideElement('#applicantTimelineLoader');
+            // showElement('#applicantTimeline');
+
+            // /** Show Modal */
+            // showModal('#applicantDetailsModal');
+        },
+        error: () => toastr.error('There was an error in getting applicant details')
+    });
 }

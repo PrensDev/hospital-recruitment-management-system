@@ -39,7 +39,7 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
             "request": req,
-            "page_title": user_data['user_type'],
+            "page_title": "Dashboard",
             "sub_title": "Recruiter manages all applicants to be selected",
             "active_navlink": "Dashboard"
         })

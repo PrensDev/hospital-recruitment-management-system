@@ -1,579 +1,313 @@
 /** 
  * =====================================================
- * FUNCTIONS
+ * APP FUNCTIONS
  * =====================================================
- * */
-
-
-/** If Selector Exist */
-const ifSelectorExist = (selector = "", handler = () => {}, isRequired = true) => {
-    if($(selector).length) return handler() 
-    else if(isRequired && IF_SELECTOR_EXIST_DEBUG_MODE) console.warn(`Selector ${ selector } does not exist.`)
-}
-
-
-/** Initialize Data Mask */
-ifSelectorExist('[data-mask]', () => $('[data-mask]').inputmask());
-
-
-/** Initialize Bootstrap Custom File Input */
-bsCustomFileInput.init();
-
-
-/** Is Empty Or Null */
-const isEmptyOrNull = (value) => { return $.trim(value) === "" || value == null }
-
-
-/** Null Or With Value */
-const nullOrReturnValue = (nullable, returnValue) => { return isEmptyOrNull(nullable) ? null : returnValue }
-
-
-/** Initialize DataTable */
-const initDataTable = (selector = "", dtOptions = { debugMode: false, url: "", columns: [] }) => $(() => ifSelectorExist(selector, () => dtOptions.debugMode 
-    ? $(selector).DataTable({
-        ajax: {
-            url: dtOptions.url,
-            headers: AJAX_HEADERS,
-            success: result => console.log(result)
-        }
-    })
-    : $(selector).DataTable({
-        ajax: {
-            url: dtOptions.url,
-            headers: AJAX_HEADERS,
-            dataSrc: ""
-        },
-        columns: dtOptions.columns,
-        order: [[0, 'desc']],
-        responsive: true,
-        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
-        columnDefs: [{
-            targets: [-1],
-            orderable: false
-        }],
-        language: {
-            emptyTable: `
-                <div class="p-5">
-                    <h3>No records</h3>
-                    <div class="text-secondary">There are no records yet here</div>
-                </div>
-            `,
-            loadingRecords: `
-                <div class="p-5 wait">
-                    <div class="spinner-border text-primary mb-3" role="status"></div>
-                    <div class="text-secondary">Please wait while loading records ...</div>
-                </div>
-            `,
-            processing: `
-                <div class="p-5 wait">
-                    <div class="spinner-border text-primary mb-3" role="status"></div>
-                    <div class="text-secondary">Processing, please wait ...</div>
-                </div>
-            `,
-            zeroRecords: `
-                <div class="p-5">
-                    <h3>No match found</h3>
-                    <div class="text-secondary">No records was found that matched to your query</div>
-                </div>
-            `,
-            paginate: {
-                previous: `<i class="fas fa-caret-left"></i>`,
-                next: `<i class="fas fa-caret-right"></i>`,
-            }
-        }
-    }).buttons().container().appendTo(`.col-md-6:eq(0)`)
-));
-
-
-/** Reload DataTable */
-const reloadDataTable = (selector) => ifSelectorExist(selector, () => $(selector).DataTable().ajax.reload());
-
-
-/** DataTable Badge */
-const dtBadge = (theme = "light", content) => { return `<div class="badge badge-${ theme } p-2 w-100">${ content }</div>` }
-
-
-/** jQuery Validation Methods */
-
-// Less Than
-jQuery.validator.addMethod("lessThan", function(val, elem, params) {
-    if($(params).length) {
-        const c = getValue(params);
-        return isEmptyOrNull(c) ? true : parseFloat(val) < parseFloat(c);
-    }
-    return true;
-}, `It must be less than something`);
-
-// Greater Than
-jQuery.validator.addMethod("greaterThan", function(val, elem, params) {
-    if($(params).length) {
-        const c = getValue(params);
-        return isEmptyOrNull(c) ? true : parseFloat(val) > parseFloat(c);
-    }
-    return true;
-}, `It must be greater than something`);
-
-// Less Than Or Equal To
-jQuery.validator.addMethod("lessThanOrEqualTo", function(val, elem, params) {
-    if($(params).length) {
-        const c = getValue(params);
-        if(!(isEmptyOrNull(c) || c == 0)) return parseFloat(val) <= parseFloat(c);
-    }
-    return true;
-}, `It must be less than or equal to something`);
-
-// Greater Than Or Equal To
-jQuery.validator.addMethod("greaterThan", function(val, elem, params) {
-    if($(params).length) {
-        const c = getValue(params);
-        if(!(isEmptyOrNull(c) || c == 0)) return parseFloat(val) >= parseFloat(c);
-    }
-    return true;
-}, `It must be greater than or equal to something`);
-
-// Before Today
-jQuery.validator.addMethod("beforeToday", function(val, elem, params) {
-    return this.optional(elem) || isBeforeToday(val);
-}, `Date and Time must be before today`);
-
-// After Today
-jQuery.validator.addMethod("afterToday", function(val, elem, params) {
-    return this.optional(elem) || isAfterToday(val);
-}, `Date and Time must be before today`);
-
-// Before Time
-jQuery.validator.addMethod("beforeTime", function(val, elem, params) {
-    if($(params).length) {
-        const c = getValue(params);
-        return isEmptyOrNull(c) ? true : moment(val, 'H:mm').isBefore(moment(c, 'H:mm'));
-    }
-    return true;
-});
-
-// After Time
-jQuery.validator.addMethod("afterTime", function(val, elem, params) {
-    if($(params).length) {
-        const c = getValue(params);
-        return isEmptyOrNull(c) ? true : moment(val, 'H:mm').isAfter(moment(c, 'H:mm'));
-    }
-    return true;
-});
-
-// Before DateTime
-jQuery.validator.addMethod("beforeDateTime", function(val, elem, params) {
-    if($(params).length) {
-        const c = getValue(params);
-        return isEmptyOrNull(c) ? true : moment(val, 'YYYY-MM-DD HH:mm:ss').isBefore(moment(c, 'YYYY-MM-DD HH:mm:ss'));
-    }
-    return true;
-});
-
-// After DateTime
-jQuery.validator.addMethod("afterDateTime", function(val, elem, params) {
-    if($(params).length) {
-        const c = getValue(params);
-        return isEmptyOrNull(c) ? true : moment(val, 'YYYY-MM-DD HH:mm:ss').isAfter(moment(c, 'YYYY-MM-DD HH:mm:ss'));
-    }
-    return true;
-});
-
-/** Validate Form */
-const validateForm = (selector = "", validationOptions = { rules: {}, messages: {}, submitHandler: () => {} }) => {
-    ifSelectorExist(selector, () => {
-        $(selector).validate({
-            rules: validationOptions.rules,
-            messages: validationOptions.messages,
-            errorElement: 'div',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            },
-            submitHandler: validationOptions.submitHandler
-        });
-    }, false);
-}
-
-
-/** Reset Form */
-const resetForm = (selector) => ifSelectorExist(selector, () => $(selector).trigger('reset'));
-
-
-/** Generate Form Data */
-const generateFormData = (selector) => { return new FormData($(selector)[0]) }
-
-
-/** Humanize DateTime */
-const fromNow = (datetime) => { return moment(datetime).fromNow() }
-const toNow = (datetime) => { return moment(datetime).fromNow() }
-
-
-/** If date is before/after today */
-const isBeforeToday = (datetime) => { return moment(datetime).isBefore(moment()) }
-const isAfterToday = (datetime) => { return moment(datetime).isAfter(moment()) }
-
-
-/** Format DateTime */
-const formatDateTime = (datetime, format = "") => {
-    if(format === "")
-        return moment(datetime).format()
-    else {
-        var realFormat;
-        if(format === "Full DateTime")
-            realFormat = "dddd, MMMM D, YYYY; hh:mm A"
-        else if(format === "DateTime")
-            realFormat = "MMMM D, YYYY; hh:mm A"
-        else if(format === "Full Date")
-            realFormat = "dddd, MMMM D, YYYY"
-        else if(format === "Date")
-            realFormat = "MMMM D, YYYY"
-        else if(format === "Short Date")
-            realFormat = "MMM. D, YYYY"
-        else if(format === "Time")
-            realFormat = "hh:mm A"
-        else
-            realFormat = format
-        return moment(datetime).format(realFormat)
-    }
-}
-
-
-/** Show/Hide Modal */
-const showModal = (selector) => ifSelectorExist(selector, () => $(selector).modal('show'));
-const hideModal = (selector) => ifSelectorExist(selector, () => $(selector).modal('hide'));
-
-
-/** On modal was showned/hidden */
-const onHideModal = (selector, handler = () => {}) => { ifSelectorExist(selector, () => $(selector).on('hide.bs.modal', () => handler())) }
-const onShowModal = (selector, handler = () => {}) => { ifSelectorExist(selector, () => $(selector).on('show.bs.modal', () => handler())) }
-
-
-/** Set Content */
-const setContent = (selector, content) => ifSelectorExist(selector, () => $(selector).html(content));
-
-
-/** Set Value */
-const setValue = (selector, value) => ifSelectorExist(selector, () => $(selector).val(value));
-
-
-/** Get Value */
-const getValue = (selector) => { return ifSelectorExist(selector, () => { return $(selector).val() }) }
-
-
-/** Enable/Disable Element */
-const enableElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("disabled", false));
-const disableElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("disabled", true));
-
-
-/** Check/Uncheck Element */
-const checkElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("checked", true));
-const uncheckElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("checked", false));
-
-
-/** Show/Hide Element */
-const showElement = (selector) => ifSelectorExist(selector, () => $(selector).show());
-const hideElement = (selector) => ifSelectorExist(selector, () => $(selector).hide());
-
-
-/** On Event */
-const onEvent = (selector, event, handler = () => {}) => ifSelectorExist(selector, () => $(selector).on(event, () => handler()))
-
-
-/** On Click */
-const onClick = (selector, handler = () => {}) => onEvent(selector, 'click', () => handler());
-
-
-/** On Change */
-const onChange = (selector, handler = () => {}) => onEvent(selector, 'change', () => handler());
-
-
-/** Is checked */
-const isChecked = ( selector,  handlerIfChecked = () => {},  handlerIfNotChecked = () => {} ) => {
-    return ifSelectorExist(selector, () => {
-        const checkStatus = $(selector).is(':checked');
-        return checkStatus;
-    });
-}
-
-
-/** Format Name */
-const formatName = (format = '', fullName = {firstName: '', middleName: '', lastName: '', suffixName: ''}) => {
-    const F = $.trim(fullName.firstName);
-    const L = $.trim(fullName.lastName);
-    
-    let M = $.trim(fullName.middleName);
-    let S = $.trim(fullName.suffixName);
-    
-    const Mi = isEmptyOrNull(M) ? '' : ` ${ M.charAt(0) }.`;
-    
-    M = isEmptyOrNull(M) ? '' : ` ${ M }`;
-    S = isEmptyOrNull(S) ? '' : `, ${ S }`;
-
-    if(format === "L, F M., S")     return L + ', ' + F + Mi + S
-    else if(format === "F M. L, S") return F + Mi + ' ' + L + S
-    else {
-        console.error(`Format "${ format }" for name is invalid`)
-        return ''
-    }
-}
-
-
-/** Format Number */
-const formatNumber = (n) => { return new Intl.NumberFormat('en-US').format(n) }
-
-
-/** Format Currency */
-const formatCurrency = (money) => { 
-    return new Intl.NumberFormat('fil-PH', {
-        style: 'currency',
-        currency: 'PHP',
-        minimumFractionDigits: 2, 
-        maximumFractionDigits: 2
-    }).format(money);
-}
-
-
-/** Button To Loading State */
-const btnToLoadingState = (selector) => {
-    disableElement(selector);
-    setContent(selector, `<div class="spinner-border spinner-border-sm mx-3">`);
-}
-
-/** Button To Unload State */
-const btnToUnloadState = (selector, originalContent) => {
-    enableElement(selector);
-    setContent(selector, originalContent);
-}
-
-
-/**
- * ====================================================================================
- * * AJAX METHODS
- * ====================================================================================
  */
 
-/** GET AJAX */
-const GET_ajax = (url = '', options = {success: () => {}, error: () => console.error('GET_ajax failed')}) => {
-    $.ajax({
-        url: url,
-        type: 'GET',
-        headers: AJAX_HEADERS,
-        success: options.success,
-        error: options.error
-    }).fail(options.error);
-}
+/** Set Manpower Request Timeline */
+const setManpowerRequestTimeline = (selector, data) => {
+    let timelineData = [];
 
+    const requestStatus = data.request_status;
+    const rejectedAt = data.rejected_at;
 
-/** POST AJAX */
-const POST_ajax = (url = '', data = {}, options = {success: () => {}, error: () => console.error('POST_ajax failed')}) => {
-    $.ajax({
-        url: url,
-        type: 'POST',
-        headers: AJAX_HEADERS,
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(data),
-        success: options.success,
-        error: options.error
-    }).fail(options.error);
-}
+    // Created
+    const createdAt = data.created_at;
+    const createdBy = data.manpower_request_by;
+    const createdByFullName = formatName('F M. L, S', {
+        firstName: createdBy.first_name,
+        middleName: createdBy.middle_name,
+        lastName: createdBy.last_name,
+        suffixName: createdBy.suffix_name
+    });
+    timelineData.push({
+        icon: "edit",
+        iconTheme: "info",
+        dateTime: createdAt,
+        timelineTitle: 'Created',
+        timelineBody: `
+            <div class="small mb-3">This request has been created by <b>${ createdByFullName }</b></div>
+            <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
+            <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
+        `
+    });
 
-
-/** PUT AJAX */
-const PUT_ajax = (url = '', data = {}, options = {success: () => {}, error: () => console.error('PUT_ajax failed')}) => {
-    $.ajax({
-        url: url,
-        type: 'PUT',
-        headers: AJAX_HEADERS,
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(data),
-        success: options.success,
-        error: options.error
-    }).fail(options.error);
-}
-
-
-/** DELETE AJAX */
-const DELETE_ajax = (url = '', options = {success: () => {}, error: () => console.error('DELETE_ajax failed')}) => {
-    $.ajax({
-        url: url,
-        type: 'DELETE',
-        headers: AJAX_HEADERS,
-        success: options.success,
-        error: options.error
-    }).fail(options.error);
-}
-
-
-
-/** Check if there are sessioned alert */
-$(() => {
-    if(localStorage.getItem('sessioned_alert')) {
-        const alertTheme = localStorage.getItem('sessioned_alert_theme');
-        const alertMessage = localStorage.getItem('sessioned_alert_message');
-
-        setTimeout(() => {
-            if(alertTheme === 'success') toastr.success(alertMessage);
-            if(alertTheme === 'info')    toastr.info(alertMessage);
-            if(alertTheme === 'warning') toastr.warning(alertMessage);
-            if(alertTheme === 'error')   toastr.error(alertMessage);
-        }, 1000)
-
-        setTimeout(() => {
-            localStorage.removeItem('sessioned_alert');
-            localStorage.removeItem('sessioned_alert_theme');
-            localStorage.removeItem('sessioned_alert_message');
-        }, 500);
-    }
-})
-
-
-/** Set Sessioned Alert */
-const setSessionedAlertAndRedirect = (data = {theme: "", message: "", redirectURL: ""}) => {
-    localStorage.setItem('sessioned_alert', true)
-    localStorage.setItem('sessioned_alert_theme', data.theme)
-    localStorage.setItem('sessioned_alert_message', data.message)
-    location.assign(data.redirectURL)
-}
-
-
-/** Alert Before Unload */
-const alertBeforeUnload = () => $(window).on('beforeunload', () => { return 1 });
-
-
-/** Show Timeline */
-const setTimeline = (selector, attr = {
-    title: "",
-    timelineData: []
-}) => {
-    ifSelectorExist(selector, () => {
-        const timelineData = attr.timelineData;
-
-        let timelines = "";
-
-        const timelineComponent = (properties = {
-            icon: "",
-            iconTheme: "",
-            dateTime: "",
-            timelineTitle: "",
-            timelineBody: ""
-        }) => {
-            return `
-                <div>
-                    <i class="fas fa-${ properties.icon } bg-${ properties.iconTheme }"></i>
-                    <div class="timeline-item">
-                        <div class="time">
-                            <i class="fas fa-clock mr-1"></i>
-                            <span>${ fromNow(properties.dateTime) }</span>
-                        </div>
-                        
-                        <div class="timeline-header">${ properties.timelineTitle }</div>
-
-                        <div class="timeline-body">${ properties.timelineBody }</div>
-                    </div>
-                </div>
+    // Signed
+    const signedAt = data.signed_at;
+    if(!isEmptyOrNull(signedAt)) {
+        const signedBy = data.manpower_request_signed_by;
+        const signedByFullName = formatName('F M. L, S', {
+            firstName: signedBy.first_name,
+            middleName: signedBy.middle_name,
+            lastName: signedBy.last_name,
+            suffixName: signedBy.suffix_name
+        })
+        timelineData.push({
+            icon: "file-signature",
+            iconTheme: "primary",
+            dateTime: signedAt,
+            timelineTitle: 'Signed',
+            timelineBody: `
+                <div class="small mb-3">This request has been signed by <b>${ signedByFullName }</b></div>
+                <div class="small text-secondary">${ formatDateTime(signedAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(signedAt, "Time") }</div>
             `
-        }
+        });
+    } else if(requestStatus === "Rejected for signing") {
+        const rejectedBy = data.manpower_request_rejected_by;
+        const rejectedByFullName = formatName('F M. L, S', {
+            firstName: rejectedBy.first_name,
+            middleName: rejectedBy.middle_name,
+            lastName: rejectedBy.last_name,
+            suffixName: rejectedBy.suffix_name
+        });
+        timelineData.push({
+            icon: "times",
+            iconTheme: "danger",
+            dateTime: rejectedAt,
+            timelineTitle: 'Rejected',
+            timelineBody: `
+                <div class="small mb-3">This request has been rejected for signing by <b>${ rejectedByFullName }</b></div>
+                <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
+            `
+        });
+    }
 
-        timelineData.forEach(t => {
-            timelines = timelineComponent({
-                icon: t.icon,
-                iconTheme: t.iconTheme,
-                dateTime: t.dateTime,
-                timelineTitle: t.timelineTitle,
-                timelineBody: t.timelineBody
-            }) + timelines;
+    // Reviewed and approved
+    const reviewedAt = data.reviewed_at;
+    if(!isEmptyOrNull(reviewedAt)) {
+        const reviewedBy = data.manpower_request_reviewed_by;
+        const reviewedByFullName = formatName('F M. L, S', {
+            firstName: reviewedBy.first_name,
+            middleName: reviewedBy.middle_name,
+            lastName: reviewedBy.last_name,
+            suffixName: reviewedBy.suffix_name
+        });
+        timelineData.push({
+            icon: "thumbs-up",
+            iconTheme: "success",
+            dateTime: reviewedAt,
+            timelineTitle: 'Approved',
+            timelineBody: `
+                <div class="small mb-3">This request has been reviewed and approved by <b>${ reviewedByFullName }</b></div>
+                <div class="small text-secondary">${ formatDateTime(reviewedAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(reviewedAt, "Time") }</div>
+            `
+        });
+    } else if(requestStatus === "Rejected for approval") {
+        const rejectedBy = data.manpower_request_rejected_by;
+        const rejectedByFullName = formatName('F M. L, S', {
+            firstName: rejectedBy.first_name,
+            middleName: rejectedBy.middle_name,
+            lastName: rejectedBy.last_name,
+            suffixName: rejectedBy.suffix_name
         });
 
-        setContent(selector, `
-            <div class="timeline">
-                <div class="time-label">
-                    <span class="bg-primary shadow-sm">${ attr.title }</span>
-                </div>
-                ${ timelines }
-                <div>
-                    <i class="fas fa-clock bg-secondary"></i>
-                </div>
-            </div>
-        `);
+        timelineData.push({
+            icon: "times",
+            iconTheme: "danger",
+            dateTime: rejectedAt,
+            timelineTitle: 'Rejected',
+            timelineBody: `
+                <div class="small mb-3">This request has been rejected for approval by <b>${ rejectedByFullName }</b></div>
+                <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
+            `
+        });
+    }
+
+    // Completed
+    const completedAt = data.completed_at;
+    if(!isEmptyOrNull(completedAt)) {
+        timelineData.push({
+            icon: "check",
+            iconTheme: "info",
+            dateTime: completedAt,
+            timelineTitle: 'Completed',
+            timelineBody: `
+                <div class="small mb-3">This request had been marked as completed</b></div>
+                <div class="small text-secondary">${ formatDateTime(completedAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(completedAt, "Time") }</div>
+            `
+        });
+    } 
+
+    // Set Manpower Request Timeline
+    setTimeline(selector, { title: "Manpower Request Timeline", timelineData: timelineData });
+}
+
+/** Set Applicant Timeline */
+const setApplicantTimeline = (selector, data) => {
+    let timelineData = [];
+
+    // Applied
+    const createdAt = data.created_at;
+    const applicantFullName = formatName   ('F M. L, S', {
+        firstName: data.first_name,
+        middleName: data.middle_name,
+        lastName: data.last_name,
+        suffixName: data.suffix_name,
     });
+    timelineData.push({
+        icon: "file-export",
+        iconTheme: "primary",
+        dateTime: createdAt,
+        timelineTitle: 'Applied',
+        timelineBody: `
+            <div class="small mb-3">Application was submitted by <b>${ applicantFullName }</b></div>
+            <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
+            <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
+        `
+    });
+
+    // Evaluated
+    const evaluatedAt = data.evaluated_at;
+    const evaluatedBy = data.evaluation_done_by;
+    if(!isEmptyOrNull(evaluatedAt) && !isEmptyOrNull(evaluatedBy)) {
+        const evaluatedByFullName = formatName('F M. L, S', {
+            firstName: evaluatedBy.first_name,
+            middleName: evaluatedBy.middle_name,
+            lastName: evaluatedBy.last_name,
+            suffixName: evaluatedBy.suffix_name
+        });
+        timelineData.push({
+            icon: "check",
+            iconTheme: "success",
+            dateTime: evaluatedAt,
+            timelineTitle: 'Evaluated',
+            timelineBody: `
+                <div class="small mb-3">Evaluation was done by <b>${ evaluatedByFullName }</b></div>
+                <div class="small text-secondary">${ formatDateTime(evaluatedAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(evaluatedAt, "Time") }</div>
+            `
+        });
+    }
+
+    // Screened
+    const screenedAt = data.screened_at;
+    const screenedBy = data.screening_done_by;
+    if(!isEmptyOrNull(screenedAt) && !isEmptyOrNull(screenedBy)) {
+        const screenedByFullName = formatName('F M. L, S', {
+            firstName: screenedBy.first_name,
+            middleName: screenedBy.middle_name,
+            lastName: screenedBy.last_name,
+            suffixName: screenedBy.suffix_name
+        });
+        timelineData.push({
+            icon: "check",
+            iconTheme: "warning",
+            dateTime: screenedAt,
+            timelineTitle: 'Screened',
+            timelineBody: `
+                <div class="small mb-3">Screening was done by <b>${ screenedByFullName }</b></div>
+                <div class="small text-secondary">${ formatDateTime(screenedAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(screenedAt, "Time") }</div>
+            `
+        });
+    }
+
+    // Hired
+    const hiredAt = data.hired_at;
+    const hiredBy = data.hiring_done_by;
+    if(!isEmptyOrNull(hiredAt) && !isEmptyOrNull(hiredBy)) {
+        const hiredByFullName = formatName('F M. L, S', {
+            firstName: hiredBy.first_name,
+            middleName: hiredBy.middle_name,
+            lastName: hiredBy.last_name,
+            suffixName: hiredBy.suffix_name
+        });
+        timelineData.push({
+            icon: "handshake",
+            iconTheme: "success",
+            dateTime: hiredAt,
+            timelineTitle: 'Hired',
+            timelineBody: `
+                <div class="small mb-3">Hiring was done by <b>${ hiredByFullName }</b></div>
+                <div class="small text-secondary">${ formatDateTime(hiredAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(hiredAt, "Time") }</div>
+            `
+        });
+    }
+
+    // Rejected
+    const status = data.status;
+    if(
+        status === "Rejected from evaluation" || 
+        status === "Rejected from screening"  || 
+        status === "Rejected from interview" 
+    ) {
+        const rejectedAt = data.rejected_at;
+        const rejectedBy = data.rejection_done_by;
+        if(!isEmptyOrNull(rejectedAt) && !isEmptyOrNull(rejectedBy)) {
+            const rejectedByFullName = formatName('F M. L, S', {
+                firstName: rejectedBy.first_name,
+                middleName: rejectedBy.middle_name,
+                lastName: rejectedBy.last_name,
+                suffixName: rejectedBy.suffix_name
+            });
+            timelineData.push({
+                icon: "times",
+                iconTheme: "danger",
+                dateTime: rejectedAt,
+                timelineTitle: status,
+                timelineBody: `
+                    <div class="small mb-3">Applicant was ${ status.toLowerCase() } by <b>${ rejectedByFullName }</b></div>
+                    <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
+                    <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
+                `
+            });
+        }
+    }
+
+    // Set Applicant Timeline
+    setTimeline(selector, { title: "Applicant Timeline", timelineData: timelineData });
 }
 
 
-/** Set Pagination */
-const setPagination = (selector, attr = {
-    query: '',
-    totalRows: 0, 
-    currentPage: 0 
-}) => {
-    const totalRows = parseInt(attr.totalRows);
-    const currentPage = parseInt(attr.currentPage);
-    const query = attr.query;
-
-    const getLink = (pageNumber) => { return query.replace('[page]', pageNumber); }
-
-    const totalPages = Math.ceil(totalRows / FETCH_ROWS);
-    
-    let paginationItems = '';
-    
-    const appendPageItem = (page) => {
-        paginationItems += `
-            <div class="page-item${ page == currentPage ? ' active' : '' }">
-                <a class="page-link" href="${ getLink(page) }">${ page }</a>
-            </div>
-        `;
-    }
-    
-    const appendDisabledPageItem = () => {
-        paginationItems += `
-            <div class="page-item disabled">
-                <div class="page-link">
-                    <i class="fas fa-ellipsis-h"></i>
-                </div>
-            </div>
-        `;
-    }
-
-    paginationItems += `
-        <div class="page-item${ currentPage == 1 ? ' disabled' : '' }">
-            <a class="page-link" href="${ getLink(currentPage-1) }">
-                <i class="fas fa-caret-left"></i>
-            </a>
-        </div>
-    `;
-
-    if(currentPage > 3 && totalPages > 5) {
-        appendPageItem(1);
-        appendDisabledPageItem()
-    }
-
-    if(currentPage < 3) 
-        for(let i = 1; i <= 5 && i <= totalPages; i++) appendPageItem(i)
-    else if(currentPage <= totalPages-2) 
-        for(let i = currentPage-2; i <= currentPage+2 && i <= totalPages; i++) appendPageItem(i);
-    else if(totalPages > 5)
-        for(let i = totalPages - 4; i <= totalPages; i++) appendPageItem(i)
-    else 
-        for(let i = 1; i <= totalPages; i++) appendPageItem(i)
-    
-    if(currentPage < totalPages-2 && totalPages > 5) {
-        appendDisabledPageItem()
-        appendPageItem(totalPages);
-    }
-
-    paginationItems += `
-        <div class="page-item${ currentPage == totalPages ? ' disabled' : '' }">
-            <a class="page-link" href="${ getLink(currentPage+1) }">
-                <i class="fas fa-caret-right"></i>
-            </a>
-        </div>
-    `;
-
-    if(currentPage > 0 && currentPage <= totalPages) setContent(selector, paginationItems);
+/** Get Onboarding Employee Task Status */
+const getOnboardingEmployeeTaskStatus = (status, startAt, deadline, completedAt) => {
+    if(status == "Pending") {
+        if(isAfterToday(startAt) && isAfterToday(deadline))
+            return `
+                <span class="badge badge-secondary p-2">
+                    <i class="fas fa-stopwatch mr-1"></i>
+                    <span>Soon<span>
+                </span>
+            `
+        else if(isBeforeToday(startAt) && isAfterToday(deadline))
+            return `
+                <span class="badge badge-danger p-2">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    <span>Must working<span>
+                </span<
+            `
+        else 
+            return `
+                <span class="badge badge-danger p-2">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    <span>Not worked<span>
+                </span>
+            `
+    } else if(status == "On Going") 
+        return isAfterToday(deadline)
+            ? `<span class="badge badge-info p-2">
+                    <i class="fas fa-sync-alt mr-1"></i>
+                    <span>On Going<span>
+                </span>`
+            : `<span class="badge badge-danger p-2">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    <span>Must be done<span>
+                </span>`
+    else if(status == "Completed") 
+        return moment(completedAt).isBefore(moment(deadline))
+            ? `<span class="badge badge-success p-2">
+                    <i class="fas fa-check mr-1"></i>
+                    <span>Conpleted (On Time)<span>
+                <span>`
+            : `<span class="badge badge-success p-2">
+                    <i class="fas fa-check mr-1"></i>
+                    <span>Completed (Late)<span>
+                <span>`
+    else return `<span class="badge badge-light p-2">Invalid data</span>`
 }

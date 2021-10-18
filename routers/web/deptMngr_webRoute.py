@@ -40,7 +40,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
             "request": req,
-            "page_title": user_data['user_type'],
+            "page_title": "Dashboard",
             "sub_title": "Manage your tasks and activities here using this dashboard",
             "active_navlink": "Dashboard"
         })
@@ -242,7 +242,8 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "request": req,
             "page_title": "General On-boarding Tasks",
             "sub_title": "General On-boarding Tasks to manage employees tasks and monitor performances",
-            "active_navlink": "General Tasks"
+            "active_navlink": "General Tasks",
+            'active_menu': "For new employees"
         })
     else:
         return await errTemplate.page_not_found(req)
@@ -256,7 +257,8 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "request": req,
             "page_title": "General On-boarding Tasks",
             "sub_title": "General On-boarding Tasks to manage employees tasks and monitor performances",
-            "active_navlink": "General Tasks"
+            "active_navlink": "General Tasks",
+            'active_menu': "For the team"
         })
     else:
         return await errTemplate.page_not_found(req)
@@ -270,7 +272,8 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "request": req,
             "page_title": "General On-boarding Tasks",
             "sub_title": "General On-boarding Tasks to manage employees tasks and monitor performances",
-            "active_navlink": "General Tasks"
+            "active_navlink": "General Tasks",
+            'active_menu': "For department manager"
         })
     else:
         return await errTemplate.page_not_found(req)

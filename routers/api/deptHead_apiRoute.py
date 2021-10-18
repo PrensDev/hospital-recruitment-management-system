@@ -200,7 +200,13 @@ async def get_one_hired_applicant(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            hired_applicant = db.query(Applicant).filter(Applicant.status == "Hired", Applicant.applicant_id == applicant_id).first()
+            hired_applicant = db.query(Applicant).filter(
+                Applicant.applicant_id == applicant_id,
+                or_(
+                    Applicant.status == "Hired",
+                    Applicant.status == "Contract signed",
+                )
+            ).first()
             if not hired_applicant:
                 raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
             else:

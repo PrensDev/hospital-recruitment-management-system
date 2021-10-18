@@ -3,115 +3,31 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Content Header #}
     <section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-        
-        <!-- Title -->
-        <div class="col-sm-6">
-            <h1>{{ page_title }}</h1>
-            <p class="text-muted">{{ sub_title }}</p>
-        </div>
-
-        </div>
-    </div><!-- /.container-fluid -->
+        <div class="container-fluid">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">{{ sub_title }}</p>
+            </div>
     </section>
-    <!-- /.content-header -->
 
-    <!-- Main content -->
+    {# Main content #}
     <section class="content">
         <div class="container-fluid">
-
-            <!-- Info Boxes -->
-            <div class="row">
-            <div class="col-md-4 col-12">
-                <!-- small card -->
-                <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>150</h3>
-
-                    <p>Total Manpower Requests</p>
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <div class="py-5 d-flex justify-content-center">
+                    <img 
+                        draggable="false"
+                        src="{{BASE_URL_WEB}}static/dist/img/under_construction.svg" 
+                        alt="Under Maintenance" 
+                        width="50%"
+                    >
                 </div>
-                <div class="icon">
-                    <i class="fas fa-people-carry"></i>
-                </div>
-                <a href="#" class="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
-                </a>
-                </div>
+                <h3>Oops! This page is under maintenance.</h3>
+                <p class="text-secondary">You can go back in others days. Sorry for incovenience</p>
             </div>
-            <!-- ./col -->
-            <div class="col-md-4 col-12">
-                <!-- small card -->
-                <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                    <p>Total Job Posts</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-briefcase"></i>
-                </div>
-                <a href="#" class="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
-                </a>
-                </div>
-            </div>
-            <!-- ./col -->
-            <div class="col-md-4 col-12">
-                <!-- small card -->
-                <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>44</h3>
-
-                    <p>Total Applicants</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <a href="#" class="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
-                </a>
-                </div>
-            </div>
-            <!-- ./col -->
-            </div>
-            <!-- / Info Boxes -->
-
-            <!-- Card -->
-            <div class="card card-primary card-outline">
-
-                <!-- Card Header -->
-                <div class="card-header">
-                    <h3 class="card-title">Card Title</h3>
-                </div>
-                <!-- /.card-header -->
-
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="blogsDT" class="table table-bordered table-hover w-100" width="100" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Content</th>
-                                    <th>User ID</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <!-- /.card-body -->
-
-            </div>
-            <!-- /.card -->
-            
         </div>
     </section>
-    <!-- /. content -->
-
 {% endblock %}
 
 
