@@ -1280,7 +1280,7 @@ validateForm('#updateTaskStatusForm', {
                     enableElement('#cancelSaveOnboardingTaskStatusBtn');
 
                     // Show alert
-                    toastr.info('An onboarding task is successfully updated')
+                    toastr.info('An onboarding task has been updated successfully')
                 } else toastr.error('There was an error in updating onboarding task')
             },
             error: () => toastr.error('There was an error in updating onboarding task')
@@ -1393,7 +1393,7 @@ validateForm('#addOnboardingEmployeeTaskForm', {
         taskTitle: {
             required: true
         },
-        descriptionForAdd: {
+        description: {
             required: true
         },
         startAt: {
@@ -1415,7 +1415,7 @@ validateForm('#addOnboardingEmployeeTaskForm', {
         taskTitle: {
             required: 'Task title is required'
         },
-        descriptionForAdd: {
+        description: {
             required: 'Task description is required'
         },
         startAt: {

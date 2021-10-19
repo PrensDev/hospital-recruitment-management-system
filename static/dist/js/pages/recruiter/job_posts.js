@@ -480,7 +480,7 @@ ifSelectorExist('#jobPostDetails', () => {
             });
             
             /** FOR JOB POST TIMELINE */
-            getJobPostTimeline('#jobPostTimeline', result);
+            setJobPostTimeline('#jobPostTimeline', result);
 
             /** Remove Preloaders */
             $('#jobPostDetailsLoader').remove();
@@ -648,7 +648,7 @@ ifSelectorExist('#editJobPostForm', () => {
 
 
             /** FOR JOB POST TIMELINE */
-            getJobPostTimeline('#jobPostTimeline', result);
+            setJobPostTimeline('#jobPostTimeline', result);
 
 
             /** SET INPUTS */

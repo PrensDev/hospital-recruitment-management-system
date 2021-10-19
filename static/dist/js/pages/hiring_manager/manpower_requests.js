@@ -56,8 +56,8 @@ initDataTable('#manpowerRequestDT', {
                     bagdeTheme = "danger";
                     badgeIcon = "times";
                 } else if(requestStatus === "Completed") {
-                    bagdeTheme = "blue";
-                    badgeIcon = "thumbs";
+                    bagdeTheme = "info";
+                    badgeIcon = "check";
                 } else validStatus = false
 
                 return validStatus 
@@ -323,101 +323,7 @@ ifSelectorExist('#manpowerRequestDocument', () => {
 
 
             /** FOR MANPOWER REQUEST TIMELINE */
-
-            let timelineData = [];
-            const rejectedAt = result.rejectedAt;
-
-            // Created
-            const createdAt = result.created_at;
-            const createdBy = result.manpower_request_by;
-            const createdByFullName = formatName('F M. L, S', {
-                firstName: createdBy.first_name,
-                middleName: createdBy.middle_name,
-                lastName: createdBy.last_name,
-                suffixName: createdBy.suffix_name
-            });
-            timelineData.push({
-                icon: "edit",
-                iconTheme: "info",
-                dateTime: createdAt,
-                timelineTitle: 'Created',
-                timelineBody: `
-                    <div class="small mb-3">This request has been created by <b>${ createdByFullName }</b></div>
-                    <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
-                    <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
-                `
-            });
-
-            // Signed
-            const signedAt = result.signed_at;
-            const signedBy = result.manpower_request_signed_by;
-            const signedByFullName = formatName('F M. L, S', {
-                firstName: signedBy.first_name,
-                middleName: signedBy.middle_name,
-                lastName: signedBy.last_name,
-                suffixName: signedBy.suffix_name
-            })
-            timelineData.push({
-                icon: "file-signature",
-                iconTheme: "primary",
-                dateTime: signedAt,
-                timelineTitle: 'Signed',
-                timelineBody: `
-                    <div class="small mb-3">This request has been signed by <b>${ signedByFullName }</b></div>
-                    <div class="small text-secondary">${ formatDateTime(signedAt, "Full Date") }</div>
-                    <div class="small text-secondary">${ formatDateTime(signedAt, "Time") }</div>
-                `
-            });
-            
-            // Reviewed and approved
-            const reviewedAt = result.reviewed_at;
-            if(!isEmptyOrNull(reviewedAt)) {
-                const reviewedBy = result.manpower_request_reviewed_by;
-                const reviewedByFullName = formatName('F M. L, S', {
-                    firstName: reviewedBy.first_name,
-                    middleName: reviewedBy.middle_name,
-                    lastName: reviewedBy.last_name,
-                    suffixName: reviewedBy.suffix_name
-                });
-                timelineData.push({
-                    icon: "thumbs-up",
-                    iconTheme: "success",
-                    dateTime: reviewedAt,
-                    timelineTitle: 'Approved',
-                    timelineBody: `
-                        <div class="small mb-3">This request has been reviewed and approved by <b>${ reviewedByFullName }</b></div>
-                        <div class="small text-secondary">${ formatDateTime(reviewedAt, "Full Date") }</div>
-                        <div class="small text-secondary">${ formatDateTime(reviewedAt, "Time") }</div>
-                    `
-                });
-
-            // Rejected For Approval
-            } else if(requestStatus === "Rejected for approval") {
-                const rejectedBy = result.manpower_request_rejected_by;
-                const rejectedByFullName = formatName('F M. L, S', {
-                    firstName: rejectedBy.first_name,
-                    middleName: rejectedBy.middle_name,
-                    lastName: rejectedBy.last_name,
-                    suffixName: rejectedBy.suffix_name
-                });
-                timelineData.push({
-                    icon: "times",
-                    iconTheme: "danger",
-                    dateTime: rejectedAt,
-                    timelineTitle: 'Rejected',
-                    timelineBody: `
-                        <div class="small mb-3">This request has been rejected for approval by <b>${ rejectedByFullName }</b></div>
-                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
-                        <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
-                    `
-                });
-            }
-
-            setTimeline('#manpowerRequestTimeline', {
-                title: "Manpower Request Timeline",
-                timelineData: timelineData
-            });
-
+            setManpowerRequestTimeline('#manpowerRequestTimeline', result)
 
             /** REMOVE LOADERS */
             

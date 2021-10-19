@@ -112,14 +112,13 @@ initDataTable('#jobPostsDT', {
                         </div>
 
                         <div class="dropdown-menu dropdown-menu-right">
-                            <div 
+                            <a 
                                 class="dropdown-item d-flex"
-                                role="button"
-                                onclick="viewJobPostDetails('${ jobPostID }')"
+                                href="${ H_WEB_ROUTE }job-posts/${ jobPostID }"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <div>View Job Post</div>
-                            </div>
+                            </a>
                             ${ applicants }
                             <a 
                                 class="dropdown-item d-flex"
@@ -144,7 +143,9 @@ initDataTable('#jobPostsDT', {
  */
 
 /** View Job Post Details */
-const viewJobPostDetails = (jobPostID) => {
+ifSelectorExist('#jobPostDetails', () => {
+    const jobPostID = window.location.pathname.split('/')[3];
+
     GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
             const manpowerRequest = result.manpower_request;
@@ -193,9 +194,49 @@ const viewJobPostDetails = (jobPostID) => {
             // Set Job Description
             setContent('#jobDescription', result.content);
 
-            /** Show View Job Post Modal */
-            showModal('#viewJobPostModal');
+            /** MANPOWER REQUEST SUMMARY */
+
+            // Set Vacant Position
+            setContent('#vacantPositionForSummary', manpowerRequest.vacant_position.name);
+
+            // Set Staffs Needed
+            setContent('#staffsNeededForSummary', () => {
+                const staffsNeeded = manpowerRequest.staffs_needed;
+                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' }`;
+            });
+
+            // Set Employment Type
+            setContent('#employmentTypeForSummary', manpowerRequest.employment_type);
+
+            // Set Salary Range
+            setContent('#salaryRangeForSummary', () => {
+                return isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)
+                    ? () => {
+                        hideElement('#salaryRangeField');
+                        return `<div class="text-secondary font-italic">Unset</div>`
+                    }
+                    : `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
+            });
+
+            // Set Deadline
+            setContent('#deadlineForSummary', () => {
+                const deadline = manpowerRequest.deadline;
+                return isEmptyOrNull(deadline) 
+                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    : `
+                        <div>${ formatDateTime(deadline, "Full Date") }</div>
+                        <div>${ formatDateTime(deadline, "Time") }</div>
+                        <div class="small text-secondary">${ fromNow(deadline) }</div>
+                    `
+            });
+
+            /** Job Post Timeline */
+            setJobPostTimeline('#jobPostTimeline', result);
+
+            /** Remove Loaders */
+            $('#jobPostDetailsLoader').remove();
+            showElement('#jobPostDetailsContainer');
         },
         error: () => toastr.error('There was an error in getting job post details')
-    })
-}
+    });
+})

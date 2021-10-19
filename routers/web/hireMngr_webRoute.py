@@ -109,6 +109,29 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
         return await errTemplate.page_not_found(req)
 
 
+# Job Posts Details
+@router.get("/job-posts/{job_post_id}", response_class=HTMLResponse)
+async def render(
+    job_post_id: str,
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+        if not job_post:
+            return await errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse(TEMPLATES_PATH + "view_job_post.html", {
+                "request": req,
+                "page_title": "Job Posts",
+                "sub_title": "Manage applicants per job post here",
+                "active_navlink": "Job Posts"
+            })
+    else:
+        return await errTemplate.page_not_found(req)
+
+
 # ===========================================================
 # APPLICANTS
 # ===========================================================
