@@ -619,13 +619,13 @@ async def update_interview_question(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            interview_question = db.query(InterviewQuestion).filter(InterviewQuestion.interview_question_id == interview_question_id).first()
-            if not interview_question:
+            interview_question = db.query(InterviewQuestion).filter(InterviewQuestion.interview_question_id == interview_question_id)
+            if not interview_question.first():
                 raise HTTPException(status_code=404, detail=INTERVIEW_QUESTION_NOT_FOUND_RESPONSE)
             else:
-                InterviewQuestion.update(req.dict())
+                interview_question.update(req.dict())
                 db.commit()
-                return {"message": "An interview"}
+                return {"message": "An interview question is updated successfully"}
     except Exception as e:
         print(e)
 

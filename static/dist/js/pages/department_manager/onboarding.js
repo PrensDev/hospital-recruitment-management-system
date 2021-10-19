@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * ADD ONBOARDING EMPLOYEE
+ * CONSTANTS
  * ==============================================================================
  */
 
@@ -840,7 +840,7 @@ ifSelectorExist('#generalTasksForNewEmployeesDT', () => initGeneralTaskDT(
     `${ DM_API_ROUTE }onboarding-tasks/general/for-new-employees`
 ));
 
-/** For New Employees DataTable */
+/** For The Team DataTable */
 ifSelectorExist('#generalTasksForTeamDT', () => initGeneralTaskDT(
     '#generalTasksForTeamDT', 
     `${ DM_API_ROUTE }onboarding-tasks/general/for-the-team`

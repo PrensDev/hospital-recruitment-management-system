@@ -170,6 +170,7 @@ async def render(
                     "page_title": "Applicants - For Screening",
                     "sub_title": "Applicants to manage potential candidates",
                     "active_navlink": "Applicants",
+                    "active_menu": "For screening",
                     "job_post_id": f"{job_post_id}"
                 })
     else:
@@ -197,6 +198,7 @@ async def render(
                     "page_title": "Applicants - For Interview",
                     "sub_title": "Applicants to manage potential candidates",
                     "active_navlink": "Applicants",
+                    "active_menu": "For interview",
                     "job_post_id": f"{job_post_id}"
                 })
     else:
@@ -224,6 +226,7 @@ async def render(
                     "page_title": "Applicants - Inteviewed",
                     "sub_title": "Applicants to manage potential candidates",
                     "active_navlink": "Applicants",
+                    "active_menu": "Interviewed applicants",
                     "job_post_id": f"{job_post_id}"
                 })
     else:
@@ -279,6 +282,7 @@ async def render(
                     "page_title": "Applicants - Hired Applicants",
                     "sub_title": "Applicants to manage potential candidates",
                     "active_navlink": "Applicants",
+                    "active_menu": "Hired applicants",
                     "job_post_id": f"{job_post_id}"
                 })
     else:
@@ -306,6 +310,7 @@ async def render(
                     "page_title": "Applicants - Rejected Applicants",
                     "sub_title": "Applicants to manage potential candidates",
                     "active_navlink": "Applicants",
+                    "active_menu": "Rejected applicants",
                     "job_post_id": f"{job_post_id}"
                 })
     else:

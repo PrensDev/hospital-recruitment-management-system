@@ -14,18 +14,7 @@
     {# Main content #}
     <section class="content">
         <div class="container-fluid">
-            <div class="d-flex flex-column justify-content-center align-items-center">
-                <div class="py-5 d-flex justify-content-center">
-                    <img 
-                        draggable="false"
-                        src="{{BASE_URL_WEB}}static/dist/img/under_construction.svg" 
-                        alt="Under Maintenance" 
-                        width="50%"
-                    >
-                </div>
-                <h3>Oops! This page is under maintenance.</h3>
-                <p class="text-secondary">You can go back in others days. Sorry for incovenience</p>
-            </div>
+            {% include "err_components/under_maintenance.html" %}
         </div>
     </section>
 {% endblock %}

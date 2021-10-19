@@ -275,18 +275,38 @@ validateForm('#editGeneralInterviewQuestionForm', {
         }
     },
     submitHandler: () => {
-        const formData = generateFormData('#editGeneralInterviewQuestionForm');
-        const data = {
-            question: formData.get('question')
-        }
 
+        // Set buttons to loading state
+        btnToLoadingState('#saveGenInterviewQuestionBtn');
+        disableElement('#cancelGenInterviewQuestionBtnForEdit');
+
+        // Generate Form Data
+        const formData = generateFormData('#editGeneralInterviewQuestionForm');
+        const data = { question: formData.get('question') }
+
+        // Update Interview Question
         PUT_ajax(`${ H_API_ROUTE }interview-question/${ formData.get('interviewQuestionID') }`, data, {
             success: result => {
-                console.log(result)
+                if(result) {
+                    // Reload DataTable
+                    reloadDataTable('#generalInterviewQuestionsDT');
+
+                    // Set buttons to unload state
+                    btnToUnloadState('#saveGenInterviewQuestionBtn', `
+                        <span>Save</span>
+                        <i class="fas fa-check ml-1"></i>
+                    `);
+                    enableElement('#cancelGenInterviewQuestionBtnForEdit');
+
+                    // Hide modal
+                    hideModal('#editGeneralInterviewQuestionModal');
+
+                    // Show alert
+                    toastr.info('An interview question is successfully updated');
+                } else toastr.error('There was an error in updating interview question')
             },
             error: () => toastr.error('There was an error in updating interview question')
         });
-
         return false;
     }
 })
@@ -393,26 +413,27 @@ initDataTable('#intervieweesDT', {
         // Applicant
         {
             data: null,
+            class: 'w-100',
             render: data => {
                 const applicant = data.applicant_info;
-                return formatName('F M. L, S', {
+                const applicantFullName = formatName('F M. L, S', {
                     firstName: applicant.first_name,
                     middleName: applicant.middle_name,
                     lastName: applicant.last_name,
                     suffixName: applicant.suffixName
                 });
+                return `
+                    <div>${ applicantFullName }</div>
+                    <div class="small text-secondary">${ applicant.email }</div>
+                    <div class="small text-secondary">${ applicant.contact_number }</div>
+                `
             }
         },
-
-        // Email
-        { data: 'applicant_info.email'},
-
-        // Contact Number
-        { data: 'applicant_info.contact_number'},
 
         // Date Applied
         {
             data: null,
+            class: 'text-nowrap',
             render: data => {
                 const appliedAt = data.applicant_info.created_at;
                 return `

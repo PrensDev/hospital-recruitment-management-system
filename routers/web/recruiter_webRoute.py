@@ -176,7 +176,7 @@ async def render(
         return await errTemplate.page_not_found(req)
 
 
-# Applicants Per Job Post (for evaluation)
+# Applicants Per Job Post (For evaluation)
 @router.get("/job-posts/{job_post_id}/applicants/for-evaluation", response_class=HTMLResponse)
 async def render(
     job_post_id: str, 
@@ -197,13 +197,14 @@ async def render(
                     "page_title": "Applicants - For evaluation",
                     "sub_title": "Applicants to manage potential candidates",
                     "active_navlink": "Applicants",
+                    "active_menu": "For evaluation",
                     "job_post_id": f"{job_post_id}"
                 })
     else:
         return await errTemplate.page_not_found(req)
 
 
-# Applicants Per Job Post (evaluated)
+# Applicants Per Job Post (Evaluated)
 @router.get("/job-posts/{job_post_id}/applicants/evaluated", response_class=HTMLResponse)
 async def render(
     job_post_id: str, 
@@ -224,13 +225,14 @@ async def render(
                     "page_title": "Applicants - For evaluation",
                     "sub_title": "Applicants to manage potential candidates",
                     "active_navlink": "Applicants",
+                    "active_menu": "Evaluated",
                     "job_post_id": f"{job_post_id}"
                 })
     else:
         return await errTemplate.page_not_found(req)
 
 
-# Applicants Per Job Post (for evaluation)
+# Applicants Per Job Post (Rejected)
 @router.get("/job-posts/{job_post_id}/applicants/rejected", response_class=HTMLResponse)
 async def render(
     job_post_id: str, 
@@ -251,6 +253,7 @@ async def render(
                     "page_title": "Applicants - For evaluation",
                     "sub_title": "Applicants to manage potential candidates",
                     "active_navlink": "Applicants",
+                    "active_menu": "Rejected",
                     "job_post_id": f"{job_post_id}"
                 })
     else:

@@ -394,21 +394,22 @@ initDataTable('#applicantsForScreeningDT', {
         // Applicant
         {
             data: null,
+            class: 'w-100',
             render: data => {
-                return formatName('F M. L, S', {
+                const applicantFullName = formatName('F M. L, S', {
                     firstName: data.first_name,
                     middleName: data.middle_name,
                     lastName: data.last_name,
                     suffixName: data.suffix_name,
-                })
+                });
+
+                return `
+                    <div>${ applicantFullName }</div>
+                    <div class="small text-secondary">${ data.email }</div>
+                    <div class="small text-secondary">${ data.contact_number }</div>
+                `
             }
         },
-
-        // Contact Number
-        { data: 'contact_number' },
-
-        // Email
-        { data: 'email' },
 
         // Date Applied
         {
@@ -576,23 +577,19 @@ initDataTable('#applicantsForInterviewDT', {
         // Applicant
         {
             data: null,
+            class: 'w-100',
             render: data => {
-                return formatName('F M. L, S', {
+                const applicantFullName = formatName('F M. L, S', {
                     firstName: data.first_name,
                     middleName: data.middle_name,
                     lastName: data.last_name,
                     suffixName: data.suffix_name,
-                })
-            }
-        },
+                });
 
-        // Contact Information
-        {
-            data: null,
-            render: data => {
                 return `
-                    <div>${ data.email }</div>
-                    <div>${ data.contact_number }</div>
+                    <div>${ applicantFullName }</div>
+                    <div class="small text-secondary">${ data.email }</div>
+                    <div class="small text-secondary">${ data.contact_number }</div>
                 `
             }
         },
@@ -824,20 +821,27 @@ ifSelectorExist('#createInterviewScheduleForm', () => {
 
                 dtBody.append(`
                     <tr id="interviewee-${ result.applicant_id }">
-                        <td>${ intervieweeFullName }</td>
+                        <td class="w-100">
+                            <div>${ intervieweeFullName }</div>
+                            <div class="small text-secondary">${ result.email }</div>
+                            <div class="small text-secondary">${ result.contact_number }</div>
+                        </td>
                         <td class="text-center">
                             <a 
                                 href="${ BASE_URL_WEB }static/app/files/resumes/${ result.resume }" 
-                                class="btn btn-sm btn-secondary"
+                                class="btn btn-sm btn-secondary text-nowrap"
                                 target="_blank"
                             >
-                                <span>View Resume</span>
-                                <i class="fas fa-file-alt ml-1"></i>
+                                <span class="d-none d-md-inline-block">View Resume</span>
+                                <i class="fas fa-file-alt ml-md-1"></i>
                             </a>
                         </td>
                         <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-danger" onclick="removeApplicant('${ result.applicant_id }')">
-                                <span>Remove</span>
+                            <button 
+                                type="button" 
+                                class="btn btn-sm btn-danger" 
+                                onclick="removeApplicant('${ result.applicant_id }')"
+                            >
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </td>
@@ -908,6 +912,7 @@ validateForm('#confirmRemoveApplicantForm', {
         }
 
         hideModal('#confirmRemoveApplicantModal');
+        toastr.info('An applicant has been removed from the list');
         return false;
     }
 });
@@ -1013,23 +1018,18 @@ initDataTable('#interviewedApplicantsDT', {
         // Applicant Name
         {
             data: null,
+            class: 'w-100',
             render: data => {
-                return formatName('F M. L, S', {
+                const applicantFullName = formatName('F M. L, S', {
                     firstName: data.first_name,
                     middleName: data.middle_name,
                     lastName: data.last_name,
                     suffixName: data.suffix_name
                 });
-            }
-        },
-
-        // Contact Information
-        {
-            data: null,
-            render: data => {
                 return `
-                    <div>${ data.email }</div>
-                    <div>${ data.contact_number }</div>
+                    <div>${ applicantFullName }</div>
+                    <div class="small text-secondary">${ data.email }</div>
+                    <div class="small text-secondary">${ data.contact_number }</div>
                 `
             }
         },
@@ -1037,6 +1037,7 @@ initDataTable('#interviewedApplicantsDT', {
         // Date Applied
         {
             data: null,
+            class: 'text-nowrap',
             render: data => {
                 const dateApplied = data.created_at;
                 return `
@@ -1210,21 +1211,22 @@ initDataTable('#hiredApplicantsDT', {
         // Applicant
         {
             data: null,
+            class: 'w-100',
             render: data => {
-                return formatName('F M. L, S', {
+                const applicantFullName = formatName('F M. L, S', {
                     firstName: data.first_name,
                     middleName: data.middle_name,
                     lastName: data.last_name,
                     suffixName: data.suffix_name,
-                })
+                });
+
+                return `
+                    <div>${ applicantFullName }</div>
+                    <div class="small text-secondary">${ data.email }</div>
+                    <div class="small text-secondary">${ data.contact_number }</div>
+                `
             }
         },
-
-        // Contact Number
-        { data: 'contact_number' },
-
-        // Email
-        { data: 'email' },
 
         // Date Applied
         {
@@ -1285,23 +1287,18 @@ initDataTable('#rejectedApplicantsDT', {
         // Applicant
         {
             data: null,
+            class: 'w-100',
             render: data => {
-                return formatName('F M. L, S', {
+                const applicantFullName = formatName('F M. L, S', {
                     firstName: data.first_name,
                     middleName: data.middle_name,
                     lastName: data.last_name,
                     suffixName: data.suffix_name,
-                })
-            }
-        },
-
-        // Contact Information
-        {
-            data: null,
-            render: data => {
+                });
                 return `
-                    <div>${ data.email }</div>
-                    <div>${ data.contact_number }</div>
+                    <div>${ applicantFullName }</div>
+                    <div class="small text-secondary">${ data.email }</div>
+                    <div class="small text-secondary">${ data.contact_number }</div>
                 `
             }
         },

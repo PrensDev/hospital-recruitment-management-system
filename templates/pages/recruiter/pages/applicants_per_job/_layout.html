@@ -135,7 +135,10 @@
 
                                         {# For evaluation link #}
                                         <li class="nav-item">
-                                            <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-evaluation" class="nav-link">
+                                            <a 
+                                                href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-evaluation" 
+                                                class="nav-link{% if active_menu == 'For evaluation' %} text-primary{% endif %}"
+                                            >
                                                 <i class="fas fa-sync-alt" style="width: 1.5rem"></i>
                                                 <span>For evaluation</span>
                                                 <span 
@@ -148,7 +151,10 @@
 
                                         {# Evaluated link #}
                                         <li class="nav-item">
-                                            <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/evaluated" class="nav-link">
+                                            <a 
+                                                href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/evaluated" 
+                                                class="nav-link{% if active_menu == 'Evaluated' %} text-primary{% endif %}"
+                                            >
                                                 <i class="fas fa-check" style="width: 1.5rem"></i>
                                                 <span>Evaluated</span>
                                                 <span 
@@ -161,7 +167,10 @@
 
                                         {# Rejected link #}
                                         <li class="nav-item">
-                                            <a href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/rejected" class="nav-link">
+                                            <a 
+                                                href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/rejected" 
+                                                class="nav-link{% if active_menu == 'Rejected' %} text-primary{% endif %}"
+                                            >
                                                 <i class="fas fa-times" style="width: 1.5rem"></i>
                                                 <span>Rejected</span>
                                                 <span 
