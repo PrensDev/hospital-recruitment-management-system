@@ -16,13 +16,19 @@ initDataTable('#hiredApplicantsDT', {
         // Applicant
         {
             data: null,
+            class: 'w-100',
             render: data => {
-                return formatName("F M. L, S", {
+                const applicantFullName = formatName("F M. L, S", {
                     firstName: data.first_name,
                     middleName: data.middle_name,
                     lastName: data.last_name,
                     suffixName: data.suffix_name
-                })
+                });
+                return `
+                    <div>${ applicantFullName }</div>
+                    <div class="small text-secondary">${ data.email }</div>
+                    <div class="small text-secondary">${ data.contact_number }</div>
+                `
             }
         },
 
@@ -32,6 +38,7 @@ initDataTable('#hiredApplicantsDT', {
         // Applied at
         {
             data: null,
+            class: 'text-nowrap',
             render: data => {
                 const appliedAt = data.created_at;
                 return `
@@ -45,6 +52,7 @@ initDataTable('#hiredApplicantsDT', {
         // Hired at
         {
             data: null,
+            class: 'text-nowrap',
             render: data => {
                 const hiredAt = data.hired_at;
                 return `

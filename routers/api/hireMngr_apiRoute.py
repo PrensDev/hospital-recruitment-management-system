@@ -60,7 +60,8 @@ async def get_all_requisitions(
             return db.query(Requisition).filter(or_(
                 Requisition.request_status == "For approval",
                 Requisition.request_status == "Approved",
-                Requisition.request_status == "Rejected for approval"
+                Requisition.request_status == "Rejected for approval",
+                Requisition.request_status == "Completed"
             )).all()
     except Exception as e:
         print(e)
@@ -103,7 +104,8 @@ async def get_one_requisition(
                 or_(
                     Requisition.request_status == "For approval",
                     Requisition.request_status == "Approved",
-                    Requisition.request_status == "Rejected for approval"
+                    Requisition.request_status == "Rejected for approval",
+                    Requisition.request_status == "Completed"
                 )
             ).first()
             if not requisition:

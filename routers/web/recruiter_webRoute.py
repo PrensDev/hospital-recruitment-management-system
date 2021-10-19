@@ -86,6 +86,20 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
         return await errTemplate.page_not_found(req)
 
 
+# Job Post Details
+@router.get("/job-posts/{job_post_id}", response_class=HTMLResponse)
+async def render(job_post_id: str, req: Request, user_data: dict = Depends(get_token)):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        return templates.TemplateResponse(TEMPLATES_PATH + "view_job_post.html", {
+            "request": req,
+            "page_title": "Job Post Details",
+            "sub_title": "Job Posts to manage job posting",
+            "active_navlink": "Job Posts"
+        })
+    else:
+        return await errTemplate.page_not_found(req)
+
+
 # Create Job Post
 @router.get("/add-job-post/{requisition_id}", response_class=HTMLResponse)
 async def render(

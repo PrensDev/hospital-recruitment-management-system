@@ -279,14 +279,14 @@ const getOnboardingEmployeeTaskStatus = (status, startAt, deadline, completedAt)
             return `
                 <span class="badge badge-warning p-2">
                     <i class="fas fa-exclamation-circle mr-1"></i>
-                    <span>Must working<span>
+                    <span>Pending (Must working)<span>
                 </span<
             `
         else 
             return `
                 <span class="badge badge-danger p-2">
                     <i class="fas fa-exclamation-triangle mr-1"></i>
-                    <span>Not worked<span>
+                    <span>Pending (Not worked)<span>
                 </span>
             `
     } else if(status == "On Going") 
@@ -295,19 +295,66 @@ const getOnboardingEmployeeTaskStatus = (status, startAt, deadline, completedAt)
                     <i class="fas fa-sync-alt mr-1"></i>
                     <span>On Going<span>
                 </span>`
-            : `<span class="badge badge-danger p-2">
-                    <i class="fas fa-exclamation-triangle mr-1"></i>
-                    <span>Must be done<span>
+            : `<span class="badge badge-warning p-2">
+                    <i class="fas fa-sync-alt mr-1"></i>
+                    <span>On Going (Must be done)<span>
                 </span>`
     else if(status == "Completed") 
         return moment(completedAt).isBefore(moment(deadline))
             ? `<span class="badge badge-success p-2">
                     <i class="fas fa-check mr-1"></i>
-                    <span>Conpleted (On Time)<span>
+                    <span>Completed (On Time)<span>
                 <span>`
             : `<span class="badge badge-success p-2">
                     <i class="fas fa-check mr-1"></i>
                     <span>Completed (Late)<span>
                 <span>`
     else return `<span class="badge badge-light p-2">Invalid data</span>`
+}
+
+
+/** Get Job Post Timeline */
+const getJobPostTimeline = (selector, data) => {
+    let timelineData = [];
+    const jobPostedBy = data.job_posted_by;
+    const jobPostedByFullName = formatName('F M. L, S', {
+        firstName: jobPostedBy.first_name,
+        middleName: jobPostedBy.middle_name,
+        lastName: jobPostedBy.last_name,
+        suffix_name: jobPostedBy.suffix_name
+    });
+
+    // Created
+    const createdAt = data.created_at;
+    timelineData.push({
+        icon: "edit",
+        iconTheme: "info",
+        dateTime: createdAt,
+        timelineTitle: 'Created',
+        timelineBody: `
+            <div class="small mb-3">You, <span class="font-weight-bold">${ jobPostedByFullName }</span>, created this job post</div>
+            <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
+            <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
+        `
+    });
+
+    // Last Updated
+    const lastUpdated = data.updated_at;
+    timelineData.push({
+        icon: "edit",
+        iconTheme: "info",
+        dateTime: lastUpdated,
+        timelineTitle: 'Last Updated',
+        timelineBody: `
+            <div class="small mb-3">You are the last person updated this job post</div>
+            <div class="small text-secondary">${ formatDateTime(lastUpdated, "Full Date") }</div>
+            <div class="small text-secondary">${ formatDateTime(lastUpdated, "Time") }</div>
+        `
+    });
+
+    // Set Timeline
+    setTimeline(selector, {
+        title: 'Job Post Timeline',
+        timelineData: timelineData
+    });
 }

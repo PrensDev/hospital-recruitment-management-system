@@ -425,7 +425,7 @@ async def get_one_onboarding_task(
                     else:
                         onboarding_task = db.query(OnboardingTask).filter(
                             OnboardingTask.department_id == department_id, 
-                            OnboardingTask.task_type == "General", 
+                            OnboardingTask.is_general == True, 
                             OnboardingTask.onboarding_task_id == onboarding_task_id
                         ).first()
                         if not onboarding_task:
@@ -675,7 +675,14 @@ async def update_onboarding_employee_task_status(
             if not onboarding_task.first():
                 raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
             else:
-                onboarding_task.update(req.dict())
+                if(req.status == "Completed"):
+                    onboarding_task.update({
+                        "status": req.status,
+                        "completed_at": text('NOW()'),
+                        "completed_by": user_data.user_id
+                    })
+                else:
+                    onboarding_task.update(req.dict())
                 db.commit()
                 return {"message": "An onboarding employee task has been updated"}
     except Exception as e:

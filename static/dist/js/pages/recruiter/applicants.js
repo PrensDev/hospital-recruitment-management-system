@@ -86,9 +86,9 @@ initDataTable('#applicantsDT', {
                         <i class="fas fa-handshake mr-1"></i>
                         <span>${ status }</span>
                     `);
-                } else if(status === "Onboarding") {
-                    return dtBadge('info', `
-                        <i class="fas fa-clipboard-list mr-1"></i>
+                } else if(status === "Contract signed") {
+                    return dtBadge('primary', `
+                        <i class="fas fa-file-signature mr-1"></i>
                         <span>${ status }</span>
                     `);
                 } else if(

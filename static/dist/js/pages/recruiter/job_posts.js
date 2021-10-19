@@ -323,14 +323,13 @@ initDataTable('#jobPostsDT', {
                         </div>
 
                         <div class="dropdown-menu dropdown-menu-right">
-                            <div 
+                            <a 
                                 class="dropdown-item d-flex"
-                                role="button"
-                                onclick="viewJobPostDetails('${ jobPostID }')"
+                                href="${ R_WEB_ROUTE }job-posts/${ jobPostID }"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <div>View Job Post</div>
-                            </div>
+                            </a>
                             <div 
                                 class="dropdown-item d-flex"
                                 role="button"
@@ -392,9 +391,12 @@ ifSelectorExist('#jobPostsAnalytics', () => jobPostsAnalytics())
 */
 
 /** View Job Post */
-const viewJobPostDetails = (jobPostID) => {
+ifSelectorExist('#jobPostDetails', () => {
+    const jobPostID = window.location.pathname.split('/')[3];
+    
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
+            
             const manpowerRequest = result.manpower_request;
 
             // Set Job Post Status
@@ -441,20 +443,52 @@ const viewJobPostDetails = (jobPostID) => {
             // Set Job Description
             setContent('#jobDescription', result.content);
 
-            // Set Edit Button
-            setContent('#editJobPostBtn', `
-                <a href="${ R_WEB_ROUTE }edit-job-post/${ result.job_post_id }" class="btn btn-info">
-                    <span>Edit Job Post</span>
-                    <i class="fas fa-edit ml-1"></i>
-                </a>
-            `);
+            /** MANPOWER REQUEST SUMMARY */
 
-            /** Show View Job Post Modal */
-            showModal('#viewJobPostModal');
+            // Set Vacant Position
+            setContent('#vacantPositionForSummary', manpowerRequest.vacant_position.name);
+
+            // Set Staffs Needed
+            setContent('#staffsNeededForSummary', () => {
+                const staffsNeeded = manpowerRequest.staffs_needed;
+                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' }`;
+            });
+
+            // Set Employment Type
+            setContent('#employmentTypeForSummary', manpowerRequest.employment_type);
+
+            // Set Salary Range
+            setContent('#salaryRangeForSummary', () => {
+                return isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)
+                    ? () => {
+                        hideElement('#salaryRangeField');
+                        return `<div class="text-secondary font-italic">Unset</div>`
+                    }
+                    : `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
+            });
+
+            // Set Deadline
+            setContent('#deadlineForSummary', () => {
+                const deadline = manpowerRequest.deadline;
+                return isEmptyOrNull(deadline) 
+                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    : `
+                        <div>${ formatDateTime(deadline, "Full Date") }</div>
+                        <div>${ formatDateTime(deadline, "Time") }</div>
+                        <div class="small text-secondary">${ fromNow(deadline) }</div>
+                    `
+            });
+            
+            /** FOR JOB POST TIMELINE */
+            getJobPostTimeline('#jobPostTimeline', result);
+
+            /** Remove Preloaders */
+            $('#jobPostDetailsLoader').remove();
+            showElement('#jobPostDetailsContainer');
         },
         error: () => toastr.error('There was a problem in getting job post details')
     })
-}
+});
 
 
 /**
@@ -614,49 +648,7 @@ ifSelectorExist('#editJobPostForm', () => {
 
 
             /** FOR JOB POST TIMELINE */
-
-            let timelineData = [];
-            const jobPostedBy = result.job_posted_by;
-            const jobPostedByFullName = formatName('F M. L, S', {
-                firstName: jobPostedBy.first_name,
-                middleName: jobPostedBy.middle_name,
-                lastName: jobPostedBy.last_name,
-                suffix_name: jobPostedBy.suffix_name
-            });
-
-            // Created
-            const createdAt = result.created_at;
-            timelineData.push({
-                icon: "edit",
-                iconTheme: "info",
-                dateTime: createdAt,
-                timelineTitle: 'Created',
-                timelineBody: `
-                    <div class="small mb-3">You created this job post</div>
-                    <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
-                    <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
-                `
-            });
-
-            // Last Updated
-            const lastUpdated = result.updated_at;
-            timelineData.push({
-                icon: "edit",
-                iconTheme: "info",
-                dateTime: lastUpdated,
-                timelineTitle: 'Last Updated',
-                timelineBody: `
-                    <div class="small mb-3">You are the last person updated this job post</div>
-                    <div class="small text-secondary">${ formatDateTime(lastUpdated, "Full Date") }</div>
-                    <div class="small text-secondary">${ formatDateTime(lastUpdated, "Time") }</div>
-                `
-            });
-
-            // Set Timeline
-            setTimeline('#jobPostTimeline', {
-                title: 'Job Post Timeline',
-                timelineData: timelineData
-            });
+            getJobPostTimeline('#jobPostTimeline', result);
 
 
             /** SET INPUTS */

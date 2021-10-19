@@ -802,19 +802,19 @@ const initGeneralTaskDT = (selector, url) => {
                     `
                 }
             },
-    
+
             // Actions
             {
                 data: null,
                 render: data => {
                     const onboardingTaskID = data.onboarding_task_id;
-    
+
                     return `
                         <div class="text-center dropdown">
                             <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
                                 <i class="fas fa-ellipsis-v"></i>
                             </div>
-    
+
                             <div class="dropdown-menu dropdown-menu-right">
                                 <div 
                                     class="dropdown-item d-flex"
