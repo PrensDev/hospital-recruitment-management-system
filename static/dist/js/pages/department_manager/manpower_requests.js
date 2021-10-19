@@ -656,7 +656,7 @@ const printManpowerRequest = () => {
         </html>`);
     w.print();
 
-    setTimeout(() => w.close(), 50);
+    setTimeout(() => w.close(), 100);
 }
 
 

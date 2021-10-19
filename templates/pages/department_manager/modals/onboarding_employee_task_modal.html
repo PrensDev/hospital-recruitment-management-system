@@ -1,5 +1,5 @@
 {# Change Task Progress Modal #}
-<div class="modal fade" id="changeTaskStatusModal" data-backdrop="static">
+<div class="modal" id="changeTaskStatusModal" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form class="modal-content" id="updateTaskStatusForm">
 
@@ -15,6 +15,8 @@
                 <label>Please select the current status of this task.</label>
 
                 <div class="form-group">
+
+                    {# Pending Radio #}
                     <div class="custom-control custom-radio py-1">
                         <div class="icheck-primary">
                             <input 
@@ -26,6 +28,8 @@
                             <label for="pending">Pending</label>
                         </div>
                     </div>
+
+                    {# On Going #}
                     <div class="custom-control custom-radio py-1">
                         <div class="icheck-primary">
                             <input 
@@ -37,6 +41,8 @@
                             <label for="onGoing">On Going</label>
                         </div>
                     </div>
+
+                    {# On Going #}
                     <div class="custom-control custom-radio py-1">
                         <div class="icheck-primary">
                             <input 
@@ -56,12 +62,12 @@
                     type="button" 
                     class="btn btn-default" 
                     data-dismiss="modal" 
-                    id="cancelConfimMarkAsCompletedBtn"
+                    id="cancelSaveOnboardingTaskStatusBtn"
                 >Cancel</button>
                 <button 
                     type="submit" 
                     class="btn btn-info" 
-                    id="confimMarkAsCompletedBtn"
+                    id="saveOnboardingTaskStatusBtn"
                 >
                     <span>Save</span>
                     <i class="fas fa-check ml-1"></i>
@@ -260,8 +266,8 @@
                     <input 
                         class="form-control"
                         type="datetime-local"
-                        id="start"
-                        name="start"
+                        id="startAt"
+                        name="startAt"
                     >
                 </div>
 
@@ -281,8 +287,9 @@
                     type="button" 
                     class="btn btn-default" 
                     data-dismiss="modal" 
+                    id="cancelAddOnboardingEmployeeTaskBtn"
                 >Cancel</button>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary" id="addOnboardingEmployeeTaskBtn">
                     <span>Add</span>
                     <i class="fas fa-plus ml-1"></i>
                 </button>

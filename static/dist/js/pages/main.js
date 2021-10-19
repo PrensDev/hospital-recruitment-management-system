@@ -277,8 +277,8 @@ const getOnboardingEmployeeTaskStatus = (status, startAt, deadline, completedAt)
             `
         else if(isBeforeToday(startAt) && isAfterToday(deadline))
             return `
-                <span class="badge badge-danger p-2">
-                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                <span class="badge badge-warning p-2">
+                    <i class="fas fa-exclamation-circle mr-1"></i>
                     <span>Must working<span>
                 </span<
             `

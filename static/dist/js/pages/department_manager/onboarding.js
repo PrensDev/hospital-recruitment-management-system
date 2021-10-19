@@ -503,7 +503,7 @@ validateForm('#confirmRemoveAddedTaskForm', {
 
         // Get added task ID from the form
         const addedTaskID = generateFormData('#confirmRemoveAddedTaskForm').get('addedTaskIDForRemove');
-        
+
         // Remove the row from the table
         $(`#addedTaskRow${ addedTaskID }`).remove();
 
@@ -712,8 +712,7 @@ const addOnboardingTask = () => {
     btnToLoadingState('#addGeneralTaskBtn');
     disableElement('#cancelAddGeneralTaskBtn');
 
-    const formData = generateFormData('#addGeneralTaskForm');
-    const get = (n) => { return formData.get(n) }
+    const get = (n) => { return generateFormData('#addGeneralTaskForm').get(n) }
 
     const data = {
         title: get('taskTitle'),
@@ -1228,18 +1227,73 @@ ifSelectorExist('#onboardingEmployeeDetails', () => getOnboardingEmployeeDetails
 
 /** Mark as Completed */
 const changeProgressStatus = (onboardingEmployeeTaskID) => {
-    setValue('#onboardingEmployeeTaskID', onboardingEmployeeTaskID);
-    showModal('#changeTaskStatusModal');
+    GET_ajax(`${ DM_API_ROUTE }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, {
+        success: result => {
+            const status = result.status;
+            
+            if(status === "Pending") checkElement('#pending');
+            if(status === "On Going") checkElement('#onGoing');
+            if(status === "Completed") checkElement('#completed');
+            
+            setValue('#onboardingEmployeeTaskID', onboardingEmployeeTaskID);
+            showModal('#changeTaskStatusModal');
+        },
+        error: () => toastr.error('There was an error in getting onboarding task details')
+    })
 }
 
 /** When confirm mark as completed modal was hidden */
-onHideModal('#changeTaskStatusModal', () => resetForm('#markAsCompletedForm'));
+onHideModal('#changeTaskStatusModal', () => resetForm('#updateTaskStatusForm'));
+
+/** Validate Form */
+validateForm('#updateTaskStatusForm', {
+    submitHandler: () => {
+        
+        // Set buttons to loading state
+        btnToLoadingState('#saveOnboardingTaskStatusBtn');
+        disableElement('#cancelSaveOnboardingTaskStatusBtn');
+
+        // Generate form data
+        const formData = generateFormData('#updateTaskStatusForm');
+        const status = formData.get('taskStatus');
+        const onboardingEmployeeTaskID = formData.get('onboardingEmployeeTaskID');
+
+        const data = { status: status }
+
+        PUT_ajax(`${ DM_API_ROUTE }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, data, {
+            success: result => {
+                if(result) {
+                    // Reload DataTable
+                    reloadDataTable('#onboardingEmployeeTasksDT');
+    
+                    // Reload Onboarding Employee Details
+                    getOnboardingEmployeeDetails()
+
+                    // Hide Modal
+                    hideModal('#changeTaskStatusModal');
+
+                    // Set buttons to loading state
+                    btnToUnloadState('#saveOnboardingTaskStatusBtn', `
+                        <span>Save</span>
+                        <i class="fas fa-check ml-1"></i>
+                    `);
+                    enableElement('#cancelSaveOnboardingTaskStatusBtn');
+
+                    // Show alert
+                    toastr.info('An onboarding task is successfully updated')
+                } else toastr.error('There was an error in updating onboarding task')
+            },
+            error: () => toastr.error('There was an error in updating onboarding task')
+        });
+
+        return false;
+    }
+})
 
 /** View Onboarding Employee Task Details */
 const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
     GET_ajax(`${ DM_API_ROUTE }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, {
         success: result => {
-            console.log(result);
 
             /** ONBOARDING EMPLOYEE TASK DETAILS */
 
@@ -1322,3 +1376,125 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
     })
     showModal('#onboardingEmployeeTaskDetailsModal');
 }
+
+
+/**
+ * ==============================================================================
+ * ADD ONBOARDING EMPLOYEE TASKS
+ * ==============================================================================
+ */
+
+// Validate Add Onboarding Employee Task Form
+validateForm('#addOnboardingEmployeeTaskForm', {
+    rules: {
+        assignTaskTo: {
+            required: true
+        },
+        taskTitle: {
+            required: true
+        },
+        descriptionForAdd: {
+            required: true
+        },
+        startAt: {
+            required: true,
+            afterToday: true,
+            beforeDateTime: '#deadline'
+        },
+        deadline: {
+            required: true,
+            afterToday: true,
+            afterDateTime: '#startAt'
+        }
+
+    },
+    messages: {
+        assignTaskTo: {
+            required: 'Please select for whom the task is'
+        },
+        taskTitle: {
+            required: 'Task title is required'
+        },
+        descriptionForAdd: {
+            required: 'Task description is required'
+        },
+        startAt: {
+            required: 'Start date and time is required',
+            afterToday: 'It must be in the future',
+            beforeDateTime: 'It must be before deadline'
+        },
+        deadline: {
+            required: 'Deadline is required',
+            afterToday: 'It must be in the future',
+            afterDateTime: 'It must be after start date and time'
+        }
+
+    },
+    submitHandler: () => {
+
+        // Set buttons to loading state
+        btnToLoadingState('#addOnboardingEmployeeTaskBtn');
+        disableElement('#cancelAddOnboardingEmployeeTaskBtn');
+        
+        // For getting values in formData
+        const get = (n) => { return generateFormData('#addOnboardingEmployeeTaskForm').get(n) }
+
+        // Set Data
+        const newOnboardingTaskData = {
+            title: get('taskTitle'),
+            description: get('description'),
+            task_type: get('assignTaskTo'),
+            is_general: false
+        }
+        
+        // Add New Onboarding Task
+        POST_ajax(`${ DM_API_ROUTE }onboarding-tasks`, newOnboardingTaskData, {
+            success: result => {
+                if(result) {
+                    const onboardingTaskID = result.data.onboarding_task_id;
+
+                    // Set Data
+                    const newOnboardingEmployeeTaskData = {
+                        onboarding_task_id: onboardingTaskID,
+                        start_at: get('startAt'),
+                        end_at: get('deadline')
+                    }
+
+                    // Add New Onboarding Employee Task
+                    POST_ajax(
+                        `${ DM_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, 
+                            newOnboardingEmployeeTaskData, {
+                            success: result => {
+                                if(result) {
+
+                                    // Set buttons to unload state
+                                    btnToUnloadState('#addOnboardingEmployeeTaskBtn', `
+                                        <span>Add</span>
+                                        <i class="fas fa-plus ml-1"></i>
+                                    `);
+                                    enableElement('#cancelAddOnboardingEmployeeTaskBtn');
+
+                                    // Reload DataTable
+                                    reloadDataTable('#onboardingEmployeeTasksDT');
+
+                                    // Reload Onboarding Employee Details
+                                    getOnboardingEmployeeDetails()
+
+                                    // Hide Modal
+                                    hideModal('#addOnboardingEmployeeTaskModal');
+
+                                    // Show Alert
+                                    toastr.success('A new onboarding task is successfully added');
+                                } else toastr.error('There was an error in creating onbaording tasks to onboarding employee')
+                            },
+                            error: () => toastr.error('There was an error in creating onbaording tasks to onboarding employee')
+                        }
+                    );
+                } else toastr.error('There was an error in adding new onboarding task')
+            },
+            error: () => toastr.error('There was an error in adding new onboarding task')
+        });
+
+        return false;
+    }
+});

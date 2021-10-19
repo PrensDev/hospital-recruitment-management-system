@@ -269,7 +269,10 @@ async def add_onboarding_task(
                         db.add(new_onboarding_task)
                         db.commit()
                         db.refresh(new_onboarding_task)
-                        return {"message": "New onboarding task has been added"}
+                        return {
+                            "data": new_onboarding_task,
+                            "message": "New onboarding task has been added"
+                        }
     except Exception as e:
         print(e)
 
