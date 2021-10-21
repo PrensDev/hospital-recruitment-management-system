@@ -17,10 +17,9 @@
         
         {# User Full Name Display #}
         <div class="info mr-1" id="userFullNameDisplay" style="display: none">
-            <a href="#" class="d-block text-truncate">
-                <div id="userFullName"></div>
-                <div class="small text-secondary" id="userPosition">Recruiter</div>
-            </a>
+            <a href="#" class="text-truncate" id="userFullName"></a>
+            <div class="small text-secondary text-truncate" id="userPosition"></div>
+            <div class="small text-secondary text-truncate" id="userDepartment"></div>
         </div>
     </div>
 
@@ -28,6 +27,8 @@
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             
+            <li class="nav-header font-weight-bold text-wrap">RECRUITMENT MANAGEMENT SYSTEM</li>
+
             <li class="nav-header">CORE</li>
             <li class="nav-item">
                 <a href="{{R_WEB_ROUTE}}" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">

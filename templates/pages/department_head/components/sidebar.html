@@ -16,15 +16,17 @@
         {# User Full Name Loader #}
         <div class="info mr-1" style="width: 100%" id="userFullNameLoader">
             <div class="skeleton-loader w-75"></div>
+            <div class="skeleton-loader sm w-50"></div>
             <div class="skeleton-loader sm mb-0 w-50"></div>
         </div>
         
         {# User Full Name #}
         <div class="info mr-1 w-100" id="userFullNameDisplay" style="display: none">
-            <a href="#" class="d-block text-truncate">
-                <span id="userFullName"></span>
-                <div class="small text-secondary" id="userPosition">Department Head</div>
+            <a href="#" class="nav-item">
+                <span class="text-truncate" id="userFullName"></span>
             </a>
+            <div class="small text-secondary text-truncate" id="userPosition"></div>
+            <div class="small text-secondary text-truncate" id="userDepartment"></div>
         </div>
     </div>
 
@@ -32,39 +34,41 @@
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
+            <li class="nav-header font-weight-bold text-wrap">RECRUITMENT MANAGEMENT SYSTEM</li>
+
             <li class="nav-header">CORE</li>
             <li class="nav-item">
                 <a href="{{ DH_WEB_ROUTE }}" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">
-                <i class="nav-icon fas fa-chart-pie"></i>
-                <p>Dashboard</p>
+                    <i class="nav-icon fas fa-chart-pie"></i>
+                    <p>Dashboard</p>
                 </a>
             </li>
 
             <li class="nav-header">RECRUITMENT</li>
             <li class="nav-item">
                 <a href="{{ DH_WEB_ROUTE }}manpower-requests" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
-                <i class="nav-icon fas fa-copy"></i>
-                <p>Manpower Requests</p>
+                    <i class="nav-icon fas fa-copy"></i>
+                    <p>Manpower Requests</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{DH_WEB_ROUTE}}hired-applicants" class="nav-link{% if active_navlink == "Hired Applicants" %} active{% endif %}">
-                <i class="nav-icon fas fa-handshake"></i>
-                <p>
-                    Hired Applicants
-                    {# <span class="right badge badge-primary">99+</span> #}
-                </p>
+                    <i class="nav-icon fas fa-handshake"></i>
+                    <p>
+                        Hired Applicants
+                        {# <span class="right badge badge-primary">99+</span> #}
+                    </p>
                 </a>
             </li>
 
             <li class="nav-header">ON-BOARDING</li>
             <li class="nav-item">
                 <a href="{{DH_WEB_ROUTE}}onboarding-employees" class="nav-link{% if active_navlink == "On-boarding Employees" %} active{% endif %}">
-                <i class="nav-icon fas fa-user-tie"></i>
-                <p>
-                    Onboarding Employees
-                    {# <span class="right badge badge-primary">99+</span> #}
-                </p>
+                    <i class="nav-icon fas fa-user-tie"></i>
+                    <p>
+                        Onboarding Employees
+                        {# <span class="right badge badge-primary">99+</span> #}
+                    </p>
                 </a>
             </li>
         </ul>

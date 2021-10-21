@@ -22,7 +22,7 @@ router = APIRouter(
 templates = Jinja2Templates(directory = "templates")
 
 
-# Index
+# Login
 @router.get("/login", response_class=HTMLResponse)
 async def index(req: Request):
     try:
@@ -54,8 +54,26 @@ async def redirect(req: Request, user_data: dict = Depends(get_token)):
 
 
 # ===========================================================
+# HOME
+# ===========================================================
+
+
+# Home Page
+@router.get("/")
+async def careers(req: Request, page: Optional[int] = None):
+    try:
+        return templates.TemplateResponse("pages/home/index.html", {
+            "request": req,
+            "page_title": "Careers"
+        })
+    except Exception as e:
+        print(e)
+
+
+# ===========================================================
 # CAREERS/JOB POSTS
 # ===========================================================
+
 
 
 # Careers
@@ -64,7 +82,8 @@ async def careers(req: Request, page: Optional[int] = None):
     try:
         return templates.TemplateResponse("pages/home/careers.html", {
             "request": req,
-            "page_title": "Careers"
+            "page_title": "Careers",
+            "active_navlink": "Careers"
         })
     except Exception as e:
         print(e)
@@ -79,7 +98,8 @@ async def search(req: Request, query: str, page: Optional[int] = 1):
         else:
             return templates.TemplateResponse("pages/home/search_result.html", {
                 "request": req,
-                "page_title": "Search Result for \"" + query + "\""
+                "page_title": "Search Result for \"" + query + "\"",
+                "active_navlink": "Careers"
             })
     except Exception as e:
         print(e)
@@ -95,7 +115,8 @@ async def available_job_details(job_post_id: str, req: Request, db: Session = De
         else:
             return templates.TemplateResponse("pages/home/available_job_details.html", {
                 "request": req,
-                "page_title": "Available Job Details"
+                "page_title": "Available Job Details",
+                "active_navlink": "Careers"
             })
     except Exception as e:
         print(e)

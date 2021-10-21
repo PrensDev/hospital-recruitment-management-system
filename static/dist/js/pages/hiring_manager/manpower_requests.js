@@ -333,8 +333,7 @@ ifSelectorExist('#manpowerRequestDocument', () => {
             
             // Remove Manpower Request Timeline Loader
             $('#manpowerRequestTimelineLoader').remove();
-            showElement('#manpowerRequestTimeline');// Remove Loader
-
+            showElement('#manpowerRequestTimeline');
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });

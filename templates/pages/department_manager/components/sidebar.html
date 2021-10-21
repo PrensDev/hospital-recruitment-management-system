@@ -12,14 +12,16 @@
         {# User Full Name Loader #}
         <div class="info mr-1" style="width: 100%" id="userFullNameLoader">
             <div class="skeleton-loader w-75"></div>
+            <div class="skeleton-loader sm w-50"></div>
             <div class="skeleton-loader sm mb-0 w-50"></div>
         </div>
 
         {# User Full Name #}
         <div class="info mr-1" id="userFullNameDisplay" style="display: none">
-            <a href="#" class="d-block text-truncate">
-                <span id="userFullName"></span>
-                <div class="small text-secondary" id="userPosition">Department Manager</div>
+            <a href="#" class="d-block">
+                <span class="text-truncate" id="userFullName"></span>
+                <div class="small text-secondary text-truncate" id="userPosition"></div>
+                <div class="small text-secondary text-truncate" id="userDepartment"></div>
             </a>
         </div>
     </div>
@@ -27,6 +29,8 @@
     {# Sidebar Menu #}
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+            <li class="nav-header font-weight-bold text-wrap">RECRUITMENT MANAGEMENT SYSTEM</li>
 
             <li class="nav-header">CORE</li>
             <li class="nav-item">

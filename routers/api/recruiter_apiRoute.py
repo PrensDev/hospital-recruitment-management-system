@@ -56,7 +56,10 @@ def get_all_approved_requisitions(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            return db.query(Requisition).filter(Requisition.request_status == "Approved").all()
+            return db.query(Requisition).filter(or_(
+                Requisition.request_status == "Approved",
+                Requisition.request_status == "Completed"
+            )).all()
     except Exception as e:
         print(e)
 
@@ -74,7 +77,10 @@ def requisition_analytics(
                 Requisition.request_status == "Approved",
                 Requisition.request_status == "Completed"
             )).count()
-            with_job_post = query.join(JobPost).filter(Requisition.request_status == "Approved").filter(JobPost.requisition_id == Requisition.requisition_id).count()
+            with_job_post = query.join(JobPost).filter(or_(
+                Requisition.request_status == "Approved",
+                Requisition.request_status == "Completed"
+            )).filter(JobPost.requisition_id == Requisition.requisition_id).count()
             return {
                 "approved_requests": approved_request,
                 "with_job_post": with_job_post
@@ -92,7 +98,13 @@ def get_one_approved_requisitions(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
+            requisition = db.query(Requisition).filter(
+                Requisition.requisition_id == requisition_id,
+                or_(
+                    Requisition.request_status == "Approved",
+                    Requisition.request_status == "Completed"
+                )
+            ).first()
             if not requisition:
                 raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE)
             else:

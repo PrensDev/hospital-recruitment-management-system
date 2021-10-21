@@ -1,4 +1,4 @@
-{% extends "pages/department_manager/_layout.html" %} 
+{% extends "pages/recruiter/_layout.html" %} 
 
 
 {% block content %}
@@ -348,7 +348,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body" id="manpowerRequestOptions"></div>
+                    <div class="card-body">
+                        <div class="btn btn-sm btn-primary btn-block" onclick="createJobPostFromViewRequest()">
+                            <i class="fas fa-pen mr-1"></i>
+                            <span>Create job post</span>
+                        </div>
+                    </div>
                 </div>
 
                 {# Manpower Request Timeline Loader #}
@@ -389,11 +394,6 @@
 {% endblock %}
 
 
-{% block page_modals %}
-    {% include "pages/department_manager/modals/view_manpower_request_modal.html" %}
-{% endblock %}
-
-
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/department_manager/manpower_requests.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/pages/recruiter/manpower_requests.js')}}"></script>
 {% endblock %}

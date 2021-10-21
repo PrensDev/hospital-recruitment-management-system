@@ -1126,6 +1126,22 @@ initDataTable('#onboardingEmployeeTasksDT', {
                         : ''
                 }
 
+                const deleteTask = () => {
+                    return data.status == "Pending"
+                        ? `
+                            <div class="dropdown-divider"></div>
+                            <div 
+                                class="dropdown-item d-flex"
+                                role="button"
+                                onclick="deleteOnboardingEmployeeTask('${ onboardingEmplyeeTaskID }')"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
+                                <span>Delete Task</span>
+                            </div>
+                        `
+                        : ''
+                }
+
                 return `
                     <div class="text-center dropdown">
                         <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
@@ -1142,6 +1158,7 @@ initDataTable('#onboardingEmployeeTasksDT', {
                                 <span>View Details</span>
                             </div>
                             ${ markAsCompletedLink() }
+                            ${ deleteTask() }
                         </div>
                     </div>
                 `
@@ -1194,14 +1211,11 @@ const getOnboardingEmployeeDetails = () => {
                     maintainAspectRatio : false,
                     responsive : true,
                 }
-                //Create pie or douhnut chart
-                // You can switch between pie and douhnut using the method below.
                 new Chart(donutChartCanvas, {
                     type: 'doughnut',
                     data: donutData,
                     options: donutOptions
-                })
-
+                });
             });
 
             // Set Email
@@ -1230,11 +1244,9 @@ const changeProgressStatus = (onboardingEmployeeTaskID) => {
     GET_ajax(`${ DM_API_ROUTE }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, {
         success: result => {
             const status = result.status;
-            
             if(status === "Pending") checkElement('#pending');
             if(status === "On Going") checkElement('#onGoing');
             if(status === "Completed") checkElement('#completed');
-            
             setValue('#onboardingEmployeeTaskID', onboardingEmployeeTaskID);
             showModal('#changeTaskStatusModal');
         },
@@ -1265,7 +1277,7 @@ validateForm('#updateTaskStatusForm', {
                 if(result) {
                     // Reload DataTable
                     reloadDataTable('#onboardingEmployeeTasksDT');
-    
+
                     // Reload Onboarding Employee Details
                     getOnboardingEmployeeDetails()
 

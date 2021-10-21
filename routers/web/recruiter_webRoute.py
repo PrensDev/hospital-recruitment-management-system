@@ -7,6 +7,7 @@ from routers.web import errPages_templates as errTemplate
 from sqlalchemy.orm import Session
 from jwt_token import get_token
 from models import *
+from schemas.recruiter_schemas import ManpowerRequest
 
 
 # Router
@@ -66,6 +67,29 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
         return await errTemplate.page_not_found(req)
 
 
+# Manpower Requests
+@router.get("/manpower-requests/{requisition_id}", response_class=HTMLResponse)
+async def render(
+    requisition_id: str,
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
+        if not requisition:
+            return await errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse(TEMPLATES_PATH + "view_manpower_request.html", {
+                "request": req,
+                "page_title": "Manpower Requests",
+                "sub_title": "Manpower Requests to manage requests for employees",
+                "active_navlink": "Manpower Requests"
+            })
+    else:
+        return await errTemplate.page_not_found(req)
+
+
 
 # ===========================================================
 # JOB POSTS
@@ -88,14 +112,22 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
 
 # Job Post Details
 @router.get("/job-posts/{job_post_id}", response_class=HTMLResponse)
-async def render(job_post_id: str, req: Request, user_data: dict = Depends(get_token)):
+async def render(
+    job_post_id: str, 
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "view_job_post.html", {
-            "request": req,
-            "page_title": "Job Post Details",
-            "sub_title": "Job Posts to manage job posting",
-            "active_navlink": "Job Posts"
-        })
+        job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
+        if not job_post:
+            return await errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse(TEMPLATES_PATH + "view_job_post.html", {
+                "request": req,
+                "page_title": "Job Post Details",
+                "sub_title": "Job Posts to manage job posting",
+                "active_navlink": "Job Posts"
+            })
     else:
         return await errTemplate.page_not_found(req)
 

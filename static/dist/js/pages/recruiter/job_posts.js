@@ -340,14 +340,13 @@ initDataTable('#jobPostsDT', {
                             </div>
                             ${ applicants }
                             <div class="dropdown-divider"></div>
-                            <div 
+                            <a
                                 class="dropdown-item d-flex"
-                                role="button"
-                                onclick="viewManpowerRequestDetails('${ requisitionID }')"
+                                href="${ R_WEB_ROUTE }manpower-requests/${ requisitionID }"
                             >
                                 <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
                                 <div>View Manpower Request</div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 `

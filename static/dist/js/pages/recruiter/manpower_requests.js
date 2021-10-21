@@ -53,13 +53,23 @@ initDataTable('#manpowerRequestDT', {
         {
             data: null,
             render: data => {
-                jobPost = data.job_post
+                const jobPost = data.job_post;
 
-                if(jobPost.length == 1) {
-                    jobPost = jobPost[1]
-                    return dtBadge('success', 'Job post is created')
+                if(data.request_status === "Completed") {
+                    return dtBadge('info', `
+                        <i class="fas fa-check mr-1"></i>
+                        <span>Completed</span>
+                    `);
+                } else if(jobPost.length == 1) {
+                    return dtBadge('success', `
+                        <i class="fas fa-briefcase mr-1"></i>
+                        <span>Job post is created</span>
+                    `);
                 } else {
-                    return dtBadge('warning', 'No job post yet')
+                    return dtBadge('warning', `
+                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                        <span>No job post yet</span>
+                    `);
                 }
             }
         },
@@ -107,16 +117,15 @@ initDataTable('#manpowerRequestDT', {
                         </div>
 
                         <div class="dropdown-menu dropdown-menu-right">
-                            <div 
+                            <a 
                                 class="dropdown-item d-flex" 
-                                role="button"
-                                onclick="viewManpowerRequest('${ requisitionID }')"
+                                href="${R_WEB_ROUTE}manpower-requests/${ requisitionID }"
                             >
                                 <div style="width: 2rem">
                                     <i class="fas fa-list mr-1"></i>
                                 </div>
                                 <div>View Details</div>
-                            </div>
+                            </a>
 
                             ${ createJobPostBtn }
                         </div>
@@ -138,7 +147,6 @@ initDataTable('#manpowerRequestDT', {
 const manpowerRequestAnalytics = () => {
     GET_ajax(`${ R_API_ROUTE }requisitions/analytics`, {
         success: result => {
-            // console.log(result)
 
             // Set Approved Requests Count
             setContent('#approvedRequestsCount', formatNumber(result.approved_requests));
@@ -161,13 +169,23 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
  */
 
 /** View Manpower Request */
-const viewManpowerRequest = (requisitionID) => {
+ifSelectorExist('#manpowerRequestDocumentContainer', () => {
+    const requisitionID = window.location.pathname.split('/')[3];
     GET_ajax(`${ R_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
+            
+            /** SET MANPOWER REQUEST CONTENTS */
+
             const requestedBy = result.manpower_request_by;
+
+            // Set Requisition No
+            setContent('#requisitionNo', result.requisition_no);
+
+            // Set Requisition ID
+            setValue('#requisitionID', result.requisition_id)
             
             // Set Requestor Name
-            setContent('#requestorName', formatName("L, F M., S", {
+            setContent('#requestorName', formatName("F M. L, S", {
                 firstName: requestedBy.first_name,
                 middleName: requestedBy.middle_name,
                 lastName: requestedBy.last_name,
@@ -178,14 +196,13 @@ const viewManpowerRequest = (requisitionID) => {
             setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
             
             // Set Date Requested
-            setContent('#dateRequested', formatDateTime(result.created_at, "Date"));
+            setContent('#dateRequested', formatDateTime(result.created_at, "DateTime"));
             
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
-                return isEmptyOrNull(deadline)
-                    ? `<div class="text-secondary font-italic">No deadline</div>`
-                    : formatDateTime(result.deadline, "DateTime")
+                if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No deadline</div>`
+                else return formatDateTime(result.deadline, "DateTime")
             });
 
             // Set Requested Position
@@ -211,12 +228,35 @@ const viewManpowerRequest = (requisitionID) => {
                 const minMonthlySalary = result.min_monthly_salary;
                 const maxMonthlySalary = result.max_monthly_salary;
                 return isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary) 
-                    ? `<div class="text-secondary font-italic">Unset</div>`
+                    ? `<div class="text-secondary font-italic">Unset</div>` 
                     : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
             });
 
             // Set Request Description
             setContent('#requestDescription', result.content);
+
+            // Set Approved By
+            setContent('#approvedBy', () => {
+                const approvedBy = result.manpower_request_reviewed_by;
+                return isEmptyOrNull(approvedBy)
+                    ? `<div class="text-secondary font-italic">Not yet approved</div>`
+                    : () => {
+                        if(result.request_status === "Rejected") {
+                            return `<div class="text-danger">This request has been rejected</div>`
+                        } else {
+                            const approvedByFullName = formatName("L, F M., S", {
+                                firstName: approvedBy.first_name,
+                                middleName: approvedBy.middle_name,
+                                lastName: approvedBy.last_name,
+                                suffixName: approvedBy.suffix_name
+                            });
+                            return `
+                                <div>${ approvedByFullName }</div>
+                                <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
+                            `
+                        }
+                    }
+            });
 
             // Set Signed By
             setContent('#signedBy', () => {
@@ -251,30 +291,11 @@ const viewManpowerRequest = (requisitionID) => {
                     `
             });
 
-            // Set Approved By
-            setContent('#approvedBy', () => {
-                const approvedBy = result.manpower_request_reviewed_by;
-                return isEmptyOrNull(approvedBy)
-                    ? "Not yet approved"
-                    : () => {
-                        const approvedByFullName = formatName("L, F M., S", {
-                            firstName: approvedBy.first_name,
-                            middleName: approvedBy.middle_name,
-                            lastName: approvedBy.last_name,
-                            suffixName: approvedBy.suffix_name
-                        });
-                        return `
-                            <div>${ approvedByFullName }</div>
-                            <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
-                        `
-                    }
-            });
-
             // Set Approved At
             setContent('#approvedAt', () => {
                 const approvedAt = result.reviewed_at;
-                return isEmptyOrNull(approvedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
+                return (isEmptyOrNull(approvedAt) || result.request_status === 'Rejected') 
+                    ? `<div class="text-secondary font-italic">No status</div>`
                     : formatDateTime(approvedAt, "DateTime")
             });
 
@@ -282,29 +303,66 @@ const viewManpowerRequest = (requisitionID) => {
             setContent('#completedAt', () => {
                 const completedAt = result.completed_at;
                 return isEmptyOrNull(completedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
-                    : formatDateTime(completedAt, "DatTime")
+                    ? `<div class="text-secondary font-italic">No status</div>`
+                    : formatDateTime(completedAt, "Date")
             });
 
-            // Set Modal Footer
-            if(result.job_post.length == 1){
-                setContent('#viewManpowerRequestModalFooter', `<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>`)
-            } else {
-                setContent('#viewManpowerRequestModalFooter', `
+            // Set Modal Footer and Other Fields
+            const requestStatus = result.request_status;
+            var modalFooterBtns;
+            
+            if(requestStatus === "For Review") {
+                showElement('#requestApprovalField');
+                modalFooterBtns = `
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" onclick="createJobPost('${ result.requisition_id }')">
-                        <span>Create Job Post</span>
-                        <i class="fas fa-pen ml-1"></i>
+                    <button 
+                        type="submit" 
+                        class="btn btn-success" 
+                        id="submitBtn"
+                        disabled
+                    >
+                        <span>Submit</span>
+                        <i class="fas fa-check ml-1"></i>
                     </button>
-                `);
+                `;
+            } else {
+                hideElement('#requestApprovalField');
+                modalFooterBtns = `<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>`;
             }
 
-            // Show View Manpower Request Modal
-            showModal('#viewManpowerRequestModal');
+            if(requestStatus === "Approved" || requestStatus === "Rejected for approval") 
+                $('#approvalForm').remove()
+            else if(requestStatus == "For approval")
+                showElement('#approvalForm');
+
+
+            /** FOR MANPOWER REQUEST TIMELINE */
+            setManpowerRequestTimeline('#manpowerRequestTimeline', result)
+
+            /** REMOVE LOADERS */
+            
+            // Remove Manpower Request Document Loader
+            $('#manpowerRequestDocumentLoader').remove();
+            showElement('#manpowerRequestDocumentContainer');
+            
+            // Remove Manpower Request Timeline Loader
+            $('#manpowerRequestTimelineLoader').remove();
+            showElement('#manpowerRequestTimeline');
+
+            // Remobe Manpower Request Options Loader
+            if(result.job_post.length == 1) {
+                $('#optionsLoader').remove();
+                $('#optionsContainer').remove();
+            } else {
+                $('#optionsLoader').remove();
+                showElement('#optionsContainer');
+            }
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });
-}
+});
 
 /** Create Job Post */
 const createJobPost = (requisitionID) => location.assign(`${ R_WEB_ROUTE }add-job-post/${ requisitionID }`);
+
+const createJobPostFromViewRequest = () => createJobPost(window.location.pathname.split('/')[3]);
