@@ -238,8 +238,59 @@ async def get_all_applicants_per_job(
         print(e)
 
 
+# Get All Applicants
+@router.get("/applicants", response_model=List[hireMngr.ShowApplicant])
+async def get_all_applicants(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(Applicant).all()
+    except Exception as e:
+        print(e)
+
+
+# Applicants Analytics
+@router.get("/applicants/analytics")
+async def applicants_analytics(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            query = db.query(Applicant)
+
+            total = query.count()
+            for_evaluation = query.filter(Applicant.status == "For evaluation").count()
+            for_screening = query.filter(Applicant.status == "For screening").count()
+            for_interview = query.filter(Applicant.status == "For interview").count()
+            hired = query.filter(Applicant.status == "Hired").count()
+            
+            rejected_from_evaluation = query.filter(Applicant.status == "Rejected from evaluation").count()
+            rejected_from_screening = query.filter(Applicant.status == "Rejected from screening").count()
+            rejected_from_interview = query.filter(Applicant.status == "Rejected from interview").count()
+            total_rejected = rejected_from_evaluation + rejected_from_screening + rejected_from_interview
+            
+            return {
+                "total": total,
+                "for_evaluation": for_evaluation,
+                "for_screening": for_screening,
+                "for_interview": for_interview,
+                "hired": hired,
+                "rejected": {
+                    "total": total_rejected,
+                    "from_evaluation": rejected_from_evaluation,
+                    "from_screening": rejected_from_screening,
+                    "from_interview": rejected_from_interview
+                }
+            }
+    except Exception as e:
+        print(e)
+
+
 # Get One Applicant
-@router.get("/applicants/{applicant_id}", response_model = hireMngr.ShowApplicant)
+@router.get("/applicants/{applicant_id}", response_model=hireMngr.ShowApplicant)
 async def get_one_applicant(
     applicant_id: str,
     db: Session = Depends(get_db),

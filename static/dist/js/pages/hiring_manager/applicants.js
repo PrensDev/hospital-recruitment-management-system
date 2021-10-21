@@ -63,6 +63,165 @@ ifSelectorExist('#jobPostSummary', () => {
 
 /**
  * ==============================================================================
+ * VIEW ALL APPLICANTS
+ * ==============================================================================
+*/
+
+/** Initialize Applicants DataTable */
+initDataTable('#applicantsDT', {
+    // debugMode: true,
+    url: `${ H_API_ROUTE }applicants`,
+    columns: [
+        
+        // Created at (Hidden for default sorting)
+        { data: 'created_at', visible: false },
+
+        // Applicant
+        {
+            data: null,
+            class: 'w-100',
+            render: data => {
+                const applicantFullName = formatName('F M. L, S', {
+                    firstName: data.first_name,
+                    middleName: data.middle_name,
+                    lastName: data.last_name,
+                    suffixName: data.suffix_name,
+                });
+                return `
+                    <div>${ applicantFullName }</div>
+                    <div class="small text-secondary">${ data.email }</div>
+                    <div class="small text-secondary">${ data.contact_number }</div>
+                `
+            }
+        },
+
+        // Position
+        { data: 'applied_job.manpower_request.vacant_position.name' },
+
+        // Employment Type
+        { data: 'applied_job.manpower_request.employment_type' },
+
+        // Date Applied
+        {
+            data: null,
+            class: 'text-nowrap',
+            render: data => {
+                const dateApplied = data.created_at;
+                return `
+                    <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
+                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                `;
+            }
+        },
+
+        // Status
+        {
+            data: null,
+            render: data => {
+                const status = data.status;
+                if(status === "For evaluation") {
+                    return dtBadge('warning', `
+                        <i class="fas fa-sync-alt mr-1"></i>
+                        <span>${ status }</span>
+                    `);
+                } else if(status === "For screening") {
+                    return dtBadge('secondary', `
+                        <i class="fas fa-search mr-1"></i>
+                        <span>${ status }</span>
+                    `);
+                } else if(status === "For interview") {
+                    return dtBadge('info', `
+                        <i class="fas fa-user-friends mr-1"></i>
+                        <span>${ status }</span>
+                    `);
+                } else if(status === "Hired") {
+                    return dtBadge('success', `
+                        <i class="fas fa-handshake mr-1"></i>
+                        <span>${ status }</span>
+                    `);
+                } else if(status === "Contract signed") {
+                    return dtBadge('primary', `
+                        <i class="fas fa-file-signature mr-1"></i>
+                        <span>${ status }</span>
+                    `);
+                } else if(
+                    status === "Rejected from evaluation" || 
+                    status === "Rejected from screening"  || 
+                    status === "Rejected from interview"
+                ) {
+                    return dtBadge('danger', `
+                        <i class="fas fa-times mr-1"></i>
+                        <span>${ status }</span>
+                    `);
+                } else {
+                    return dtBadge('light', `<span>Invalid data</span>`);
+                }
+            }
+        },
+
+        // User Actions
+        {
+            data: null,
+            render: data => {
+                return `
+                    <div class="text-center dropdown">
+                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div 
+                                class="dropdown-item d-flex" 
+                                role="button" 
+                                onclick="viewApplicantDetails('${ data.applicant_id }')"
+                            >
+                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                                <div>View Details</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        }
+    ]
+});
+
+
+/**
+ * ==============================================================================
+ * APPLICANTS ANALYTICS
+ * ==============================================================================
+*/
+
+// Applicants Analytics
+const applicantsAnalytics = () => {
+    GET_ajax(`${ H_API_ROUTE }applicants/analytics`, {
+        success: result => {
+
+            // Set Total Applicants
+            setContent('#totalApplicantsCount', formatNumber(result.total));
+
+            // Set For Evaluation Applicants
+            setContent('#forEvaluationCount', formatNumber(result.for_evaluation));
+
+            // Set For Screening 
+            setContent('#forScreeningCount', formatNumber(result.for_screening));
+
+            // Set For Interview
+            setContent('#forInterviewCount', formatNumber(result.for_interview));
+
+            // Set Rejected Applicants
+            setContent('#rejectedApplicantsCount', formatNumber(result.rejected.total));
+        },
+        error: () => toastr.error('There was an error in getting applciants analytics')
+    });
+}
+
+ifSelectorExist('#applicantsAnalytics', () => applicantsAnalytics());
+
+
+/**
+ * ==============================================================================
  * APPLICANTS PER JOB ANALYTICS
  * ==============================================================================
 */
@@ -139,127 +298,7 @@ const setApplicantDetailsAndTimeline = (result) => {
 
 
     /** APPLICANT TIMELINE */
-
-    let timelineData = [];
-
-    // Applied
-    const createdAt = result.created_at;
-    timelineData.push({
-        icon: "file-export",
-        iconTheme: "primary",
-        dateTime: createdAt,
-        timelineTitle: 'Applied',
-        timelineBody: `
-            <div class="small mb-3">Application was submitted by <b>${ applicantFullName }</b></div>
-            <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
-            <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
-        `
-    });
-
-    // Evaluated
-    const evaluatedAt = result.evaluated_at;
-    const evaluatedBy = result.evaluation_done_by;
-    if(!isEmptyOrNull(evaluatedAt) && !isEmptyOrNull(evaluatedBy)) {
-        const evaluatedByFullName = formatName('F M. L, S', {
-            firstName: evaluatedBy.first_name,
-            middleName: evaluatedBy.middle_name,
-            lastName: evaluatedBy.last_name,
-            suffixName: evaluatedBy.suffix_name
-        });
-        timelineData.push({
-            icon: "check",
-            iconTheme: "success",
-            dateTime: evaluatedAt,
-            timelineTitle: 'Evaluated',
-            timelineBody: `
-                <div class="small mb-3">Evaluation was done by <b>${ evaluatedByFullName }</b></div>
-                <div class="small text-secondary">${ formatDateTime(evaluatedAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(evaluatedAt, "Time") }</div>
-            `
-        });
-    }
-
-    // Screened
-    const screenedAt = result.screened_at;
-    const screenedBy = result.screening_done_by;
-    if(!isEmptyOrNull(screenedAt) && !isEmptyOrNull(screenedBy)) {
-        const screenedByFullName = formatName('F M. L, S', {
-            firstName: screenedBy.first_name,
-            middleName: screenedBy.middle_name,
-            lastName: screenedBy.last_name,
-            suffixName: screenedBy.suffix_name
-        });
-        timelineData.push({
-            icon: "check",
-            iconTheme: "warning",
-            dateTime: screenedAt,
-            timelineTitle: 'Screened',
-            timelineBody: `
-                <div class="small mb-3">Screening was done by <b>${ screenedByFullName }</b></div>
-                <div class="small text-secondary">${ formatDateTime(screenedAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(screenedAt, "Time") }</div>
-            `
-        });
-    }
-
-    // Hired
-    const hiredAt = result.hired_at;
-    const hiredBy = result.hiring_done_by;
-    if(!isEmptyOrNull(hiredAt) && !isEmptyOrNull(hiredBy)) {
-        const hiredByFullName = formatName('F M. L, S', {
-            firstName: hiredBy.first_name,
-            middleName: hiredBy.middle_name,
-            lastName: hiredBy.last_name,
-            suffixName: hiredBy.suffix_name
-        });
-        timelineData.push({
-            icon: "handshake",
-            iconTheme: "success",
-            dateTime: hiredAt,
-            timelineTitle: 'Hired',
-            timelineBody: `
-                <div class="small mb-3">Hiring was done by <b>${ hiredByFullName }</b></div>
-                <div class="small text-secondary">${ formatDateTime(hiredAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(hiredAt, "Time") }</div>
-            `
-        });
-    }
-
-    // Rejected
-    const status = result.status;
-    if(
-        status === "Rejected from evaluation" || 
-        status === "Rejected from screening"  || 
-        status === "Rejected from interview" 
-    ) {
-        const rejectedAt = result.rejected_at;
-        const rejectedBy = result.rejection_done_by;
-        if(!isEmptyOrNull(rejectedAt) && !isEmptyOrNull(rejectedBy)) {
-            const rejectedByFullName = formatName('F M. L, S', {
-                firstName: rejectedBy.first_name,
-                middleName: rejectedBy.middle_name,
-                lastName: rejectedBy.last_name,
-                suffixName: rejectedBy.suffix_name
-            });
-            timelineData.push({
-                icon: "times",
-                iconTheme: "danger",
-                dateTime: rejectedAt,
-                timelineTitle: status,
-                timelineBody: `
-                    <div class="small mb-3">Applicant was ${ status.toLowerCase() } by <b>${ rejectedByFullName }</b></div>
-                    <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
-                    <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
-                `
-            });
-        }
-    }
-
-    // Set Applicant Timeline
-    setTimeline('#applicantTimeline', {
-        title: "Applicant Timeline",
-        timelineData: timelineData
-    });
+    setApplicantTimeline('#applicantTimeline', result);
 
     // Remove Applicant Timeline Loader
     hideElement('#applicantTimelineLoader');
@@ -321,10 +360,25 @@ const viewInterviewedApplicantDetails = (applicantID) => {
             scores.forEach(s => {
                 const score = s.score;
                 sum+=score;
+
+                var interviewQuestionType;
+                if(s.interview_question.type === "General") {
+                    interviewQuestionType = `
+                        <span class="badge border border-primary text-primary">General</span>
+                    `
+                } else if(s.interview_question.type === "Added") {
+                    interviewQuestionType = `
+                        <span class="badge border border-secondary text-secondary">Added</span>
+                    `
+                } 
+
                 $('#applicantScoresheet').append(`
                     <tr>
                         <td class="text-right">${ count }</td>
-                        <td>${ s.interview_question.question }</td>
+                        <td>
+                            <div>${ s.interview_question.question }</div>
+                            <div>${ interviewQuestionType }</div>
+                        </td>
                         <td class="text-right">${ formatNumber(score) }%</td>
                     </tr>
                 `);
@@ -471,6 +525,7 @@ onHideModal('#applicantDetailsModal', () => {
     resetForm('#applicantScreeningForm');
     hideElement("#remarksField");
     disableElement('#submitBtn');
+    $('#applicantDetailsTab').tab('show');
 });
 
 /** Validate Applicant Screening Form */

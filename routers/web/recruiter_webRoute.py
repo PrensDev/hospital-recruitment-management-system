@@ -67,7 +67,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
         return await errTemplate.page_not_found(req)
 
 
-# Manpower Requests
+# Manpower Request Details
 @router.get("/manpower-requests/{requisition_id}", response_class=HTMLResponse)
 async def render(
     requisition_id: str,
@@ -82,8 +82,8 @@ async def render(
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "view_manpower_request.html", {
                 "request": req,
-                "page_title": "Manpower Requests",
-                "sub_title": "Manpower Requests to manage requests for employees",
+                "page_title": "Manpower Request Details",
+                "sub_title": "View the details of manpower request here",
                 "active_navlink": "Manpower Requests"
             })
     else:

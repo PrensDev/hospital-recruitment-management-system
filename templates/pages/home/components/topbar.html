@@ -17,15 +17,12 @@
             class="navbar-toggler order-1" 
             type="button" 
             data-toggle="collapse" 
-            data-target="#navbarCollapse" 
-            aria-controls="navbarCollapse" 
-            aria-expanded="false" 
-            aria-label="Toggle navigation"
+            data-target="#navbarCollapse"
         >
             <i class="fas fa-bars"></i>
         </button>
 
-        {# Navbar #}
+        {# Left Navbar Links #}
         <div class="collapse navbar-collapse order-3" id="navbarCollapse">
             <ul class="navbar-nav">
 
@@ -93,6 +90,14 @@
                 </ul>
                 </li>
             </ul>
+        </div>
+
+        {# Right Navbar Links #}
+        <div class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+            <a href="{{ BASE_URL_WEB }}login" class="btn btn-primary">
+                <span>Login</span>
+                <i class="fas fa-sign-in-alt ml-1"></i>
+            </a>
         </div>
     </div>
 </nav>

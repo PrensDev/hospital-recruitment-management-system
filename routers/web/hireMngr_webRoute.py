@@ -82,7 +82,7 @@ async def render(
             return templates.TemplateResponse(TEMPLATES_PATH  + "view_manpower_request.html", {
                 "request": req,
                 "page_title": "Manpower Request Details",
-                "sub_title": "Manpower Request Details",
+                "sub_title": "View the details of manpower request here",
                 "active_navlink": "Manpower Requests"
             })
     else:

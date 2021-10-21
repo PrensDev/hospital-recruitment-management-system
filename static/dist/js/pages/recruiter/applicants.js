@@ -566,6 +566,7 @@ onHideModal('#applicantDetailsModal', () => {
     disableElement('#submitBtn');
     showElement('#applicantTimelineLoader');
     hideElement('#applicantTimeline');
+    $('#applicantDetailsTab').tab('show');
 });
 
 /** Validate Applicant Evaluation Form */
