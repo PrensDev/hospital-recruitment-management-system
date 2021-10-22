@@ -150,7 +150,7 @@ async def render(
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
                 "request": req,
-                "page_title": "On-boarding Tasks",
+                "page_title": "Onboarding Tasks",
                 "sub_title": "Manage employee tasks and monitor performance",
                 "active_navlink": "Onboarding Employees"
             })

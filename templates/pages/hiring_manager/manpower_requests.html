@@ -22,7 +22,7 @@
                 <div class="col-md-6 col-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fas fa-copy"></i></span>
-        
+
                         <div class="info-box-content">
                             <span class="info-box-text">Total Manpower Requests</span>
                             <span class="info-box-number" id="totalManpowerRequestsCount">0</span>
@@ -34,7 +34,7 @@
                 <div class="col-md-6 col-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-warning"><i class="fas fa-sync-alt"></i></span>
-        
+
                         <div class="info-box-content">
                             <span class="info-box-text">For Review and Approval</span>
                             <span class="info-box-number" id="forReviewRequestsCount">0</span>
@@ -46,7 +46,7 @@
                 <div class="col-md-6 col-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-success"><i class="fas fa-thumbs-up"></i></span>
-        
+
                         <div class="info-box-content">
                             <span class="info-box-text">Approved Requests</span>
                             <span class="info-box-number" id="approvedRequestsCount">0</span>
@@ -58,7 +58,7 @@
                 <div class="col-md-6 col-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-danger"><i class="fas fa-file-excel"></i></span>
-        
+
                         <div class="info-box-content">
                             <span class="info-box-text">Rejected Requests</span>
                             <span class="info-box-number" id="rejectedRequestsCount">0</span>
@@ -72,7 +72,15 @@
 
                 {# Card Header #}
                 <div class="card-header">
-                    <h3 class="card-title">Lists of Manpower Requests</h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title">Lists of Manpower Requests</h3>
+    
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-sm btn-default" data-card-widget="maximize">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 {# Card Body #}

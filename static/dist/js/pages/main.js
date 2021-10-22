@@ -316,6 +316,7 @@ const getOnboardingEmployeeTaskStatus = (status, startAt, deadline, completedAt)
 /** Set Job Post Timeline */
 const setJobPostTimeline = (selector, data) => {
     let timelineData = [];
+    
     const jobPostedBy = data.job_posted_by;
     const jobPostedByFullName = formatName('F M. L, S', {
         firstName: jobPostedBy.first_name,

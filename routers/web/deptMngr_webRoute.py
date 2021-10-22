@@ -270,8 +270,8 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "pages/general_tasks/for_department_manager.html", {
             "request": req,
-            "page_title": "General On-boarding Tasks",
-            "sub_title": "General On-boarding Tasks to manage employees tasks and monitor performances",
+            "page_title": "General Onboarding Tasks",
+            "sub_title": "General Onboarding Tasks to manage employees tasks and monitor performances",
             "active_navlink": "General Tasks",
             'active_menu': "For department manager"
         })
@@ -302,7 +302,7 @@ async def render(
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
                 "request": req,
-                "page_title": "On-boarding Tasks",
+                "page_title": "Onboarding Tasks",
                 "sub_title": "Manage employee tasks and monitor performance",
                 "active_navlink": "Onboarding Employees"
             })

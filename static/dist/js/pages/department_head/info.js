@@ -23,7 +23,7 @@ GET_ajax(`${ DH_API_ROUTE }info`, {
 
             // Set User Department
             setContent('#userDepartment', result.position.department.name);
-    
+
             $('#userFullNameLoader').remove();
             showElement('#userFullNameDisplay');
         } else toastr.error('There was an error while getting your information');
