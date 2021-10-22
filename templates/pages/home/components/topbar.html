@@ -26,29 +26,21 @@
         <div class="collapse navbar-collapse order-3" id="navbarCollapse">
             <ul class="navbar-nav">
 
-            {# About Us #}
-            <li class="nav-item dropdown">
-                <div
-                    role="button"
-                    data-toggle="dropdown"
-                    class="nav-link dropdown-toggle"
-                >About Us</div>
-                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                    <li><a href="#" class="dropdown-item">Vision & Mission</a></li>
-                    <li><a href="#" class="dropdown-item">History</a></li>
-                    <li class="dropdown-divider"></li>
-                    <li><a href="#" class="dropdown-item">Data Privacy</a></li>
-                    <li><a href="#" class="dropdown-item">Terms and Conditions</a></li>
-                    <li><a href="#" class="dropdown-item">FAQ</a></li>
-                </ul>
-            </li>
-                
-                {# Careers #}
-                <li class="nav-item">
-                    <a href="{{BASE_URL_WEB}}careers" class="nav-link{% if active_navlink == 'Careers' %} text-primary{% endif %}">Careers</a>
+                {# Medical Services #}
+                <li class="nav-item dropdown">
+                    <a 
+                        id="dropdownSubMenu1" 
+                        href="#" 
+                        data-toggle="dropdown"
+                        class="nav-link dropdown-toggle"
+                    >Medical Services</a>
+
+                    <ul class="dropdown-menu border-0 shadow">
+                        <li><a href="#" class="dropdown-item">Find a Doctor</a></li>
+                    </ul>
                 </li>
 
-                {# Patient #}
+                {# Patient & Visitor #}
                 <li class="nav-item dropdown">
                     <a 
                         id="dropdownSubMenu1" 
@@ -89,6 +81,29 @@
                     {# End Level two #}
                 </ul>
                 </li>
+
+                {# Careers #}
+                <li class="nav-item">
+                    <a href="{{BASE_URL_WEB}}careers" class="nav-link{% if active_navlink == 'Careers' %} text-primary{% endif %}">Careers</a>
+                </li>
+                
+                {# About Us #}
+                <li class="nav-item dropdown">
+                <div
+                    role="button"
+                    data-toggle="dropdown"
+                    class="nav-link dropdown-toggle"
+                >About Us</div>
+                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                    <li><a href="#" class="dropdown-item">Vision & Mission</a></li>
+                    <li><a href="#" class="dropdown-item">History</a></li>
+                    <li class="dropdown-divider"></li>
+                    <li><a href="#" class="dropdown-item">Data Privacy</a></li>
+                    <li><a href="#" class="dropdown-item">Terms and Conditions</a></li>
+                    <li><a href="#" class="dropdown-item">FAQ</a></li>
+                </ul>
+            </li>
+
             </ul>
         </div>
 

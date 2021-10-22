@@ -47,7 +47,7 @@ ifSelectorExist('#availableJobList', () => {
 
                     jobList += `
                         <div class="col-md-6 col-12 mb-3">
-                            <div class="card card-primary card-outline h-100">
+                            <div class="card h-100">
                                 <div class="card-body d-flex flex-column justify-content-between h-100">
 
                                     <div>
