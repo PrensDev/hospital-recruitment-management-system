@@ -1251,7 +1251,7 @@ const changeProgressStatus = (onboardingEmployeeTaskID) => {
             showModal('#changeTaskStatusModal');
         },
         error: () => toastr.error('There was an error in getting onboarding task details')
-    })
+    });
 }
 
 /** When confirm mark as completed modal was hidden */
@@ -1328,66 +1328,23 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
 
 
             /** ONBOARDING EMPLOYEE TASK TIMELINE */
-            let timelineData = [];
-
-            // Assigned
-            const assignedAt = result.created_at;
-            const assignedBy = result.onboarding_employee_task_assigned_by;
-            const assignedByFullName = formatName('F M. L, S', {
-                firstName: assignedBy.first_name,
-                middleName: assignedBy.middle_name,
-                lastName: assignedBy.last_name,
-                suffixName: assignedBy.suffix_name
-            });
-            timelineData.push({
-                icon: "clipboard",
-                iconTheme: "primary",
-                dateTime: assignedAt,
-                timelineTitle: 'Assigned',
-                timelineBody: `
-                    <div class="small mb-3">Task was created and assigned by <b>${ assignedByFullName }</b></div>
-                    <div class="small text-secondary">${ formatDateTime(assignedAt, "Full Date") }</div>
-                    <div class="small text-secondary">${ formatDateTime(assignedAt, "Time") }</div>
-                `
-            });
-
-            // Completed
-            const completedAt = result.completed_at;
-            const completedBy = result.onboarding_employee_task_completed_by;
-            if(!isEmptyOrNull(completedAt) && !isEmptyOrNull(completedBy)) {
-                const completedByFullName = formatName('F M. L, S', {
-                    firstName: completedBy.first_name,
-                    middleName: completedBy.middle_name,
-                    lastName: completedBy.last_name,
-                    suffixName: completedBy.suffix_name
-                });
-                timelineData.push({
-                    icon: "check",
-                    iconTheme: "success",
-                    dateTime: completedAt,
-                    timelineTitle: 'Completed',
-                    timelineBody: `
-                        <div class="small mb-3">Task was completed marked by <b>${ completedByFullName }</b></div>
-                        <div class="small text-secondary">${ formatDateTime(completedAt, "Full Date") }</div>
-                        <div class="small text-secondary">${ formatDateTime(completedAt, "Time") }</div>
-                    `
-                });
-            }
-
-            // Set Onboarding Employee Task Timeline
-            setTimeline('#onboardingEmployeeTaskTimeline', {
-                title: 'Onboarding Task Timeline',
-                timelineData: timelineData
-            });
+            setOnboardingEmployeeTaskTimeline('#onboardingEmployeeTaskTimeline', result);
 
             // Set Onboarding Employee Task
-            $('#onboardingEmployeeTaskTimelineLoader').remove();
+            hideElement('#onboardingEmployeeTaskTimelineLoader');
             showElement('#onboardingEmployeeTaskTimeline');
         },
         error: () => toastr.error('There was an error in getting onboarding employee task details')
     })
     showModal('#onboardingEmployeeTaskDetailsModal');
 }
+
+/** On Onboarding Employee Task Details Modal has been hidden */
+onHideModal('#onboardingEmployeeTaskDetailsModal', () => {
+    showElement('#onboardingEmployeeTaskTimelineLoader');
+    hideElement('#onboardingEmployeeTaskTimeline');
+    $('#taskDetailsTab').tab('show');
+});
 
 
 /**

@@ -88,6 +88,12 @@ async def render(
     else:
         return await errTemplate.page_not_found(req)
 
+
+# ===========================================================
+# HIRED APPLICANTS
+# ===========================================================
+
+
 # Hired Applicants
 @router.get("/hired-applicants", response_class=HTMLResponse)
 async def render(req: Request, user_data: dict = Depends(get_token)):
@@ -103,5 +109,50 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
 
 
 # ===========================================================
-# HIRED APPLICANTS
+# ONBOARDING EMPLOYEES
 # ===========================================================
+
+
+# Onboarding Employees
+@router.get("/onboarding-employees", response_class=HTMLResponse)
+async def render(req: Request, user_data: dict = Depends(get_token)):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employees.html", {
+            "request": req,
+            "page_title": "Onboarding Employees",
+            "sub_title": "Onboarding Employees to manage new employees on board",
+            "active_navlink": "Onboarding Employees"
+        })
+    else:
+        return await errTemplate.page_not_found(req)
+
+
+# ===========================================================
+# ONBOARDING EMPLOYEE TASKS
+# ===========================================================
+
+
+# Onboarding Employee Tasks
+@router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_class=HTMLResponse)
+async def render(
+    onboarding_employee_id: str, 
+    req: Request, 
+    db: Session = Depends(get_db), 
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        onboarding_employee = db.query(OnboardingEmployee).filter(
+            OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
+            OnboardingEmployee.status == "Onboarding"
+        ).first()
+        if not onboarding_employee:
+            return await errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
+                "request": req,
+                "page_title": "On-boarding Tasks",
+                "sub_title": "Manage employee tasks and monitor performance",
+                "active_navlink": "Onboarding Employees"
+            })
+    else:
+        return await errTemplate.page_not_found(req)

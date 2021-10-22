@@ -313,7 +313,7 @@ const getOnboardingEmployeeTaskStatus = (status, startAt, deadline, completedAt)
 }
 
 
-/** Get Job Post Timeline */
+/** Set Job Post Timeline */
 const setJobPostTimeline = (selector, data) => {
     let timelineData = [];
     const jobPostedBy = data.job_posted_by;
@@ -355,6 +355,62 @@ const setJobPostTimeline = (selector, data) => {
     // Set Timeline
     setTimeline(selector, {
         title: 'Job Post Timeline',
+        timelineData: timelineData
+    });
+}
+
+
+/** Set Onboarding Employee Task Timeline */
+const setOnboardingEmployeeTaskTimeline = (selector, data) => {
+    let timelineData = [];
+
+    // Assigned
+    const assignedAt = data.created_at;
+    const assignedBy = data.onboarding_employee_task_assigned_by;
+    const assignedByFullName = formatName('F M. L, S', {
+        firstName: assignedBy.first_name,
+        middleName: assignedBy.middle_name,
+        lastName: assignedBy.last_name,
+        suffixName: assignedBy.suffix_name
+    });
+    timelineData.push({
+        icon: "clipboard",
+        iconTheme: "primary",
+        dateTime: assignedAt,
+        timelineTitle: 'Assigned',
+        timelineBody: `
+            <div class="small mb-3">Task was created and assigned by <b>${ assignedByFullName }</b></div>
+            <div class="small text-secondary">${ formatDateTime(assignedAt, "Full Date") }</div>
+            <div class="small text-secondary">${ formatDateTime(assignedAt, "Time") }</div>
+        `
+    });
+
+    // Completed
+    const completedAt = data.completed_at;
+    const completedBy = data.onboarding_employee_task_completed_by;
+    if(!isEmptyOrNull(completedAt) && !isEmptyOrNull(completedBy)) {
+        const completedByFullName = formatName('F M. L, S', {
+            firstName: completedBy.first_name,
+            middleName: completedBy.middle_name,
+            lastName: completedBy.last_name,
+            suffixName: completedBy.suffix_name
+        });
+        timelineData.push({
+            icon: "check",
+            iconTheme: "success",
+            dateTime: completedAt,
+            timelineTitle: 'Completed',
+            timelineBody: `
+                <div class="small mb-3">Task was completed marked by <b>${ completedByFullName }</b></div>
+                <div class="small text-secondary">${ formatDateTime(completedAt, "Full Date") }</div>
+                <div class="small text-secondary">${ formatDateTime(completedAt, "Time") }</div>
+            `
+        });
+    }
+
+    // Set Onboarding Employee Task Timeline
+    setTimeline(selector, {
+        title: 'Onboarding Task Timeline',
         timelineData: timelineData
     });
 }

@@ -80,3 +80,56 @@ class ShowHiredApplicant(BaseModel):
 class CreateOnboardingEmployee(BaseModel):
     applicant_id: str
     employment_contract: str
+
+
+# OnboardingEmployee
+class OnboardingEmployee(BaseModel):
+    onboarding_employee_id: str
+    first_name: str
+    middle_name: Optional[str]
+    last_name: str
+    suffix_name: Optional[str]
+    onboarding_employee_position: ShowPosition
+    contact_number: str
+    email: str
+    employment_contract: str
+    employment_start_date: Optional[date]
+    onboarding_employee_signed_by: ShowUser
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+
+# Onboarding Task
+class OnboardingTask(BaseModel):
+    onboarding_task_id: str
+    title: str
+    description: str
+    task_type: str
+
+    class Config():
+        orm_mode = True
+
+
+# Show Onboarding Employee Task
+class ShowOnboardingEmployeeTask(BaseModel):
+    onboarding_employee_task_id: str
+    status: str
+    start_at: datetime
+    end_at: datetime
+    onboarding_task: OnboardingTask
+    onboarding_employee_task_assigned_by: ShowUser
+    onboarding_employee_task_completed_by: Optional[ShowUser]
+    completed_at: Optional[datetime]
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+# Show Onboarding Employee
+class ShowOnboardingEmployee(OnboardingEmployee):
+    onboarding_employee_tasks: List[ShowOnboardingEmployeeTask]
+
+    class Config():
+        orm_mode = True

@@ -243,6 +243,9 @@ async def upload_employment_contract(
 # ONBOARDING EMPLOYEES
 # ====================================================================
 
+# Onboarding Employee Not Found Response
+ONBOARDING_EMPLOYEE_NOT_FOUND = {"message": "Onboarding Employee not found"}
+
 
 # Add onboarding employee
 @router.post("/onboarding-employees", status_code=202)
@@ -289,5 +292,123 @@ async def add_onboarding_employee(
                 db.commit()
                 db.refresh(new_onboarding_employee)
                 return new_onboarding_employee
+    except Exception as e:
+        print(e)
+
+
+# Get All Onboarding Employees
+@router.get("/onboarding-employees", response_model=List[deptHead.ShowOnboardingEmployee])
+async def get_all_onboarding_employees(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+            if not user_info:
+                raise HTTPException(status_code=404, detail="User does not exist")
+            else:
+                position_id = user_info.position_id
+                user_position = db.query(Position).filter(Position.position_id == position_id).first()
+                if not user_position:
+                    raise HTTPException(status_code=404, detail="Position does not exist")
+                else:
+                    department_id = user_position.department_id
+                    user_department = db.query(Department).filter(Department.department_id == department_id).first()
+                    if not user_department:
+                        raise HTTPException(status_code=404, detail=DEPARTMENT_NOT_FOUND_RESPONSE)
+                    else:
+                        return db.query(OnboardingEmployee).filter(OnboardingEmployee.status == "Onboarding").join(Position).filter(Position.position_id == OnboardingEmployee.position_id).join(Department).filter(Department.department_id == user_department.department_id).all()
+    except Exception as e:
+        print(e)
+
+
+# Onboarding Employees Analytics
+@router.get("/onboarding-employees/analytics")
+async def onboarding_employees_analytics(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+            if not user_info:
+                raise HTTPException(status_code=404, detail="User does not exist")
+            else:
+                position_id = user_info.position_id
+                user_position = db.query(Position).filter(Position.position_id == position_id).first()
+                if not user_position:
+                    raise HTTPException(status_code=404, detail="Position does not exist")
+                else:
+                    department_id = user_position.department_id
+                    user_department = db.query(Department).filter(Department.department_id == department_id).first()
+                    if not user_department:
+                        raise HTTPException(status_code=404, detail="Deparment does not exist")
+                    else:
+                        total = db.query(OnboardingEmployee).filter(OnboardingEmployee.status == "Onboarding").join(Position).filter(Position.position_id == OnboardingEmployee.position_id).join(Department).filter(Department.department_id == user_department.department_id).count()
+                        return {"total": total}
+    except Exception as e:
+        print(e)
+
+
+# Get One Onboarding Employees
+@router.get("/onboarding-employees/{onboarding_employee_id}", response_model=deptHead.ShowOnboardingEmployee)
+async def get_one_onboarding_employee(
+    onboarding_employee_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
+            if not onboarding_employee:
+                raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
+            else:
+                return onboarding_employee
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# ONBOARDING EMPLOYEE TASKS
+# ====================================================================
+
+
+# Onboarding Employee Task Not Found
+ONBOARDING_EMPLOYEE_TASK_NOT_FOUND = {"message": "Onboarding Employee Task Not Found"}
+
+
+# Get All Onboarding Employee Task
+@router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_model=List[deptHead.ShowOnboardingEmployeeTask])
+async def get_all_onboarding_employee_tasks(
+    onboarding_employee_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
+            if not onboarding_employee:
+                raise HTTPException(status_code = 404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
+            else:
+                return db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_id == onboarding_employee_id).all()
+    except Exception as e:
+        print(e)
+
+
+# Get One Onboarding Employee Task
+@router.get("/onboarding-employee-tasks/{onboarding_employee_task_id}", response_model=deptHead.ShowOnboardingEmployeeTask)
+async def get_one_onboarding_employee_tasks(
+    onboarding_employee_task_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id).first()
+            if not onboarding_employee_task:
+                raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
+            else:
+                return onboarding_employee_task
     except Exception as e:
         print(e)

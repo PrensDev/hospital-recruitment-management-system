@@ -87,6 +87,9 @@
                     <i class="fas fa-file-alt text-secondary mr-2"></i>
                     <span>Onboarding Task Details</span>
                 </div>
+                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" id="closeLogoutModalBtn">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </button>
             </div>
             <div class="modal-body">
                 
@@ -97,22 +100,22 @@
                     <li class="nav-item">
                         <a 
                             class="nav-link active" 
-                            id="applicantDetailsTab" 
+                            id="taskDetailsTab" 
                             data-toggle="pill" 
-                            href="#applicantDetailsPane" 
+                            href="#taskDetailsPane" 
                             role="tab" 
                             aria-controls="custom-content-below-home" 
                             aria-selected="true"
-                        >Applicant Details</a>
+                        >Task Details</a>
                     </li>
 
                     {# Timeline #}
                     <li class="nav-item">
                         <a 
                             class="nav-link" 
-                            id="applicantTimelineTab" 
+                            id="taskTimelineTab" 
                             data-toggle="pill" 
-                            href="#applicantTimelinePane" 
+                            href="#taskTimelinePane" 
                             role="tab" 
                             aria-controls="#applicantTimelinePane" 
                             aria-selected="false"
@@ -123,10 +126,10 @@
                 {# Panes #}
                 <div class="tab-content" id="custom-content-below-tabContent">
 
-                    {# Applicant Details #}
+                    {# Onboarding Employee Task Details #}
                     <div 
                         class="tab-pane fade show active py-3" 
-                        id="applicantDetailsPane" 
+                        id="taskDetailsPane" 
                         role="tabpanel" 
                         aria-labelledby="applicantDetailsTab"
                     >
@@ -157,7 +160,7 @@
                     {# Onboarding Employee Task Timeline #}
                     <div 
                         class="tab-pane fade py-3" 
-                        id="applicantTimelinePane" 
+                        id="taskTimelinePane" 
                         role="tabpanel" 
                         aria-labelledby="applicantTimelineTab"
                     >

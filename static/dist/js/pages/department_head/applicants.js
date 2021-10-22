@@ -176,6 +176,14 @@ const getHiredApplicantDetails = (applicantID) => {
 }
 
 
+/** On Applicant Details Modal was hidden */
+onHideModal('#applicantDetailsModal', () => {
+    showElement('#applicantTimelineLoader');
+    hideElement('#applicantTimeline');
+    $('#applicantDetailsTab').tab('show');
+});
+
+
 /** Mark Contract as Signed */
 const markContractAsSigned = (applicantID) => {
     setValue('#applicantID', applicantID);

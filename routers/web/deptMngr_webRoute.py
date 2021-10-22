@@ -280,7 +280,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
 
 
 # ===========================================================
-# EMPLOYEE ONBOARDING TASKS
+# ONBOARDING EMPLOYEE TASKS
 # ===========================================================
 
 
@@ -293,18 +293,18 @@ async def render(
     user_data: dict = Depends(get_token)
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
-        if not onboarding_employee_id:
+        onboarding_employee = db.query(OnboardingEmployee).filter(
+            OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
+            OnboardingEmployee.status == "Onboarding",
+        ).first()
+        if not onboarding_employee:
             return await errTemplate.page_not_found(req)
         else:
-            onboarding_employee_id = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
-            if not onboarding_employee_id:
-                return await errTemplate.page_not_found(req)
-            else:
-                return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
-                    "request": req,
-                    "page_title": "On-boarding Tasks",
-                    "sub_title": "Manage employee tasks and monitor performance",
-                    "active_navlink": "Onboarding Employees"
-                })
+            return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
+                "request": req,
+                "page_title": "On-boarding Tasks",
+                "sub_title": "Manage employee tasks and monitor performance",
+                "active_navlink": "Onboarding Employees"
+            })
     else:
         return await errTemplate.page_not_found(req)
