@@ -30,25 +30,25 @@ ifSelectorExist('#availableJobList', () => {
 
                     const salaryRange = r.salary_is_visible 
                         ? `<div>
-                                <i style="width: 2rem" class="fas fa-money-bill-wave text-success"></i>
+                                <i style="width: 1rem" class="fas fa-money-bill-wave text-secondary"></i>
                                 <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
                             </div>`
                         : '';
 
                     const expirationDate = isEmptyOrNull(r.expiration_date) 
                         ? `<div>
-                                <i style="width: 2rem" class="fas fa-clock text-danger"></i>
+                                <i style="width: 1rem" class="fas fa-clock text-secondary"></i>
                                 <span>Still open for all applicants</span>
                             </div>` 
                         : `<div>
-                                <i style="width: 2rem" class="fas fa-clock text-danger"></i>
+                                <i style="width: 1rem" class="fas fa-clock text-danger"></i>
                                 <span>Open until August 31, 2021</span>
                             </div>`
 
                     jobList += `
-                        <div class="col-md-6 col-12 mb-3">
-                            <div class="card h-100">
-                                <div class="card-body d-flex flex-column justify-content-between h-100">
+                        <div class="col-12 col-md-6 d-flex align-items-stretch flex-column">
+                            <div class="card d-flex flex-fill">
+                                <div class="card-body">
 
                                     <div>
                                         <div class="mb-3">
@@ -62,7 +62,7 @@ ifSelectorExist('#availableJobList', () => {
 
                                         <div class="mb-3">
                                             <div>
-                                                <i style="width: 2rem" class="fas fa-user-tie text-success"></i>
+                                                <i style="width: 1rem" class="fas fa-user-tie text-secondary"></i>
                                                 <span>${ manpowerRequest.employment_type }</span>
                                             </div>
                                             ${ salaryRange }
@@ -70,9 +70,12 @@ ifSelectorExist('#availableJobList', () => {
                                         </div>
                                     </div>
                                     
-                                    <div class="text-right">
-                                        <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="btn btn-secondary">View Details</a>
-                                    </div>
+                                </div>
+                                <div class="card-footer text-right">
+                                    <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-list mr-1"></i>
+                                        <span>View Details</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>

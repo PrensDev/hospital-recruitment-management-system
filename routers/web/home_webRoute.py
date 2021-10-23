@@ -83,6 +83,7 @@ async def careers(req: Request, page: Optional[int] = None):
         return templates.TemplateResponse("pages/home/careers.html", {
             "request": req,
             "page_title": "Careers",
+            "page_subtitle": "Discover job opportunities here",
             "active_navlink": "Careers"
         })
     except Exception as e:

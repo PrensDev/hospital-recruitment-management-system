@@ -6,25 +6,25 @@
 
             {% include 'pages/home/components/topbar.html' %}
             
-            {# Content Wrapper. Contains page content #}
-            <div class="content-wrapper">
+            {# Content Wrapper#}
+            <div class="content-wrapper pb-5">
                 {% block content %}{% endblock %}
             </div>
 
-            {# Footer #}
-            <div class="bg-dark text-white pb-5">
-                <div class="container py-5">
+            {# Main Footer #}
+            <div class="main-footer bg-dark text-white pb-5">
+                <div class="container py-3">
                     <div class="row">
 
                         <div class="col-md-4">
-                            <div class="container">
+                            <div class="container my-3">
                                 <h5>About Us</h5>
                                 <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sed magni natus vel inventore earum mollitia iure optio cum ratione libero.</p>
                             </div>
                         </div>
                         
                         <div class="col-md-4">
-                            <div class="container">
+                            <div class="container my-3">
                                 <h5>Quick Links</h5>
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
@@ -44,24 +44,29 @@
                         </div>
                         
                         <div class="col-md-4">
-                            <h5>Contact Us</h5>
-                            <div class="form-group">
-                                <label for="email">Sent your email here</label>
-                                <input type="email" class="form-control">
+                            <div class="container my-3">
+                                <h5>Contact Us</h5>
+                                <div class="form-group">
+                                    <label for="email">Sent your email here</label>
+                                    <input type="email" class="form-control">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {# Main Footer #}
-            <footer class="main-footer text-sm">
+            {# Small Footer #}
+            <footer class="main-footer navbar-dark">
+                <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-sm-between align-items-center">
+                    
+                    {# Default to the left #}
+                    <strong>Copyright &copy; 2014-2021 {{BRAND_NAME}}.</strong> 
+                    
+                    {# To the right #}
+                    <div>All rights reserved</div>
+                </div>
                 
-                {# To the right #}
-                <div class="float-right d-none d-sm-inline">Anything you want</div>
-
-                {# Default to the left #}
-                <strong>Copyright &copy; 2014-2021 {{BRAND_NAME}}.</strong> All rights reserved.
             </footer>
         </div>
 
