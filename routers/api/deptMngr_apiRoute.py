@@ -117,10 +117,18 @@ async def requisition_analytics(
             ).count()
             
             # Rejected
-            rejected = query.filter(
-                Requisition.request_status == "Rejected",
+            rejected_for_signing = query.filter(
+                Requisition.request_status == "Rejected for signing",
                 Requisition.requested_by == user_data.user_id
             ).count()
+
+            # Rejected for approval
+            rejected_for_approval = query.filter(
+                Requisition.request_status == "Rejected for approval",
+                Requisition.requested_by == user_data.user_id
+            ).count()
+
+            total_rejected = rejected_for_signing + rejected_for_approval
             
             # Completed
             completed = query.filter(
@@ -133,7 +141,11 @@ async def requisition_analytics(
                 "for_signature": for_signature,
                 "for_approval": for_approval,
                 "approved": approved,
-                "rejected": rejected,
+                "rejected": {
+                    "total": total_rejected,
+                    "for_signing": rejected_for_signing,
+                    "for_approval": rejected_for_approval
+                },
                 "completed": completed
             }
     except Exception as e:

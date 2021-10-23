@@ -389,7 +389,7 @@ const manpowerRequestAnalytics = () => GET_ajax(`${ DM_API_ROUTE }requisitions/a
             setContent('#approvedRequestsCount', formatNumber(result.approved));
 
             // Set Rejected Requests
-            setContent('#rejectedRequestsCount', formatNumber(result.rejected));
+            setContent('#rejectedRequestsCount', formatNumber(result.rejected.total));
         } else toastr.error('There was an error in getting manpower request analytics')
     },
     error: () => toastr.error('There was an error in getting manpower request analytics')

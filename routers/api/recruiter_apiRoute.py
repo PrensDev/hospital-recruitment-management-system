@@ -222,6 +222,26 @@ async def update_job_post(
         print(e)
 
 
+# End Recruitment
+@router.put("/job-posts/{job_post_id}/end-recruiting")
+async def end_recruiting(
+    job_post_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id)
+            if not job_post.first():
+                raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
+            else:
+                job_post.update({
+                    "expiration_date": text('NOW()')
+                })
+                db.commit()
+                return {"message": "A job post has been ended its recruitment"}
+    except Exception as e:
+        print(e)
 
 # ====================================================================
 # APPLICANTS

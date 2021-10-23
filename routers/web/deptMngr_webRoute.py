@@ -119,8 +119,8 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "add_manpower_request.html", {
             "request": req,
-            "page_title": "Add Manpower Request",
-            "sub_title": "Add Manpower Request to request employees",
+            "page_title": "Create Manpower Request",
+            "sub_title": "Create manpower request here using this form",
             "active_navlink": "Manpower Requests"
         })
     else:
@@ -240,8 +240,8 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "pages/general_tasks/for_new_employees.html", {
             "request": req,
-            "page_title": "General On-boarding Tasks",
-            "sub_title": "General On-boarding Tasks to manage employees tasks and monitor performances",
+            "page_title": "General Onboarding Tasks",
+            "sub_title": "Manage your general onboarding tasks here",
             "active_navlink": "General Tasks",
             'active_menu': "For new employees"
         })

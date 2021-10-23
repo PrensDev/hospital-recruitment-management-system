@@ -239,4 +239,4 @@ ifSelectorExist('#jobPostDetails', () => {
         },
         error: () => toastr.error('There was an error in getting job post details')
     });
-})
+});
