@@ -299,8 +299,7 @@ initDataTable('#manpowerRequestDT', {
                 const markAsCompletedBtn = `
                     <div 
                         class="dropdown-item d-flex"
-                        data-toggle="modal"
-                        data-target="#"
+                        onclick="markAsCompleted('${ requisitionID }')"
                     >
                         <div style="width: 2rem"><i class="fas fa-check mr-1"></i></div>
                         <span>Mark as Completed</span>
@@ -358,7 +357,7 @@ initDataTable('#manpowerRequestDT', {
 
                             ${ requestStatus === "Approved" ? markAsCompletedBtn : "" }
 
-                            ${ requestStatus === "Rejected" ? deleteBtn : "" }
+                            ${ requestStatus === "Rejected for approval" || requestStatus === "Rejected for approval" ? deleteBtn : "" }
                         </div>
                     </div>
                 `
@@ -1040,3 +1039,15 @@ validateForm('#deleteManpowerRequestForm', {
         });
     }
 });
+
+
+/**
+ * ==============================================================================
+ * MARK AS COMPLETED
+ * ==============================================================================
+ */
+
+/** Mark Manpower Request as Completed */
+const markAsCompleted = (requisitionID) => {
+    alert(requisitionID);
+}

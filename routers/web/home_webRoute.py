@@ -64,7 +64,7 @@ async def careers(req: Request, page: Optional[int] = None):
     try:
         return templates.TemplateResponse("pages/home/index.html", {
             "request": req,
-            "page_title": "Careers"
+            "page_title": "HoMIES - Hospital Management System"
         })
     except Exception as e:
         print(e)
@@ -73,7 +73,6 @@ async def careers(req: Request, page: Optional[int] = None):
 # ===========================================================
 # CAREERS/JOB POSTS
 # ===========================================================
-
 
 
 # Careers
