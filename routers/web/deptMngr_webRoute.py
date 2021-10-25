@@ -206,13 +206,21 @@ async def render(
         if not onboarding_employee_id:
             return await errTemplate.page_not_found(req)
         else:
-            onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
+            user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data['user_id'], User.position_id == Position.position_id).first()
+            onboarding_employee = db.query(OnboardingEmployee).filter(
+                OnboardingEmployee.onboarding_employee_id == onboarding_employee_id
+            ).join(Position).filter(
+                OnboardingEmployee.position_id == Position.position_id
+            ).join(Department).filter(
+                Position.department_id == Department.department_id, 
+                Department.department_id ==  user_department.department_id
+            ).first()
             if not onboarding_employee:
                 return await errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "onboard_employee.html", {
                     "request": req,
-                    "page_title": "On-board new employee",
+                    "page_title": "Onboard new employee",
                     "sub_title": "Review details and update tasks to on board new employee",
                     "active_navlink": "Onboarding Employees"
                 })
@@ -293,9 +301,15 @@ async def render(
     user_data: dict = Depends(get_token)
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
+        user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data['user_id'], User.position_id == Position.position_id).first()
         onboarding_employee = db.query(OnboardingEmployee).filter(
             OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
             OnboardingEmployee.status == "Onboarding",
+        ).join(Position).filter(
+            OnboardingEmployee.position_id == Position.position_id
+        ).join(Department).filter(
+            Position.department_id == Department.department_id, 
+            Department.department_id ==  user_department.department_id
         ).first()
         if not onboarding_employee:
             return await errTemplate.page_not_found(req)

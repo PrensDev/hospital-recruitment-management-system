@@ -171,7 +171,7 @@ async def get_one_requisition(
 
 
 # Update Manpower Request
-@router.put("/requisitions/{requisition_id}", status_code = 202)
+@router.put("/requisitions/{requisition_id}", status_code=202)
 async def update_requisition(
     requisition_id: str,
     req: deptMngr.UpdateManpowerRequest,
@@ -214,6 +214,32 @@ async def delete_requisition(
         print(e) 
 
 
+# Mark as completed
+@router.put("/requisitions/{requisition_id}/complete", status_code=202)
+async def mark_requisition_as_completed(
+    requisition_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            requisition = db.query(Requisition).filter(
+                Requisition.requisition_id == requisition_id,
+                Requisition.requested_by == user_data.user_id
+            )
+            if not requisition.first():
+                raise HTTPException(status_code=404, detail=REQUISITION_NOT_FOUND_RESPONSE)
+            else:
+                requisition.update({
+                    "request_status": 'Completed',
+                    "completed_at": text('NOW()')
+                })
+                db.commit()
+                return {"message": "A manpower request is successfully updated"}
+    except Exception as e:
+        print(e)
+
+
 # ====================================================================
 # DEPARTMENT POSITIONS
 # ====================================================================
@@ -231,11 +257,11 @@ async def department_positions(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, User.position_id == Position.position_id).first()
-            if not department:
+            user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, User.position_id == Position.position_id).first()
+            if not user_department:
                 raise HTTPException(status_code=404, detail=DEPARTMENT_NOT_FOUND_RESPONSE)
             else:
-                return db.query(Position).join(Department).filter(Department.department_id == department.department_id).all()
+                return db.query(Position).join(Department).filter(Department.department_id == user_department.department_id).all()
     except Exception as e:
         print(e)
 
@@ -466,7 +492,15 @@ async def get_all_hired_applicants(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            return db.query(OnboardingEmployee).filter(OnboardingEmployee.status == "Pending").all()
+            user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, User.position_id == Position.position_id).first()
+            return db.query(OnboardingEmployee).filter(
+                OnboardingEmployee.status == "Pending"
+            ).join(Position).filter(
+                OnboardingEmployee.position_id == Position.position_id
+            ).join(Department).filter(
+                Position.department_id == Department.department_id, 
+                Department.department_id ==  user_department.department_id
+            ).all()
     except Exception as e:
         print(e)
 
@@ -480,9 +514,15 @@ async def get_all_hired_applicants(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
+            user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, User.position_id == Position.position_id).first()
             onboarding_employee = db.query(OnboardingEmployee).filter(
                 OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
                 OnboardingEmployee.status == "Pending"
+            ).filter(
+                OnboardingEmployee.position_id == Position.position_id
+            ).join(Department).filter(
+                Position.department_id == Department.department_id, 
+                Department.department_id ==  user_department.department_id
             ).first()
             if not onboarding_employee: 
                 raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)

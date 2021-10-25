@@ -68,7 +68,7 @@ async def get_all_requisitions(
         print(e)
 
 
-# Requisition Analytics
+# Manpower Request Analytics
 @router.get("/requisitions/analytics")
 async def requisition_analytics(
     db: Session = Depends(get_db),
@@ -183,10 +183,20 @@ async def get_all_hired_applicants(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
+            user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, Position.position_id == User.position_id).first()
             return db.query(Applicant).filter(or_(
                 Applicant.status == "Hired",
                 Applicant.status == "Contract signed",
-            )).all()
+            )).join(JobPost).filter(
+                Applicant.job_post_id == JobPost.job_post_id
+            ).join(Requisition).filter(
+                JobPost.requisition_id == Requisition.requisition_id
+            ).join(Position).filter(
+                Requisition.position_id == Position.position_id
+            ).join(Department).filter(
+                Position.department_id == Department.department_id, 
+                Department.department_id ==  user_department.department_id
+            ).all()
     except Exception as e:
         print(e)
 
@@ -200,12 +210,22 @@ async def get_one_hired_applicant(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
+            user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, Position.position_id == User.position_id).first()
             hired_applicant = db.query(Applicant).filter(
                 Applicant.applicant_id == applicant_id,
                 or_(
                     Applicant.status == "Hired",
                     Applicant.status == "Contract signed",
                 )
+            ).join(JobPost).filter(
+                Applicant.job_post_id == JobPost.job_post_id
+            ).join(Requisition).filter(
+                JobPost.requisition_id == Requisition.requisition_id
+            ).join(Position).filter(
+                Requisition.position_id == Position.position_id
+            ).join(Department).filter(
+                Position.department_id == Department.department_id, 
+                Department.department_id ==  user_department.department_id
             ).first()
             if not hired_applicant:
                 raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)

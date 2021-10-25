@@ -23,16 +23,20 @@ validateForm("#loginForm", {
 })
 
 loginAJAX = () => {
-    const formData = generateFormData('#loginForm');
+    setContent('#loginBtn', `<div class="spinner-border spinner-border-sm"></div>`);
+    disableElement('#loginBtn');
 
+    
+    const formData = generateFormData('#loginForm');
+    
     const data = {
         username: formData.get('email'),
         password: formData.get('password')
     }
-
-    setContent('#loginBtn', `<div class="spinner-border spinner-border-sm"></div>`);
-    disableElement('#loginBtn');
-
+    
+    disableElement('#email');
+    disableElement('#password');
+    
     $.ajax({
         url: `${ BASE_URL_API }auth/login`,
         type: 'POST',
@@ -51,6 +55,9 @@ loginAJAX = () => {
                     <i class="fas fa-sign-in-alt ml-1"></i>
                 `);
                 enableElement('#loginBtn');
+
+                enableElement('#email');
+                enableElement('#password');
             } else {
                 localStorage.setItem("access_token", result.access_token);
 

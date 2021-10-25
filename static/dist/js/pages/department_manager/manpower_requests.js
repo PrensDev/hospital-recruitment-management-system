@@ -404,8 +404,8 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
  * ==============================================================================
  */
 
-/** View Manpower Request */
-ifSelectorExist('#manpowerRequestDocumentContainer', () => {
+/** Get Manpower Request Details */
+const getManpowerRequestDetails = () => {
     const requisitionID = window.location.pathname.split('/')[3];
     GET_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
@@ -563,30 +563,46 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             setContent('#manpowerRequestOptions', () => {
                 const requisitionID = result.requisition_id;
 
-                if(requestStatus === "For signature") return `
-                    <a 
-                        class="btn btn-sm btn-info btn-block"
-                        href="${ DM_WEB_ROUTE }edit-manpower-request/${ requisitionID }"
-                    >
-                        <span>Edit request</span>
-                        <i class="fas fa-edit ml-1"></i>
-                    </a>
+                if(requestStatus === "For signature") {
+                    return `
+                        <a 
+                            class="btn btn-sm btn-info btn-block"
+                            href="${ DM_WEB_ROUTE }edit-manpower-request/${ requisitionID }"
+                        >
+                            <span>Edit request</span>
+                            <i class="fas fa-edit ml-1"></i>
+                        </a>
 
-                    <div class="btn btn-sm btn-warning btn-block" onclick="cancelManpowerRequest('${ requisitionID }')">
-                        <span>Cancel request</span>
-                        <i class="fas fa-times-circle ml-1"></i>
-                    </div>
+                        <div class="btn btn-sm btn-warning btn-block" onclick="cancelManpowerRequest('${ requisitionID }')">
+                            <span>Cancel request</span>
+                            <i class="fas fa-times-circle ml-1"></i>
+                        </div>
 
-                    <hr>
+                        <hr>
 
-                    <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                        <span>Print Manpower Request Form</span>
-                        <i class="fas fa-print ml-1"></i>
-                    </div>
-                `
-                else {
+                        <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                            <span>Print Manpower Request Form</span>
+                            <i class="fas fa-print ml-1"></i>
+                        </div>
+                    `
+                } else if(requestStatus == "Approved") {
                     $('#cancelManpowerRequestModal').remove();
-                    
+                    return `
+                        <div class="btn btn-sm btn-success btn-block" onclick="markAsCompleted('${ requisitionID }')">
+                            <span>Mark as Completed</span>
+                            <i class="fas fa-check-circle ml-1"></i>
+                        </div>
+
+                        <hr>
+
+                        <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                            <span>Print Manpower Request Form</span>
+                            <i class="fas fa-print ml-1"></i>
+                        </div>
+                    `
+                } else {
+                    $('#cancelManpowerRequestModal').remove();
+                    $('#markAsCompletedModal').remove();
                     return `
                         <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
                             <span>Print Manpower Request Form</span>
@@ -649,7 +665,10 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });
-});
+}
+
+/** View Manpower Request */
+ifSelectorExist('#manpowerRequestDocumentContainer', () => getManpowerRequestDetails());
 
 /** Print Manpower Request */
 const printManpowerRequest = () => {
@@ -763,19 +782,19 @@ ifSelectorExist('#editManpowerRequestForm', () => {
 
                 /** Set Requisition No. */
                 setValue('#requisitionNo', result.requisition_no);
-    
+
                 /** Set Vacant Position */
                 $('#vacantPosition').val(result.vacant_position.position_id).trigger('change');
-    
+
                 /** Set Nature of Request */
                 $('#requestNature').val(result.request_nature).trigger('change');
-    
+
                 /** Set number of staffs */
                 setValue('#staffsNeeded', result.staffs_needed);
-    
+
                 /** Set Employment Type */
                 $('#employmentType').val(result.employment_type).trigger('change');
-    
+
                 /** Set Deadline */
                 const deadline = result.deadline;
                 if(!isEmptyOrNull(deadline)) {
@@ -1049,5 +1068,58 @@ validateForm('#deleteManpowerRequestForm', {
 
 /** Mark Manpower Request as Completed */
 const markAsCompleted = (requisitionID) => {
-    alert(requisitionID);
+    setValue('#requisitionIDForCompletion', requisitionID);
+    showModal('#markAsCompletedModal');
 }
+
+/** On mark as completed modal is going to be hidden */
+onHideModal('#markAsCompletedModal', () => resetForm('#markAsCompletedForm'));
+
+/** Validate Form */
+validateForm('#markAsCompletedForm', {
+    submitHandler: () => {
+
+        // Set buttons to loading state
+        btnToLoadingState('#confirmMarkAsCompletedBtn');
+        disableElement('#cancelMarkAsCompletedBtn');
+
+        // Get the requisition ID
+        const requisitionID = generateFormData('#markAsCompletedForm').get('requisitionID');
+
+        // Call if error
+        const ifError = () => {
+            hideModal('#markAsCompletedModal');
+            toastr.error('There was an error while updating manpower request details');
+        }
+
+        // Update details
+        PUT_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }/complete`, {}, {
+            success: result => {
+                if(result) {
+
+                    /** If Manpower Request Document Container Exists */
+                    ifSelectorExist('#manpowerRequestDocumentContainer', () => getManpowerRequestDetails());
+
+                    /** If Manpower Request Document Container Exists */
+                    ifSelectorExist('#manpowerRequestDocumentContainer', () => reloadDataTable('#manpowerRequestDT'));
+
+                    // Hide Modal
+                    hideModal('#markAsCompletedModal');
+
+                    // Set buttons to unload state
+                    btnToUnloadState('#confirmMarkAsCompletedBtn', `
+                        <span>Yes, mark it.</span>
+                        <i class="fas fa-check-circle ml-1"></i>
+                    `);
+                    enableElement('#cancelMarkAsCompletedBtn');
+
+                    // Show alert
+                    toastr.info('A manpower request is successfully updated');
+                } else ifError()
+            },
+            error: () => ifError()
+        })
+
+        return false;
+    }
+});
