@@ -166,7 +166,7 @@ ifSelectorExist('#createJobPostForm', () => {
 });
 
 /** Set Expriration Date On Change */
-$('#expirationDate').on('change', () => isChecked('#expirationDate') ? showElement('#openUntilField') : $('#openUntilField').remove())
+$('#expirationDate').on('change', () => isChecked('#expirationDate') ? showElement('#openUntilField') : hideElement('#openUntilField'));
 
 /** Validate Add Job Post Form */
 validateForm('#createJobPostForm', {
@@ -736,22 +736,32 @@ validateForm('#editJobPostForm', {
 
 /** Update Job Post */
 onClick('#confirmUpdateJobPostBtn', () => {
+
+    // Set buttons to loading state
     btnToLoadingState('#confirmUpdateJobPostBtn');
     disableElement('#cancelUpdateJobPostBtn');
 
+    // Generate form Data
     const formData = generateFormData('#editJobPostForm');
 
+    // Get expiration date
     const expirationDate = isChecked('#expirationDate') ? formatDateTime(formData.get('openUntil')) : null;
 
+    // Set Data
     const data = {
         content: formData.get('jobDescription'),
         salary_is_visible: isChecked('#salaryRangeIsVisible'),
         expiration_date: expirationDate
     }
 
-    const jobPostID = formData.get('jobPostID')
+    // Call if error
+    const ifError = () => {
+        hideModal('#confirmUpdateJobPostModal');
+        toastr.error('There was an error in updating a job post');
+    }
 
-    PUT_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, data, {
+    // Update Job Post
+    PUT_ajax(`${ R_API_ROUTE }job-posts/${ formData.get('jobPostID') }`, data, {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({
@@ -759,12 +769,9 @@ onClick('#confirmUpdateJobPostBtn', () => {
                     message: 'A posted job is successfully updated',
                     redirectURL: `${ R_WEB_ROUTE }job-posts`
                 });
-            }
+            } else ifError()
         },
-        error: () => {
-            hideModal('#confirmUpdateJobPostModal');
-            toastr.error('There was an error in updating a job post');
-        }
+        error: () => ifError()
     });
 });
 
