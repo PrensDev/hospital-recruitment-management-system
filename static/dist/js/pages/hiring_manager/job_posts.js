@@ -1,5 +1,13 @@
 /**
  * ==============================================================================
+ * CONSTANTS
+ * ==============================================================================
+ */
+const jobPostID = window.location.pathname.split('/')[3];
+
+
+/**
+ * ==============================================================================
  * JOB POST ANALYTICS
  * ==============================================================================
  */
@@ -144,8 +152,6 @@ initDataTable('#jobPostsDT', {
 
 /** View Job Post Details */
 ifSelectorExist('#jobPostDetails', () => {
-    const jobPostID = window.location.pathname.split('/')[3];
-
     GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
             const manpowerRequest = result.manpower_request;

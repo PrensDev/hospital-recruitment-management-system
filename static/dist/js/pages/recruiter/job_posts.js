@@ -1,5 +1,13 @@
 /**
  * ==============================================================================
+ * CONSTANTS
+ * ==============================================================================
+ */
+const jobPostID = window.location.pathname.split('/')[3];
+
+
+/**
+ * ==============================================================================
  * SUBMIT JOB POST
  * ==============================================================================
  */
@@ -407,12 +415,12 @@ ifSelectorExist('#jobPostsAnalytics', () => jobPostsAnalytics())
 */
 
 /** View Job Post */
-ifSelectorExist('#jobPostDetails', () => {
-    const jobPostID = window.location.pathname.split('/')[3];
-    
+ifSelectorExist('#jobPostDetails', () => {    
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
             
+            /** JOB POST DETAILS */
+
             const manpowerRequest = result.manpower_request;
 
             // Set Job Post Status
@@ -432,7 +440,7 @@ ifSelectorExist('#jobPostDetails', () => {
             setContent('#vacantPosition', manpowerRequest.vacant_position.name);
 
             // Set Employment Type
-            setContent('#employmentType', manpowerRequest.employment_type);
+            setContent('#employmentTypeForJobPost', manpowerRequest.employment_type);
 
             // Set Salary Range
             const minSalary = manpowerRequest.min_monthly_salary;
@@ -458,6 +466,12 @@ ifSelectorExist('#jobPostDetails', () => {
 
             // Set Job Description
             setContent('#jobDescription', result.content);
+
+            /** Job Post Options */
+            setContent('#jobPostOptions', `
+                <a class="btn btn-sm btn-info" href="${ R_WEB_ROUTE }edit-job-post/${ jobPostID }"></a>
+            `);
+
 
             /** MANPOWER REQUEST SUMMARY */
 
@@ -498,9 +512,142 @@ ifSelectorExist('#jobPostDetails', () => {
             /** FOR JOB POST TIMELINE */
             setJobPostTimeline('#jobPostTimeline', result);
 
+            /** SET MANPOWER REQUEST CONTENTS */
+
+            const requestedBy = manpowerRequest.manpower_request_by;
+
+            // Set Requisition No
+            setContent('#requisitionNo', manpowerRequest.requisition_no);
+
+            // Set Requisition ID
+            setValue('#requisitionID', manpowerRequest.requisition_id)
+            
+            // Set Requestor Name
+            setContent('#requestorName', formatName("F M. L, S", {
+                firstName: requestedBy.first_name,
+                middleName: requestedBy.middle_name,
+                lastName: requestedBy.last_name,
+                suffixName: requestedBy.suffix_name
+            }));
+            
+            // Set Requestor Department
+            setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
+            
+            // Set Date Requested
+            setContent('#dateRequested', formatDateTime(manpowerRequest.created_at, "DateTime"));
+            
+            // Set Deadline
+            setContent('#deadline', () => {
+                const deadline = manpowerRequest.deadline;
+                if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No deadline</div>`
+                else return formatDateTime(manpowerRequest.deadline, "DateTime")
+            });
+
+            // Set Requested Position
+            setContent('#requestedPosition', manpowerRequest.vacant_position.name);
+            
+            // Set No. of Staffs Needed
+            setContent('#noOfStaffsNeeded', () => {
+                const staffsNeeded = manpowerRequest.staffs_needed;
+                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`
+            });
+
+            // Set Employment Type
+            setContent('#employmentType', manpowerRequest.employment_type);
+
+            // Set Request Nature
+            setContent('#requestNature', manpowerRequest.request_nature);
+
+            // Set Suggested Salary
+            setContent('#suggestedSalary', () => {
+                const minMonthlySalary = manpowerRequest.min_monthly_salary;
+                const maxMonthlySalary = manpowerRequest.max_monthly_salary;
+                return isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary) 
+                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
+            });
+
+            // Set Request Description
+            setContent('#requestDescription', manpowerRequest.content);
+
+            // Set Approved By
+            setContent('#approvedBy', () => {
+                const approvedBy = manpowerRequest.manpower_request_reviewed_by;
+                return isEmptyOrNull(approvedBy)
+                    ? `<div class="text-secondary font-italic">Not yet approved</div>`
+                    : () => {
+                        if(manpowerRequest.request_status === "Rejected") {
+                            return `<div class="text-danger">This request has been rejected</div>`
+                        } else {
+                            const approvedByFullName = formatName("L, F M., S", {
+                                firstName: approvedBy.first_name,
+                                middleName: approvedBy.middle_name,
+                                lastName: approvedBy.last_name,
+                                suffixName: approvedBy.suffix_name
+                            });
+                            return `
+                                <div>${ approvedByFullName }</div>
+                                <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
+                            `
+                        }
+                    }
+            });
+
+            // Set Signed By
+            setContent('#signedBy', () => {
+                const signedBy = manpowerRequest.manpower_request_signed_by;
+                
+                if(manpowerRequest.request_status === "Rejected for signing")
+                    return `<div class="text-danger">This request has been rejected for signing</div>`
+                else if(isEmptyOrNull(signedBy))
+                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                else {
+                    const signedByFullName = formatName("L, F M., S", {
+                        firstName: signedBy.first_name,
+                        middleName: signedBy.middle_name,
+                        lastName: signedBy.last_name,
+                        suffixName: signedBy.suffix_name
+                    });
+                    return `
+                        <div>${ signedByFullName }</div>
+                        <div class="small text-secondary">${ signedBy.position.name }, ${ signedBy.position.department.name }</div>
+                    `
+                }
+            });
+
+            // Set Signed At
+            setContent('#signedAt', () => {
+                const signedAt = manpowerRequest.signed_at;
+                return isEmptyOrNull(signedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    : `
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
+                    `
+            });
+
+            // Set Approved At
+            setContent('#approvedAt', () => {
+                const approvedAt = manpowerRequest.reviewed_at;
+                return (isEmptyOrNull(approvedAt) || manpowerRequest.request_status === 'Rejected') 
+                    ? `<div class="text-secondary font-italic">No status</div>`
+                    : formatDateTime(approvedAt, "DateTime")
+            });
+
+            // Set Approved At
+            setContent('#completedAt', () => {
+                const completedAt = manpowerRequest.completed_at;
+                return isEmptyOrNull(completedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>`
+                    : formatDateTime(completedAt, "Date")
+            });
+
             /** Remove Preloaders */
             $('#jobPostDetailsLoader').remove();
             showElement('#jobPostDetailsContainer');
+
+            $('#optionsLoader').remove();
+            showElement('#optionsContainer');
         },
         error: () => toastr.error('There was a problem in getting job post details')
     })
@@ -627,6 +774,40 @@ ifSelectorExist('#editJobPostForm', () => {
 
             // Set Request Description
             setContent('#requestDescription', manpowerRequest.content);
+
+            
+            // Set Signed By
+            setContent('#signedBy', () => {
+                const signedBy = manpowerRequest.manpower_request_signed_by;
+                
+                if(manpowerRequest.request_status === "Rejected for signing")
+                    return `<div class="text-danger">This request has been rejected for signing</div>`
+                else if(isEmptyOrNull(signedBy))
+                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                else {
+                    const signedByFullName = formatName("L, F M., S", {
+                        firstName: signedBy.first_name,
+                        middleName: signedBy.middle_name,
+                        lastName: signedBy.last_name,
+                        suffixName: signedBy.suffix_name
+                    });
+                    return `
+                        <div>${ signedByFullName }</div>
+                        <div class="small text-secondary">${ signedBy.position.name }, ${ signedBy.position.department.name }</div>
+                    `
+                }
+            });
+
+            // Set Signed At
+            setContent('#signedAt', () => {
+                const signedAt = manpowerRequest.signed_at;
+                return isEmptyOrNull(signedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    : `
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
+                    `
+            });
 
             // Set Approved By
             setContent('#approvedBy', () => {
@@ -821,7 +1002,7 @@ validateForm('#endRecruitingForm', {
                 }
             },
             error: () => toastr.error('There was an error in ')
-        })
+        });
 
         return false;
     }
