@@ -2,6 +2,7 @@ __pycache__
 __pycache__/**
 **/__pycache__/**
 virtual-env
+venv
 .vscode
 .DS_Store
 .env

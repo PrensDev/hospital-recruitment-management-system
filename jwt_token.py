@@ -3,7 +3,13 @@ from fastapi import Cookie, HTTPException
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
-from schemas import auth_schemas
+from pydantic import BaseModel
+
+
+# Token Data
+class TokenData(BaseModel):
+    user_id: str
+    user_type: str
 
 
 # Constants
@@ -37,7 +43,7 @@ def verify_token(token: str):
         if user_id == None and user_type == None:
             raise credentials_exception
         else:
-            return auth_schemas.TokenData(
+            return TokenData(
                 user_id = user_id,
                 user_type = user_type
             )
