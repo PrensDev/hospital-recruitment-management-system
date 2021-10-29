@@ -43,10 +43,20 @@
                     </div>
 
                     {# User Actions #}
-                    <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
-                        <span>Log in</span>
-                        <i class="fas fa-sign-in-alt ml-1"></i>
-                    </button>
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="icheck-primary">
+                                <input type="checkbox" id="remember">
+                                <label for="remember">Remember Me</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                                <span>Log in</span>
+                                <i class="fas fa-sign-in-alt ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -55,5 +65,5 @@
 
 
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/home/login.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/modules/human_resource/recruitment/home/login.js')}}"></script>
 {% endblock %}

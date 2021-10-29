@@ -2,14 +2,14 @@
     <div class="container">
 
         {# Brand #}
-        <a href="{{BASE_URL_WEB}}" class="navbar-brand order-0">
+        <a href="#" class="navbar-brand order-0">
             <img 
                 src="{{BASE_URL_WEB}}static/dist/img/AdminLTELogo.png" 
-                alt="{{BRAND_NAME}}" 
+                alt="HoMIES" 
                 class="brand-image img-circle" 
                 style="opacity: .8"
             >
-            <span class="brand-text font-weight-light">{{BRAND_NAME}}</span>
+            <span class="brand-text font-weight-light">HoMIES</span>
         </a>
 
         {# Navbar Toggler #}
@@ -72,19 +72,17 @@
                             <li><a href="#" class="dropdown-item">3rd level</a></li>
                             </ul>
                         </li>
-                        {# End Level three #}
 
                         <li><a href="#" class="dropdown-item">level 2</a></li>
                         <li><a href="#" class="dropdown-item">level 2</a></li>
                         </ul>
                     </li>
-                    {# End Level two #}
                 </ul>
                 </li>
 
                 {# Careers #}
                 <li class="nav-item">
-                    <a href="{{BASE_URL_WEB}}careers" class="nav-link{% if active_navlink == 'Careers' %} text-primary{% endif %}">Careers</a>
+                    <a href="/careers" class="nav-link">Careers</a>
                 </li>
                 
                 {# About Us #}
@@ -109,8 +107,8 @@
 
         {# Right Navbar Links #}
         <div class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
-            <a href="{{ BASE_URL_WEB }}login" class="btn btn-primary text-nowrap">
-                <span>Login</span>
+            <a href="/login" class="btn btn-outline-primary text-nowrap">
+                <span>Log in</span>
                 <i class="fas fa-sign-in-alt ml-1"></i>
             </a>
         </div>
