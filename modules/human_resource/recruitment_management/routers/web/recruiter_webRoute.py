@@ -32,8 +32,22 @@ AUTHORIZED_USER = "Recruiter"
 # ===========================================================
 
 
-# Department Head Dashboard
+# Home
 @router.get("", response_class=HTMLResponse)
+async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
+            "request": req,
+            "page_title": "Main Dashboard",
+            "sub_title": "Recruiter manages all applicants to be selected",
+            "active_navlink": "Main Dashboard"
+        })
+    else:
+        return await errTemplate.page_not_found(req)
+
+
+# Department Head Dashboard
+@router.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {

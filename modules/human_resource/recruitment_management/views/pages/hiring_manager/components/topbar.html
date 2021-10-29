@@ -1,21 +1,36 @@
-{# Left navbar links toggler (for responsive) #}
-<button class="nav-link navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-    <i class="fas fa-bars"></i>
-</button>
+{# Left navbar links togglers (for responsive) #}
+<ul class="navbar-nav navbar-no-expand">
+
+    {# Sidebar Toggler #}
+    <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+            <i class="fas fa-bars"></i>
+        </a>
+    </li>
+
+    {# Tobpar toggler #}
+    <li class="nav-item">
+        <button class="nav-link navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarCollapse">
+            <i class="fas fa-caret-down"></i>
+        </button>
+    </li>
+</ul>
+
 
 {# Left navbar links #}
 <div class="collapse navbar-collapse order-3" id="navbarCollapse">
     <ul class="navbar-nav">
 
-        {# Sidebar Toggler #}
+        {# Home #}
         <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button">
-                <i class="fas fa-bars"></i>
+            <a class="nav-link" href="{{H_WEB_ROUTE}}" role="button">
+                <i class="fas fa-home"></i>
+                <span class="d-inline-block d-md-none ml-1 ml-md-0">Home</span>
             </a>
         </li>
 
         {# Hospital Core #}
-        {# <li class="nav-item dropdown">
+        <li class="nav-item dropdown">
             <a 
                 href="#" 
                 data-toggle="dropdown" 
@@ -23,17 +38,17 @@
             >Hospital Core</a>
             
             <ul class="dropdown-menu dropdown-menu-left">
-                <li><a href="#" class="dropdown-item">Patient Management</a></li>
-                <li><a href="#" class="dropdown-item">Treatment Management</a></li>
-                <li><a href="#" class="dropdown-item">Pharmacy</a></li>
-                <li><a href="#" class="dropdown-item">Medical Record</a></li>
-                <li><a href="#" class="dropdown-item">Doctors Management</a></li>
-                <li><a href="#" class="dropdown-item">Visitors Management</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Patient Management</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Treatment Management</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Pharmacy</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Medical Record</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Doctors Management</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Visitors Management</a></li>
             </ul>
-        </li> #}
+        </li>
 
         {# Human Resource #}
-        {# <li class="nav-item dropdown">
+        <li class="nav-item dropdown">
             <a 
                 href="#" 
                 data-toggle="dropdown" 
@@ -41,15 +56,15 @@
             >Human Resource</a>
             
             <ul class="dropdown-menu dropdown-menu-left">
-                <li><a href="#" class="dropdown-item">Core Human Capital Management</a></li>
-                <li><a href="#" class="dropdown-item active">Recruitment Management</a></li>
-                <li><a href="#" class="dropdown-item">Time & Attendance</a></li>
-                <li><a href="#" class="dropdown-item">Performance Management</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Core Human Capital Management</a></li>
+                <li><a href="{{H_WEB_ROUTE}}dashboard" class="dropdown-item active">Recruitment Management</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Time & Attendance</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Performance Management</a></li>
             </ul>
-        </li> #}
+        </li>
 
         {# Finance #}
-        {# <li class="nav-item dropdown">
+        <li class="nav-item dropdown">
             <a 
                 href="#" 
                 data-toggle="dropdown" 
@@ -57,16 +72,14 @@
             >Finance</a>
             
             <ul class="dropdown-menu dropdown-menu-left">
-                <li><a href="#" class="dropdown-item">General Ledger</a></li>
-                <li><a href="#" class="dropdown-item">Accounts Payable</a></li>
-                <li><a href="#" class="dropdown-item">Accounts Receivale</a></li>
-                <li><a href="#" class="dropdown-item">Collection</a></li>
-                <li><a href="#" class="dropdown-item">Disbursement</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">General Ledger</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Accounts Payable/Receivable</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Collection/Disbursement</a></li>
             </ul>
-        </li> #}
+        </li>
 
         {# Logistics #}
-        {# <li class="nav-item dropdown">
+        <li class="nav-item dropdown">
             <a 
                 href="#" 
                 data-toggle="dropdown" 
@@ -74,14 +87,15 @@
             >Logistics</a>
             
             <ul class="dropdown-menu dropdown-menu-left">
-                <li><a href="#" class="dropdown-item">Procurement Management</a></li>
-                <li><a href="#" class="dropdown-item">Warehousing Management</a></li>
-                <li><a href="#" class="dropdown-item">Asset Management</a></li>
-                <li><a href="#" class="dropdown-item">Project Management</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Procurement Management</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Warehousing Management</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Asset Management</a></li>
+                <li><a href="./submodule.html" class="dropdown-item">Project Management</a></li>
             </ul>
-        </li> #}
+        </li>
     </ul>
 </div>  
+
 
 {# Right navbar links #}
 <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
