@@ -434,7 +434,7 @@ validateForm('#addOnboardingTaskForm', {
     }
 });
 
-/** When add onbaording task modal is hidden */
+/** When add onboarding task modal is hidden */
 onHideModal('#addOnboardingTaskModal', () => {
     $('#assignTaskTo').val('').trigger('change');
     resetForm('#addOnboardingTaskForm');
@@ -1347,6 +1347,56 @@ onHideModal('#onboardingEmployeeTaskDetailsModal', () => {
 });
 
 
+/** Delete Onboarding Employee Task */
+const deleteOnboardingEmployeeTask = (onboardingEmplyeeTaskID) => {
+    setValue('#onboardingEmployeeTaskIDForDelete', onboardingEmplyeeTaskID);
+    showModal('#deleteOnboardingEmployeeTaskModal');
+}
+
+/** Validate Delete Onboarding Employee Task Form */
+validateForm('#deleteOnbaordingEmployeeTaskForm', {
+    submitHandler: () => {
+        
+        // Set buttons to loading state
+        btnToLoadingState('#deleteOnboardingEmployeeTaskBtn');
+        disableElement('#cancelDeleteOnboardingEmployeeTaskBtn');
+
+        const onboardingEmplyeeTaskID = generateFormData('#deleteOnbaordingEmployeeTaskForm').get('onboardingEmployeeTaskID');
+
+        DELETE_ajax(`${ DM_API_ROUTE }onboarding-employee-tasks/${ onboardingEmplyeeTaskID }`, {
+            success: result => {
+                if(result) {
+
+                    // Reload DataTable
+                    reloadDataTable('#onboardingEmployeeTasksDT');
+
+                    // Reload Onboarding Employee Details
+                    getOnboardingEmployeeDetails();
+
+                    // Hide Modal
+                    hideModal('#deleteOnboardingEmployeeTaskModal');
+
+                    // Set buttons to unload state
+                    btnToUnloadState('#deleteOnboardingEmployeeTaskBtn', `
+                        <span>Yes, delete it.</span>
+                        <i class="fas fa-trash-alt ml-1"></i>
+                    `);
+                    enableElement('#cancelDeleteOnboardingEmployeeTaskBtn');
+
+                    // Show alert
+                    toastr.info('A task is successfully deleted');
+
+                } else toastr.error('There was an error in deleting onboarding employee task')
+            },
+            error: () => toastr.error('There was an error in deleting onboarding employee task')
+        });
+
+        return false;
+    }
+})
+
+
+
 /**
  * ==============================================================================
  * ADD ONBOARDING EMPLOYEE TASKS
@@ -1404,7 +1454,7 @@ validateForm('#addOnboardingEmployeeTaskForm', {
         // Set buttons to loading state
         btnToLoadingState('#addOnboardingEmployeeTaskBtn');
         disableElement('#cancelAddOnboardingEmployeeTaskBtn');
-        
+    
         // For getting values in formData
         const get = (n) => { return generateFormData('#addOnboardingEmployeeTaskForm').get(n) }
 
@@ -1466,4 +1516,11 @@ validateForm('#addOnboardingEmployeeTaskForm', {
 
         return false;
     }
+});
+
+
+// On Add Onboarding Employee Task Modal is going to be hidden
+onHideModal('#addOnboardingEmployeeTaskModal', () => {
+    $('#assignTaskTo').val('').trigger('change');
+    resetForm('#addOnboardingEmployeeTaskForm');
 });

@@ -997,7 +997,7 @@ validateForm('#cancelManpowerRequestForm', {
         DELETE_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
             success: result => {
                 if(result) {
-                    if($('#manpowerRequestFormDocument').length) {
+                    if($('#manpowerRequestDocument').length) {
                         setSessionedAlertAndRedirect({
                             theme: 'info',
                             message: 'A manpower request has been canceled',

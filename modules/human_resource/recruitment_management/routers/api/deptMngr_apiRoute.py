@@ -739,3 +739,23 @@ async def update_onboarding_employee_task_status(
                 return {"message": "An onboarding employee task has been updated"}
     except Exception as e:
         print(e)
+
+
+# Delete Onboarding Employee Task
+@router.delete("/onboarding-employee-tasks/{onboarding_employee_task_id}")
+def delete_onboarding_employee_task(
+    onboarding_employee_task_id: str, 
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id)
+            if not onboarding_task.first():
+                raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
+            else:
+                onboarding_task.delete(synchronize_session = False)
+                db.commit()
+                return {"message": "An onboarding employee task is successfully deleted"}
+    except Exception as e:
+        print(e)

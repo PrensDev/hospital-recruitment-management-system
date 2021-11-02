@@ -469,7 +469,10 @@ ifSelectorExist('#jobPostDetails', () => {
 
             /** Job Post Options */
             setContent('#jobPostOptions', `
-                <a class="btn btn-sm btn-info" href="${ R_WEB_ROUTE }edit-job-post/${ jobPostID }"></a>
+                <a class="btn btn-sm btn-info btn-block" href="${ R_WEB_ROUTE }edit-job-post/${ jobPostID }">
+                    <i class="fas fa-edit mr-1"></i>
+                    <span>Edit this post</span>
+                </a>
             `);
 
 

@@ -300,3 +300,33 @@
         </form>
     </div>
 </div>
+
+
+{# Delete Onboarding Task Modal #}
+<div class="modal" id="deleteOnboardingEmployeeTaskModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="deleteOnbaordingEmployeeTaskForm">
+
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-secondary mr-2"></i>
+                    <span>Confirmation</span>
+                </h4>
+            </div>
+
+            <div class="modal-body mb-3">
+                <input type="hidden" id="onboardingEmployeeTaskIDForDelete" name="onboardingEmployeeTaskID">
+                <div>Are you sure you want to delete this task?</div>
+                <div class="small text-danger">NOTE: This task will be remove and it cannot be undone</div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelDeleteOnboardingEmployeeTaskBtn">No</button>
+                <button type="submit" class="btn btn-danger" id="deleteOnboardingEmployeseTaskBtn">
+                    <span>Yes, delete it.</span>
+                    <i class="fas fa-trash-alt ml-1"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
