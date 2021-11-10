@@ -307,7 +307,15 @@ const applicantsPerJobAnalytics = () => {
             a('#forEvaluationCount', result.for_evaluation);
 
             // Set Evaluated Applicants Count
-            const evaluatedCount = result.for_screening + result.for_interview + result.hired + result.rejected.from_screening + result.rejected.from_interview;
+            const evaluatedCount = 
+                result.for_screening 
+                + result.for_interview 
+                + result.hired 
+                + result.contract_signed 
+                + result.rejected.from_screening 
+                + result.rejected.from_interview
+            ;
+            
             a('#evaluatedCount', evaluatedCount);
 
             // Set Rejected From Evaluation Count

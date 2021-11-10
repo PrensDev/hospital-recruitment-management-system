@@ -73,8 +73,6 @@ ifSelectorExist('#addManpowerRequestForm', () => {
     /** Remove loader */
     showElement('#addManpowerRequestForm');
     $('#addManpowerRequestFormLoader').remove();
-
-    alertBeforeUnload();
 });
 
 /** On Set Salary Range Change */

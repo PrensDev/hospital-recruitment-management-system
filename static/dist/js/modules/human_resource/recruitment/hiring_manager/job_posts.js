@@ -56,10 +56,15 @@ initDataTable('#jobPostsDT', {
         {
             data: null,
             render: data => {
-                const applicants = data.applicants.length;
-                return applicants == 0 
+                const applicants = data.applicants;
+                let applicantsCounter = 0;
+                applicants.forEach(a => {
+                    if(!(a.status == "For evaluation" || a.status == "Rejected from evaluation")) 
+                        applicantsCounter++;
+                });
+                return applicantsCounter == 0 
                     ? `<div class="text-secondary font-italic">No applicants yet</div>` 
-                    : `${ applicants } applicant${ applicants > 1 ? 's' : '' }`
+                    : `${ applicantsCounter } applicant${ applicantsCounter > 1 ? 's' : '' }`
             }
         },
 
@@ -156,6 +161,10 @@ ifSelectorExist('#jobPostDetails', () => {
         success: result => {
             const manpowerRequest = result.manpower_request;
 
+            console.log(manpowerRequest);
+
+            /** JOB POST DETAILS */
+
             // Set Job Post Status
             const expiresAt = result.expiration_date;
 
@@ -200,6 +209,7 @@ ifSelectorExist('#jobPostDetails', () => {
             // Set Job Description
             setContent('#jobDescription', result.content);
 
+
             /** MANPOWER REQUEST SUMMARY */
 
             // Set Vacant Position
@@ -236,7 +246,16 @@ ifSelectorExist('#jobPostDetails', () => {
                     `
             });
 
-            /** Job Post Timeline */
+            setContent('#manpowerRequestSummaryBtnContainer', () => {
+                return `
+                    <a 
+                        class="btn btn-sm btn-secondary btn-block"
+                        href="${ H_WEB_ROUTE }manpower-requests/${ manpowerRequest.requisition_id }"
+                    >View Full Details</button>
+                `
+            })
+
+            /** JOB POST TIMELINE */
             setJobPostTimeline('#jobPostTimeline', result);
 
             /** Remove Loaders */

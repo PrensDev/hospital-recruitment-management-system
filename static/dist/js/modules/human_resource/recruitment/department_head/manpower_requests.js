@@ -122,6 +122,8 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
     const requisitionID = window.location.pathname.split('/')[3];
     GET_ajax(`${ DH_API_ROUTE }requisitions/${ requisitionID }`, {
         success: result => {
+            console.log(result);
+
             const requestedBy = result.manpower_request_by;
 
             // Set Requisition No
@@ -242,13 +244,13 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
 
             // Set Approved At
             setContent('#approvedAt', () => {
-                const approvedAt = result.approved_at;
+                const approvedAt = result.reviewed_at;
                 return isEmptyOrNull(approvedAt) 
                     ? `<div class="text-secondary font-italic">No status</div>` 
                     : formatDateTime(approvedAt, "Date")
             });
 
-            // Set Approved At
+            // Set Completed At
             setContent('#completedAt', () => {
                 const completedAt = result.completed_at;
                 return isEmptyOrNull(completedAt) 

@@ -51,6 +51,7 @@ class Applicant(BaseModel):
     contact_number: str
     email: str
     resume: str
+    status: str
 
     class Config():
         orm_mode = True

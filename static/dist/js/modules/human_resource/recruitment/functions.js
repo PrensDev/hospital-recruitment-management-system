@@ -440,10 +440,6 @@ const setSessionedAlertAndRedirect = (data = {theme: "", message: "", redirectUR
 }
 
 
-/** Alert Before Unload */
-const alertBeforeUnload = () => $(window).on('beforeunload', () => { return 1 });
-
-
 /** Show Timeline */
 const setTimeline = (selector, attr = {
     title: "",

@@ -412,6 +412,12 @@ async def applicants_per_job_analytics(
                 Applicant.status == "Hired",
                 Applicant.job_post_id == job_post_id
             ).count()
+
+            # Contract Signed
+            contract_signed = query.filter(
+                Applicant.status == "Contract Signed",
+                Applicant.job_post_id == job_post_id
+            ).count()
             
             # Rejected From Evaluation
             rejected_from_evaluation = query.filter(
@@ -432,7 +438,8 @@ async def applicants_per_job_analytics(
             ).count()
 
             # Total Rejected
-            total_rejected = rejected_from_evaluation + rejected_from_screening + rejected_from_intreview
+            total_rejected = \
+                rejected_from_evaluation + rejected_from_screening + rejected_from_intreview
             
             return {
                 "total": total,
@@ -440,6 +447,7 @@ async def applicants_per_job_analytics(
                 "for_screening": for_screening,
                 "for_interview": for_interview,
                 "hired": hired,
+                "contract_signed": contract_signed,
                 "rejected": {
                     "total": total_rejected,
                     "from_evaluation": rejected_from_evaluation,
@@ -484,7 +492,8 @@ async def evaluated_applicants(
                     Applicant.status == 'Rejected from screening',
                     Applicant.status == 'For interview',
                     Applicant.status == 'Rejected from interview',
-                    Applicant.status == 'Hired'
+                    Applicant.status == 'Hired',
+                    Applicant.status == 'Contract Signed'
                 )
             ).all()
     except Exception as e:
