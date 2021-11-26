@@ -281,10 +281,17 @@ async def applicants_analytics(
             for_interview = query.filter(Applicant.status == "For interview").count()
             hired = query.filter(Applicant.status == "Hired").count()
             
-            rejected_from_evaluation = query.filter(Applicant.status == "Rejected from evaluation").count()
-            rejected_from_screening = query.filter(Applicant.status == "Rejected from screening").count()
-            rejected_from_interview = query.filter(Applicant.status == "Rejected from interview").count()
-            total_rejected = rejected_from_evaluation + rejected_from_screening + rejected_from_interview
+            rejected_from_evaluation = \
+                query.filter(Applicant.status == "Rejected from evaluation").count()
+
+            rejected_from_screening = \
+                query.filter(Applicant.status == "Rejected from screening").count()
+            
+            rejected_from_interview = \
+                query.filter(Applicant.status == "Rejected from interview").count()
+            
+            total_rejected = \
+                rejected_from_evaluation + rejected_from_screening + rejected_from_interview
             
             return {
                 "total": total,
