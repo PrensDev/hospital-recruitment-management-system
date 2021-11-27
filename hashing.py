@@ -8,4 +8,3 @@ class Hash():
 
     def verify(plain: str, hashed: str):
         return pwd_cxt.verify(plain, hashed)
-

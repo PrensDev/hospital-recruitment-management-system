@@ -186,6 +186,77 @@ initDataTable('#applicantsDT', {
     ]
 });
 
+/**
+ * ==============================================================================
+ * VIEW APPLICANT DETAILS
+ * ==============================================================================
+*/
+
+/** View Applicant Details */
+const viewApplicantDetails = (applicantID) => {
+    GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }`, {
+        success: result => {
+
+            /** APPLICANT DETAILS */
+
+            // Set Applicant ID
+            setValue('#applicantID', result.applicant_id)
+
+            const applicantFullName = formatName('F M. L, S', {
+                firstName: result.first_name,
+                middleName: result.middle_name,
+                lastName: result.last_name,
+                suffixName: result.suffixName
+            });
+
+            // Set Applicant Full Name
+            setContent('#applicantFullName', applicantFullName);
+
+            // Set Applicant Contact Number
+            setContent("#applicantContactNumber", result.contact_number);
+
+            // Set Applicant Email
+            setContent("#applicantEmail", result.email);
+
+            // Set Resume Link
+            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
+
+
+            /** APPLICANT TIMELINE */
+            setApplicantTimeline('#applicantTimeline', result);
+
+            // Remove Applicant Timeline Loader
+            hideElement('#applicantTimelineLoader');
+            showElement('#applicantTimeline');
+
+
+            /** EVALUATION FORM */
+
+            // Display evaluation field
+            if(result.status === "For evaluation") {
+                showElement('#evaluationField');
+                showElement('#submitBtn');
+            } else {
+                hideElement('#evaluationField');
+                hideElement('#submitBtn');
+            }
+
+            /** Show Modal */
+            showModal('#applicantDetailsModal');
+        },
+        error: () => toastr.error('There was an error in getting applicant details')
+    });
+}
+
+/** On Applicant details modal is going to be hidden  */
+onHideModal('#applicantDetailsModal', () => {
+    resetForm('#applicantEvaluationForm');
+    hideElement("#remarksField");
+    showElement('#applicantTimelineLoader');
+    hideElement('#applicantTimeline');
+    $('#applicantDetailsTab').tab('show');
+});
+
 
 /**
  * ==============================================================================

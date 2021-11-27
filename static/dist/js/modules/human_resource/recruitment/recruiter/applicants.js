@@ -216,10 +216,10 @@ const viewApplicantDetails = (applicantID) => {
             // Display evaluation field
             if(result.status === "For evaluation") {
                 showElement('#evaluationField');
-                showElement('#submitBtn')
+                showElement('#submitBtn');
             } else {
                 hideElement('#evaluationField');
-                hideElement('#submitBtn')
+                hideElement('#submitBtn');
             }
 
             /** Show Modal */

@@ -462,7 +462,7 @@ const setTimeline = (selector, attr = {
                     <i class="fas fa-${ properties.icon } bg-${ properties.iconTheme }"></i>
                     <div class="timeline-item">
                         <div class="time">
-                            <i class="fas fa-clock mr-1"></i>
+                            <i class="fas fa-clock"></i>
                             <span>${ fromNow(properties.dateTime) }</span>
                         </div>
                         
