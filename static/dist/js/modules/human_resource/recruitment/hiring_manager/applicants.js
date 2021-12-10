@@ -71,6 +71,7 @@ ifSelectorExist('#jobPostSummary', () => {
 initDataTable('#applicantsDT', {
     // debugMode: true,
     url: `${ H_API_ROUTE }applicants`,
+    enableButtons: true,
     columns: [
         
         // Created at (Hidden for default sorting)

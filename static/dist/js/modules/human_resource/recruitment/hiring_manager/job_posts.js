@@ -41,6 +41,7 @@ ifSelectorExist('#jobPostsAnalytics', () => {
 /** Initialize Job Posts DataTable */
 initDataTable('#jobPostsDT', {
     url: `${ H_API_ROUTE }job-posts`,
+    enableButtons: true,
     columns: [
 
         // Created At (For Default Sorting)

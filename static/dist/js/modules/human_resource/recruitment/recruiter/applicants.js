@@ -18,6 +18,7 @@ const jobPostID = window.location.pathname.split("/")[3];
 initDataTable('#applicantsDT', {
     // debugMode: true,
     url: `${ R_API_ROUTE }applicants`,
+    enableButtons: true,
     columns: [
         
         // Created at (Hidden for default sorting)

@@ -251,6 +251,7 @@ onClick('#confirmPostNewJobPostBtn', () => {
 initDataTable('#jobPostsDT', {
     // debugMode: true,
     url: `${ R_API_ROUTE }job-posts`,
+    enableButtons: true,
     columns: [
 
         // Created At (For Default Sorting)

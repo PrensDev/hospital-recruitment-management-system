@@ -29,60 +29,115 @@ const nullOrReturnValue = (nullable, returnValue) => { return isEmptyOrNull(null
 
 
 /** Initialize DataTable */
-const initDataTable = (selector = "", dtOptions = { debugMode: false, url: "", columns: [] }) => $(() => ifSelectorExist(selector, () => dtOptions.debugMode 
-    ? $(selector).DataTable({
-        ajax: {
-            url: dtOptions.url,
-            headers: AJAX_HEADERS,
-            success: result => console.log(result)
-        }
-    })
-    : $(selector).DataTable({
-        ajax: {
-            url: dtOptions.url,
-            headers: AJAX_HEADERS,
-            dataSrc: ""
-        },
-        columns: dtOptions.columns,
-        order: [[0, 'desc']],
-        responsive: true,
-        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
-        columnDefs: [{
-            targets: [-1],
-            orderable: false
-        }],
-        language: {
-            emptyTable: `
-                <div class="p-5">
-                    <h3>No records</h3>
-                    <div class="text-secondary">There are no records yet here</div>
-                </div>
-            `,
-            loadingRecords: `
-                <div class="p-5 wait">
-                    <div class="spinner-border text-primary mb-3" role="status"></div>
-                    <div class="text-secondary">Please wait while loading records ...</div>
-                </div>
-            `,
-            processing: `
-                <div class="p-5 wait">
-                    <div class="spinner-border text-primary mb-3" role="status"></div>
-                    <div class="text-secondary">Processing, please wait ...</div>
-                </div>
-            `,
-            zeroRecords: `
-                <div class="p-5">
-                    <h3>No match found</h3>
-                    <div class="text-secondary">No records was found that matched to your query</div>
-                </div>
-            `,
-            paginate: {
-                previous: `<i class="fas fa-caret-left"></i>`,
-                next: `<i class="fas fa-caret-right"></i>`,
+const initDataTable = (selector = "", dtOptions = { 
+    debugMode: false,
+    enableButtons: false, 
+    url: "", 
+    columns: []
+}) => $(() => ifSelectorExist(selector, () => {
+
+    const ajax = {
+        url: dtOptions.url,
+        headers: AJAX_HEADERS,
+        dataSrc: ""
+    };
+
+    if(dtOptions.debugMode) {
+        $(selector).DataTable({
+            ajax: {
+                url: dtOptions.url,
+                headers: AJAX_HEADERS,
+                success: result => console.log(result)
             }
-        }
-    }).buttons().container().appendTo(`.col-md-6:eq(0)`)
-));
+        })
+    }  else if(dtOptions.enableButtons) {
+        $(selector).DataTable({
+            ajax: ajax,
+            columns: dtOptions.columns,
+            order: [[0, 'desc']],
+            dom: 'Bfrtip',
+            responsive: true,
+            lengthChange: false, 
+            autoWidth: false,
+            buttons: ["csv", "excel", "pdf", "print", "colvis"],
+            columnDefs: [{
+                targets: [-1],
+                orderable: false
+            }],
+            language: {
+                emptyTable: `
+                    <div class="p-5">
+                        <h3>No records</h3>
+                        <div class="text-secondary">There are no records yet here</div>
+                    </div>
+                `,
+                loadingRecords: `
+                    <div class="p-5 wait">
+                        <div class="spinner-border text-primary mb-3" role="status"></div>
+                        <div class="text-secondary">Please wait while loading records ...</div>
+                    </div>
+                `,
+                processing: `
+                    <div class="p-5 wait">
+                        <div class="spinner-border text-primary mb-3" role="status"></div>
+                        <div class="text-secondary">Processing, please wait ...</div>
+                    </div>
+                `,
+                zeroRecords: `
+                    <div class="p-5">
+                        <h3>No match found</h3>
+                        <div class="text-secondary">No records was found that matched to your query</div>
+                    </div>
+                `,
+                paginate: {
+                    previous: `<i class="fas fa-caret-left"></i>`,
+                    next: `<i class="fas fa-caret-right"></i>`,
+                }
+            }
+        }).buttons().container().appendTo(`${selector}_wrapper .col-md-6:eq(0)`)
+    } else {
+        $(selector).DataTable({
+            ajax: ajax,
+            columns: dtOptions.columns,
+            order: [[0, 'desc']],
+            responsive: true,
+            columnDefs: [{
+                targets: [-1],
+                orderable: false
+            }],
+            language: {
+                emptyTable: `
+                    <div class="p-5">
+                        <h3>No records</h3>
+                        <div class="text-secondary">There are no records yet here</div>
+                    </div>
+                `,
+                loadingRecords: `
+                    <div class="p-5 wait">
+                        <div class="spinner-border text-primary mb-3" role="status"></div>
+                        <div class="text-secondary">Please wait while loading records ...</div>
+                    </div>
+                `,
+                processing: `
+                    <div class="p-5 wait">
+                        <div class="spinner-border text-primary mb-3" role="status"></div>
+                        <div class="text-secondary">Processing, please wait ...</div>
+                    </div>
+                `,
+                zeroRecords: `
+                    <div class="p-5">
+                        <h3>No match found</h3>
+                        <div class="text-secondary">No records was found that matched to your query</div>
+                    </div>
+                `,
+                paginate: {
+                    previous: `<i class="fas fa-caret-left"></i>`,
+                    next: `<i class="fas fa-caret-right"></i>`,
+                }
+            }
+        })
+    }
+}));
 
 
 /** Reload DataTable */

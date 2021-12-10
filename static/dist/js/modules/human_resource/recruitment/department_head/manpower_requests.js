@@ -7,6 +7,7 @@
 /** ManPower Requests DataTable */
 initDataTable('#manpowerRequestDT', {
     url: `${ DH_API_ROUTE }requisitions`,
+    enableButtons: true,
     columns: [
 
         // Created At (For Default Sorting)

@@ -215,6 +215,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
 initDataTable('#manpowerRequestDT', {
     // debugMode: true,
     url: `${ DM_API_ROUTE }requisitions`,
+    enableButtons: true,
     columns: [
 
         // Created At (For Default Sorting)
@@ -338,8 +339,10 @@ initDataTable('#manpowerRequestDT', {
 
                 return `
                     <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
+                        <div class="d-block d-md-inline-block btn btn-sm btn-default text-nowrap" data-toggle="dropdown" role="button">
+                            <i class="fas fa-ellipsis-v d-none d-lg-inline-block"></i>
+                            <i class="fas fa-ellipsis-h d-lg-none mr-1 mr-md-0"></i>
+                            <span class="d-lg-none">Options</span>
                         </div>
 
                         <div class="dropdown-menu dropdown-menu-right">
@@ -709,7 +712,7 @@ const printManpowerRequest = () => {
         </html>`);
     w.print();
 
-    setTimeout(() => w.close(), 100);
+    setTimeout(() => w.close(), 1000);
 }
 
 
