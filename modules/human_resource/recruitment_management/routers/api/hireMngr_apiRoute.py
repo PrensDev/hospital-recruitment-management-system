@@ -7,11 +7,15 @@ from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, authorized
 from modules.human_resource.recruitment_management.schemas import user_schemas as user, hireMngr_schemas as hireMngr
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from dotenv import dotenv_values
 from datetime import date
 from sqlalchemy import or_
 from modules.human_resource.recruitment_management.models import *
+
+# From email sending
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 # Router Instance
@@ -27,20 +31,6 @@ AUTHORIZED_USER = "Hiring Manager"
 
 # Dotenv
 env = dotenv_values(".env")
-
-
-# Mail Configuration
-mail_config = ConnectionConfig(
-    MAIL_USERNAME = env['MAIL_EMAIL'],
-    MAIL_PASSWORD = env['MAIL_PASSWORD'],
-    MAIL_FROM = env['MAIL_EMAIL'],
-    MAIL_PORT = 587,
-    MAIL_SERVER = env['MAIL_SERVER'],
-    MAIL_TLS = True,
-    MAIL_SSL = False,
-    USE_CREDENTIALS = True,
-    VALIDATE_CERTS = True
-)
 
 
 # User Information
@@ -71,7 +61,7 @@ REQUISITION_NOT_FOUND_RESPONSE = {"message": "Requisition not found"}
 
 # Get All Requisitions
 @router.get("/requisitions", response_model = List[hireMngr.ShowManpowerRequest])
-async def get_all_requisitions(
+def get_all_requisitions(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -89,7 +79,7 @@ async def get_all_requisitions(
 
 # Requisition Analytics
 @router.get("/requisitions/analytics")
-async def requisition_analytics(
+def requisition_analytics(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -112,7 +102,7 @@ async def requisition_analytics(
 
 # Get One Requisition
 @router.get("/requisitions/{requisition_id}", response_model = hireMngr.ShowManpowerRequest)
-async def get_one_requisition(
+def get_one_requisition(
     requisition_id: str, 
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -138,7 +128,7 @@ async def get_one_requisition(
 
 # Requisition Approval
 @router.put("/requisitions/{requisition_id}")
-async def requisition_approval(
+def requisition_approval(
     requisition_id: str, 
     req: hireMngr.ManpowerRequestApproval,
     db: Session = Depends(get_db),
@@ -180,7 +170,7 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post Not Found"}
 
 # Job Posts
 @router.get("/job-posts", response_model=List[hireMngr.ShowJobPost])
-async def get_all_job_posts(
+def get_all_job_posts(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -193,7 +183,7 @@ async def get_all_job_posts(
 
 # Job Posts Analytics
 @router.get("/job-posts/analytics")
-async def job_posts_analytics(
+def job_posts_analytics(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -219,7 +209,7 @@ async def job_posts_analytics(
 
 # Get One Job Posts
 @router.get("/job-posts/{job_post_id}", response_model = hireMngr.ShowJobPost)
-async def get_one_job_post(
+def get_one_job_post(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -246,7 +236,7 @@ APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant Not Found"}
 
 # Get All Applicants Per Job
 @router.get("/job-posts/{job_post_id}/applicants", response_model = List[hireMngr.ShowApplicant])
-async def get_all_applicants_per_job(
+def get_all_applicants_per_job(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -260,7 +250,7 @@ async def get_all_applicants_per_job(
 
 # Get All Applicants
 @router.get("/applicants", response_model=List[hireMngr.ShowApplicant])
-async def get_all_applicants(
+def get_all_applicants(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -273,7 +263,7 @@ async def get_all_applicants(
 
 # Applicants Analytics
 @router.get("/applicants/analytics")
-async def applicants_analytics(
+def applicants_analytics(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -311,7 +301,7 @@ async def applicants_analytics(
 
 # Get One Applicant
 @router.get("/applicants/{applicant_id}", response_model=hireMngr.ShowApplicant)
-async def get_one_applicant(
+def get_one_applicant(
     applicant_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -329,7 +319,7 @@ async def get_one_applicant(
 
 # Get One Interviewee
 @router.get("/applicants/{applicant_id}/interviewee-info", response_model = hireMngr.ShowIntervieweeInfo)
-async def get_one_applicant(
+def get_one_applicant(
     applicant_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -352,7 +342,7 @@ async def get_one_applicant(
 
 # Applicants Per Job Analytics
 @router.get("/job-posts/{job_post_id}/applicants/analytics")
-async def applicants_per_job_analytics(
+def applicants_per_job_analytics(
     job_post_id,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -428,7 +418,7 @@ async def applicants_per_job_analytics(
 
 # Get All Applicants Per Job (For Screening)
 @router.get("/job-posts/{job_post_id}/applicants/for-screening", response_model=List[hireMngr.ShowApplicant])
-async def evaluated_applicants(
+def evaluated_applicants(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -445,7 +435,7 @@ async def evaluated_applicants(
 
 # Get All Applicants Per Job (For Interview)
 @router.get("/job-posts/{job_post_id}/applicants/for-interview", response_model=List[hireMngr.ShowIntervieweeInfo])
-async def evaluated_applicants(
+def evaluated_applicants(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -462,7 +452,7 @@ async def evaluated_applicants(
 
 # Get All Applicants Per Job (Interviewed)
 @router.get("/job-posts/{job_post_id}/applicants/interviewed", response_model=List[hireMngr.ShowIntervieweeInfo])
-async def evaluated_applicants(
+def evaluated_applicants(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -479,7 +469,7 @@ async def evaluated_applicants(
 
 # Get All Applicants Per Job (Hired)
 @router.get("/job-posts/{job_post_id}/applicants/hired", response_model=List[hireMngr.ShowApplicant])
-async def evaluated_applicants(
+def evaluated_applicants(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -499,7 +489,7 @@ async def evaluated_applicants(
 
 # Get All Applicants Per Job (Rejected)
 @router.get("/job-posts/{job_post_id}/applicants/rejected", response_model=List[hireMngr.ShowApplicant])
-async def evaluated_applicants(
+def evaluated_applicants(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -519,7 +509,7 @@ async def evaluated_applicants(
 
 # Screen Applicant
 @router.put("/applicants/{applicant_id}/screen", status_code=202)
-async def update_applicant_status(
+def update_applicant_status(
     applicant_id: str,
     req: hireMngr.UpdateApplicantStatus,
     db: Session = Depends(get_db),
@@ -554,7 +544,7 @@ async def update_applicant_status(
 
 # Hire Applicant
 @router.put("/applicants/{applicant_id}/hire", status_code=202)
-async def update_applicant_status(
+def update_applicant_status(
     applicant_id: str,
     req: hireMngr.UpdateApplicantStatus,
     db: Session = Depends(get_db),
@@ -605,7 +595,7 @@ INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE = {"message": "Interview Schedule not foun
 
 # Interview Schedules Per Job
 @router.get("/job-posts/{job_post_id}/interview-schedules", response_model=List[hireMngr.ShowInterviewScheduleInfo])
-async def get_interview_schedules_per_job_post(
+def get_interview_schedules_per_job_post(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -627,7 +617,7 @@ async def get_interview_schedules_per_job_post(
 
 # Create Interview Question
 @router.post("/interview-questions", status_code=201)
-async def create_interview_question(
+def create_interview_question(
     req: hireMngr.CreateInterviewQuestion,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -653,7 +643,7 @@ async def create_interview_question(
 
 # Get All General Interview Questions
 @router.get("/interview-questions/general", response_model=List[hireMngr.ShowInterviewQuestion])
-async def get_all_general_interview_questions(
+def get_all_general_interview_questions(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -666,7 +656,7 @@ async def get_all_general_interview_questions(
 
 # Get One Interview Question
 @router.get("/interview-questions/{interview_question_id}", response_model=hireMngr.ShowInterviewQuestion)
-async def get_one_interview_question(
+def get_one_interview_question(
     interview_question_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -684,7 +674,7 @@ async def get_one_interview_question(
 
 # Update Interview Question
 @router.put("/interview-question/{interview_question_id}", status_code=202)
-async def update_interview_question(
+def update_interview_question(
     interview_question_id: str,
     req: hireMngr.UpdateInterviewQuestion,
     db: Session = Depends(get_db),
@@ -704,7 +694,7 @@ async def update_interview_question(
 
 # Create Interview Schedule
 @router.post("/interview-schedule", status_code=201)
-async def create_interview_schedule(
+def create_interview_schedule(
     req: hireMngr.CreateInterviewSchedule,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -754,16 +744,17 @@ async def create_interview_schedule(
                     <p style="color: red">This message is auto-generated by the HoMIES Recruitment Management System. Please, DO NOT REPLY.</p>
                 """
 
-                message = MessageSchema(
-                    subject = "HoMIES - Job Interview",
-                    recipients = [applicant.email],
-                    body = messageBody,
-                    subtype = "html"
-                )
+                message = MIMEMultipart()
+                message['From'] = env['MAIL_EMAIL']
+                message['To'] = applicant.email
+                message['Subject'] = "HoMIES - Job Application"
 
-                fm = FastMail(mail_config)
+                message.attach(MIMEText(messageBody, 'html'))
 
-                await fm.send_message(message)
+                SMTP_SERVER = smtplib.SMTP_SSL(env['MAIL_SERVER'], 465)
+                SMTP_SERVER.login(env['MAIL_EMAIL'], env['MAIL_PASSWORD'])
+                SMTP_SERVER.sendmail(env["MAIL_EMAIL"], [applicant.email], message.as_string())
+                SMTP_SERVER.quit()
 
             return {"message": "Interview schedule is successfully created"}
     except Exception as e:
@@ -772,7 +763,7 @@ async def create_interview_schedule(
 
 # Get Interview Schedule and Applicants
 @router.get("/interview-schedules/{interview_schedule_id}", response_model=hireMngr.ShowInterviewScheduleInfo)
-async def interview_schedules_and_applicants(
+def interview_schedules_and_applicants(
     interview_schedule_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -790,7 +781,7 @@ async def interview_schedules_and_applicants(
 
 # Get Interviewees per Schedule
 @router.get("/interview-schedules/{interview_schedule_id}/interviewees", response_model=List[hireMngr.IntervieweeInfo])
-async def interviewees_per_schedule(
+def interviewees_per_schedule(
     interview_schedule_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -808,7 +799,7 @@ async def interviewees_per_schedule(
 
 # Create General Interview Scores
 @router.post("/interview-scores/{interviewee_id}", status_code=201)
-async def create_general_interviewee_scores(
+def create_general_interviewee_scores(
     interviewee_id: str,
     req: hireMngr.CreateGeneralIntervieweeScore,
     db: Session = Depends(get_db),
@@ -836,7 +827,7 @@ async def create_general_interviewee_scores(
 
 # Get One Interviewee
 @router.get("/interviewee/{interviewee_id}", response_model=hireMngr.IntervieweeInfo)
-async def get_one_intervieweee(
+def get_one_intervieweee(
     interviewee_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -854,7 +845,7 @@ async def get_one_intervieweee(
 
 # Update Interviewee Status
 @router.put("/interviewee/{interviewee_id}", status_code=202)
-async def update_interviewee(
+def update_interviewee(
     interviewee_id: str,
     req: hireMngr.UpdateInterviewee,
     db: Session = Depends(get_db),

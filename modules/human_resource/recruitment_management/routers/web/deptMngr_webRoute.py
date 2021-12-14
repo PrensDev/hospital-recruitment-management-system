@@ -35,7 +35,7 @@ AUTHORIZED_USER = "Department Manager"
 
 # Department Head Dashboard
 @router.get("", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
             "request": req,
@@ -44,12 +44,12 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Main Dashboard"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Department Head Dashboard
 @router.get("/dashboard", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
             "request": req,
@@ -58,7 +58,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Dashboard"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -68,7 +68,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
 
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
             "request": req,
@@ -77,12 +77,12 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Manpower Requests"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Manpower Request Details
 @router.get("/manpower-requests/{requisition_id}", response_class=HTMLResponse)
-async def render(
+def render(
     requisition_id: str,
     req: Request, 
     db: Session = Depends(get_db), 
@@ -91,7 +91,7 @@ async def render(
     if user_data['user_type'] == AUTHORIZED_USER:
         requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
         if not requisition:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH  + "view_manpower_request.html", {
                 "request": req,
@@ -100,12 +100,12 @@ async def render(
                 "active_navlink": "Manpower Requests"
             })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Manpower Requests
 @router.get("/manpower-requests/{requisition_id}/hired-applicants", response_class=HTMLResponse)
-async def render(
+def render(
     requisition_id: str,
     req: Request, 
     db: Session = Depends(get_db),
@@ -114,7 +114,7 @@ async def render(
     if user_data['user_type'] == AUTHORIZED_USER:
         requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
         if not requisition:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants_per_request.html", {
                 "request": req,
@@ -123,12 +123,12 @@ async def render(
                 "active_navlink": "Hired Applicants"
             })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Add Manpower Request
 @router.get("/add-manpower-request", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "add_manpower_request.html", {
             "request": req,
@@ -137,12 +137,12 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Manpower Requests"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Edit Manpower Request
 @router.get("/edit-manpower-request/{requisition_id}", response_class=HTMLResponse)
-async def render(
+def render(
     requisition_id: str, 
     req: Request, 
     db: Session = Depends(get_db), 
@@ -150,14 +150,14 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not requisition_id:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             requisition = db.query(Requisition).filter(
                 Requisition.requisition_id == requisition_id,
                 Requisition.request_status == 'For signature'
             ).first()
             if not requisition:
-                return await errTemplate.page_not_found(req)
+                return errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "edit_manpower_request.html", {
                     "request": req,
@@ -166,7 +166,7 @@ async def render(
                     "active_navlink": "Manpower Requests"
                 })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -176,7 +176,7 @@ async def render(
 
 # Hired Applicants
 @router.get("/hired-applicants", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants.html", {
             "request": req,
@@ -185,7 +185,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Hired Applicants"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -195,7 +195,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
 
 # Onboarding Employees
 @router.get("/onboarding-employees", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employees.html", {
             "request": req,
@@ -204,12 +204,12 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Onboarding Employees"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Add Onboarding Employee Details
 @router.get("/onboard-employee/{onboarding_employee_id}", response_class=HTMLResponse)
-async def render(
+def render(
     onboarding_employee_id: str, 
     req: Request, 
     db: Session = Depends(get_db), 
@@ -217,7 +217,7 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not onboarding_employee_id:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data['user_id'], User.position_id == Position.position_id).first()
             onboarding_employee = db.query(OnboardingEmployee).filter(
@@ -229,7 +229,7 @@ async def render(
                 Department.department_id ==  user_department.department_id
             ).first()
             if not onboarding_employee:
-                return await errTemplate.page_not_found(req)
+                return errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "onboard_employee.html", {
                     "request": req,
@@ -238,7 +238,7 @@ async def render(
                     "active_navlink": "Onboarding Employees"
                 })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -248,16 +248,16 @@ async def render(
 
 # General Tasks
 @router.get("/general-tasks", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return RedirectResponse("/dm/general-tasks/for-new-employees")
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # General Tasks for new employees
 @router.get("/general-tasks/for-new-employees", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "pages/general_tasks/for_new_employees.html", {
             "request": req,
@@ -267,12 +267,12 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             'active_menu': "For new employees"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # General Tasks for the team
 @router.get("/general-tasks/for-the-team", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "pages/general_tasks/for_team.html", {
             "request": req,
@@ -282,12 +282,12 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             'active_menu': "For the team"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # General Tasks for department head
 @router.get("/general-tasks/my-tasks", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "pages/general_tasks/for_department_manager.html", {
             "request": req,
@@ -297,7 +297,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             'active_menu': "For department manager"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -307,7 +307,7 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
 
 # Onboarding Employee Tasks
 @router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_class=HTMLResponse)
-async def render(
+def render(
     onboarding_employee_id: str, 
     req: Request, 
     db: Session = Depends(get_db), 
@@ -325,7 +325,7 @@ async def render(
             Department.department_id ==  user_department.department_id
         ).first()
         if not onboarding_employee:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
                 "request": req,
@@ -334,4 +334,4 @@ async def render(
                 "active_navlink": "Onboarding Employees"
             })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)

@@ -22,7 +22,7 @@ router = APIRouter(
 
 # Login
 @router.get("/login", response_class=HTMLResponse)
-async def index(req: Request):
+def index(req: Request):
     try:
         access_token_cookie = req.cookies.get('access_token')
         if not access_token_cookie:
@@ -38,7 +38,7 @@ async def index(req: Request):
 
 # User Redirect
 @router.get("/redirect")
-async def redirect(req: Request, user_data: dict = Depends(get_token)):
+def redirect(req: Request, user_data: dict = Depends(get_token)):
     if(user_data["user_type"] == "Department Head"):
         return RedirectResponse("/dh")
     elif(user_data["user_type"] == "Department Manager"):
@@ -48,7 +48,7 @@ async def redirect(req: Request, user_data: dict = Depends(get_token)):
     elif(user_data["user_type"] == "Recruiter"):
         return RedirectResponse("/r")
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -58,7 +58,7 @@ async def redirect(req: Request, user_data: dict = Depends(get_token)):
 
 # Home Page
 @router.get("/")
-async def careers(req: Request, page: Optional[int] = None):
+def careers(req: Request, page: Optional[int] = None):
     try:
         return templates.TemplateResponse("pages/home/index.html", {
             "request": req,
@@ -75,7 +75,7 @@ async def careers(req: Request, page: Optional[int] = None):
 
 # Careers
 @router.get("/careers")
-async def careers(req: Request, page: Optional[int] = None):
+def careers(req: Request, page: Optional[int] = None):
     try:
         return templates.TemplateResponse("pages/home/careers.html", {
             "request": req,
@@ -89,10 +89,10 @@ async def careers(req: Request, page: Optional[int] = None):
 
 # Search Job
 @router.get("/careers/search")
-async def search(req: Request, query: str, page: Optional[int] = 1):
+def search(req: Request, query: str, page: Optional[int] = 1):
     try:
         if not query:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse("pages/home/search_result.html", {
                 "request": req,
@@ -105,11 +105,11 @@ async def search(req: Request, query: str, page: Optional[int] = 1):
 
 # Available Job Details
 @router.get("/careers/{job_post_id}")
-async def available_job_details(job_post_id: str, req: Request, db: Session = Depends(get_db)):
+def available_job_details(job_post_id: str, req: Request, db: Session = Depends(get_db)):
     try:
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
         if not job_post:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse("pages/home/available_job_details.html", {
                 "request": req,

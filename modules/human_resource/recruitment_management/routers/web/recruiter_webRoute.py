@@ -34,7 +34,7 @@ AUTHORIZED_USER = "Recruiter"
 
 # Home
 @router.get("", response_class=HTMLResponse)
-async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+def dashboard(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
             "request": req,
@@ -43,12 +43,12 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Main Dashboard"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Department Head Dashboard
 @router.get("/dashboard", response_class=HTMLResponse)
-async def dashboard(req: Request, user_data: dict = Depends(get_token)):
+def dashboard(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
             "request": req,
@@ -57,7 +57,7 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Dashboard"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -67,7 +67,7 @@ async def dashboard(req: Request, user_data: dict = Depends(get_token)):
 
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
             "request": req,
@@ -76,12 +76,12 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Manpower Requests"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Manpower Request Details
 @router.get("/manpower-requests/{requisition_id}", response_class=HTMLResponse)
-async def render(
+def render(
     requisition_id: str,
     req: Request, 
     db: Session = Depends(get_db),
@@ -90,7 +90,7 @@ async def render(
     if user_data['user_type'] == AUTHORIZED_USER:
         requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
         if not requisition:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "view_manpower_request.html", {
                 "request": req,
@@ -99,7 +99,7 @@ async def render(
                 "active_navlink": "Manpower Requests"
             })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 
@@ -110,7 +110,7 @@ async def render(
 
 # Job Posts
 @router.get("/job-posts", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "job_posts.html", {
             "request": req,
@@ -119,12 +119,12 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Job Posts"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Job Post Details
 @router.get("/job-posts/{job_post_id}", response_class=HTMLResponse)
-async def render(
+def render(
     job_post_id: str, 
     req: Request, 
     db: Session = Depends(get_db),
@@ -132,7 +132,7 @@ async def render(
     if user_data['user_type'] == AUTHORIZED_USER:
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
         if not job_post:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "view_job_post.html", {
                 "request": req,
@@ -141,23 +141,23 @@ async def render(
                 "active_navlink": "Job Posts"
             })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Create Job Post
 @router.get("/add-job-post/{requisition_id}", response_class=HTMLResponse)
-async def render(
+def render(
     requisition_id: str, 
     req: Request, 
     db: Session = Depends(get_db),
     user_data: dict = Depends(get_token)
 ):
     if not requisition_id:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
     elif user_data['user_type'] == AUTHORIZED_USER:
         requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
         if not requisition:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "add_job_post.html", {
                 "request": req,
@@ -166,23 +166,23 @@ async def render(
                 "active_navlink": "Job Posts"
             })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Edit Job Post
 @router.get("/edit-job-post/{job_post_id}", response_class=HTMLResponse)
-async def render(
+def render(
     job_post_id: str, 
     req: Request, 
     db: Session = Depends(get_db),
     user_data: dict = Depends(get_token)
 ):
     if not job_post_id:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
     elif user_data['user_type'] == AUTHORIZED_USER:
         job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
         if not job_post:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             return templates.TemplateResponse(TEMPLATES_PATH + "edit_job_post.html", {
                 "request": req,
@@ -191,7 +191,7 @@ async def render(
                 "active_navlink": "Job Posts"
             })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -201,7 +201,7 @@ async def render(
 
 # Applicants
 @router.get("/applicants", response_class=HTMLResponse)
-async def render(req: Request, user_data: dict = Depends(get_token)):
+def render(req: Request, user_data: dict = Depends(get_token)):
     if user_data['user_type'] == AUTHORIZED_USER:
         return templates.TemplateResponse(TEMPLATES_PATH + "applicants.html", {
             "request": req,
@@ -210,12 +210,12 @@ async def render(req: Request, user_data: dict = Depends(get_token)):
             "active_navlink": "Applicants"
         })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Applicants Per Job Post
 @router.get("/job-posts/{job_post_id}/applicants", response_class=HTMLResponse)
-async def render(
+def render(
     job_post_id: str, 
     req: Request, 
     db: Session = Depends(get_db),
@@ -223,20 +223,20 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not job_post_id:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
             if not job_post:
-                return await errTemplate.page_not_found(req)
+                return errTemplate.page_not_found(req)
             else:
                 return RedirectResponse(f"/r/job-posts/{job_post_id}/applicants/for-evaluation")
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Applicants Per Job Post (For evaluation)
 @router.get("/job-posts/{job_post_id}/applicants/for-evaluation", response_class=HTMLResponse)
-async def render(
+def render(
     job_post_id: str, 
     req: Request, 
     db: Session = Depends(get_db),
@@ -244,11 +244,11 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not job_post_id:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
             if not job_post:
-                return await errTemplate.page_not_found(req)
+                return errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/for_evaluation.html", {
                     "request": req,
@@ -259,12 +259,12 @@ async def render(
                     "job_post_id": f"{job_post_id}"
                 })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Applicants Per Job Post (Evaluated)
 @router.get("/job-posts/{job_post_id}/applicants/evaluated", response_class=HTMLResponse)
-async def render(
+def render(
     job_post_id: str, 
     req: Request, 
     db: Session = Depends(get_db),
@@ -272,11 +272,11 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not job_post_id:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
             if not job_post:
-                return await errTemplate.page_not_found(req)
+                return errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/evaluated.html", {
                     "request": req,
@@ -287,12 +287,12 @@ async def render(
                     "job_post_id": f"{job_post_id}"
                 })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 
 
 # Applicants Per Job Post (Rejected)
 @router.get("/job-posts/{job_post_id}/applicants/rejected", response_class=HTMLResponse)
-async def render(
+def render(
     job_post_id: str, 
     req: Request, 
     db: Session = Depends(get_db),
@@ -300,11 +300,11 @@ async def render(
 ):
     if user_data['user_type'] == AUTHORIZED_USER:
         if not job_post_id:
-            return await errTemplate.page_not_found(req)
+            return errTemplate.page_not_found(req)
         else:
             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
             if not job_post:
-                return await errTemplate.page_not_found(req)
+                return errTemplate.page_not_found(req)
             else:
                 return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/rejected.html", {
                     "request": req,
@@ -315,5 +315,5 @@ async def render(
                     "job_post_id": f"{job_post_id}"
                 })
     else:
-        return await errTemplate.page_not_found(req)
+        return errTemplate.page_not_found(req)
 

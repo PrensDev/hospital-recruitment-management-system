@@ -27,7 +27,7 @@ AUTHORIZED_USER = "Department Head"
 
 # User Information
 @router.get("/info", response_model = user.ShowUser)
-async def get_user_info(
+def get_user_info(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
 ):
@@ -53,7 +53,7 @@ REQUISITION_NOT_FOUND_RESPONSE = {"message": "Manpower request was not found"}
 
 # Get All Manpower Request
 @router.get("/requisitions", response_model = List[deptHead.ShowManpowerRequest])
-async def get_all_requisitions(
+def get_all_requisitions(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
 ):
@@ -70,7 +70,7 @@ async def get_all_requisitions(
 
 # Manpower Request Analytics
 @router.get("/requisitions/analytics")
-async def requisition_analytics(
+def requisition_analytics(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -117,7 +117,7 @@ async def requisition_analytics(
 
 # Get One Manpower Request
 @router.get("/requisitions/{requisition_id}", response_model = deptHead.ShowManpowerRequest)
-async def get_one_requisition(
+def get_one_requisition(
     requisition_id: str,
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
@@ -135,7 +135,7 @@ async def get_one_requisition(
 
 # Sign Manpower Request
 @router.put("/requisitions/{requisition_id}/sign", status_code = 202)
-async def sign_requisition(
+def sign_requisition(
     requisition_id: str,
     req: deptHead.SignManpowerRequest,
     db: Session = Depends(get_db),
@@ -177,7 +177,7 @@ APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
 
 # Get all hired applicants
 @router.get("/hired-applicants", response_model=List[deptHead.ShowHiredApplicant])
-async def get_all_hired_applicants(
+def get_all_hired_applicants(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -203,7 +203,7 @@ async def get_all_hired_applicants(
 
 # Get one hired applicant
 @router.get("/hired-applicants/{applicant_id}", response_model=deptHead.ShowHiredApplicant)
-async def get_one_hired_applicant(
+def get_one_hired_applicant(
     applicant_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -237,7 +237,7 @@ async def get_one_hired_applicant(
 
 # Upload Signed Contract
 @router.post("/upload/employment-contract", status_code=202)
-async def upload_employment_contract(
+def upload_employment_contract(
     file: UploadFile = File(...), 
     user_data: user.UserData = Depends(get_user)
 ):
@@ -269,7 +269,7 @@ ONBOARDING_EMPLOYEE_NOT_FOUND = {"message": "Onboarding Employee not found"}
 
 # Add onboarding employee
 @router.post("/onboarding-employees", status_code=202)
-async def add_onboarding_employee(
+def add_onboarding_employee(
     req: deptHead.CreateOnboardingEmployee,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -318,7 +318,7 @@ async def add_onboarding_employee(
 
 # Get All Onboarding Employees
 @router.get("/onboarding-employees", response_model=List[deptHead.ShowOnboardingEmployee])
-async def get_all_onboarding_employees(
+def get_all_onboarding_employees(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -345,7 +345,7 @@ async def get_all_onboarding_employees(
 
 # Onboarding Employees Analytics
 @router.get("/onboarding-employees/analytics")
-async def onboarding_employees_analytics(
+def onboarding_employees_analytics(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -373,7 +373,7 @@ async def onboarding_employees_analytics(
 
 # Get One Onboarding Employees
 @router.get("/onboarding-employees/{onboarding_employee_id}", response_model=deptHead.ShowOnboardingEmployee)
-async def get_one_onboarding_employee(
+def get_one_onboarding_employee(
     onboarding_employee_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -400,7 +400,7 @@ ONBOARDING_EMPLOYEE_TASK_NOT_FOUND = {"message": "Onboarding Employee Task Not F
 
 # Get All Onboarding Employee Task
 @router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_model=List[deptHead.ShowOnboardingEmployeeTask])
-async def get_all_onboarding_employee_tasks(
+def get_all_onboarding_employee_tasks(
     onboarding_employee_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -418,7 +418,7 @@ async def get_all_onboarding_employee_tasks(
 
 # Get One Onboarding Employee Task
 @router.get("/onboarding-employee-tasks/{onboarding_employee_task_id}", response_model=deptHead.ShowOnboardingEmployeeTask)
-async def get_one_onboarding_employee_tasks(
+def get_one_onboarding_employee_tasks(
     onboarding_employee_task_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)

@@ -23,7 +23,7 @@ AUTHORIZED_USER = "Department Manager"
 
 # User Information
 @router.get("/info", response_model = user.ShowUser)
-async def get_user_info(
+def get_user_info(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
 ):
@@ -49,7 +49,7 @@ REQUISITION_NOT_FOUND_RESPONSE = {"message": "Manpower request was not found"}
 
 # Create Manpower Request
 @router.post("/requisitions", status_code = 201)
-async def create_manpower_request(
+def create_manpower_request(
     req: deptMngr.CreateManpowerRequest,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -74,7 +74,7 @@ async def create_manpower_request(
 
 # Get All Manpower Request
 @router.get("/requisitions", response_model = List[deptMngr.ShowManpowerRequest])
-async def get_all_requisitions(
+def get_all_requisitions(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
 ):
@@ -87,7 +87,7 @@ async def get_all_requisitions(
 
 # Manpower Request Analytics
 @router.get("/requisitions/analytics")
-async def requisition_analytics(
+def requisition_analytics(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
 ):
@@ -154,7 +154,7 @@ async def requisition_analytics(
 
 # Get One Manpower Request
 @router.get("/requisitions/{requisition_id}", response_model = deptMngr.ShowManpowerRequest)
-async def get_one_requisition(
+def get_one_requisition(
     requisition_id: str,
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
@@ -172,7 +172,7 @@ async def get_one_requisition(
 
 # Update Manpower Request
 @router.put("/requisitions/{requisition_id}", status_code=202)
-async def update_requisition(
+def update_requisition(
     requisition_id: str,
     req: deptMngr.UpdateManpowerRequest,
     db: Session = Depends(get_db),
@@ -193,7 +193,7 @@ async def update_requisition(
 
 # Delete Manpower Request
 @router.delete("/requisitions/{requisition_id}")
-async def delete_requisition(
+def delete_requisition(
     requisition_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -216,7 +216,7 @@ async def delete_requisition(
 
 # Mark as completed
 @router.put("/requisitions/{requisition_id}/complete", status_code=202)
-async def mark_requisition_as_completed(
+def mark_requisition_as_completed(
     requisition_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -251,7 +251,7 @@ DEPARTMENT_NOT_FOUND_RESPONSE = {"message": "Department not found"}
 
 # Department Positions
 @router.get("/department/positions", response_model = List[deptMngr.ShowDepartmentPosition])
-async def department_positions(
+def department_positions(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
 ):
@@ -277,7 +277,7 @@ ONBOARDING_TASK_NOT_FOUND = {"message": "Onboarding Task not found"}
 
 # Add Onboarding task
 @router.post("/onboarding-tasks")
-async def add_onboarding_task(
+def add_onboarding_task(
     req: deptMngr.CreateOnboardingTask,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -317,7 +317,7 @@ async def add_onboarding_task(
 
 # Get All General Onboarding Tasks
 @router.get("/onboarding-tasks/general", response_model=List[deptMngr.ShowOnboardingTask])
-async def get_all_general_onboarding_tasks(
+def get_all_general_onboarding_tasks(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -347,7 +347,7 @@ async def get_all_general_onboarding_tasks(
 
 # Get All General Onboarding Tasks for New Employees
 @router.get("/onboarding-tasks/general/for-new-employees", response_model=List[deptMngr.ShowOnboardingTask])
-async def get_all_general_onboarding_tasks(
+def get_all_general_onboarding_tasks(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -378,7 +378,7 @@ async def get_all_general_onboarding_tasks(
 
 # Get All General Onboarding Tasks for the Team
 @router.get("/onboarding-tasks/general/for-the-team", response_model=List[deptMngr.ShowOnboardingTask])
-async def get_all_general_onboarding_tasks(
+def get_all_general_onboarding_tasks(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -409,7 +409,7 @@ async def get_all_general_onboarding_tasks(
 
 # Get All General Onboarding Tasks for Department Manager
 @router.get("/onboarding-tasks/general/for-department-manager", response_model=List[deptMngr.ShowOnboardingTask])
-async def get_all_general_onboarding_tasks(
+def get_all_general_onboarding_tasks(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -440,7 +440,7 @@ async def get_all_general_onboarding_tasks(
 
 # Get One General Onboarding Task
 @router.get("/onboarding-tasks/{onboarding_task_id}", response_model=deptMngr.ShowOnboardingTask)
-async def get_one_onboarding_task(
+def get_one_onboarding_task(
     onboarding_task_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -486,7 +486,7 @@ APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
 
 # Get all hired applicants
 @router.get("/hired-applicants", response_model=List[deptMngr.ShowHiredApplicant])
-async def get_all_hired_applicants(
+def get_all_hired_applicants(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -507,7 +507,7 @@ async def get_all_hired_applicants(
 
 # Get one hired applicant
 @router.get("/hired-applicants/{onboarding_employee_id}", response_model=deptMngr.ShowHiredApplicant)
-async def get_all_hired_applicants(
+def get_all_hired_applicants(
     onboarding_employee_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -543,7 +543,7 @@ ONBOARDING_EMPLOYEE_NOT_FOUND = {"message": "Onboarding employee not found"}
 
 # Get All Onboarding Employees
 @router.get("/onboarding-employees", response_model=List[deptMngr.ShowOnboardingEmployee])
-async def get_all_onboarding_employees(
+def get_all_onboarding_employees(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -570,7 +570,7 @@ async def get_all_onboarding_employees(
 
 # Onboarding Employees Analytics
 @router.get("/onboarding-employees/analytics")
-async def onboarding_employees_analytics(
+def onboarding_employees_analytics(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -598,7 +598,7 @@ async def onboarding_employees_analytics(
 
 # Get One Onboarding Employees
 @router.get("/onboarding-employees/{onboarding_employee_id}", response_model=deptMngr.ShowOnboardingEmployee)
-async def get_one_onboarding_employee(
+def get_one_onboarding_employee(
     onboarding_employee_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -616,7 +616,7 @@ async def get_one_onboarding_employee(
 
 # Update Onboarding Employee
 @router.put("/onboarding-employees/{onboarding_employee_id}", status_code=202)
-async def update_onboarding_employee(
+def update_onboarding_employee(
     onboarding_employee_id: str,
     req: deptMngr.UpdateOnboardingEmployee,
     db: Session = Depends(get_db),
@@ -646,7 +646,7 @@ ONBOARDING_EMPLOYEE_TASK_NOT_FOUND = {"message": "Onboarding Employee Task not f
 
 # Add Onboarding Employee Task
 @router.post("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks")
-async def add_employee_onboarding_task(
+def add_employee_onboarding_task(
     onboarding_employee_id: str,
     req: db_schemas.CreateOnboardingEmployeeTask,
     db: Session = Depends(get_db),
@@ -679,7 +679,7 @@ async def add_employee_onboarding_task(
 
 # Get All Onboarding Employee Task
 @router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_model=List[deptMngr.ShowOnboardingEmployeeTask])
-async def get_all_onboarding_employee_tasks(
+def get_all_onboarding_employee_tasks(
     onboarding_employee_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -697,7 +697,7 @@ async def get_all_onboarding_employee_tasks(
 
 # Get One Onboarding Employee Task
 @router.get("/onboarding-employee-tasks/{onboarding_employee_task_id}", response_model=deptMngr.ShowOnboardingEmployeeTask)
-async def get_one_onboarding_employee_tasks(
+def get_one_onboarding_employee_tasks(
     onboarding_employee_task_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -715,7 +715,7 @@ async def get_one_onboarding_employee_tasks(
 
 # Update Onboarding Employee Task Status
 @router.put("/onboarding-employee-tasks/{onboarding_employee_task_id}", status_code=202)
-async def update_onboarding_employee_task_status(
+def update_onboarding_employee_task_status(
     onboarding_employee_task_id: str,
     req: db_schemas.UpdatedOnboardingEmployeeTaskStatus,
     db: Session = Depends(get_db),

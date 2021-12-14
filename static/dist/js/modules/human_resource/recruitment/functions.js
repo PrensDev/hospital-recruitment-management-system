@@ -40,7 +40,49 @@ const initDataTable = (selector = "", dtOptions = {
         url: dtOptions.url,
         headers: AJAX_HEADERS,
         dataSrc: ""
-    };
+    }
+
+    const dtLanguage = {
+        emptyTable: `
+            <div class="p-5">
+                <h3>No records</h3>
+                <div class="text-secondary">There are no records yet here</div>
+            </div>
+        `,
+        loadingRecords: `
+            <div class="p-5 wait">
+                <div class="spinner-border text-primary mb-3" role="status"></div>
+                <div class="text-secondary">Please wait while loading records ...</div>
+            </div>
+        `,
+        processing: `
+            <div class="p-5 wait">
+                <div class="spinner-border text-primary mb-3" role="status"></div>
+                <div class="text-secondary">Processing, please wait ...</div>
+            </div>
+        `,
+        zeroRecords: `
+            <div class="p-5">
+                <h3>No match found</h3>
+                <div class="text-secondary">No records was found that matched to your query</div>
+            </div>
+        `,
+        paginate: {
+            previous: `<i class="fas fa-caret-left"></i>`,
+            next: `<i class="fas fa-caret-right"></i>`,
+        }
+    }
+
+    const dtColumnDefs = [{
+        targets: [-1],
+        orderable: false
+    }]
+
+    let visibleCols = []
+    for(var i = 1; i < dtOptions.columns.length-1; i++) visibleCols.push(i);
+
+    let columnOpts = []
+    for(var i = 2; i < dtOptions.columns.length-1; i++) columnOpts.push(i);
 
     if(dtOptions.debugMode) {
         $(selector).DataTable({
@@ -50,50 +92,79 @@ const initDataTable = (selector = "", dtOptions = {
                 success: result => console.log(result)
             }
         })
-    }  else if(dtOptions.enableButtons) {
+    } else if(dtOptions.enableButtons) {
         $(selector).DataTable({
             ajax: ajax,
             columns: dtOptions.columns,
             order: [[0, 'desc']],
-            dom: 'Bfrtip',
+            dom: 'Blfrtip',
             responsive: true,
             lengthChange: false, 
             autoWidth: false,
-            buttons: ["csv", "excel", "pdf", "print", "colvis"],
-            columnDefs: [{
-                targets: [-1],
-                orderable: false
-            }],
-            language: {
-                emptyTable: `
-                    <div class="p-5">
-                        <h3>No records</h3>
-                        <div class="text-secondary">There are no records yet here</div>
-                    </div>
-                `,
-                loadingRecords: `
-                    <div class="p-5 wait">
-                        <div class="spinner-border text-primary mb-3" role="status"></div>
-                        <div class="text-secondary">Please wait while loading records ...</div>
-                    </div>
-                `,
-                processing: `
-                    <div class="p-5 wait">
-                        <div class="spinner-border text-primary mb-3" role="status"></div>
-                        <div class="text-secondary">Processing, please wait ...</div>
-                    </div>
-                `,
-                zeroRecords: `
-                    <div class="p-5">
-                        <h3>No match found</h3>
-                        <div class="text-secondary">No records was found that matched to your query</div>
-                    </div>
-                `,
-                paginate: {
-                    previous: `<i class="fas fa-caret-left"></i>`,
-                    next: `<i class="fas fa-caret-right"></i>`,
+            buttons: [
+                {
+                    extend: "copy",
+                    text: `
+                        <i class="fas fa-copy mr-1"></i>
+                        <span>Copy</span>
+                    `,
+                    className: "btn-sm btn-default",
+                    exportOptions: {
+                        columns: visibleCols
+                    }
+                }, {
+                    extend: "csv",
+                    text: `
+                        <i class="fas fa-file-csv mr-1"></i>
+                        <span>CSV</span>
+                    `,
+                    className: "btn-sm btn-default",
+                    exportOptions: {
+                        columns: visibleCols
+                    }
+                }, { 
+                    extend: "excel",
+                    text: `
+                        <i class="fas fa-file-excel mr-1"></i>
+                        <span>Excel</span>
+                    `,
+                    className: "btn-sm btn-default",
+                    exportOptions: {
+                        columns: visibleCols
+                    }
+                }, {
+                    extend: "pdf",
+                    text: `
+                        <i class="fas fa-file-pdf mr-1"></i>
+                        <span>PDF</span>
+                    `,
+                    className: "btn-sm btn-default",
+                    exportOptions: {
+                        columns: visibleCols
+                    }
+                }, {
+                    extend: "print",
+                    text: `
+                        <i class="fas fa-print mr-1"></i>
+                        <span>Print</span>
+                    `,
+                    className: "btn-sm btn-default",
+                    exportOptions: {
+                        columns: visibleCols
+                    }
+                }, {
+                    extend: "colvis",
+                    text: `
+                        <i class="fas fa-eye mr-1"></i>
+                        <span>Columns</span>
+                    `,
+                    className: "btn-sm btn-default",
+                    columns: columnOpts
                 }
-            }
+            ],
+            columnDefs: dtColumnDefs,
+            language: dtLanguage,
+            initComplete: () => $(selector).show(),
         }).buttons().container().appendTo(`${selector}_wrapper .col-md-6:eq(0)`)
     } else {
         $(selector).DataTable({
@@ -101,40 +172,8 @@ const initDataTable = (selector = "", dtOptions = {
             columns: dtOptions.columns,
             order: [[0, 'desc']],
             responsive: true,
-            columnDefs: [{
-                targets: [-1],
-                orderable: false
-            }],
-            language: {
-                emptyTable: `
-                    <div class="p-5">
-                        <h3>No records</h3>
-                        <div class="text-secondary">There are no records yet here</div>
-                    </div>
-                `,
-                loadingRecords: `
-                    <div class="p-5 wait">
-                        <div class="spinner-border text-primary mb-3" role="status"></div>
-                        <div class="text-secondary">Please wait while loading records ...</div>
-                    </div>
-                `,
-                processing: `
-                    <div class="p-5 wait">
-                        <div class="spinner-border text-primary mb-3" role="status"></div>
-                        <div class="text-secondary">Processing, please wait ...</div>
-                    </div>
-                `,
-                zeroRecords: `
-                    <div class="p-5">
-                        <h3>No match found</h3>
-                        <div class="text-secondary">No records was found that matched to your query</div>
-                    </div>
-                `,
-                paginate: {
-                    previous: `<i class="fas fa-caret-left"></i>`,
-                    next: `<i class="fas fa-caret-right"></i>`,
-                }
-            }
+            columnDefs: dtColumnDefs,
+            language: dtLanguage
         })
     }
 }));

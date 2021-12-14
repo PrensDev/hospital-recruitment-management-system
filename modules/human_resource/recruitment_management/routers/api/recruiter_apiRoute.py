@@ -5,10 +5,13 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, authorized
-from modules.human_resource.recruitment_management.schemas import user_schemas as user, recruiter_schemas as recruiter
 from datetime import date
 from sqlalchemy import or_
+
+# Import models and schemas
 from modules.human_resource.recruitment_management.models import *
+from modules.human_resource.recruitment_management.schemas \
+    import user_schemas as user, recruiter_schemas as recruiter
 
 
 # Router Instance
