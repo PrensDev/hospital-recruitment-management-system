@@ -8,10 +8,13 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import authorized, get_user
+
+# Import Models and Schemas
 from modules.human_resource.recruitment_management.schemas import user_schemas as user, deptHead_schemas as deptHead
 from modules.human_resource.recruitment_management.models import *
-import shutil
-import uuid
+
+# For file handling
+import shutil, uuid
 
 
 # Router Instance
@@ -97,6 +100,9 @@ def requisition_analytics(
                 # Rejected for approval
                 rejected_for_approval = query.filter(Requisition.request_status == "Rejected for approval").count()
 
+                # Total Rejected
+                total_rejected = rejected_for_signing + rejected_for_approval
+
                 # Completed
                 completed = query.filter(Requisition.request_status == "Completed").count()
 
@@ -106,6 +112,7 @@ def requisition_analytics(
                     "for_approval": for_approval,
                     "completed": completed,
                     "rejected": {
+                        "total": total_rejected,
                         "for_signing": rejected_for_signing,
                         "for_approval": rejected_for_approval
                     }
@@ -266,6 +273,8 @@ def upload_employment_contract(
 # Onboarding Employee Not Found Response
 ONBOARDING_EMPLOYEE_NOT_FOUND = {"message": "Onboarding Employee not found"}
 
+# Department Not Found Response
+DEPARTMENT_NOT_FOUND_RESPONSE = {"message": "Department not found"}
 
 # Add onboarding employee
 @router.post("/onboarding-employees", status_code=202)

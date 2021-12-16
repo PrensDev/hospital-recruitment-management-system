@@ -112,6 +112,41 @@ initDataTable('#manpowerRequestDT', {
 });
 
 
+
+/**
+ * ==============================================================================
+ * MANPOWER REQUESTS ANALYTICS
+ * ==============================================================================
+ */
+
+/** Manpower Requests Analytics */
+const manpowerRequestAnalytics = () => GET_ajax(`${ DH_API_ROUTE }requisitions/analytics`, {
+    success: result => {
+        if(result) {
+
+            console.log(result);
+
+            // Set Total Mapower Requests Count
+            setContent('#totalManpowerRequestsCount', formatNumber(result.total));
+
+            // Set Completed Requests
+            setContent('#completedRequestsCount', formatNumber(result.completed));
+
+            // Set Approved Requests
+            setContent('#approvedRequestsCount', formatNumber(result.approved));
+
+            // Set Rejected Requests
+            setContent('#rejectedRequestsCount', formatNumber(result.rejected.total));
+        } else toastr.error('There was an error in getting manpower request analytics')
+    },
+    error: () => toastr.error('There was an error in getting manpower request analytics')
+});
+
+/** Get Manpower Requests Analytics */
+ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
+
+
+
 /**
  * ==============================================================================
  * VIEW MANPOWER REQUEST DETAILS
@@ -346,9 +381,7 @@ validateForm('#signRequestForm', {
         disableElement('#cancelSignRequestBtn');
 
         // Sign Request
-        signRequest({
-            request_status: 'For approval'
-        })
+        signRequest({request_status: 'For approval'})
     }
 });
 

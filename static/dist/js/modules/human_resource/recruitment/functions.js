@@ -97,16 +97,15 @@ const initDataTable = (selector = "", dtOptions = {
             ajax: ajax,
             columns: dtOptions.columns,
             order: [[0, 'desc']],
-            dom: 'Blfrtip',
+            dom: '<"row"<"col-md-3"l><"col-md-6"B><"col-md-3:eq(0)"f>>t<"row"<"col-md-6"i><"col-md-6"p>>',
             responsive: true,
-            lengthChange: false, 
             autoWidth: false,
             buttons: [
                 {
                     extend: "copy",
                     text: `
-                        <i class="fas fa-copy mr-1"></i>
                         <span>Copy</span>
+                        <i class="fas fa-copy ml-1"></i>
                     `,
                     className: "btn-sm btn-default",
                     exportOptions: {
@@ -115,8 +114,8 @@ const initDataTable = (selector = "", dtOptions = {
                 }, {
                     extend: "csv",
                     text: `
-                        <i class="fas fa-file-csv mr-1"></i>
                         <span>CSV</span>
+                        <i class="fas fa-file-csv ml-1"></i>
                     `,
                     className: "btn-sm btn-default",
                     exportOptions: {
@@ -125,8 +124,8 @@ const initDataTable = (selector = "", dtOptions = {
                 }, { 
                     extend: "excel",
                     text: `
-                        <i class="fas fa-file-excel mr-1"></i>
                         <span>Excel</span>
+                        <i class="fas fa-file-excel ml-1"></i>
                     `,
                     className: "btn-sm btn-default",
                     exportOptions: {
@@ -135,8 +134,8 @@ const initDataTable = (selector = "", dtOptions = {
                 }, {
                     extend: "pdf",
                     text: `
-                        <i class="fas fa-file-pdf mr-1"></i>
                         <span>PDF</span>
+                        <i class="fas fa-file-pdf ml-1"></i>
                     `,
                     className: "btn-sm btn-default",
                     exportOptions: {
@@ -145,8 +144,8 @@ const initDataTable = (selector = "", dtOptions = {
                 }, {
                     extend: "print",
                     text: `
-                        <i class="fas fa-print mr-1"></i>
                         <span>Print</span>
+                        <i class="fas fa-print ml-1"></i>
                     `,
                     className: "btn-sm btn-default",
                     exportOptions: {
@@ -164,8 +163,7 @@ const initDataTable = (selector = "", dtOptions = {
             ],
             columnDefs: dtColumnDefs,
             language: dtLanguage,
-            initComplete: () => $(selector).show(),
-        }).buttons().container().appendTo(`${selector}_wrapper .col-md-6:eq(0)`)
+        })
     } else {
         $(selector).DataTable({
             ajax: ajax,

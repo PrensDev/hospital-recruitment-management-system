@@ -162,8 +162,6 @@ ifSelectorExist('#jobPostDetails', () => {
         success: result => {
             const manpowerRequest = result.manpower_request;
 
-            console.log(manpowerRequest);
-
             /** JOB POST DETAILS */
 
             // Set Job Post Status
@@ -181,9 +179,9 @@ ifSelectorExist('#jobPostDetails', () => {
 
             // Set Vacant Position
             setContent('#vacantPosition', manpowerRequest.vacant_position.name);
-
+            
             // Set Employment Type
-            setContent('#employmentType', manpowerRequest.employment_type);
+            setContent('#employmentTypeForJobPost', manpowerRequest.employment_type);
 
             // Set Salary Range
             const minSalary = manpowerRequest.min_monthly_salary;
@@ -209,6 +207,14 @@ ifSelectorExist('#jobPostDetails', () => {
 
             // Set Job Description
             setContent('#jobDescription', result.content);
+
+            /** Job Post Options */
+            setContent('#jobPostOptions', `
+                <a class="btn btn-sm btn-secondary btn-block" target="_blank" href="${ BASE_URL_WEB }careers/${ jobPostID }">
+                    <i class="fas fa-eye mr-1"></i>
+                    <span>View post in public portal</span>
+                </a>
+            `);
 
 
             /** MANPOWER REQUEST SUMMARY */
