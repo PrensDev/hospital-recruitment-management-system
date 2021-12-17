@@ -294,6 +294,16 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                     : formatDateTime(completedAt, "DateTime")
             });
 
+            // Options
+            setContent('#manpowerRequestOptions', () => {
+                return `
+                    <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                        <span>Print Manpower Request Form</span>
+                        <i class="fas fa-print ml-1"></i>
+                    </div>
+                `
+            });
+
             // Set Manpower Request Timeline
             setManpowerRequestTimeline('#manpowerRequestTimeline', result);
 
@@ -341,7 +351,11 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             
             // Remove Manpower Request Document Loader
             $('#manpowerRequestDocumentLoader').remove();
-            showElement('#manpowerRequestDocument');
+            showElement('#manpowerRequestDocumentContainer');
+
+            // Remove Manpower Request Options Loader
+            $('#optionsLoader').remove();
+            showElement('#optionsContainer');
             
             // Remove Manpower Request Timeline Loader
             $('#manpowerRequestTimelineLoader').remove();
@@ -350,6 +364,31 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });
 });
+
+
+/**
+ * ==============================================================================
+ * PRINT MANPOWER REQUEST FORM
+ * ==============================================================================
+ */
+
+const printManpowerRequest = () => {
+    var manpowerRequestDocument = $("#manpowerRequestDocument").html();
+    var w = window.open();
+    w.document.write(`
+        <!DOCTYPE html>
+        <html>
+            <title>Manpower Request Document</title>
+            <head>
+                <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+                <link rel="stylesheet" href="${BASE_URL_WEB}static/dist/css/adminlte.min.css">
+            </head>
+            <body onload="window.print()"> ${ manpowerRequestDocument } </body>
+        </html>`);
+    w.document.close();
+    w.print();
+    w.onafterprint = () => w.close();
+}
 
 
 /**

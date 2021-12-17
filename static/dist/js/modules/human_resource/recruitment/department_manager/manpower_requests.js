@@ -601,6 +601,19 @@ const getManpowerRequestDetails = () => {
                             <i class="fas fa-print ml-1"></i>
                         </div>
                     `
+                }  else if(requestStatus == "Completed") {
+                    $('#cancelManpowerRequestModal').remove();
+                    $('#markAsCompletedModal').remove();
+                    return `
+                        <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                            <span>Print Manpower Request Form</span>
+                            <i class="fas fa-print ml-1"></i>
+                        </div>
+                        <a href="${ DM_WEB_ROUTE }manpower-requests/${ requisitionID }/report" class="btn btn-sm btn-info btn-block">
+                            <span>Generate Report</span>
+                            <i class="fas fa-file-alt ml-1"></i>
+                        </a>
+                    `
                 } else {
                     $('#cancelManpowerRequestModal').remove();
                     $('#markAsCompletedModal').remove();
@@ -673,46 +686,21 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => getManpowerRequestDet
 
 /** Print Manpower Request */
 const printManpowerRequest = () => {
+    var manpowerRequestDocument = $("#manpowerRequestDocument").html();
     var w = window.open();
-    var html = $("#manpowerRequestDocument").html();
     w.document.write(`
+        <!DOCTYPE html>
         <html>
+            <title>Manpower Request Document</title>
             <head>
-                <style>
-                    * {
-                        font-family: 'Segoe UI'
-                    }
-                    .font-weight-bold {
-                        font-weight: bold;
-                    }
-                    .bg-light {
-                        background: #eee;
-                    }
-                    .text-secondary {
-                        color: grey;
-                    }
-                    .small {
-                        font-size: 80%;
-                    }
-                    table {
-                        border-collapse: collapse;
-                    }
-                    table tr {
-                        border: solid grey 1px;
-                    }
-                    table th, td {
-                        padding: .75rem;
-                    }
-                    .font-italic {
-                        font-style: italic;
-                    }
-                </style>
+                <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+                <link rel="stylesheet" href="${BASE_URL_WEB}static/dist/css/adminlte.min.css">
             </head>
-            <body onload="window.print()"> ${ html } </body>
+            <body onload="window.print()"> ${ manpowerRequestDocument } </body>
         </html>`);
+    w.document.close();
     w.print();
-
-    setTimeout(() => w.close(), 1000);
+    w.onafterprint = () => w.close();
 }
 
 

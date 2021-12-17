@@ -478,11 +478,17 @@ ifSelectorExist('#searchResultList', () => {
                 });
             } else {
                 jobList = `
-                    <div class="col-12">
-                        <div class="py-5 text-center">
-                            <h3>Oops! We are full</h3>
-                            <div>Sorry, but we don't have vacant job for now</div>
+                    <div class="d-flex flex-column justify-content-center align-items-center text-center">
+                        <div class="py-5 d-flex justify-content-center">
+                            <img 
+                                draggable="false"
+                                src="${ BASE_URL_WEB }static/dist/img/not_found.svg" 
+                                alt="Not found" 
+                                width="25%"
+                            >
                         </div>
+                        <h4>Oops! We cannot find your request.</h4>
+                        <p class="text-secondary">Please check if spelling is correct or try other keywords.</p>
                     </div>
                 `;
             }

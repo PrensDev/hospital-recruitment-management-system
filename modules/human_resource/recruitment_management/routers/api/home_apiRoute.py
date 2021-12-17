@@ -178,7 +178,7 @@ async def apply(req: careers.Applicant, db: Session = Depends(get_db)):
 
         SMTP_SERVER = smtplib.SMTP_SSL(env['MAIL_SERVER'], 465)
         SMTP_SERVER.login(env['MAIL_EMAIL'], env['MAIL_PASSWORD'])
-        await SMTP_SERVER.sendmail(env["MAIL_EMAIL"], [req.email], message.as_string())
+        SMTP_SERVER.sendmail(env["MAIL_EMAIL"], [req.email], message.as_string())
         SMTP_SERVER.quit()
 
         return {"message": "A new applicant has been added"}

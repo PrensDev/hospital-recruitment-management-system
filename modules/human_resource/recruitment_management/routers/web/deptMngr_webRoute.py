@@ -126,6 +126,29 @@ def render(
         return errTemplate.page_not_found(req)
 
 
+# Manpower Request Report
+@router.get("/manpower-requests/{requisition_id}/report", response_class=HTMLResponse)
+def render(
+    requisition_id: str,
+    req: Request, 
+    db: Session = Depends(get_db), 
+    user_data: dict = Depends(get_token)
+):
+    if user_data['user_type'] == AUTHORIZED_USER:
+        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
+        if not requisition:
+            return errTemplate.page_not_found(req)
+        else:
+            return templates.TemplateResponse(TEMPLATES_PATH  + "manpower_request_report.html", {
+                "request": req,
+                "page_title": "Manpower Requisition Report",
+                "sub_title": "View the details of manpower request here",
+                "active_navlink": "Manpower Requests"
+            })
+    else:
+        return errTemplate.page_not_found(req)
+
+
 # Add Manpower Request
 @router.get("/add-manpower-request", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):

@@ -469,17 +469,28 @@ ifSelectorExist('#jobPostDetails', () => {
             setContent('#jobDescription', result.content);
 
             /** Job Post Options */
-            setContent('#jobPostOptions', `
-                <a class="btn btn-sm btn-secondary btn-block" target="_blank" href="${ BASE_URL_WEB }careers/${ jobPostID }">
-                    <i class="fas fa-eye mr-1"></i>
-                    <span>View post in public portal</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="btn btn-sm btn-info btn-block" href="${ R_WEB_ROUTE }edit-job-post/${ jobPostID }">
-                    <i class="fas fa-edit mr-1"></i>
-                    <span>Edit this post</span>
-                </a>
-            `);
+            setContent('#jobPostOptions', () => {
+                const endRecruiting = `
+                    <button class="btn btn-sm btn-danger btn-block" onclick="endRecruiting()">
+                        <i class="fas fa-hand-paper mr-1"></i>
+                        <span>End recruiting</span>
+                    </button>
+                `
+            
+                return `
+                    <a class="btn btn-sm btn-secondary btn-block" target="_blank" href="${ BASE_URL_WEB }careers/${ jobPostID }">
+                        <i class="fas fa-eye mr-1"></i>
+                        <span>View post in public portal</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="btn btn-sm btn-info btn-block" href="${ R_WEB_ROUTE }edit-job-post/${ jobPostID }">
+                        <i class="fas fa-edit mr-1"></i>
+                        <span>Edit this post</span>
+                    </a>
+
+                    ${ isEmptyOrNull(result.expiration_date) ? endRecruiting : ''}
+                `
+            });
 
 
             /** MANPOWER REQUEST SUMMARY */

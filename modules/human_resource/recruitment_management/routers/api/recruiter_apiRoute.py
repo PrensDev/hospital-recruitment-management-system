@@ -382,15 +382,15 @@ async def evaluate_applicant(
                     })
                     db.commit()
 
-                    applied_job = db.query(JobPost).filter(JobPost.job_post_id == applicant.job_post_id).first()
+                    applied_job = db.query(JobPost).filter(JobPost.job_post_id == applicant.first().job_post_id).first()
                     requisition = db.query(Requisition).filter(Requisition.requisition_id == applied_job.requisition_id).first()
                     position = db.query(Position).filter(Position.position_id == requisition.position_id).first()
 
                     messageBody = f"""
-                        <h1 style="margin-bottom: 1px">Good day, {applicant.first_name}!</h1>
+                        <h1 style="margin-bottom: 1px">Good day, {applicant.first().first_name}!</h1>
                         <h3>This is from HoMIES - Recruitment Management System</h3>
 
-                        <p>We would like to inform you that our team has been evaluated your application for <b>{position.name}</b>. But you have been <b>rejected/<b> from our evaluation.</p>
+                        <p>We would like to inform you that our team has been evaluated your application for <b>{position.name}</b>. But you have been <b>rejected</b> from our evaluation.</p>
                         <p>We are glad to know about you and your interest in our company. We will keep your information in utmost confidentiality. We are hoping for the next opportunities that will come to you.</p>
                         <p>Thank you!</p>
 
@@ -401,14 +401,14 @@ async def evaluate_applicant(
 
                     message = MIMEMultipart()
                     message['From'] = env['MAIL_EMAIL']
-                    message['To'] = req.email
-                    message['Subject'] = "HoMIES - Job Application"
+                    message['To'] = applicant.first().email
+                    message['Subject'] = "HoMIES - Job Application Status"
 
                     message.attach(MIMEText(messageBody, 'html'))
 
                     SMTP_SERVER = smtplib.SMTP_SSL(env['MAIL_SERVER'], 465)
                     SMTP_SERVER.login(env['MAIL_EMAIL'], env['MAIL_PASSWORD'])
-                    await SMTP_SERVER.sendmail(env["MAIL_EMAIL"], [req.email], message.as_string())
+                    SMTP_SERVER.sendmail(env["MAIL_EMAIL"], [applicant.first().email], message.as_string())
                     SMTP_SERVER.quit()
 
                     return {"message": "An applicant is rejected from evaluation"}
