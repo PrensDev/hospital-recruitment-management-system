@@ -230,18 +230,6 @@ const viewApplicantDetails = (applicantID) => {
             hideElement('#applicantTimelineLoader');
             showElement('#applicantTimeline');
 
-
-            /** EVALUATION FORM */
-
-            // Display evaluation field
-            if(result.status === "For evaluation") {
-                showElement('#evaluationField');
-                showElement('#submitBtn');
-            } else {
-                hideElement('#evaluationField');
-                hideElement('#submitBtn');
-            }
-
             /** Show Modal */
             showModal('#applicantDetailsModal');
         },
@@ -347,7 +335,6 @@ ifSelectorExist('#applicantsMenu', () => applicantsPerJobAnalytics());
 
 /** Set Applicant Details */
 const setApplicantDetailsAndTimeline = (result) => {
-
 
     /** APPLICANT DETAILS */
 

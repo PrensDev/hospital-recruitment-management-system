@@ -124,16 +124,22 @@ const manpowerRequestAnalytics = () => GET_ajax(`${ DH_API_ROUTE }requisitions/a
     success: result => {
         if(result) {
 
-            console.log(result);
-
             // Set Total Mapower Requests Count
             setContent('#totalManpowerRequestsCount', formatNumber(result.total));
 
-            // Set Completed Requests
-            setContent('#completedRequestsCount', formatNumber(result.completed));
+            // For Signature Count
+            setContent('#forSignatureCount', () => {
+                const forSignatureCount = parseInt(result.for_signature);
+                if(forSignatureCount > 0) return `
+                    <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
+                    <span>${formatNumber(forSignatureCount)}</span>
+                ` 
+                else return 0
+            });
 
-            // Set Approved Requests
-            setContent('#approvedRequestsCount', formatNumber(result.approved));
+            // Set Signed Requests
+            const signedRequests = parseInt(result.for_approval) + parseInt(result.approved) + parseInt(result.completed);
+            setContent('#signedRequestsCount', formatNumber(signedRequests));
 
             // Set Rejected Requests
             setContent('#rejectedRequestsCount', formatNumber(result.rejected.total));

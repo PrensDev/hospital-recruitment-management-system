@@ -173,6 +173,13 @@ ifSelectorExist('#availableJobDetails', () => {
                     `
             });
 
+            if(isBeforeToday(result.expiration_date)) {
+                $('#applicationForm').remove();
+                showElement('#applicationsNotAvailable');
+            } else {
+                $('#applicationsNotAvailable').remove();
+            }
+
             $('#vacantPositionLoader').remove();
             $('#availableJobDetailsLoader').remove();
 

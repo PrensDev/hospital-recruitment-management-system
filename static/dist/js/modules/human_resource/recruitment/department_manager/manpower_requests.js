@@ -570,35 +570,35 @@ const getManpowerRequestDetails = () => {
                             class="btn btn-sm btn-info btn-block"
                             href="${ DM_WEB_ROUTE }edit-manpower-request/${ requisitionID }"
                         >
+                            <i class="fas fa-edit mr-1"></i>
                             <span>Edit request</span>
-                            <i class="fas fa-edit ml-1"></i>
                         </a>
 
                         <div class="btn btn-sm btn-warning btn-block" onclick="cancelManpowerRequest('${ requisitionID }')">
+                            <i class="fas fa-times-circle mr-1"></i>
                             <span>Cancel request</span>
-                            <i class="fas fa-times-circle ml-1"></i>
                         </div>
 
                         <hr>
 
                         <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                            <i class="fas fa-print mr-1"></i>
                             <span>Print Manpower Request Form</span>
-                            <i class="fas fa-print ml-1"></i>
                         </div>
                     `
                 } else if(requestStatus == "Approved") {
                     $('#cancelManpowerRequestModal').remove();
                     return `
                         <div class="btn btn-sm btn-success btn-block" onclick="markAsCompleted('${ requisitionID }')">
+                            <i class="fas fa-check-circle mr-1"></i>
                             <span>Mark as Completed</span>
-                            <i class="fas fa-check-circle ml-1"></i>
                         </div>
 
                         <hr>
 
                         <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                            <i class="fas fa-print mr-1"></i>
                             <span>Print Manpower Request Form</span>
-                            <i class="fas fa-print ml-1"></i>
                         </div>
                     `
                 }  else if(requestStatus == "Completed") {
@@ -606,12 +606,12 @@ const getManpowerRequestDetails = () => {
                     $('#markAsCompletedModal').remove();
                     return `
                         <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                            <i class="fas fa-print mr-1"></i>
                             <span>Print Manpower Request Form</span>
-                            <i class="fas fa-print ml-1"></i>
                         </div>
                         <a href="${ DM_WEB_ROUTE }manpower-requests/${ requisitionID }/report" class="btn btn-sm btn-info btn-block">
+                            <i class="fas fa-file-alt mr-1"></i>
                             <span>Generate Report</span>
-                            <i class="fas fa-file-alt ml-1"></i>
                         </a>
                     `
                 } else {
@@ -625,7 +625,6 @@ const getManpowerRequestDetails = () => {
                     `
                 }
             });
-            
 
             /** MANPOWER REQUEST TIMELINE */
             setManpowerRequestTimeline('#manpowerRequestTimeline', result);

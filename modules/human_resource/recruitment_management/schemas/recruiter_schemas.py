@@ -110,6 +110,7 @@ class ShowApplicant(Applicant):
     hiring_done_by: Optional[ShowUser]
     rejection_done_by: Optional[ShowUser]
     rejected_at: Optional[datetime]
+    remarks: Optional[str]
 
     class Config():
         orm_mode = True

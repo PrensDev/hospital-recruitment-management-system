@@ -94,6 +94,9 @@ def requisition_analytics(
                 # For approval
                 for_approval = query.filter(Requisition.request_status == "For approval").count()
 
+                # Approved
+                approved = query.filter(Requisition.request_status == "Approved").count()
+
                 # Rejected for signing
                 rejected_for_signing = query.filter(Requisition.request_status == "Rejected for signing").count()
 
@@ -110,6 +113,7 @@ def requisition_analytics(
                     "total": total,
                     "for_signature": for_signature,
                     "for_approval": for_approval,
+                    "approved": approved,
                     "completed": completed,
                     "rejected": {
                         "total": total_rejected,

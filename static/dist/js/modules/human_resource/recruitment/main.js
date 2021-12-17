@@ -252,7 +252,8 @@ const setApplicantTimeline = (selector, data) => {
                 dateTime: rejectedAt,
                 timelineTitle: status,
                 timelineBody: `
-                    <div class="small mb-3">Applicant was ${ status.toLowerCase() } by <b>${ rejectedByFullName }</b></div>
+                    <div class="small mb-1">Applicant was ${ status.toLowerCase() } by <b>${ rejectedByFullName }</b></div>
+                    <div class="small mb-3"><span class="text-danger font-weight-bold mr-1">Remarks:</span>${ data.remarks }</div>
                     <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
                     <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
                 `

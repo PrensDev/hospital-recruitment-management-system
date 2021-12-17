@@ -5,7 +5,7 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, authorized
-from datetime import date
+from datetime import datetime
 from sqlalchemy import or_
 from dotenv import dotenv_values
 
@@ -164,15 +164,15 @@ async def job_posts_analytics(
             query = db.query(JobPost)
             total = query.count()
             on_going = query.filter(or_(
-                JobPost.expiration_date >= date.today(), 
+                JobPost.expiration_date >= datetime.today(), 
                 JobPost.expiration_date == None
             )).count()
-            ended = query.filter(JobPost.expiration_date < date.today()).count()
+            ended = query.filter(JobPost.expiration_date <= datetime.today()).count()
             return {
                 "total": total,
                 "on_going": on_going,
                 "ended": ended
-        }
+            }
     except Exception as e:
         print(e)   
 

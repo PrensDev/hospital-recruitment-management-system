@@ -89,6 +89,7 @@ class ShowApplicant(Applicant):
     rejected_at: Optional[datetime]
     created_at: datetime
     updated_at: Optional[datetime]
+    remarks: Optional[str]
 
     class Config():
         orm_mode = True

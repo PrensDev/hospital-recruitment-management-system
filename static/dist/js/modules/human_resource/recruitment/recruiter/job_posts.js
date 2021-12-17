@@ -392,7 +392,7 @@ initDataTable('#jobPostsDT', {
 const jobPostsAnalytics = () => {
     GET_ajax(`${ R_API_ROUTE }job-posts/analytics`, {
         success: result => {
-
+            
             // Set Total Job Posts Count
             setContent('#totalJobPostsCount', formatNumber(result.total));
 
@@ -415,8 +415,8 @@ ifSelectorExist('#jobPostsAnalytics', () => jobPostsAnalytics())
  * ==============================================================================
 */
 
-/** View Job Post */
-ifSelectorExist('#jobPostDetails', () => {    
+/** Get Job Post Details */
+const getJobPostDetails = () => {
     GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
         success: result => {
             
@@ -471,7 +471,7 @@ ifSelectorExist('#jobPostDetails', () => {
             /** Job Post Options */
             setContent('#jobPostOptions', () => {
                 const endRecruiting = `
-                    <button class="btn btn-sm btn-danger btn-block" onclick="endRecruiting()">
+                    <button class="btn btn-sm btn-danger btn-block" onclick="endRecruiting('${ jobPostID }')">
                         <i class="fas fa-hand-paper mr-1"></i>
                         <span>End recruiting</span>
                     </button>
@@ -670,8 +670,11 @@ ifSelectorExist('#jobPostDetails', () => {
             showElement('#optionsContainer');
         },
         error: () => toastr.error('There was a problem in getting job post details')
-    })
-});
+    });
+}
+
+/** View Job Post */
+ifSelectorExist('#jobPostDetails', () => getJobPostDetails());
 
 
 /**
@@ -1008,7 +1011,10 @@ validateForm('#endRecruitingForm', {
                     hideModal('#endRecruitingModal');
 
                     // Reload DataTable
-                    reloadDataTable('#jobPostsDT');
+                    ifSelectorExist('#jobPostsDT', () => reloadDataTable('#jobPostsDT'));
+
+                    // Reload Job Post Details
+                    ifSelectorExist('#jobPostDetails', () => getJobPostDetails());
 
                     // Set Buttons to loading state
                     btnToUnloadState('#confirmEndRecruitingBtn', `
@@ -1027,3 +1033,5 @@ validateForm('#endRecruitingForm', {
         return false;
     }
 });
+
+onHideModal('#endRecruitingModal', () => resetForm('#endRecruitingForm'));

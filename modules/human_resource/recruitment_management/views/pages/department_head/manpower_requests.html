@@ -19,7 +19,7 @@
             <div class="row" id="manpowerRequestAnalytics">
 
                 {# Total Manpower Requests #}
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fas fa-copy"></i></span>
 
@@ -30,10 +30,22 @@
                     </div>
                 </div>
 
-                {# Signed Requests #}
-                <div class="col-md-4">
+                {# Total Manpower Requests #}
+                <div class="col-md-6">
                     <div class="info-box">
-                        <span class="info-box-icon bg-success"><i class="fas fa-file-signature"></i></span>
+                        <span class="info-box-icon bg-warning"><i class="fas fa-file-signature"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">For signature</span>
+                            <span class="info-box-number" id="forSignatureCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                {# Signed Requests #}
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-success"><i class="fas fa-check"></i></span>
 
                         <div class="info-box-content">
                             <span class="info-box-text">Signed Requests</span>
@@ -43,7 +55,7 @@
                 </div>
 
                 {# Rejected Requests #}
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="info-box">
                         <span class="info-box-icon bg-danger"><i class="fas fa-file-excel"></i></span>
         

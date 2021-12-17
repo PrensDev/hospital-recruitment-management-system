@@ -211,18 +211,6 @@ const viewApplicantDetails = (applicantID) => {
             hideElement('#applicantTimelineLoader');
             showElement('#applicantTimeline');
 
-
-            /** EVALUATION FORM */
-
-            // Display evaluation field
-            if(result.status === "For evaluation") {
-                showElement('#evaluationField');
-                showElement('#submitBtn');
-            } else {
-                hideElement('#evaluationField');
-                hideElement('#submitBtn');
-            }
-
             /** Show Modal */
             showModal('#applicantDetailsModal');
         },

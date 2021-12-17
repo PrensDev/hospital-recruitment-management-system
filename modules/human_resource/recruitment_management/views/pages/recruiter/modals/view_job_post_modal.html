@@ -149,10 +149,10 @@
 </div>
 
 
-{# Confirm Update #}
-<div class="modal" id="confirmUpdateJobPostModal" data-backdrop="static">
+{# End Recruiting Modal #}
+<div class="modal" id="endRecruitingModal" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
+        <form class="modal-content" id="endRecruitingForm">
 
             <div class="modal-header">
                 <h4 class="modal-title text-secondary">
@@ -162,16 +162,18 @@
             </div>
 
             <div class="modal-body">
-                <p>Are you sure you want to save changes?</p>
+                <input type="hidden" name="jobPostID" id="jobPostID">
+
+                <p>Are you sure you want to end recruiting now for this job post?</p>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-default" id="cancelUpdateJobPostBtn" data-dismiss="modal">Cancel</button>
-                <button class="btn btn-info" id="confirmUpdateJobPostBtn">
-                    <span>Yes, save it!</span>
+                <button class="btn btn-default" id="cancelEndRecruitingBtn" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-danger" id="confirmEndRecruitingBtn">
+                    <span>Yes, end it!</span>
                     <i class="fas fa-check ml-1"></i>
                 </button>
             </div>
-        </div>
+        </form>
     </div>
 </div>

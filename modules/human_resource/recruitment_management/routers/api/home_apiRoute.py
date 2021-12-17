@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, UploadFile, File
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-from datetime import date
+from datetime import datetime
 from sqlalchemy import or_
 from dotenv import dotenv_values
 
@@ -49,7 +49,7 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
 def get_all_job_posts(page: Optional[int] = None, db: Session = Depends(get_db)):
     try:
         query = db.query(JobPost).filter(or_(
-            JobPost.expiration_date > date.today(), 
+            JobPost.expiration_date > datetime.today(), 
             JobPost.expiration_date == None
         )).order_by(JobPost.created_at.desc())
 
@@ -63,7 +63,7 @@ def get_all_job_posts(page: Optional[int] = None, db: Session = Depends(get_db))
 def job_posts_analytics(db: Session = Depends(get_db)):
     try:
         total = db.query(JobPost).filter(or_(
-            JobPost.expiration_date > date.today(), 
+            JobPost.expiration_date > datetime.today(), 
             JobPost.expiration_date == None
         )).order_by(JobPost.created_at.desc()).count()
 

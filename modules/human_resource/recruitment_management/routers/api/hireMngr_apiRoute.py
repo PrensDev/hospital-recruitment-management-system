@@ -8,7 +8,7 @@ from database import get_db
 from oauth2 import get_user, authorized
 from modules.human_resource.recruitment_management.schemas import user_schemas as user, hireMngr_schemas as hireMngr
 from dotenv import dotenv_values
-from datetime import date
+from datetime import datetime
 from sqlalchemy import or_
 from modules.human_resource.recruitment_management.models import *
 
@@ -193,10 +193,10 @@ def job_posts_analytics(
 
             total = query.count()
             on_going = query.filter(or_(
-                JobPost.expiration_date >= date.today(), 
+                JobPost.expiration_date >= datetime.today(), 
                 JobPost.expiration_date == None
             )).count()
-            ended = query.filter(JobPost.expiration_date < date.today()).count()
+            ended = query.filter(JobPost.expiration_date < datetime.today()).count()
             
             return {
                 "total": total,
