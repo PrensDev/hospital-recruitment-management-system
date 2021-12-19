@@ -36,6 +36,8 @@ const initDataTable = (selector = "", dtOptions = {
     columns: []
 }) => $(() => ifSelectorExist(selector, () => {
 
+    /** DATATABLE CONFIGURATIONS */
+
     const ajax = {
         url: dtOptions.url,
         headers: AJAX_HEADERS,
@@ -44,27 +46,31 @@ const initDataTable = (selector = "", dtOptions = {
 
     const dtLanguage = {
         emptyTable: `
-            <div class="p-5">
-                <h3>No records</h3>
-                <div class="text-secondary">There are no records yet here</div>
+            <div class="text-center p-5">
+                <h3>No records yet</h3>
+                <div class="text-secondary">Hey! We found no records here yet.</div>
             </div>
         `,
         loadingRecords: `
-            <div class="p-5 wait">
-                <div class="spinner-border text-primary mb-3" role="status"></div>
-                <div class="text-secondary">Please wait while loading records ...</div>
+            <div class="text-center py-5 wait">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="sr-only">Loading ...</span>
+                </div>
+                <div class="text-secondary">Making it ready ...</div>
             </div>
         `,
         processing: `
-            <div class="p-5 wait">
-                <div class="spinner-border text-primary mb-3" role="status"></div>
+            <div class="text-center p-5 wait">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="sr-only">Loading ...</span>
+                </div>
                 <div class="text-secondary">Processing, please wait ...</div>
             </div>
         `,
         zeroRecords: `
-            <div class="p-5">
+            <div class="text-center p-5">
                 <h3>No match found</h3>
-                <div class="text-secondary">No records was found that matched to your query</div>
+                <div class="text-secondary">No records was found that matched to your request. Please check if the spelling is correct or try other keywords.</div>
             </div>
         `,
         paginate: {
@@ -76,28 +82,43 @@ const initDataTable = (selector = "", dtOptions = {
     const dtColumnDefs = [{
         targets: [-1],
         orderable: false
-    }]
+    }];
 
-    let visibleCols = []
+    const dtOrder = [[0, 'desc']];
+
+    let visibleCols = [];
     for(var i = 1; i < dtOptions.columns.length-1; i++) visibleCols.push(i);
 
-    let columnOpts = []
+    let columnOpts = [];
     for(var i = 2; i < dtOptions.columns.length-1; i++) columnOpts.push(i);
 
-    if(dtOptions.debugMode) {
-        $(selector).DataTable({
+    var dtParams;
+
+    /** SETTING UP DATATABLE PARAMETERS */
+
+    if(dtOptions.debugMode) dtParams = {
             ajax: {
                 url: dtOptions.url,
                 headers: AJAX_HEADERS,
                 success: result => console.log(result)
             }
-        })
-    } else if(dtOptions.enableButtons) {
-        $(selector).DataTable({
+        }
+    else if(dtOptions.enableButtons) dtParams = {
             ajax: ajax,
             columns: dtOptions.columns,
-            order: [[0, 'desc']],
-            dom: '<"row"<"col-md-3"l><"col-md-6"B><"col-md-3:eq(0)"f>>t<"row"<"col-md-6"i><"col-md-6"p>>',
+            order: dtOrder,
+            dom: `
+                <"row w-100"
+                    <"col-md-2" l>
+                    <"col-md-6" B>
+                    <"col-md-4" f>
+                >
+                <t>
+                <"row"
+                    <"col-md-6" i>
+                    <"col-md-6" p>
+                >
+            `,
             responsive: true,
             autoWidth: false,
             buttons: [
@@ -163,17 +184,19 @@ const initDataTable = (selector = "", dtOptions = {
             ],
             columnDefs: dtColumnDefs,
             language: dtLanguage,
-        })
-    } else {
-        $(selector).DataTable({
+        }
+    else dtParams = {
             ajax: ajax,
             columns: dtOptions.columns,
-            order: [[0, 'desc']],
+            order: dtOrder,
             responsive: true,
             columnDefs: dtColumnDefs,
             language: dtLanguage
-        })
-    }
+        }
+
+    /** INITIATE DATATABLE */
+    
+    $(selector).DataTable(dtParams);
 }));
 
 

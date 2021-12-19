@@ -416,27 +416,24 @@ const viewInterviewedApplicantDetails = (applicantID) => {
             const scores = result.interviewee_info[0].interviewee_score;
             let sum = 0;
             let count = 1;
+
+            const interviewQuestionTypeBadge = {
+                "General": `<span class="badge border border-primary text-primary">General</span>`,
+                "Added": `<span class="badge border border-secondary text-secondary">Added</span>`
+            };
+
             scores.forEach(s => {
                 const score = s.score;
                 sum+=score;
 
-                var interviewQuestionType;
-                if(s.interview_question.type === "General") {
-                    interviewQuestionType = `
-                        <span class="badge border border-primary text-primary">General</span>
-                    `
-                } else if(s.interview_question.type === "Added") {
-                    interviewQuestionType = `
-                        <span class="badge border border-secondary text-secondary">Added</span>
-                    `
-                } 
+                const interviewQuestionType = s.interview_question.type;
 
                 $('#applicantScoresheet').append(`
                     <tr>
                         <td class="text-right">${ count }</td>
                         <td>
-                            <div>${ s.interview_question.question }</div>
                             <div>${ interviewQuestionType }</div>
+                            <div>${ interviewQuestionTypeBadge[interviewQuestionType] }</div>
                         </td>
                         <td class="text-right">${ formatNumber(score) }%</td>
                     </tr>
@@ -590,26 +587,14 @@ onHideModal('#applicantDetailsModal', () => {
 /** Validate Applicant Screening Form */
 validateForm('#applicantScreeningForm', {
     rules: {
-        applicantID: {
-            required: true
-        },
-        applicantStatus: {
-            required: true
-        },
-        remarks: {
-            required: true
-        }
+        applicantID: { required: true },
+        applicantStatus: { required: true },
+        remarks: { required: true }
     },
     messages: {
-        applicantID: {
-            required: "This must have a value"
-        },
-        applicantStatus: {
-            required: "Please select a status for this applicant"
-        },
-        remarks: {
-            required: "You must insert remarks here for rejected this applicant from screening"
-        }
+        applicantID: { required: "This must have a value" },
+        applicantStatus: { required: "Please select a status for this applicant" },
+        remarks: { required: "You must insert remarks here for rejected this applicant from screening" }
     },
     submitHandler: () => screenApplicant()
 });

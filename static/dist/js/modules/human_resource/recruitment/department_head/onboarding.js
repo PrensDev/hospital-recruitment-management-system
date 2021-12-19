@@ -303,9 +303,32 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
 
             // Asssigned for
             setContent('#taskType', onboardingTask.task_type);
+            
+            // Task Start
+            setContent('#taskStart', `
+                <div>${ formatDateTime(result.start_at, 'Full Date') }</div>
+                <div>${ formatDateTime(result.start_at, 'Time') }</div>
+                <div class="small text-secondary">${ fromNow(result.start_at) }</div>
+            `);
+
+            // Task End
+            setContent('#taskEnd', `
+                <div>${ formatDateTime(result.end_at, 'Full Date') }</div>
+                <div>${ formatDateTime(result.end_at, 'Time') }</div>
+                <div class="small text-secondary">${ fromNow(result.end_at) }</div>
+            `);
 
             // Task Status
-            setContent('#taskStatus', result.status);
+            setContent('#taskStatus', () => {
+                const status = result.status;
+                if(status === "Completed") {
+                    return `
+                        <div>Completed</div>
+                        <div>${ formatDateTime(result.completed_at, 'Full DateTime') }</div>
+                        <div class="small text-secondary">${ fromNow(result.completed_at) }</div>
+                    `
+                } else return status
+            });
 
             // Progress
             setContent('#progress', getOnboardingEmployeeTaskStatus(result.status, result.start_at, result.end_at, result.completed_at));

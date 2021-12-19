@@ -57,11 +57,9 @@ let addOnboardingEmployeeFormMessages = {
 }
 
 /** Check if no task function */
-const checkIfNoTasks = () => {
-    generalOnboardingTasks.length == 0 && addedOnboardingTasks.length == 0
-        ? disableElement('#addOnboardingEmployeeSubmitBtn')
-        : enableElement('#addOnboardingEmployeeSubmitBtn')
-}
+const checkIfNoTasks = () => generalOnboardingTasks.length == 0 && addedOnboardingTasks.length == 0
+    ? disableElement('#addOnboardingEmployeeSubmitBtn')
+    : enableElement('#addOnboardingEmployeeSubmitBtn')
 
 /** Get Hired Applicant Details */
 ifSelectorExist('#addOnboardingEmployeeForm', () => {
@@ -239,14 +237,10 @@ const removeGeneralTask = (id) => {
 /** Validate Confirm Remove General Task Form */
 validateForm('#confirmRemoveGeneralTaskForm', {
     rules: {
-        generalTaskID: {
-            required: true
-        }
+        generalTaskID: { required: true }
     },
     messages: {
-        generalTaskID: {
-            required: 'These filed must have value'
-        }
+        generalTaskID: { required: 'These filed must have value' }
     },
     submitHandler: () => {
         const generalTaskID = generateFormData('#confirmRemoveGeneralTaskForm').get('generalTaskID');
@@ -275,9 +269,7 @@ validateForm('#confirmRemoveGeneralTaskForm', {
 
 /** Initalize Stepper for Add Onboarding Employee */
 ifSelectorExist('.bs-stepper', () => {
-    document.addEventListener('DOMContentLoaded', function () {
-        window.stepper = new Stepper(document.querySelector('.bs-stepper'))
-    });
+    document.addEventListener('DOMContentLoaded', () => window.stepper = new Stepper(document.querySelector('.bs-stepper')));
 });
 
 /** If next button in applicant information is clicked */
@@ -322,11 +314,13 @@ validateForm('#addOnboardingTaskForm', {
         const endAtInputName = `endAt${ uniqueSuffix }`;
 
         const taskType = () => {
-            var theme;
-            if(assignTaskTo === "For new employees") theme = "success"
-            else if(assignTaskTo === "For the team") theme = "info"
-            else if(assignTaskTo === "For department manager") theme = "warning"
-            return `<span class="badge border border-${ theme } text-${ theme }">${ assignTaskTo }</span>`
+            const taskTheme = {
+                "For new employees": "success",
+                "For the team": "info",
+                "For department manager": "warning"
+            }
+
+            return `<span class="badge border border-${ taskTheme[assignTaskTo] } text-${ taskTheme[assignTaskTo] }">${ taskType }</span>`
         }
 
         if(addedOnboardingTasks.length == 0) $('#addedOnboardingTasksDTBody').empty();
@@ -458,20 +452,12 @@ onHideModal('#editAddedOnboardingTaskModal', () => resetForm('#editAddedOnboardi
 /** Validate Edit Added Onboarding Task Form */
 validateForm('#editAddedOnboardingTaskForm', {
     rules: {
-        taskTitle: {
-            required: true
-        },
-        description: {
-            required: true
-        }
+        taskTitle: { required: true },
+        description: { required: true }
     },
     messages: {
-        taskTitle: {
-            required: 'Task Title is required'
-        },
-        description: {
-            required: 'Task Description is required'
-        }
+        taskTitle: { required: 'Task Title is required' },
+        description: { required: 'Task Description is required' }
     },
     submitHandler: () => {
         return false
@@ -490,14 +476,10 @@ onHideModal('#confirmRemoveAddedTaskModal', () => resetForm('#confirmRemoveAdded
 /** Validate Confirm Remove Task Form */
 validateForm('#confirmRemoveAddedTaskForm', {
     rules: {
-        addedTaskID: {
-            required: true
-        }
+        addedTaskID: { required: true }
     },
     messages: {
-        addedTaskID: {
-            required: 'These field must have value'
-        }
+        addedTaskID: { required: 'These field must have value' }
     },
     submitHandler: () => {
 
@@ -1050,12 +1032,10 @@ initDataTable('#onboardingEmployeesDT', {
  */
 
 /** Assign Task To For Add Select 2 */
-ifSelectorExist('#onboardingEmployeeTasksDT', () => {
-    $('#assignTaskTo').select2({
-        placeholder: "Please select for whom the task for",
-        minimumResultsForSearch: -1
-    });
-});
+ifSelectorExist('#onboardingEmployeeTasksDT', () => $('#assignTaskTo').select2({
+    placeholder: "Please select for whom the task for",
+    minimumResultsForSearch: -1
+}));
 
 
 /** Initialize Onboarding Employee Tasks DataTable */
@@ -1077,11 +1057,14 @@ initDataTable('#onboardingEmployeeTasksDT', {
 
                 const taskType = () => {
                     const taskType = task.task_type;
-                    var theme;
-                    if(taskType === "For new employees") theme = "success"
-                    else if(taskType === "For the team") theme = "info"
-                    else if(taskType === "For department manager") theme = "warning"
-                    return `<span class="badge border border-${ theme } text-${ theme }">${ taskType }</span>`
+                    
+                    const taskTheme = {
+                        "For new employees": "success",
+                        "For the team": "info",
+                        "For department manager": "warning"
+                    }
+
+                    return `<span class="badge border border-${ taskTheme[taskType] } text-${ taskTheme[taskType] }">${ taskType }</span>`
                 }
 
                 return `
@@ -1307,6 +1290,8 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
     GET_ajax(`${ DM_API_ROUTE }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, {
         success: result => {
 
+            console.log(result);
+
             /** ONBOARDING EMPLOYEE TASK DETAILS */
 
             const onboardingTask = result.onboarding_task;
@@ -1320,8 +1305,31 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
             // Asssigned for
             setContent('#taskType', onboardingTask.task_type);
 
+            // Task Start
+            setContent('#taskStart', `
+                <div>${ formatDateTime(result.start_at, 'Full Date') }</div>
+                <div>${ formatDateTime(result.start_at, 'Time') }</div>
+                <div class="small text-secondary">${ fromNow(result.start_at) }</div>
+            `);
+
+            // Task End
+            setContent('#taskEnd', `
+                <div>${ formatDateTime(result.end_at, 'Full Date') }</div>
+                <div>${ formatDateTime(result.end_at, 'Time') }</div>
+                <div class="small text-secondary">${ fromNow(result.end_at) }</div>
+            `);
+
             // Task Status
-            setContent('#taskStatus', result.status);
+            setContent('#taskStatus', () => {
+                const status = result.status;
+                if(status === "Completed") {
+                    return `
+                        <div>Completed</div>
+                        <div>${ formatDateTime(result.completed_at, 'Full DateTime') }</div>
+                        <div class="small text-secondary">${ fromNow(result.completed_at) }</div>
+                    `
+                } else return status
+            });
 
             // Progress
             setContent('#progress', getOnboardingEmployeeTaskStatus(result.status, result.start_at, result.end_at, result.completed_at));
