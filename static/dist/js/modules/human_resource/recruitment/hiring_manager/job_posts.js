@@ -214,6 +214,10 @@ ifSelectorExist('#jobPostDetails', () => {
                     <i class="fas fa-eye mr-1"></i>
                     <span>View post in public portal</span>
                 </a>
+                <a class="btn btn-sm btn-secondary btn-block" href="${ H_WEB_ROUTE }job-posts/${ jobPostID }/applicants">
+                    <i class="fas fa-users mr-1"></i>
+                    <span>View applicants</span>
+                </a>
             `);
 
 

@@ -52,7 +52,7 @@ ifSelectorExist('#createJobPostForm', () => {
 
             // Set Salary Range
             setContent('#salaryRangeForSummary', () => {
-                if(isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)) {
+                if(isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary)) {
                     hideElement('#salaryRangeField');
                     return `<div class="text-secondary font-italic">Unset</div>`;
                 } else {
@@ -179,24 +179,16 @@ $('#expirationDate').on('change', () => isChecked('#expirationDate') ? showEleme
 /** Validate Add Job Post Form */
 validateForm('#createJobPostForm', {
     rules: {
-        requisitionID: {
-            required: true
-        },
-        jobDescription: {
-            required: true,
-        },
+        requisitionID: { required: true },
+        jobDescription: { required: true, },
         openUntil: {
             required: true,
             afterToday: true
         }
     },
     messages:{
-        requisitionID: {
-            required: 'This field must have value'
-        },
-        jobDescription: {
-            required: 'Job Description is required',
-        },
+        requisitionID: { required: 'This field must have value' },
+        jobDescription: { required: 'Job Description is required', },
         openUntil: {
             required: 'Please select a date',
             afterToday: 'The date and time must be in the future'
@@ -212,7 +204,9 @@ validateForm('#createJobPostForm', {
 onClick('#confirmPostNewJobPostBtn', () => {
     const formData = generateFormData('#createJobPostForm');
 
-    const expirationDate = isChecked('#expirationDate') ? formatDateTime(formData.get('openUntil')) : null;
+    const expirationDate = isChecked('#expirationDate') 
+        ? formatDateTime(formData.get('openUntil')) 
+        : null
 
     const data = {
         requisition_id: formData.get('requisitionID'),
@@ -228,13 +222,12 @@ onClick('#confirmPostNewJobPostBtn', () => {
 
     POST_ajax(`${ R_API_ROUTE }job-posts`, data, {
         success: result => {
-            if(result) {
-                setSessionedAlertAndRedirect({
-                    theme: 'success',
-                    message: 'A new available job is successfully posted',
-                    redirectURL: `${ R_WEB_ROUTE }job-posts`
-                });
-            } else ifError()
+            if(result) setSessionedAlertAndRedirect({
+                theme: 'success',
+                message: 'A new available job is successfully posted',
+                redirectURL: `${ R_WEB_ROUTE }job-posts`
+            });
+            else ifError()
         },
         error: () => ifError()
     })
@@ -481,6 +474,10 @@ const getJobPostDetails = () => {
                     <a class="btn btn-sm btn-secondary btn-block" target="_blank" href="${ BASE_URL_WEB }careers/${ jobPostID }">
                         <i class="fas fa-eye mr-1"></i>
                         <span>View post in public portal</span>
+                    </a>
+                    <a class="btn btn-sm btn-secondary btn-block" href="${ R_WEB_ROUTE }job-posts/${ jobPostID }/applicants">
+                        <i class="fas fa-users mr-1"></i>
+                        <span>View applicants</span>
                     </a>
                     <div class="dropdown-divider"></div>
                     <a class="btn btn-sm btn-info btn-block" href="${ R_WEB_ROUTE }edit-job-post/${ jobPostID }">
