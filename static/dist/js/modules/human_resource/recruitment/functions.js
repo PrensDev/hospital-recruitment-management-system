@@ -299,16 +299,12 @@ const validateForm = (selector = "", validationOptions = { rules: {}, messages: 
             rules: validationOptions.rules,
             messages: validationOptions.messages,
             errorElement: 'div',
-            errorPlacement: function (error, element) {
+            errorPlacement: (error, element) => {
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
             },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            },
+            highlight: (element, errorClass, validClass) => $(element).addClass('is-invalid'),
+            unhighlight: (element, errorClass, validClass) => $(element).removeClass('is-invalid'),
             submitHandler: validationOptions.submitHandler
         });
     }, false);
@@ -335,25 +331,18 @@ const isAfterToday = (datetime) => { return moment(datetime).isAfter(moment()) }
 
 /** Format DateTime */
 const formatDateTime = (datetime, format = "") => {
-    if(format === "")
+    if(isEmptyOrNull(format))
         return moment(datetime).format()
     else {
-        var realFormat;
-        if(format === "Full DateTime")
-            realFormat = "dddd, MMMM D, YYYY; hh:mm A"
-        else if(format === "DateTime")
-            realFormat = "MMMM D, YYYY; hh:mm A"
-        else if(format === "Full Date")
-            realFormat = "dddd, MMMM D, YYYY"
-        else if(format === "Date")
-            realFormat = "MMMM D, YYYY"
-        else if(format === "Short Date")
-            realFormat = "MMM. D, YYYY"
-        else if(format === "Time")
-            realFormat = "hh:mm A"
-        else
-            realFormat = format
-        return moment(datetime).format(realFormat)
+        const formats = {
+            "Full DateTime" : "dddd, MMMM D, YYYY; hh:mm A",
+            "DateTime"      : "MMMM D, YYYY; hh:mm A",
+            "Full Date"     : "dddd, MMMM D, YYYY",
+            "Date"          : "MMMM D, YYYY",
+            "Short Date"    : "MMM. D, YYYY",
+            "Time"          : "hh:mm A"
+        }
+        return moment(datetime).format( format in formats ? formats[format] : format )
     }
 }
 
@@ -369,11 +358,25 @@ const onShowModal = (selector, handler = () => {}) => { ifSelectorExist(selector
 
 
 /** Set Content */
-const setContent = (selector, content) => ifSelectorExist(selector, () => $(selector).html(content));
+const setContent = (param1, param2) => {
+    if(typeof param1 === "string")
+        ifSelectorExist(param1, () => { $(param1).html(param2) });
+    else if(typeof param1 === "object")
+        Object.keys(param1).forEach(key => ifSelectorExist(key, () => $(key).html(param1[key])))
+    else
+        console.error("[Error]: setContent error param type")
+};
 
 
 /** Set Value */
-const setValue = (selector, value) => ifSelectorExist(selector, () => $(selector).val(value));
+const setValue = (param1, param2) => {
+    if(typeof param1 === "string")
+        ifSelectorExist(param1, () => $(param1).val(param2));
+    else if(typeof param1 === "object")
+        Object.keys(param1).forEach(key => ifSelectorExist(key, () => $(key).val(param1[key])))
+    else
+        console.error("[Error]: setValue error param type")
+}
 
 
 /** Get Value */
@@ -426,11 +429,14 @@ const formatName = (format = '', fullName = {firstName: '', middleName: '', last
     M = isEmptyOrNull(M) ? '' : ` ${ M }`;
     S = isEmptyOrNull(S) ? '' : `, ${ S }`;
 
-    if(format === "L, F M., S")     return L + ', ' + F + Mi + S
-    else if(format === "F M. L, S") return F + Mi + ' ' + L + S
-    else {
-        console.error(`Format "${ format }" for name is invalid`)
-        return ''
+    const formats = {
+        "L, F M., S"    : L + ', ' + F + Mi + S,
+        "F M. L, S"     : F + Mi + ' ' + L + S 
+    }
+
+    return format in formats ? formats[format] : () => {
+        console.error(`Format "${ format }" for name is invalid`);
+        return '';
     }
 }
 
@@ -556,10 +562,7 @@ const setSessionedAlertAndRedirect = (data = {theme: "", message: "", redirectUR
 
 
 /** Show Timeline */
-const setTimeline = (selector, attr = {
-    title: "",
-    timelineData: []
-}) => {
+const setTimeline = (selector, attr = { title: "", timelineData: [] }) => {
     ifSelectorExist(selector, () => {
         const timelineData = attr.timelineData;
 

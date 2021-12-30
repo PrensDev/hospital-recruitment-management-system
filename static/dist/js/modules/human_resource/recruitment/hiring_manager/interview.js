@@ -19,7 +19,7 @@ const intervieweeID = window.location.pathname.split("/")[3];
 
 // Initialize General Interview Questions DataTable
 initDataTable('#generalInterviewQuestionsDT', {
-    url: `${ H_API_ROUTE }interview-questions/general`,
+    url: `${ ROUTE.API.H }interview-questions/general`,
     columns: [
         
         // Created At (For default sorting)
@@ -34,7 +34,6 @@ initDataTable('#generalInterviewQuestionsDT', {
             class: 'text-nowrap',
             render: data => {
                 const addedAt = data.created_at;
-                
                 return `
                     <div>${ formatDateTime(addedAt, 'MMM. D, YYYY') }</div>
                     <div class="small text-secondary">${ fromNow(addedAt) }</div>
@@ -115,7 +114,7 @@ const addGeneralInterviewQuestion = () => {
         type: "General"
     }
 
-    POST_ajax(`${ H_API_ROUTE }interview-questions`, data, {
+    POST_ajax(`${ ROUTE.API.H }interview-questions`, data, {
         success: result => {
             if(result) {
 
@@ -166,7 +165,7 @@ onHideModal('#addGeneralInterviewQuestionModal', () => resetForm('#addGeneralInt
 
 /** View Interview Question Details */
 const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
-    GET_ajax(`${ H_API_ROUTE }interview-questions/${ interviewQuestionID }`, {
+    GET_ajax(`${ ROUTE.API.H }interview-questions/${ interviewQuestionID }`, {
         success: result => {
             if(result) {
                 
@@ -243,7 +242,7 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
 
 /** Edit General Interview Question */
 const editGenInterviewQuestion = (interviewQuestionID) => {
-    GET_ajax(`${ H_API_ROUTE }interview-questions/${ interviewQuestionID }`, {
+    GET_ajax(`${ ROUTE.API.H }interview-questions/${ interviewQuestionID }`, {
         success: result => {
 
             // Set Interview Question ID
@@ -285,7 +284,7 @@ validateForm('#editGeneralInterviewQuestionForm', {
         const data = { question: formData.get('question') }
 
         // Update Interview Question
-        PUT_ajax(`${ H_API_ROUTE }interview-question/${ formData.get('interviewQuestionID') }`, data, {
+        PUT_ajax(`${ ROUTE.API.H }interview-question/${ formData.get('interviewQuestionID') }`, data, {
             success: result => {
                 if(result) {
                     // Reload DataTable
@@ -319,7 +318,7 @@ validateForm('#editGeneralInterviewQuestionForm', {
 
 /** Interview Schedule Details */
 ifSelectorExist('#interviewScheduleDetails', () => {
-    GET_ajax(`${ H_API_ROUTE }interview-schedules/${ interviewScheduleID }`, {
+    GET_ajax(`${ ROUTE.API.H }interview-schedules/${ interviewScheduleID }`, {
         success: result => {
 
             /** SCHEDULE DETAILS */
@@ -404,7 +403,7 @@ ifSelectorExist('#interviewScheduleDetails', () => {
 /** Scheduled Interviewees DataTable */
 initDataTable('#intervieweesDT', {
     // debugMode: true,
-    url: `${ H_API_ROUTE }interview-schedules/${ interviewScheduleID }/interviewees`,
+    url: `${ ROUTE.API.H }interview-schedules/${ interviewScheduleID }/interviewees`,
     columns: [
 
         // Created At (Hidden for default)
@@ -532,7 +531,7 @@ var addedQuestions = [];
 
 /** Applicants Details */
 ifSelectorExist('#applicantDetails', () => {
-    GET_ajax(`${ H_API_ROUTE }interviewee/${ intervieweeID }`, {
+    GET_ajax(`${ ROUTE.API.H }interviewee/${ intervieweeID }`, {
         success: result => {
             const applicant = result.applicant_info;
 
@@ -571,7 +570,7 @@ ifSelectorExist('#applicantDetails', () => {
 
 /** For General Interview Questions Table */
 ifSelectorExist('#generalInterviewQuestionsForIntervieweeDT', () => {
-    GET_ajax(`${ H_API_ROUTE }interview-questions/general`, {
+    GET_ajax(`${ ROUTE.API.H }interview-questions/general`, {
         success: result => {
             $('#generalInterviewQuestionsForIntervieweeDTBody').empty();
 
@@ -768,7 +767,7 @@ onClick('#saveScoresheetBtn', () => {
             score: get(g.name)
         };
 
-        POST_ajax(`${ H_API_ROUTE }interview-scores/${ intervieweeID }`, data, {
+        POST_ajax(`${ ROUTE.API.H }interview-scores/${ intervieweeID }`, data, {
             success: () => {},
             error: () => toastr.error('There was an error in saving interviewee score')
         });
@@ -781,14 +780,14 @@ onClick('#saveScoresheetBtn', () => {
                 type: 'Added'
             }
 
-            POST_ajax(`${ H_API_ROUTE }interview-questions`, data, {
+            POST_ajax(`${ ROUTE.API.H }interview-questions`, data, {
                 success: result => {
                     const data = {
                         interview_question_id: result.data.interview_question_id,
                         score: get(a.name)
                     }
 
-                    POST_ajax(`${ H_API_ROUTE }interview-scores/${ intervieweeID }`, data, {
+                    POST_ajax(`${ ROUTE.API.H }interview-scores/${ intervieweeID }`, data, {
                         success: result => console.log(result),
                         error: () => toastr.error('There was an error in saving interviewee score for added questions')
                     });
@@ -799,7 +798,7 @@ onClick('#saveScoresheetBtn', () => {
     }
 
     PUT_ajax(
-        `${ H_API_ROUTE }interviewee/${ intervieweeID }`,
+        `${ ROUTE.API.H }interviewee/${ intervieweeID }`,
         {
             is_interviewed: true,
             interviewed_at: formatDateTime(moment())

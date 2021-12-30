@@ -13,21 +13,25 @@ const BASE_URL_API = `${ BASE_URL_WEB }api/`;
 // Web File URLs
 const URL_WEB_FILES = `${ BASE_URL_WEB }static/app/files/`;
 const URL_RESUME_FILES = `${ URL_WEB_FILES }resumes/`;
+const EMPLOYMENT_CONTRACT_PATH = `${ URL_WEB_FILES }employment_contracts/`;
 
 
-// User Web Routes
-const DH_WEB_ROUTE = `${ BASE_URL_WEB }dh/`;
-const DM_WEB_ROUTE = `${ BASE_URL_WEB }dm/`;
-const H_WEB_ROUTE  = `${ BASE_URL_WEB }h/`;
-const R_WEB_ROUTE  = `${ BASE_URL_WEB }r/`;
-
-
-// User API Routes
-const DH_API_ROUTE   = `${ BASE_URL_API }department-head/`;
-const DM_API_ROUTE   = `${ BASE_URL_API }department-manager/`;
-const H_API_ROUTE    = `${ BASE_URL_API }hiring-manager/`;
-const R_API_ROUTE    = `${ BASE_URL_API }recruiter/`;
-const API_AUTH_ROUTE = `${ BASE_URL_API }auth/`;
+// User Routes
+const ROUTE = {
+    WEB: { /** WEB ROUTES */
+        DH  : `${ BASE_URL_WEB }dh/`,
+        DM  : `${ BASE_URL_WEB }dh/`,
+        H   : `${ BASE_URL_WEB }h/`,
+        R   : `${ BASE_URL_WEB }r/`
+    },
+    API: { /** API ROUTES */
+        DH  : `${ BASE_URL_API }department-head/`,
+        DM  : `${ BASE_URL_API }department-manager/`,
+        H   : `${ BASE_URL_API }hiring-manager/`,
+        R   : `${ BASE_URL_API }recruiter/`,
+        AUTH: `${ BASE_URL_API }auth/`
+    }
+}
 
 
 // Configurations

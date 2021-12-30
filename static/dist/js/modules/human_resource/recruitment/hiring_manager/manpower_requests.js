@@ -6,7 +6,7 @@
 
 /** Manpower Request DataTable */
 initDataTable('#manpowerRequestDT', {
-    url: `${ H_API_ROUTE }requisitions`,
+    url: `${ ROUTE.API.H }requisitions`,
     enableButtons: true,
     columns: [
         
@@ -96,7 +96,7 @@ initDataTable('#manpowerRequestDT', {
                         <div class="dropdown-menu dropdown-menu-right">
                             <a 
                                 class="dropdown-item d-flex"
-                                href="${ H_WEB_ROUTE }manpower-requests/${ requisitionID }"
+                                href="${ ROUTE.WEB.H }manpower-requests/${ requisitionID }"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <span>View Details</span>
@@ -118,7 +118,7 @@ initDataTable('#manpowerRequestDT', {
 
 /** Manpower Requests Analytics */
 const manpowerRequestAnalytics = () => {
-    GET_ajax(`${ H_API_ROUTE }requisitions/analytics`, {
+    GET_ajax(`${ ROUTE.API.H }requisitions/analytics`, {
         success: result => {
             
             // Set Total Manpower Requests
@@ -158,7 +158,7 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics())
 /** View Manpower Request */
 ifSelectorExist('#manpowerRequestDocument', () => {
     const requisitionID = window.location.pathname.split('/')[3];
-    GET_ajax(`${ H_API_ROUTE }requisitions/${ requisitionID }`, {
+    GET_ajax(`${ ROUTE.API.H }requisitions/${ requisitionID }`, {
         success: result => {
 
             /** SET MANPOWER REQUEST CONTENTS */
@@ -357,12 +357,10 @@ onHideModal('#viewManpowerRequestModal', () => {
 validateForm('#approvalForm', {
     submitHandler: () => {
         const requestStatus = generateFormData('#approvalForm').get('requestStatus');
-
         if(requestStatus == "Approved")
             showModal('#confirmApproveRequestModal')
         else if(requestStatus == "Rejected for approval")
             showModal('#rejectRequestModal')
-
         return false;
     }
 });
@@ -432,20 +430,20 @@ const requestApproval = (data) => {
         }
     }
 
-    PUT_ajax(`${ H_API_ROUTE }requisitions/${ requisitionID }`, data, {
+    PUT_ajax(`${ ROUTE.API.H }requisitions/${ requisitionID }`, data, {
         success: result => {
             if(result) {
                 if(data.request_status == "Approved")
                     setSessionedAlertAndRedirect({
                         theme: 'success',
                         message: 'A manpower request is successfully approved',
-                        redirectURL: `${ H_WEB_ROUTE }manpower-requests`
+                        redirectURL: `${ ROUTE.WEB.H }manpower-requests`
                     });
                 else if(data.request_status == "Rejected for approval")
                     setSessionedAlertAndRedirect({
                         theme: 'info',
                         message: 'A manpower request has been rejected for approval',
-                        redirectURL: `${ H_WEB_ROUTE }manpower-requests`
+                        redirectURL: `${ ROUTE.WEB.H }manpower-requests`
                     });
             } else ifError()
         },

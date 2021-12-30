@@ -27,7 +27,7 @@ const logout = () => {
         toastr.error('There was an error while trying to logout');
     }
 
-    GET_ajax(`${ API_AUTH_ROUTE }logout`, {
+    GET_ajax(`${ ROUTE.API.AUTH }logout`, {
         success: result => {
             if(result.logout_status === "Success") {
                 localStorage.clear();

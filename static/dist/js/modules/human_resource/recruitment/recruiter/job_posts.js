@@ -26,7 +26,7 @@ ifSelectorExist('#createJobPostForm', () => {
     const requisitionID = window.location.pathname.split('/')[3];
 
     /** Get Manpower Request Information */
-    GET_ajax(`${ R_API_ROUTE }requisitions/${ requisitionID }`, {
+    GET_ajax(`${ ROUTE.API.R }requisitions/${ requisitionID }`, {
         success: result => {
             // console.log(result)
 
@@ -220,7 +220,7 @@ onClick('#confirmPostNewJobPostBtn', () => {
         toastr.error('There was an error in posting new job')
     } 
 
-    POST_ajax(`${ R_API_ROUTE }job-posts`, data, {
+    POST_ajax(`${ ROUTE.API.R }job-posts`, data, {
         success: result => {
             if(result) setSessionedAlertAndRedirect({
                 theme: 'success',
@@ -243,7 +243,7 @@ onClick('#confirmPostNewJobPostBtn', () => {
 /** Initialize Job Posts DataTable */
 initDataTable('#jobPostsDT', {
     // debugMode: true,
-    url: `${ R_API_ROUTE }job-posts`,
+    url: `${ ROUTE.API.R }job-posts`,
     enableButtons: true,
     columns: [
 
@@ -383,7 +383,7 @@ initDataTable('#jobPostsDT', {
 
 // Job Post Analytics
 const jobPostsAnalytics = () => {
-    GET_ajax(`${ R_API_ROUTE }job-posts/analytics`, {
+    GET_ajax(`${ ROUTE.API.R }job-posts/analytics`, {
         success: result => {
             
             // Set Total Job Posts Count
@@ -410,7 +410,7 @@ ifSelectorExist('#jobPostsAnalytics', () => jobPostsAnalytics())
 
 /** Get Job Post Details */
 const getJobPostDetails = () => {
-    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
+    GET_ajax(`${ ROUTE.API.R }job-posts/${ jobPostID }`, {
         success: result => {
             
             /** JOB POST DETAILS */
@@ -697,7 +697,7 @@ ifSelectorExist('#editJobPostForm', () => {
     const jobPostID = window.location.pathname.split("/")[3];
 
     /** Get Job Post Information */
-    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
+    GET_ajax(`${ ROUTE.API.R }job-posts/${ jobPostID }`, {
         success: result => {
 
             /** SET JOB POST CONTENT */
@@ -962,7 +962,7 @@ onClick('#confirmUpdateJobPostBtn', () => {
     }
 
     // Update Job Post
-    PUT_ajax(`${ R_API_ROUTE }job-posts/${ formData.get('jobPostID') }`, data, {
+    PUT_ajax(`${ ROUTE.API.R }job-posts/${ formData.get('jobPostID') }`, data, {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({
@@ -1000,7 +1000,7 @@ validateForm('#endRecruitingForm', {
 
         const jobPostID = generateFormData('#endRecruitingForm').get('jobPostID');
 
-        PUT_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }/end-recruiting`, {}, {
+        PUT_ajax(`${ ROUTE.API.R }job-posts/${ jobPostID }/end-recruiting`, {}, {
             success: result => {
                 if(result) {
 

@@ -17,7 +17,7 @@ const jobPostID = window.location.pathname.split("/")[3];
 /** Initialize Applicants DataTable */
 initDataTable('#applicantsDT', {
     // debugMode: true,
-    url: `${ R_API_ROUTE }applicants`,
+    url: `${ ROUTE.API.R }applicants`,
     enableButtons: true,
     columns: [
         
@@ -143,7 +143,7 @@ initDataTable('#applicantsDT', {
 
 // Applicants Analytics
 const applicantsAnalytics = () => {
-    GET_ajax(`${ R_API_ROUTE }applicants/analytics`, {
+    GET_ajax(`${ ROUTE.API.R }applicants/analytics`, {
         success: result => {
 
             // Set Total Applicants
@@ -176,7 +176,7 @@ ifSelectorExist('#applicantsAnalytics', () => applicantsAnalytics());
 
 /** View Applicant Details */
 const viewApplicantDetails = (applicantID) => {
-    GET_ajax(`${ R_API_ROUTE }applicants/${ applicantID }`, {
+    GET_ajax(`${ ROUTE.API.R }applicants/${ applicantID }`, {
         success: result => {
 
             /** APPLICANT DETAILS */
@@ -227,7 +227,7 @@ const viewApplicantDetails = (applicantID) => {
 
 /** Set Job Post Summary */
 ifSelectorExist('#jobPostSummary', () => {
-    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }`, {
+    GET_ajax(`${ ROUTE.API.R }job-posts/${ jobPostID }`, {
         success: result => {
 
             const manpowerRequest = result.manpower_request
@@ -280,7 +280,7 @@ ifSelectorExist('#jobPostSummary', () => {
 
 // Applicants Per Job Analytics
 const applicantsPerJobAnalytics = () => {
-    GET_ajax(`${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/analytics`, {
+    GET_ajax(`${ ROUTE.API.R }job-posts/${ jobPostID }/applicants/analytics`, {
         success: result => {
 
             // Show Count or Hide Element
@@ -329,7 +329,7 @@ ifSelectorExist('#applicantsMenu', () => applicantsPerJobAnalytics());
 
 /** Applicants for Evaluation DataTable */
 initDataTable('#applicantsForEvaluationDT', {
-    url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/for-evaluation`,
+    url: `${ ROUTE.API.R }job-posts/${ jobPostID }/applicants/for-evaluation`,
     columns: [
         
         // Created at (Hidden for default sorting)
@@ -403,7 +403,7 @@ initDataTable('#applicantsForEvaluationDT', {
 /** Applicants For Evaluation DataTable */
 initDataTable('#evaluatedApplicantsDT', {
     // debugMode: true,
-    url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/evaluated`,
+    url: `${ ROUTE.API.R }job-posts/${ jobPostID }/applicants/evaluated`,
     columns: [
         
         // Created at (Hidden for default sorting)
@@ -477,7 +477,7 @@ initDataTable('#evaluatedApplicantsDT', {
 /** Applicants For Evaluation DataTable */
 initDataTable('#rejectedApplicantsDT', {
     // debugMode: true,
-    url: `${ R_API_ROUTE }job-posts/${ jobPostID }/applicants/rejected`,
+    url: `${ ROUTE.API.R }job-posts/${ jobPostID }/applicants/rejected`,
     columns: [
         
         // Created at (Hidden for default sorting)
@@ -629,7 +629,7 @@ const evaluateApplicant = () => {
     }
 
     // Evaluate applicant
-    PUT_ajax(`${ R_API_ROUTE }applicants/${ get('applicantID') }`, data, {
+    PUT_ajax(`${ ROUTE.API.R }applicants/${ get('applicantID') }`, data, {
         success: result => {
             if(result) {
 

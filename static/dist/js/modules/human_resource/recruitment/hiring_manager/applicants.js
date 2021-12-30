@@ -16,7 +16,7 @@ const jobPostID = window.location.pathname.split("/")[3];
 
 /** Set Job Post Summary */
 ifSelectorExist('#jobPostSummary', () => {
-    GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }`, {
+    GET_ajax(`${ ROUTE.API.H }job-posts/${ jobPostID }`, {
         success: result => {
             const manpowerRequest = result.manpower_request
 
@@ -70,7 +70,7 @@ ifSelectorExist('#jobPostSummary', () => {
 /** Initialize Applicants DataTable */
 initDataTable('#applicantsDT', {
     // debugMode: true,
-    url: `${ H_API_ROUTE }applicants`,
+    url: `${ ROUTE.API.H }applicants`,
     enableButtons: true,
     columns: [
         
@@ -195,7 +195,7 @@ initDataTable('#applicantsDT', {
 
 /** View Applicant Details */
 const viewApplicantDetails = (applicantID) => {
-    GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }`, {
+    GET_ajax(`${ ROUTE.API.H }applicants/${ applicantID }`, {
         success: result => {
 
             /** APPLICANT DETAILS */
@@ -255,7 +255,7 @@ onHideModal('#applicantDetailsModal', () => {
 
 // Applicants Analytics
 const applicantsAnalytics = () => {
-    GET_ajax(`${ H_API_ROUTE }applicants/analytics`, {
+    GET_ajax(`${ ROUTE.API.H }applicants/analytics`, {
         success: result => {
 
             // Set Total Applicants
@@ -288,7 +288,7 @@ ifSelectorExist('#applicantsAnalytics', () => applicantsAnalytics());
 
 // Applicants Per Job Analytics
 const applicantsPerJobAnalytics = () => {
-    GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }/applicants/analytics`, {
+    GET_ajax(`${ ROUTE.API.H }job-posts/${ jobPostID }/applicants/analytics`, {
         success: result => {
 
             // Show Count or Hide Element
@@ -366,7 +366,7 @@ const setApplicantDetailsAndTimeline = (result) => {
 
 /** View Screening Applicant Details */
 const viewScreeningApplicantDetails = (applicantID) => {
-    GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }`, {
+    GET_ajax(`${ ROUTE.API.H }applicants/${ applicantID }`, {
         success: result => {
 
             // Set Applicant ID
@@ -384,7 +384,7 @@ const viewScreeningApplicantDetails = (applicantID) => {
 
 /** View For Interview Applicant Details */
 const viewForInterviewApplicantDetails = (applicantID) => {
-    GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }`, {
+    GET_ajax(`${ ROUTE.API.H }applicants/${ applicantID }`, {
         success: result => {
 
             // Set Applicant ID
@@ -402,7 +402,7 @@ const viewForInterviewApplicantDetails = (applicantID) => {
 
 /** View Interviewed Applicant Details */
 const viewInterviewedApplicantDetails = (applicantID) => {
-    GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }/interviewee-info`, {
+    GET_ajax(`${ ROUTE.API.H }applicants/${ applicantID }/interviewee-info`, {
         success: result => {
             
             // Set Applicant ID
@@ -458,7 +458,7 @@ const viewInterviewedApplicantDetails = (applicantID) => {
 
 /** View Hired Applicant Details */
 const viewHiredApplicantDetails = (applicantID) => {
-    GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }`, {
+    GET_ajax(`${ ROUTE.API.H }applicants/${ applicantID }`, {
         success: result => {
             
             // Set Applicant Details and Timeline
@@ -473,7 +473,7 @@ const viewHiredApplicantDetails = (applicantID) => {
 
 /** View Rejected Applicant Details */
 const viewRejectedApplicantDetails = (applicantID) => {
-    GET_ajax(`${ H_API_ROUTE }applicants/${ applicantID }`, {
+    GET_ajax(`${ ROUTE.API.H }applicants/${ applicantID }`, {
         success: result => {
 
             // Set Applicant Details and Timeline
@@ -495,7 +495,7 @@ const viewRejectedApplicantDetails = (applicantID) => {
 
 /** Applicants for Screening DataTable */
 initDataTable('#applicantsForScreeningDT', {
-    url: `${ H_API_ROUTE }job-posts/${ jobPostID }/applicants/for-screening`,
+    url: `${ ROUTE.API.H }job-posts/${ jobPostID }/applicants/for-screening`,
     columns: [
         
         // Created at (Hidden for default sorting)
@@ -627,7 +627,7 @@ const screenApplicant = () => {
     }
 
     // Update applicant status
-    PUT_ajax(`${ H_API_ROUTE }applicants/${ get('applicantID') }/screen`, data, {
+    PUT_ajax(`${ ROUTE.API.H }applicants/${ get('applicantID') }/screen`, data, {
         success: result => {
             if(result) {
 
@@ -667,7 +667,7 @@ const screenApplicant = () => {
 /** Applicants for Interview DataTable */
 initDataTable('#applicantsForInterviewDT', {
     // debugMode: true,
-    url: `${ H_API_ROUTE }job-posts/${ jobPostID }/applicants/for-interview`,
+    url: `${ ROUTE.API.H }job-posts/${ jobPostID }/applicants/for-interview`,
     columns: [
         
         // Created at (Hidden for default sorting)
@@ -758,7 +758,7 @@ initDataTable('#applicantsForInterviewDT', {
 
 /** Get Interview Schedules Per Job Post */
 const getInterviewSchedulesPerJobPost = () => {
-    GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }/interview-schedules`, {
+    GET_ajax(`${ ROUTE.API.H }job-posts/${ jobPostID }/interview-schedules`, {
         success: result => {
             if(result) {
 
@@ -868,7 +868,7 @@ let selectedApplicants = [];
 
 /** If Create Interview Schedule Form Exist */
 ifSelectorExist('#createInterviewScheduleForm', () => {
-    GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }/applicants/for-interview`, {
+    GET_ajax(`${ ROUTE.API.H }job-posts/${ jobPostID }/applicants/for-interview`, {
         success: result => {
             selectApplicant.empty();
             selectApplicant.append(`<option></option>`);
@@ -905,7 +905,7 @@ ifSelectorExist('#createInterviewScheduleForm', () => {
 
         const selectedApplicant = selectApplicant.val();
 
-        GET_ajax(`${ H_API_ROUTE }applicants/${ selectedApplicant }/interviewee-info`, {
+        GET_ajax(`${ ROUTE.API.H }applicants/${ selectedApplicant }/interviewee-info`, {
             success: result => {
                 const intervieweeFullName = formatName('F M. L, S', {
                     firstName: result.first_name,
@@ -1074,7 +1074,7 @@ onClick('#createScheduleBtn', () => {
         interviewees: interviewees
     }
 
-    POST_ajax(`${ H_API_ROUTE }interview-schedule`, data, {
+    POST_ajax(`${ ROUTE.API.H }interview-schedule`, data, {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({
@@ -1108,7 +1108,7 @@ onClick('#createScheduleBtn', () => {
 /** Initalize Interviewed Applicants DataTable */
 initDataTable('#interviewedApplicantsDT', {
     // debugMode: true,
-    url: `${ H_API_ROUTE }job-posts/${ jobPostID }/applicants/interviewed`,
+    url: `${ ROUTE.API.H }job-posts/${ jobPostID }/applicants/interviewed`,
     columns: [
 
         // Created At (Hidden for default sorting)
@@ -1248,7 +1248,7 @@ const hireOrRejectApplicant = () => {
         remarks: remarks
     }
 
-    PUT_ajax(`${ H_API_ROUTE }applicants/${ get('applicantID') }/hire`, data, {
+    PUT_ajax(`${ ROUTE.API.H }applicants/${ get('applicantID') }/hire`, data, {
         success: result => {
             if(result) {
 
@@ -1301,7 +1301,7 @@ const hireOrRejectApplicant = () => {
 /** Hired Applicants DataTable */
 initDataTable('#hiredApplicantsDT', {
     // debugMode: true,
-    url: `${ H_API_ROUTE }job-posts/${ jobPostID }/applicants/hired`,
+    url: `${ ROUTE.API.H }job-posts/${ jobPostID }/applicants/hired`,
     columns: [
         
         // Created at (Hidden for default sorting)
@@ -1377,7 +1377,7 @@ initDataTable('#hiredApplicantsDT', {
 /** Rejected Applicants DataTable */
 initDataTable('#rejectedApplicantsDT', {
     // debugMode: true,
-    url: `${ H_API_ROUTE }job-posts/${ jobPostID }/applicants/rejected`,
+    url: `${ ROUTE.API.H }job-posts/${ jobPostID }/applicants/rejected`,
     columns: [
         
         // Created at (Hidden for default sorting)

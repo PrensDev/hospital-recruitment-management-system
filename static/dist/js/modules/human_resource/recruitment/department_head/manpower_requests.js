@@ -6,7 +6,7 @@
 
 /** ManPower Requests DataTable */
 initDataTable('#manpowerRequestDT', {
-    url: `${ DH_API_ROUTE }requisitions`,
+    url: `${ ROUTE.API.DH }requisitions`,
     enableButtons: true,
     columns: [
 
@@ -120,7 +120,7 @@ initDataTable('#manpowerRequestDT', {
  */
 
 /** Manpower Requests Analytics */
-const manpowerRequestAnalytics = () => GET_ajax(`${ DH_API_ROUTE }requisitions/analytics`, {
+const manpowerRequestAnalytics = () => GET_ajax(`${ ROUTE.API.DH }requisitions/analytics`, {
     success: result => {
         if(result) {
 
@@ -162,9 +162,8 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
 /** View Manpower Request */
 ifSelectorExist('#manpowerRequestFormDocument', () => {
     const requisitionID = window.location.pathname.split('/')[3];
-    GET_ajax(`${ DH_API_ROUTE }requisitions/${ requisitionID }`, {
+    GET_ajax(`${ ROUTE.API.DH }requisitions/${ requisitionID }`, {
         success: result => {
-            console.log(result);
 
             const requestedBy = result.manpower_request_by;
 
@@ -188,8 +187,9 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
-                if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No data</div>`
-                else return formatDateTime(result.deadline, "DateTime")
+                return isEmptyOrNull(deadline)
+                    ? `<div class="text-secondary font-italic">No data</div>`
+                    : formatDateTime(result.deadline, "DateTime")
             });
 
             // Set Requested Position
@@ -482,7 +482,7 @@ const signRequest = (data) => {
         }
     }
 
-    PUT_ajax(`${ DH_API_ROUTE }requisitions/${ requisitionID }/sign`, data, {
+    PUT_ajax(`${ ROUTE.API.DH }requisitions/${ requisitionID }/sign`, data, {
         success: result => {
             if(result) {
                 if(data.request_status == "For approval")

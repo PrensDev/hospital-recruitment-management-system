@@ -8,9 +8,6 @@
 const requisitionID = window.location.pathname.split("/")[3];
 
 
-/** Employment Contract Path */
-const EMPLOYMENT_CONTRACT_PATH = `${ BASE_URL_WEB }static/app/files/employment_contracts/`;
-
 /**
  * ==============================================================================
  * HIRED APPLICANTS DATATABLE
@@ -20,7 +17,7 @@ const EMPLOYMENT_CONTRACT_PATH = `${ BASE_URL_WEB }static/app/files/employment_c
 /** Initialize Hired Applicants DataTable */
 initDataTable('#hiredApplicantsDT', {
     // debugMode: true,
-    url: `${ DM_API_ROUTE }hired-applicants`,
+    url: `${ ROUTE.API.DM }hired-applicants`,
     columns: [
 
         // Updated at (Hidden for default sorting)
@@ -116,7 +113,7 @@ initDataTable('#hiredApplicantsDT', {
 
 /** View Applicant Details */
 const viewApplicantDetails = (onboardingEmployeeID) => {
-    GET_ajax(`${ DM_API_ROUTE }hired-applicants/${ onboardingEmployeeID }`, {
+    GET_ajax(`${ ROUTE.API.DM }hired-applicants/${ onboardingEmployeeID }`, {
         success: result => {
 
             console.log(result)

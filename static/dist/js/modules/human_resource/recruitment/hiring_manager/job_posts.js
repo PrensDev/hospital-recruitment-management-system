@@ -14,7 +14,7 @@ const jobPostID = window.location.pathname.split('/')[3];
 
 /** Job Post Analytics */
 ifSelectorExist('#jobPostsAnalytics', () => {
-    GET_ajax(`${ H_API_ROUTE }job-posts/analytics`, {
+    GET_ajax(`${ ROUTE.API.H }job-posts/analytics`, {
         success: result => {
             if(result) {
                 // Set Total Job Post
@@ -40,7 +40,7 @@ ifSelectorExist('#jobPostsAnalytics', () => {
 
 /** Initialize Job Posts DataTable */
 initDataTable('#jobPostsDT', {
-    url: `${ H_API_ROUTE }job-posts`,
+    url: `${ ROUTE.API.H }job-posts`,
     enableButtons: true,
     columns: [
 
@@ -111,7 +111,7 @@ initDataTable('#jobPostsDT', {
                     ? `
                         <a 
                             class="dropdown-item d-flex"
-                            href="${ H_WEB_ROUTE }job-posts/${ data.job_post_id }/applicants"
+                            href="${ ROUTE.WEB.H }job-posts/${ data.job_post_id }/applicants"
                         >
                             <div style="width: 2rem"><i class="fas fa-users mr-1"></i></div>
                             <div>View Applicants</div>
@@ -128,7 +128,7 @@ initDataTable('#jobPostsDT', {
                         <div class="dropdown-menu dropdown-menu-right">
                             <a 
                                 class="dropdown-item d-flex"
-                                href="${ H_WEB_ROUTE }job-posts/${ jobPostID }"
+                                href="${ ROUTE.WEB.H }job-posts/${ jobPostID }"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <div>View Job Post</div>
@@ -136,7 +136,7 @@ initDataTable('#jobPostsDT', {
                             ${ applicants }
                             <a 
                                 class="dropdown-item d-flex"
-                                href="${ H_WEB_ROUTE }manpower-requests/${ requisitionID }"
+                                href="${ ROUTE.WEB.H }manpower-requests/${ requisitionID }"
                             >
                                 <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
                                 <div>View Manpower Request</div>
@@ -158,7 +158,7 @@ initDataTable('#jobPostsDT', {
 
 /** View Job Post Details */
 ifSelectorExist('#jobPostDetails', () => {
-    GET_ajax(`${ H_API_ROUTE }job-posts/${ jobPostID }`, {
+    GET_ajax(`${ ROUTE.API.H }job-posts/${ jobPostID }`, {
         success: result => {
             const manpowerRequest = result.manpower_request;
 
@@ -214,7 +214,7 @@ ifSelectorExist('#jobPostDetails', () => {
                     <i class="fas fa-eye mr-1"></i>
                     <span>View post in public portal</span>
                 </a>
-                <a class="btn btn-sm btn-secondary btn-block" href="${ H_WEB_ROUTE }job-posts/${ jobPostID }/applicants">
+                <a class="btn btn-sm btn-secondary btn-block" href="${ ROUTE.WEB.H }job-posts/${ jobPostID }/applicants">
                     <i class="fas fa-users mr-1"></i>
                     <span>View applicants</span>
                 </a>
@@ -257,14 +257,12 @@ ifSelectorExist('#jobPostDetails', () => {
                     `
             });
 
-            setContent('#manpowerRequestSummaryBtnContainer', () => {
-                return `
-                    <a 
-                        class="btn btn-sm btn-secondary btn-block"
-                        href="${ H_WEB_ROUTE }manpower-requests/${ manpowerRequest.requisition_id }"
-                    >View Full Details</button>
-                `
-            })
+            setContent('#manpowerRequestSummaryBtnContainer', `
+                <a 
+                    class="btn btn-sm btn-secondary btn-block"
+                    href="${ ROUTE.WEB.H }manpower-requests/${ manpowerRequest.requisition_id }"
+                >View Full Details</button>
+            `)
 
             /** JOB POST TIMELINE */
             setJobPostTimeline('#jobPostTimeline', result);

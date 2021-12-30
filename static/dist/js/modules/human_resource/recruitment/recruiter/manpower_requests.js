@@ -6,7 +6,7 @@
 
 /** Initialize Manpower Request DataTable */
 initDataTable('#manpowerRequestDT', {
-    url: `${ R_API_ROUTE }requisitions`,
+    url: `${ ROUTE.API.R }requisitions`,
     columns: [
 
         // Created At (For Default Sorting)
@@ -55,17 +55,17 @@ initDataTable('#manpowerRequestDT', {
             render: data => {
                 const jobPost = data.job_post;
 
-                if(data.request_status === "Completed") {
+                if(data.request_status === "Completed")
                     return dtBadge('info', `
                         <i class="fas fa-check mr-1"></i>
                         <span>Completed</span>
                     `);
-                } else if(jobPost.length == 1) {
+                else if(jobPost.length == 1)
                     return dtBadge('success', `
                         <i class="fas fa-briefcase mr-1"></i>
                         <span>Job post is created</span>
                     `);
-                } else {
+                else {
                     return dtBadge('warning', `
                         <i class="fas fa-exclamation-triangle mr-1"></i>
                         <span>No job post yet</span>
@@ -145,7 +145,7 @@ initDataTable('#manpowerRequestDT', {
 
 // Set Content for Manpower Request Analytics
 const manpowerRequestAnalytics = () => {
-    GET_ajax(`${ R_API_ROUTE }requisitions/analytics`, {
+    GET_ajax(`${ ROUTE.API.R }requisitions/analytics`, {
         success: result => {
 
             // Set Approved Requests Count
@@ -171,7 +171,7 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
 /** View Manpower Request */
 ifSelectorExist('#manpowerRequestDocumentContainer', () => {
     const requisitionID = window.location.pathname.split('/')[3];
-    GET_ajax(`${ R_API_ROUTE }requisitions/${ requisitionID }`, {
+    GET_ajax(`${ ROUTE.API.R }requisitions/${ requisitionID }`, {
         success: result => {
             
             /** SET MANPOWER REQUEST CONTENTS */

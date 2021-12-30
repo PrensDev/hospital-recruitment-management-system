@@ -7,7 +7,7 @@
 
 /** Initialize Hired Applicants DataTable */
 initDataTable('#hiredApplicantsDT', {
-    url: `${ DH_API_ROUTE }hired-applicants`,
+    url: `${ ROUTE.API.DH }hired-applicants`,
     columns: [
         
         // Created at (for default sorting)
@@ -136,7 +136,7 @@ initDataTable('#hiredApplicantsDT', {
 
 /** Get Hired Applicant Details */
 const getHiredApplicantDetails = (applicantID) => {
-    GET_ajax(`${ DH_API_ROUTE }hired-applicants/${ applicantID }`, {
+    GET_ajax(`${ ROUTE.API.DH }hired-applicants/${ applicantID }`, {
         success: result => {
             
             /** APPLICANT DETAILS */
@@ -226,7 +226,7 @@ validateForm('#signedContractForm', {
 
         // Upload resume
         $.ajax({
-            url: `${ DH_API_ROUTE }upload/employment-contract`,
+            url: `${ ROUTE.API.DH }upload/employment-contract`,
             type: 'POST',
             headers: AJAX_HEADERS,
             processData: false,
@@ -240,7 +240,7 @@ validateForm('#signedContractForm', {
                 }
                 
                 // Add applicant as onboarding employee
-                POST_ajax(`${ DH_API_ROUTE }onboarding-employees`, data, {
+                POST_ajax(`${ ROUTE.API.DH }onboarding-employees`, data, {
                     success: result => {
                         if(result) {
 

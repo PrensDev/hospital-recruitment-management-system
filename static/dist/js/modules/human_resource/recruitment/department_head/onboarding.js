@@ -16,7 +16,7 @@ const onboardingEmployeeID = window.location.pathname.split("/")[3];
 
 /** Onboarding employees analytics */
 ifSelectorExist('#onboardingEmployeesAnalyticsContainer', () => {
-    GET_ajax(`${ DH_API_ROUTE }onboarding-employees/analytics`, {
+    GET_ajax(`${ ROUTE.API.DH }onboarding-employees/analytics`, {
         success: result => {
 
             // Set Total Onboarding Employees Count
@@ -28,7 +28,7 @@ ifSelectorExist('#onboardingEmployeesAnalyticsContainer', () => {
 
 /** Initialize Onboarding Employees DataTable */
 initDataTable('#onboardingEmployeesDT', {
-    url: `${ DH_API_ROUTE }onboarding-employees`,
+    url: `${ ROUTE.API.DH }onboarding-employees`,
     columns: [
 
         // Created At (Hidden By Default)
@@ -139,7 +139,7 @@ initDataTable('#onboardingEmployeesDT', {
 
 /** Initialize Onboarding Employee Tasks DataTable */
 initDataTable('#onboardingEmployeeTasksDT', {
-    url: `${ DH_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`,
+    url: `${ ROUTE.API.DH }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`,
     columns: [
 
         // Start at (Hidden for default sorting)
@@ -155,12 +155,12 @@ initDataTable('#onboardingEmployeeTasksDT', {
                 const deadline = data.end_at;
 
                 const taskType = () => {
-                    const taskType = task.task_type;
-                    var theme;
-                    if(taskType === "For new employees") theme = "success"
-                    else if(taskType === "For the team") theme = "info"
-                    else if(taskType === "For department manager") theme = "warning"
-                    return `<span class="badge border border-${ theme } text-${ theme }">${ taskType }</span>`
+                    const taskTheme = {
+                        "For new employees": "success",
+                        "For the team": "info",
+                        "For department manager": "warning"
+                    }
+                    return `<span class="badge border border-${ taskTheme[task.task_type] } text-${ taskTheme[task.task_type] }">${ task.task_type }</span>`
                 }
 
                 return `
@@ -215,22 +215,10 @@ initDataTable('#onboardingEmployeeTasksDT', {
 
 /** Get Onboarding Employee Details */
 const getOnboardingEmployeeDetails = () => {
-    GET_ajax(`${ DH_API_ROUTE }onboarding-employees/${ onboardingEmployeeID }`, {
+    GET_ajax(`${ ROUTE.API.DH }onboarding-employees/${ onboardingEmployeeID }`, {
         success: result => {
 
-            // Set Employee Full Name
-            setContent('#employeeFullName', formatName('F M. L, S', {
-                firstName: result.first_name,
-                middleName: result.middle_name,
-                lastName: result.last_name,
-                suffixName: result.suffix_name
-            }));
-
-            // Set Employee Position
-            setContent('#employeePosition', result.onboarding_employee_position.name);
-
-            // Set Task Progress
-            setContent('#taskProgress', () => {
+            const getTaskProgress = () => {
                 const tasks = result.onboarding_employee_tasks;
 
                 let pending = 0;
@@ -263,17 +251,22 @@ const getOnboardingEmployeeDetails = () => {
                         responsive : true,
                     }
                 });
+            }
+
+            setContent({
+                '#employeeFullName': formatName('F M. L, S', {
+                    firstName: result.first_name,
+                    middleName: result.middle_name,
+                    lastName: result.last_name,
+                    suffixName: result.suffix_name
+                }),
+                '#employeePosition': result.onboarding_employee_position.name,
+                '#taskProgress': getTaskProgress(),
+                '#employeeEmail': result.email,
+                '#employeeContactNumber': result.contact_number,
+                '#startOfEmploymentDate': formatDateTime(result.employment_start_date, 'Full Date'),
+                '#startOfEmploymentHumanized': fromNow(result.employment_start_date)
             });
-
-            // Set Email
-            setContent('#employeeEmail', result.email);
-
-            // Set Contact Number
-            setContent('#employeeContactNumber', result.contact_number);
-
-            // Set Start of Employment
-            setContent('#startOfEmploymentDate', formatDateTime(result.employment_start_date, 'Full Date'));
-            setContent('#startOfEmploymentHumanized', fromNow(result.employment_start_date));
 
             // Remove loader and show container
             $('#onboardingEmployeeDetailsLoader').remove();
@@ -288,7 +281,7 @@ ifSelectorExist('#onboardingEmployeeDetails', () => getOnboardingEmployeeDetails
 
 /** View Onboarding Employee Task Details */
 const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
-    GET_ajax(`${ DH_API_ROUTE }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, {
+    GET_ajax(`${ ROUTE.API.DH }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, {
         success: result => {
 
             /** ONBOARDING EMPLOYEE TASK DETAILS */

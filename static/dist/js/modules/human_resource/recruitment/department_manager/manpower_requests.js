@@ -13,12 +13,11 @@ ifSelectorExist('#addManpowerRequestForm', () => {
             const id = () => { return ("000" + ((Math.random() * 46656) | 0).toString(36)).slice(-3); }
             return id() + id();
         }
-        
         return (`req-${ Date.now().toString(36) }-${ generateShortUID() }`).toUpperCase(); 
     });
 
     /** Vacant Position For Add Select2 */
-    GET_ajax(`${ DM_API_ROUTE }department/positions`, {
+    GET_ajax(`${ ROUTE.API.DM }department/positions`, {
         success: result => {
             if(result) {
                 let vacantPosition = $('#vacantPosition');
@@ -184,7 +183,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
         deadline: isChecked('#setDeadline') ? formatDateTime(get("deadline")) : null
     }
 
-    POST_ajax(`${ DM_API_ROUTE }requisitions`, data, {
+    POST_ajax(`${ ROUTE.API.DM }requisitions`, data, {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({
@@ -214,7 +213,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
 /** ManPower Requests DataTable */
 initDataTable('#manpowerRequestDT', {
     // debugMode: true,
-    url: `${ DM_API_ROUTE }requisitions`,
+    url: `${ ROUTE.API.DM }requisitions`,
     enableButtons: true,
     columns: [
 
@@ -375,7 +374,7 @@ initDataTable('#manpowerRequestDT', {
  */
 
 /** Manpower Requests Analytics */
-const manpowerRequestAnalytics = () => GET_ajax(`${ DM_API_ROUTE }requisitions/analytics`, {
+const manpowerRequestAnalytics = () => GET_ajax(`${ ROUTE.API.DM }requisitions/analytics`, {
     success: result => {
         if(result) {
 
@@ -408,7 +407,7 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
 /** Get Manpower Request Details */
 const getManpowerRequestDetails = () => {
     const requisitionID = window.location.pathname.split('/')[3];
-    GET_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
+    GET_ajax(`${ ROUTE.API.DM }requisitions/${ requisitionID }`, {
         success: result => {
 
             /** MANPOWER REQUEST DETAILS */
@@ -713,7 +712,7 @@ const printManpowerRequest = () => {
 ifSelectorExist('#editManpowerRequestForm', () => {
 
     /** Vacant Position For Add Select2 */
-    GET_ajax(`${ DM_API_ROUTE }department/positions`, {
+    GET_ajax(`${ ROUTE.API.DM }department/positions`, {
         success: result => {
             if(result) {
                 let vacantPosition = $('#vacantPosition');
@@ -761,7 +760,7 @@ ifSelectorExist('#editManpowerRequestForm', () => {
     const requisitionID = window.location.pathname.split('/')[3];
 
     /** Get Manpower Request Information */
-    GET_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
+    GET_ajax(`${ ROUTE.API.DM }requisitions/${ requisitionID }`, {
         success: result => {
             if(result) {
 
@@ -942,7 +941,7 @@ onClick('#confirmEditManpowerRequestBtn', () => {
 
     const requisitionID = get('requisitionID');
 
-    PUT_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, data, {
+    PUT_ajax(`${ ROUTE.API.DM }requisitions/${ requisitionID }`, data, {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({
@@ -982,7 +981,7 @@ validateForm('#cancelManpowerRequestForm', {
     submitHandler: () => {
         const requisitionID = generateFormData('#cancelManpowerRequestForm').get('requisitionID');
 
-        DELETE_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
+        DELETE_ajax(`${ ROUTE.API.DM }requisitions/${ requisitionID }`, {
             success: result => {
                 if(result) {
                     if($('#manpowerRequestDocument').length) {
@@ -1030,7 +1029,7 @@ validateForm('#deleteManpowerRequestForm', {
     submitHandler: () => {
         const formData = generateFormData('#deleteManpowerRequestForm');
         const requisitionID = formData.get('requisitionID');
-        DELETE_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }`, {
+        DELETE_ajax(`${ ROUTE.API.DM }requisitions/${ requisitionID }`, {
             success: result => {
                 if(result) {
                     hideModal('#deleteManpowerRequestModal');
@@ -1081,7 +1080,7 @@ validateForm('#markAsCompletedForm', {
         }
 
         // Update details
-        PUT_ajax(`${ DM_API_ROUTE }requisitions/${ requisitionID }/complete`, {}, {
+        PUT_ajax(`${ ROUTE.API.DM }requisitions/${ requisitionID }/complete`, {}, {
             success: result => {
                 if(result) {
 

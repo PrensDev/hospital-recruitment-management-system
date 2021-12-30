@@ -26,7 +26,6 @@ loginAJAX = () => {
     setContent('#loginBtn', `<div class="spinner-border spinner-border-sm"></div>`);
     disableElement('#loginBtn');
 
-    
     const formData = generateFormData('#loginForm');
     
     const data = {
