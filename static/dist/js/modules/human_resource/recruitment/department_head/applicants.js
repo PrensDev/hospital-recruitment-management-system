@@ -19,15 +19,15 @@ initDataTable('#hiredApplicantsDT', {
             class: 'w-100',
             render: data => {
                 const applicantFullName = formatName("F M. L, S", {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name
                 });
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -44,7 +44,7 @@ initDataTable('#hiredApplicantsDT', {
                 return `
                     <div>${ formatDateTime(appliedAt, 'MMM. D, YYYY') }</div>
                     <div>${ formatDateTime(appliedAt,'Time') }</div>
-                    <div class="small text-secondary">${ fromNow(appliedAt) }</div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(appliedAt)) }
                 `
             }
         },
@@ -58,7 +58,7 @@ initDataTable('#hiredApplicantsDT', {
                 return `
                     <div>${ formatDateTime(hiredAt, 'MMM. D, YYYY') }</div>
                     <div>${ formatDateTime(hiredAt,'Time') }</div>
-                    <div class="small text-secondary">${ fromNow(hiredAt) }</div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(hiredAt)) }
                 `
             }
         },
@@ -67,20 +67,14 @@ initDataTable('#hiredApplicantsDT', {
         {
             data: null,
             render: data => {
-                const status = data.status;
-
-                if(status === "Hired") 
-                    return dtBadge('warning', `
-                        <i class="fas fa-file-signature mr-1"></i>
-                        <span>For signing</span>
-                    `)
-                else if(status === "Contract signed")
-                    return dtBadge('success', `
-                        <i class="fas fa-check mr-1"></i>
-                        <span>Signed</span>
-                    `)
-                else 
-                    return dtBadge('light', `Invalid data`)
+                switch(data.status) {
+                    case "Hired":
+                        return TEMPLATE.DT.BADGE('warning', TEMPLATE.ICON_LABEL('file-signature', 'For Signing'))
+                    case "Contract signed":
+                        return TEMPLATE.DT.BADGE('success', TEMPLATE.ICON_LABEL('check', 'Signed'))
+                    default:
+                        return TEMPLATE.DT.BADGE('light', 'Invalid data')
+                }
             }
         },
 
@@ -98,36 +92,26 @@ initDataTable('#hiredApplicantsDT', {
                             class="dropdown-item d-flex"
                             onclick="markContractAsSigned('${ applicantID }')"
                         >
-                            <div style="width: 2rem">
-                                <i class="fas fa-check mr-1"></i>
-                            </div>
+                            <div style="width: 2rem"><i class="fas fa-check mr-1"></i></div>
                             <span>Mark contract as signed</span>
                         </div>`
                         : ''
                 } 
 
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div
+                        role="button"
+                        class="dropdown-item d-flex"
+                        onclick="getHiredApplicantDetails('${ applicantID }')"
+                    >
+                        <div style="width: 2rem">
+                            <i class="fas fa-list mr-1"></i>
                         </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div
-                                role="button"
-                                class="dropdown-item d-flex"
-                                onclick="getHiredApplicantDetails('${ applicantID }')"
-                            >
-                                <div style="width: 2rem">
-                                    <i class="fas fa-list mr-1"></i>
-                                </div>
-                                <span>View Details</span>
-                            </div>
-
-                            ${ markContractAsSigned() }
-                        </div>
+                        <span>View Details</span>
                     </div>
-                `
+
+                    ${ markContractAsSigned() }
+                `);
             }
         },
     ]
@@ -142,20 +126,17 @@ const getHiredApplicantDetails = (applicantID) => {
             /** APPLICANT DETAILS */
             
             const applicantFullName = formatName('F M. L, S', {
-                firstName: result.first_name,
-                middleName: result.middle_name,
-                lastName: result.last_name,
-                suffixName: result.suffixName
+                firstName  : result.first_name,
+                middleName : result.middle_name,
+                lastName   : result.last_name,
+                suffixName : result.suffixName
             });
 
-            // Set Applicant Full Name
-            setContent('#applicantFullName', applicantFullName);
-
-            // Set Applicant Contact Number
-            setContent("#applicantContactNumber", result.contact_number);
-
-            // Set Applicant Email
-            setContent("#applicantEmail", result.email);
+            setContent({
+                '#applicantFullName': applicantFullName,
+                "#applicantContactNumber": result.contact_number,
+                "#applicantEmail": result.email
+            });
 
             // Set Resume Link
             $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);

@@ -105,9 +105,10 @@ ifSelectorExist('#availableJobList', () => {
             const total = result.total;
 
             if(total > 0) {
-                setContent('#rowsDisplay', `Showing ${ FETCH_ROWS } out of ${ total }`);
-                setContent('#pageDisplay', `Page ${ page } out of ${ Math.ceil(total/FETCH_ROWS) }`);
-    
+                setContent({
+                    '#rowsDisplay': `Showing ${ FETCH_ROWS } out of ${ total }`,
+                    '#pageDisplay': `Page ${ page } out of ${ Math.ceil(total/FETCH_ROWS) }`
+                });
                 setPagination('#pagination', {
                     query: `${ BASE_URL_WEB }careers?page=[page]`,
                     totalRows: total,
@@ -115,8 +116,10 @@ ifSelectorExist('#availableJobList', () => {
                 });
                 showElement('#pagination');
             } else {
-                setContent('#rowsDisplay', `No result`);
-                setContent('#pageDisplay', `No pages to be display`);
+                setContent({
+                    '#rowsDisplay': `No result`,
+                    '#pageDisplay': `No pages to be display`
+                });
             }
         }
     })

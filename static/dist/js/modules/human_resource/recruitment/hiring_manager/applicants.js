@@ -258,20 +258,13 @@ const applicantsAnalytics = () => {
     GET_ajax(`${ ROUTE.API.H }applicants/analytics`, {
         success: result => {
 
-            // Set Total Applicants
-            setContent('#totalApplicantsCount', formatNumber(result.total));
-
-            // Set For Evaluation Applicants
-            setContent('#forEvaluationCount', formatNumber(result.for_evaluation));
-
-            // Set For Screening 
-            setContent('#forScreeningCount', formatNumber(result.for_screening));
-
-            // Set For Interview
-            setContent('#forInterviewCount', formatNumber(result.for_interview));
-
-            // Set Rejected Applicants
-            setContent('#rejectedApplicantsCount', formatNumber(result.rejected.total));
+            setContent({
+                '#totalApplicantsCount': formatNumber(result.total),
+                '#forEvaluationCount': formatNumber(result.for_evaluation),
+                '#forScreeningCount': formatNumber(result.for_screening),
+                '#forInterviewCount': formatNumber(result.for_interview),
+                '#rejectedApplicantsCount': formatNumber(result.rejected.total)
+            });
         },
         error: () => toastr.error('There was an error in getting applciants analytics')
     });
@@ -822,7 +815,7 @@ const getInterviewSchedulesPerJobPost = () => {
                                         <div class="text-right">
                                             <a 
                                                 class="btn btn-sm btn-secondary text-white" style="text-decoration: none" 
-                                                href="${ H_WEB_ROUTE }interview-schedules/${ r.interview_schedule_id }"
+                                                href="${ ROUTE.WEB.H }interview-schedules/${ r.interview_schedule_id }"
                                             >
                                                 <i class="fas fa-list mr-1"></i>
                                                 <span>View Details</span>
@@ -1080,7 +1073,7 @@ onClick('#createScheduleBtn', () => {
                 setSessionedAlertAndRedirect({
                     theme: "success",
                     message: "A new schedule is successfully created",
-                    redirectURL: `${ H_WEB_ROUTE }job-posts/${ jobPostID }/applicants/for-interview`
+                    redirectURL: `${ ROUTE.WEB.H }job-posts/${ jobPostID }/applicants/for-interview`
                 });
             }
         },

@@ -30,15 +30,15 @@ initDataTable('#applicantsDT', {
             class: 'w-100',
             render: data => {
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name,
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name,
                 });
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -67,42 +67,23 @@ initDataTable('#applicantsDT', {
             data: null,
             render: data => {
                 const status = data.status;
-                if(status === "For evaluation") {
-                    return dtBadge('warning', `
-                        <i class="fas fa-sync-alt mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else if(status === "For screening") {
-                    return dtBadge('secondary', `
-                        <i class="fas fa-search mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else if(status === "For interview") {
-                    return dtBadge('info', `
-                        <i class="fas fa-user-friends mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else if(status === "Hired") {
-                    return dtBadge('success', `
-                        <i class="fas fa-handshake mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else if(status === "Contract signed") {
-                    return dtBadge('primary', `
-                        <i class="fas fa-file-signature mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else if(
-                    status === "Rejected from evaluation" || 
-                    status === "Rejected from screening"  || 
-                    status === "Rejected from interview"
-                ) {
-                    return dtBadge('danger', `
-                        <i class="fas fa-times mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else {
-                    return dtBadge('light', `<span>Invalid data</span>`);
+                switch(status) {
+                    case "For evaluation":
+                        return TEMPLATE.DT.BADGE('warning', TEMPLATE.ICON_LABEL('sync-alt', status))
+                    case "For screening":
+                        return TEMPLATE.DT.BADGE('secondary', TEMPLATE.ICON_LABEL('search', status))
+                    case "For interview":
+                        return TEMPLATE.DT.BADGE('info', TEMPLATE.ICON_LABEL('user-friends', status))
+                    case "Hired":
+                        return TEMPLATE.DT.BADGE('success', TEMPLATE.ICON_LABEL('handshake', status))
+                    case "Contract signed":
+                        return TEMPLATE.DT.BADGE('primary', TEMPLATE.ICON_LABEL('file-signature', status))
+                    case "Rejected from evaluation":
+                    case "Rejected from screening":
+                    case "Rejected from interview":
+                        return TEMPLATE.DT.BADGE('danger', TEMPLATE.ICON_LABEL('times', status))
+                    default:
+                        return TEMPLATE.DT.BADGE('light', "Invalid data")
                 }
             }
         },
@@ -111,24 +92,16 @@ initDataTable('#applicantsDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex" 
-                                role="button" 
-                                onclick="viewApplicantDetails('${ data.applicant_id }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Details</div>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex" 
+                        role="button" 
+                        onclick="viewApplicantDetails('${ data.applicant_id }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Details</div>
                     </div>
-                `
+                `);
             }
         }
     ]
@@ -145,21 +118,13 @@ initDataTable('#applicantsDT', {
 const applicantsAnalytics = () => {
     GET_ajax(`${ ROUTE.API.R }applicants/analytics`, {
         success: result => {
-
-            // Set Total Applicants
-            setContent('#totalApplicantsCount', formatNumber(result.total));
-
-            // Set For Evaluation Applicants
-            setContent('#forEvaluationCount', formatNumber(result.for_evaluation));
-
-            // Set For Screening 
-            setContent('#forScreeningCount', formatNumber(result.for_screening));
-
-            // Set For Interview
-            setContent('#forInterviewCount', formatNumber(result.for_interview));
-
-            // Set Rejected Applicants
-            setContent('#rejectedApplicantsCount', formatNumber(result.rejected.total));
+            setContent({
+                '#totalApplicantsCount': formatNumber(result.total),
+                '#forEvaluationCount': formatNumber(result.for_evaluation),
+                '#forScreeningCount': formatNumber(result.for_screening),
+                '#forInterviewCount': formatNumber(result.for_interview),
+                '#rejectedApplicantsCount': formatNumber(result.rejected.total)
+            });
         },
         error: () => toastr.error('There was an error in getting applciants analytics')
     });
@@ -185,10 +150,10 @@ const viewApplicantDetails = (applicantID) => {
             setValue('#applicantID', result.applicant_id)
 
             const applicantFullName = formatName('F M. L, S', {
-                firstName: result.first_name,
-                middleName: result.middle_name,
-                lastName: result.last_name,
-                suffixName: result.suffixName
+                firstName  : result.first_name,
+                middleName : result.middle_name,
+                lastName   : result.last_name,
+                suffixName : result.suffixName
             });
 
             // Set Applicant Full Name
@@ -340,15 +305,15 @@ initDataTable('#applicantsForEvaluationDT', {
             data: null,
             render: data => {
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name,
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name,
                 });
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -370,24 +335,16 @@ initDataTable('#applicantsForEvaluationDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex" 
-                                role="button" 
-                                onclick="viewApplicantDetails('${ data.applicant_id }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Details</div>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex" 
+                        role="button" 
+                        onclick="viewApplicantDetails('${ data.applicant_id }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-user-cog mr-1"></i></div>
+                        <div>Evaluate applicant</div>
                     </div>
-                `
+                `);
             }
         }
     ]
@@ -414,10 +371,10 @@ initDataTable('#evaluatedApplicantsDT', {
             data: null,
             render: data => {
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name,
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name,
                 });
                 return `
                     <div>${ applicantFullName }</div>
@@ -444,24 +401,16 @@ initDataTable('#evaluatedApplicantsDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex" 
-                                role="button" 
-                                onclick="viewApplicantDetails('${ data.applicant_id }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Details</div>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex" 
+                        role="button" 
+                        onclick="viewApplicantDetails('${ data.applicant_id }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Details</div>
                     </div>
-                `
+                `)
             }
         }
     ]
@@ -488,15 +437,15 @@ initDataTable('#rejectedApplicantsDT', {
             data: null,
             render: data => {
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name,
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name,
                 });
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -509,7 +458,7 @@ initDataTable('#rejectedApplicantsDT', {
                 const dateApplied = data.created_at;
                 return `
                     <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }               
                 `
             }
         },
@@ -518,24 +467,16 @@ initDataTable('#rejectedApplicantsDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex" 
-                                role="button" 
-                                onclick="viewApplicantDetails('${ data.applicant_id }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Details</div>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex" 
+                        role="button" 
+                        onclick="viewApplicantDetails('${ data.applicant_id }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Details</div>
                     </div>
-                `
+                `)
             }
         }
     ]
@@ -637,10 +578,7 @@ const evaluateApplicant = () => {
                 hideModal('#applicantDetailsModal');
 
                 // Set modal buttons to unload state
-                btnToUnloadState('#submitBtn', `
-                    <span>Submit</span>
-                    <i class="fas fa-check ml-1"></i>
-                `);
+                btnToUnloadState('#submitBtn', TEMPLATE.LABEL_ICON("Submit", "check"));
                 enableElement('#applicationDetailsCloseModalBtn');
 
                 // Reload Applicants Per Job Analytics

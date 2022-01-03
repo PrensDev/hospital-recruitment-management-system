@@ -75,14 +75,10 @@ ifSelectorExist('#addManpowerRequestForm', () => {
 });
 
 /** On Set Salary Range Change */
-onChange('#setDeadline', () => isChecked('#setDeadline') 
-    ? showElement('#deadlineField') 
-    : hideElement('#deadlineField'))
+onChange('#setDeadline', () => showOrHideElement('#deadlineField', isChecked('#setDeadline')))
 
 /** On Set Salary Range Change */
-onChange('#setSalaryRange', () => isChecked('#setSalaryRange') 
-    ? showElement('#salaryRangeField') 
-    : hideElement('#salaryRangeField'))
+onChange('#setSalaryRange', () => showOrHideElement('#salaryRangeField', isChecked('#setSalaryRange'))) 
 
 /** Validate Add Manpower Request Form */
 validateForm('#addManpowerRequestForm', {
@@ -189,7 +185,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
                 setSessionedAlertAndRedirect({
                     theme: 'success', 
                     message: 'A new request has been submitted', 
-                    redirectURL: `${ DM_WEB_ROUTE }manpower-requests`
+                    redirectURL: `${ ROUTE.WEB.DM }manpower-requests`
                 });
             } else {
                 hideModal('#confirmAddManpowerRequestModal')
@@ -244,33 +240,39 @@ initDataTable('#manpowerRequestDT', {
             render: data => {
                 const requestStatus = data.request_status;
 
-                var bagdeTheme;
-                var badgeIcon;
+                var bagdeTheme, badgeIcon;
                 let validStatus = true;
                 
-                if(requestStatus === "For signature") {
-                    bagdeTheme = "secondary";
-                    badgeIcon = "file-signature";
-                } else if(requestStatus === "For approval") {
-                    bagdeTheme = "warning";
-                    badgeIcon = "sync-alt";
-                } else if(requestStatus === "Approved") {
-                    bagdeTheme = "success";
-                    badgeIcon = "thumbs-up";
-                } else if(requestStatus === "Rejected for signing" || requestStatus === "Rejected for approval") {
-                    bagdeTheme = "danger";
-                    badgeIcon = "times";
-                } else if(requestStatus === "Completed") {
-                    bagdeTheme = "info";
-                    badgeIcon = "check";
-                } else validStatus = false
+                switch(requestStatus) {
+                    case "For signature":
+                        bagdeTheme = "secondary";
+                        badgeIcon = "file-signature";
+                        break;
+                    case "For approval":
+                        bagdeTheme = "warning";
+                        badgeIcon = "sync-alt";
+                        break;
+                    case "Approved":
+                        bagdeTheme = "success";
+                        badgeIcon = "thumbs-up";
+                        break;
+                    case "Rejected for signing":
+                    case "Rejected for approval":
+                        bagdeTheme = "danger";
+                        badgeIcon = "times";
+                        break;
+                    case "Completed":
+                        bagdeTheme = "info";
+                        badgeIcon = "check";
+                        break;
+                    default:
+                        validStatus = false
+                        break;
+                }
 
                 return validStatus 
-                    ? `<div class="badge badge-${ bagdeTheme } p-2 w-100">
-                            <i class="fas fa-${ badgeIcon } mr-1"></i>
-                            <span>${ requestStatus }</span>
-                        </div>` 
-                    : `<div class="badge badge-light p-2 w-100">Invalid data</div>`
+                    ? TEMPLATE.DT.BADGE(bagdeTheme, TEMPLATE.ICON_LABEL(badgeIcon, requestStatus))
+                    : TEMPLATE.DT.BADGE("light", "Invalid data")
             }
         },
 
@@ -282,7 +284,7 @@ initDataTable('#manpowerRequestDT', {
                 return `
                     <div>${ formatDateTime(createdAt, "MMM. D, YYYY") }</div>
                     <div>${ formatDateTime(createdAt, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(createdAt) }</div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(createdAt)) }
                 `
             }
         },
@@ -307,7 +309,7 @@ initDataTable('#manpowerRequestDT', {
                 const editBtn = `
                     <a 
                         class="dropdown-item d-flex"
-                        href="${ DM_WEB_ROUTE }edit-manpower-request/${ data.requisition_id }"
+                        href="${ ROUTE.WEB.DM }edit-manpower-request/${ data.requisition_id }"
                     >
                         <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
                         <span>Edit</span>
@@ -336,31 +338,30 @@ initDataTable('#manpowerRequestDT', {
                     </div>
                 `;
 
-                return `
-                    <div class="text-center dropdown">
-                        <div class="d-block d-lg-inline-block btn btn-sm btn-default text-nowrap" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v d-none d-lg-inline-block"></i>
-                            <i class="fas fa-ellipsis-h d-lg-none mr-1 mr-md-0"></i>
-                            <span class="d-lg-none">Options</span>
-                        </div>
+                let additionalOptions = "";
 
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a 
-                                class="dropdown-item d-flex"
-                                href="${ DM_WEB_ROUTE }manpower-requests/${ requisitionID }"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <span>View Details</span>
-                            </a>
+                switch(requestStatus) {
+                    case "For signature":
+                        additionalOptions = editBtn + cancelBtn;
+                        break;
+                    case "Approved":
+                        additionalOptions = markAsCompletedBtn;
+                        break;
+                    case "Rejected for approval":
+                    case "Rejected for signing":
+                        additionalOptions = deleteBtn;
+                }
 
-                            ${ requestStatus === "For signature" ? editBtn + cancelBtn : "" }
-
-                            ${ requestStatus === "Approved" ? markAsCompletedBtn : "" }
-
-                            ${ requestStatus === "Rejected for approval" || requestStatus === "Rejected for approval" ? deleteBtn : "" }
-                        </div>
-                    </div>
-                `
+                return TEMPLATE.DT.OPTIONS(`
+                    <a 
+                        class="dropdown-item d-flex"
+                        href="${ ROUTE.WEB.DM }manpower-requests/${ requisitionID }"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <span>View Details</span>
+                    </a>
+                    ${ additionalOptions }
+                `);
             }
         }
     ],
@@ -377,18 +378,12 @@ initDataTable('#manpowerRequestDT', {
 const manpowerRequestAnalytics = () => GET_ajax(`${ ROUTE.API.DM }requisitions/analytics`, {
     success: result => {
         if(result) {
-
-            // Set Total Mapower Requests Count
-            setContent('#totalManpowerRequestsCount', formatNumber(result.total));
-
-            // Set Completed Requests
-            setContent('#completedRequestsCount', formatNumber(result.completed));
-
-            // Set Approved Requests
-            setContent('#approvedRequestsCount', formatNumber(result.approved));
-
-            // Set Rejected Requests
-            setContent('#rejectedRequestsCount', formatNumber(result.rejected.total));
+            setContent({
+                '#totalManpowerRequestsCount': formatNumber(result.total),
+                '#completedRequestsCount': formatNumber(result.completed),
+                '#approvedRequestsCount': formatNumber(result.approved),
+                '#rejectedRequestsCount': formatNumber(result.rejected.total)
+            });
         } else toastr.error('There was an error in getting manpower request analytics')
     },
     error: () => toastr.error('There was an error in getting manpower request analytics')
@@ -420,10 +415,10 @@ const getManpowerRequestDetails = () => {
             
             // Set Requestor Name
             setContent('#requestorName', formatName("L, F M., S", {
-                firstName: requestedBy.first_name,
-                middleName: requestedBy.middle_name,
-                lastName: requestedBy.last_name,
-                suffixName: requestedBy.suffix_name
+                firstName  : requestedBy.first_name,
+                middleName : requestedBy.middle_name,
+                lastName   : requestedBy.last_name,
+                suffixName : requestedBy.suffix_name
             }));
             
             // Set Requestor Department
@@ -486,10 +481,10 @@ const getManpowerRequestDetails = () => {
                     return `<div class="text-secondary font-italic">Not yet signed</div>`
                 else {
                     const signedByFullName = formatName("L, F M., S", {
-                        firstName: signedBy.first_name,
-                        middleName: signedBy.middle_name,
-                        lastName: signedBy.last_name,
-                        suffixName: signedBy.suffix_name
+                        firstName  : signedBy.first_name,
+                        middleName : signedBy.middle_name,
+                        lastName   : signedBy.last_name,
+                        suffixName : signedBy.suffix_name
                     });
                     return `
                         <div>${ signedByFullName }</div>
@@ -524,14 +519,14 @@ const getManpowerRequestDetails = () => {
                             return `<div class="text-danger">This request has been rejected for approval</div>`
                         else {
                             const approvedByFullName = formatName("L, F M., S", {
-                                firstName: approvedBy.first_name,
-                                middleName: approvedBy.middle_name,
-                                lastName: approvedBy.last_name,
-                                suffixName: approvedBy.suffix_name
+                                firstName  : approvedBy.first_name,
+                                middleName : approvedBy.middle_name,
+                                lastName   : approvedBy.last_name,
+                                suffixName : approvedBy.suffix_name
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
-                                <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
+                                ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.department.name) }
                             `
                         }
                     }
@@ -567,37 +562,32 @@ const getManpowerRequestDetails = () => {
                     return `
                         <a 
                             class="btn btn-sm btn-info btn-block"
-                            href="${ DM_WEB_ROUTE }edit-manpower-request/${ requisitionID }"
+                            href="${ ROUTE.WEB.DM }edit-manpower-request/${ requisitionID }"
                         >
-                            <i class="fas fa-edit mr-1"></i>
-                            <span>Edit request</span>
+                            ${ TEMPLATE.ICON_LABEL("edit", "Edit Request") }
                         </a>
 
                         <div class="btn btn-sm btn-warning btn-block" onclick="cancelManpowerRequest('${ requisitionID }')">
-                            <i class="fas fa-times-circle mr-1"></i>
-                            <span>Cancel request</span>
+                            ${ TEMPLATE.ICON_LABEL("times-circle", "Cancel request") }
                         </div>
 
                         <hr>
 
                         <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                            <i class="fas fa-print mr-1"></i>
-                            <span>Print Manpower Request Form</span>
+                            ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
                         </div>
                     `
                 } else if(requestStatus == "Approved") {
                     $('#cancelManpowerRequestModal').remove();
                     return `
                         <div class="btn btn-sm btn-success btn-block" onclick="markAsCompleted('${ requisitionID }')">
-                            <i class="fas fa-check-circle mr-1"></i>
-                            <span>Mark as Completed</span>
+                            ${ TEMPLATE.ICON_LABEL("check-circle", "Mark as Completed") }
                         </div>
 
                         <hr>
 
                         <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                            <i class="fas fa-print mr-1"></i>
-                            <span>Print Manpower Request Form</span>
+                            ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
                         </div>
                     `
                 }  else if(requestStatus == "Completed") {
@@ -605,12 +595,10 @@ const getManpowerRequestDetails = () => {
                     $('#markAsCompletedModal').remove();
                     return `
                         <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                            <i class="fas fa-print mr-1"></i>
-                            <span>Print Manpower Request Form</span>
+                            ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
                         </div>
-                        <a href="${ DM_WEB_ROUTE }manpower-requests/${ requisitionID }/report" class="btn btn-sm btn-info btn-block">
-                            <i class="fas fa-file-alt mr-1"></i>
-                            <span>Generate Report</span>
+                        <a href="${ ROUTE.WEB.DM }manpower-requests/${ requisitionID }/report" class="btn btn-sm btn-info btn-block">
+                            ${ TEMPLATE.ICON_LABEL("file-alt", "Generate Report") }                            
                         </a>
                     `
                 } else {
@@ -618,8 +606,7 @@ const getManpowerRequestDetails = () => {
                     $('#markAsCompletedModal').remove();
                     return `
                         <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                            <span>Print Manpower Request Form</span>
-                            <i class="fas fa-print ml-1"></i>
+                            ${ TEMPLATE.LABEL_ICON("Print Manpower Request Form", "print") }
                         </div>
                     `
                 }
@@ -631,25 +618,25 @@ const getManpowerRequestDetails = () => {
             /** MANPOWER REQUEST STATUS */
             if(requestStatus == "Completed") {
                 const requestorFullName = formatName("F M. L, S", {
-                    firstName: requestedBy.first_name,
-                    middleName: requestedBy.middle_name,
-                    lastName: requestedBy.last_name,
-                    suffixName: requestedBy.suffix_name
+                    firstName  : requestedBy.first_name,
+                    middleName : requestedBy.middle_name,
+                    lastName   : requestedBy.last_name,
+                    suffixName : requestedBy.suffix_name
                 });
                 setContent('#manpowerRequestStatus', `
                     <div class="alert border-success">
                         <h5 class="text-success mb-0">This request has been completed</h5>
-                        <div class="small text-secondary">Marked by: ${ requestorFullName }, ${ requestedBy.position.name }</div>
-                        <div class="small text-secondary">${ formatDateTime(completedAt, 'Full DateTime') } (${ fromNow(completedAt) })</div>
+                        ${ TEMPLATE.SUBTEXT(`{ Marked by: ${ requestorFullName }, ${ requestedBy.position.name }`)}
+                        ${ TEMPLATE.SUBTEXT(`${ formatDateTime(completedAt, 'Full DateTime') } (${ fromNow(completedAt) })`)}
                     </div>
                 `)
             } else if(requestStatus == 'Rejected for signing' || requestStatus == 'Rejected for approval') {
                 const rejectedBy = result.manpower_request_rejected_by;
                 const rejectedByFullName = formatName("F M. L, S", {
-                    firstName: rejectedBy.first_name,
-                    middleName: rejectedBy.middle_name,
-                    lastName: rejectedBy.last_name,
-                    suffixName: rejectedBy.suffix_name
+                    firstName  : rejectedBy.first_name,
+                    middleName : rejectedBy.middle_name,
+                    lastName   : rejectedBy.last_name,
+                    suffixName : rejectedBy.suffix_name
                 });
                 const rejectedAt = result.rejected_at;
                 setContent('#manpowerRequestStatus', `
@@ -947,7 +934,7 @@ onClick('#confirmEditManpowerRequestBtn', () => {
                 setSessionedAlertAndRedirect({
                     theme: 'success', 
                     message: 'A new request has been updated', 
-                    redirectURL: `${ DM_WEB_ROUTE }manpower-requests`
+                    redirectURL: `${ ROUTE.WEB.DM }manpower-requests`
                 });
             }
         },
@@ -988,7 +975,7 @@ validateForm('#cancelManpowerRequestForm', {
                         setSessionedAlertAndRedirect({
                             theme: 'info',
                             message: 'A manpower request has been canceled',
-                            redirectURL: `${ DM_WEB_ROUTE }manpower-requests`
+                            redirectURL: `${ ROUTE.WEB.DM }manpower-requests`
                         });
                     } else {
                         hideModal('#cancelManpowerRequestModal');

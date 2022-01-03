@@ -69,41 +69,49 @@ ifSelectorExist('#createJobPostForm', () => {
                     : `
                         <div>${ formatDateTime(deadline, "Full Date") }</div>
                         <div>${ formatDateTime(deadline, "Time") }</div>
-                        <div class="small text-secondary">${ fromNow(deadline) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(deadline)) }
                     `
             });
 
-            /** FOR MANPOWER REQUEST MODAL */
+
+            /** SET MANPOWER REQUEST CONTENTS */
 
             const requestedBy = result.manpower_request_by;
 
+            // Set Requisition No
+            setContent('#requisitionNo', result.requisition_no);
+
+            // Set Requisition ID
+            setValue('#requisitionID', result.requisition_id)
+            
             // Set Requestor Name
-            setContent('#requestorName', formatName('F M. L, S', {
+            setContent('#requestorName', formatName("F M. L, S", {
                 firstName: requestedBy.first_name,
                 middleName: requestedBy.middle_name,
                 lastName: requestedBy.last_name,
                 suffixName: requestedBy.suffix_name
             }));
-
+            
             // Set Requestor Department
             setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
-
+            
             // Set Date Requested
             setContent('#dateRequested', formatDateTime(result.created_at, "DateTime"));
-
+            
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
-                return isEmptyOrNull(deadline) ? 'Unset' : formatDateTime(deadline, "DateTime");
+                if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No deadline</div>`
+                else return formatDateTime(result.deadline, "DateTime")
             });
 
             // Set Requested Position
             setContent('#requestedPosition', result.vacant_position.name);
-
-            // Set Staffs Needed
+            
+            // Set No. of Staffs Needed
             setContent('#noOfStaffsNeeded', () => {
                 const staffsNeeded = result.staffs_needed;
-                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' }`;
+                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`
             });
 
             // Set Employment Type
@@ -114,9 +122,11 @@ ifSelectorExist('#createJobPostForm', () => {
 
             // Set Suggested Salary
             setContent('#suggestedSalary', () => {
-                return isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)
-                    ? `<div class="text-secondary font-italic"></div>`
-                    : `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}/month`
+                const minMonthlySalary = result.min_monthly_salary;
+                const maxMonthlySalary = result.max_monthly_salary;
+                return isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary) 
+                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
             });
 
             // Set Request Description
@@ -132,10 +142,10 @@ ifSelectorExist('#createJobPostForm', () => {
                             return `<div class="text-danger">This request has been rejected</div>`
                         } else {
                             const approvedByFullName = formatName("L, F M., S", {
-                                firstName: approvedBy.first_name,
-                                middleName: approvedBy.middle_name,
-                                lastName: approvedBy.last_name,
-                                suffixName: approvedBy.suffix_name
+                                firstName  : approvedBy.first_name,
+                                middleName : approvedBy.middle_name,
+                                lastName   : approvedBy.last_name,
+                                suffixName : approvedBy.suffix_name
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
@@ -145,15 +155,53 @@ ifSelectorExist('#createJobPostForm', () => {
                     }
             });
 
-            // Set Approved At
-            setContent('#approvedAt', formatDateTime(result.reviewed_at, "DateTime"));
+            // Set Signed By
+            setContent('#signedBy', () => {
+                const signedBy = result.manpower_request_signed_by;
+                
+                if(result.request_status === "Rejected for signing")
+                    return `<div class="text-danger">This request has been rejected for signing</div>`
+                else if(isEmptyOrNull(signedBy))
+                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                else {
+                    const signedByFullName = formatName("L, F M., S", {
+                        firstName  : signedBy.first_name,
+                        middleName : signedBy.middle_name,
+                        lastName   : signedBy.last_name,
+                        suffixName : signedBy.suffix_name
+                    });
+                    return `
+                        <div>${ signedByFullName }</div>
+                        <div class="small text-secondary">${ signedBy.position.name }, ${ signedBy.position.department.name }</div>
+                    `
+                }
+            });
 
-            // Set Completed At
+            // Set Signed At
+            setContent('#signedAt', () => {
+                const signedAt = result.signed_at;
+                return isEmptyOrNull(signedAt) 
+                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    : `
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
+                        <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
+                    `
+            });
+
+            // Set Approved At
+            setContent('#approvedAt', () => {
+                const approvedAt = result.reviewed_at;
+                return (isEmptyOrNull(approvedAt) || result.request_status === 'Rejected') 
+                    ? `<div class="text-secondary font-italic">No status</div>`
+                    : formatDateTime(approvedAt, "DateTime")
+            });
+
+            // Set Approved At
             setContent('#completedAt', () => {
                 const completedAt = result.completed_at;
                 return isEmptyOrNull(completedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
-                    : formatDateTime(completedAt, "DateTime");
+                    ? `<div class="text-secondary font-italic">No status</div>`
+                    : formatDateTime(completedAt, "Date")
             });
         },
         error: () => toastr.error('There was an error in getting requisition details')
@@ -225,7 +273,7 @@ onClick('#confirmPostNewJobPostBtn', () => {
             if(result) setSessionedAlertAndRedirect({
                 theme: 'success',
                 message: 'A new available job is successfully posted',
-                redirectURL: `${ R_WEB_ROUTE }job-posts`
+                redirectURL: `${ ROUTE.WEB.R }job-posts`
             });
             else ifError()
         },
@@ -310,7 +358,7 @@ initDataTable('#jobPostsDT', {
                         <div class="dropdown-divider"></div>
                         <a 
                             class="dropdown-item d-flex"
-                            href="${ R_WEB_ROUTE }job-posts/${ data.job_post_id }/applicants"
+                            href="${ ROUTE.WEB.R }job-posts/${ data.job_post_id }/applicants"
                         >
                             <div style="width: 2rem"><i class="fas fa-users mr-1"></i></div>
                             <div>View Applicants</div>
@@ -343,7 +391,7 @@ initDataTable('#jobPostsDT', {
                         <div class="dropdown-menu dropdown-menu-right">
                             <a 
                                 class="dropdown-item d-flex"
-                                href="${ R_WEB_ROUTE }job-posts/${ jobPostID }"
+                                href="${ ROUTE.WEB.R }job-posts/${ jobPostID }"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                                 <div>View Job Post</div>
@@ -360,7 +408,7 @@ initDataTable('#jobPostsDT', {
                             <div class="dropdown-divider"></div>
                             <a
                                 class="dropdown-item d-flex"
-                                href="${ R_WEB_ROUTE }manpower-requests/${ requisitionID }"
+                                href="${ ROUTE.WEB.R }manpower-requests/${ requisitionID }"
                             >
                                 <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
                                 <div>View Manpower Request</div>
@@ -385,15 +433,11 @@ initDataTable('#jobPostsDT', {
 const jobPostsAnalytics = () => {
     GET_ajax(`${ ROUTE.API.R }job-posts/analytics`, {
         success: result => {
-            
-            // Set Total Job Posts Count
-            setContent('#totalJobPostsCount', formatNumber(result.total));
-
-            // Set On Going Job Posts Count
-            setContent('#ongoingJobPostsCount', formatNumber(result.on_going));
-
-            // Set Ended Job Posts Count
-            setContent('#endedJobPostsCount', formatNumber(result.ended));
+            setContent({
+                '#totalJobPostsCount': formatNumber(result.total),
+                '#ongoingJobPostsCount': formatNumber(result.on_going),
+                '#endedJobPostsCount': formatNumber(result.ended)
+            });
         },
         error: () => toastr.error('There was an error while getting job post analytics')
     });
@@ -475,12 +519,12 @@ const getJobPostDetails = () => {
                         <i class="fas fa-eye mr-1"></i>
                         <span>View post in public portal</span>
                     </a>
-                    <a class="btn btn-sm btn-secondary btn-block" href="${ R_WEB_ROUTE }job-posts/${ jobPostID }/applicants">
+                    <a class="btn btn-sm btn-secondary btn-block" href="${ ROUTE.WEB.R }job-posts/${ jobPostID }/applicants">
                         <i class="fas fa-users mr-1"></i>
                         <span>View applicants</span>
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="btn btn-sm btn-info btn-block" href="${ R_WEB_ROUTE }edit-job-post/${ jobPostID }">
+                    <a class="btn btn-sm btn-info btn-block" href="${ ROUTE.WEB.R }edit-job-post/${ jobPostID }">
                         <i class="fas fa-edit mr-1"></i>
                         <span>Edit this post</span>
                     </a>
@@ -597,10 +641,10 @@ const getJobPostDetails = () => {
                             return `<div class="text-danger">This request has been rejected</div>`
                         } else {
                             const approvedByFullName = formatName("L, F M., S", {
-                                firstName: approvedBy.first_name,
-                                middleName: approvedBy.middle_name,
-                                lastName: approvedBy.last_name,
-                                suffixName: approvedBy.suffix_name
+                                firstName  : approvedBy.first_name,
+                                middleName : approvedBy.middle_name,
+                                lastName   : approvedBy.last_name,
+                                suffixName : approvedBy.suffix_name
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
@@ -620,10 +664,10 @@ const getJobPostDetails = () => {
                     return `<div class="text-secondary font-italic">Not yet signed</div>`
                 else {
                     const signedByFullName = formatName("L, F M., S", {
-                        firstName: signedBy.first_name,
-                        middleName: signedBy.middle_name,
-                        lastName: signedBy.last_name,
-                        suffixName: signedBy.suffix_name
+                        firstName  : signedBy.first_name,
+                        middleName : signedBy.middle_name,
+                        lastName   : signedBy.last_name,
+                        suffixName : signedBy.suffix_name
                     });
                     return `
                         <div>${ signedByFullName }</div>
@@ -681,7 +725,7 @@ ifSelectorExist('#jobPostDetails', () => getJobPostDetails());
 */
 
 /** Edit Job Post */
-const editJobPost = (jobPostID) => location.assign(`${ R_WEB_ROUTE }edit-job-post/${ jobPostID }`)
+const editJobPost = (jobPostID) => location.assign(`${ ROUTE.WEB.R }edit-job-post/${ jobPostID }`)
 
 /** If Edit Job Post Form Exists */
 ifSelectorExist('#editJobPostForm', () => {
@@ -741,7 +785,7 @@ ifSelectorExist('#editJobPostForm', () => {
                     : `
                         <div>${ formatDateTime(deadline, "Full Date") }</div>
                         <div>${ formatDateTime(deadline, "Time") }</div>
-                        <div class="small text-secondary">${ fromNow(deadline) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(deadline)) }
                     `
             });
 
@@ -752,10 +796,10 @@ ifSelectorExist('#editJobPostForm', () => {
 
             // Set Requestor Name
             setContent('#requestorName', formatName('F M. L, S', {
-                firstName: requestedBy.first_name,
-                middleName: requestedBy.middle_name,
-                lastName: requestedBy.last_name,
-                suffixName: requestedBy.suffix_name
+                firstName  : requestedBy.first_name,
+                middleName : requestedBy.middle_name,
+                lastName   : requestedBy.last_name,
+                suffixName : requestedBy.suffix_name
             }));
 
             // Set Requestor Department
@@ -806,10 +850,10 @@ ifSelectorExist('#editJobPostForm', () => {
                     return `<div class="text-secondary font-italic">Not yet signed</div>`
                 else {
                     const signedByFullName = formatName("L, F M., S", {
-                        firstName: signedBy.first_name,
-                        middleName: signedBy.middle_name,
-                        lastName: signedBy.last_name,
-                        suffixName: signedBy.suffix_name
+                        firstName  : signedBy.first_name,
+                        middleName : signedBy.middle_name,
+                        lastName   : signedBy.last_name,
+                        suffixName : signedBy.suffix_name
                     });
                     return `
                         <div>${ signedByFullName }</div>
@@ -839,10 +883,10 @@ ifSelectorExist('#editJobPostForm', () => {
                             return `<div class="text-danger">This request has been rejected</div>`
                         } else {
                             const approvedByFullName = formatName("L, F M., S", {
-                                firstName: approvedBy.first_name,
-                                middleName: approvedBy.middle_name,
-                                lastName: approvedBy.last_name,
-                                suffixName: approvedBy.suffix_name
+                                firstName  : approvedBy.first_name,
+                                middleName : approvedBy.middle_name,
+                                lastName   : approvedBy.last_name,
+                                suffixName : approvedBy.suffix_name
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
@@ -968,7 +1012,7 @@ onClick('#confirmUpdateJobPostBtn', () => {
                 setSessionedAlertAndRedirect({
                     theme: 'info',
                     message: 'A posted job is successfully updated',
-                    redirectURL: `${ R_WEB_ROUTE }job-posts`
+                    redirectURL: `${ ROUTE.WEB.R }job-posts`
                 });
             } else ifError()
         },

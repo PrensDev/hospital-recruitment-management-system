@@ -23,10 +23,10 @@ initDataTable('#manpowerRequestDT', {
                 const requestedBy = data.manpower_request_by;
 
                 const requestedByFullName = formatName("F M. L, S", {
-                    firstName: requestedBy.first_name,
-                    middleName: requestedBy.middle_name,
-                    lastName: requestedBy.last_name,
-                    suffixName: requestedBy.suffix_name
+                    firstName  : requestedBy.first_name,
+                    middleName : requestedBy.middle_name,
+                    lastName   : requestedBy.last_name,
+                    suffixName : requestedBy.suffix_name
                 });
 
                 const requestedByDepartment = requestedBy.position.department.name;
@@ -56,20 +56,11 @@ initDataTable('#manpowerRequestDT', {
                 const jobPost = data.job_post;
 
                 if(data.request_status === "Completed")
-                    return dtBadge('info', `
-                        <i class="fas fa-check mr-1"></i>
-                        <span>Completed</span>
-                    `);
+                    return TEMPLATE.DT.BADGE('info', TEMPLATE.ICON_LABEL('check', 'Completed'))
                 else if(jobPost.length == 1)
-                    return dtBadge('success', `
-                        <i class="fas fa-briefcase mr-1"></i>
-                        <span>Job post is created</span>
-                    `);
+                    return TEMPLATE.DT.BADGE('success', TEMPLATE.ICON_LABEL('briefcase', 'Job post is created'))
                 else {
-                    return dtBadge('warning', `
-                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                        <span>No job post yet</span>
-                    `);
+                    return TEMPLATE.DT.BADGE('warning', TEMPLATE.ICON_LABEL('exclamation-triangle', 'No job post yet'))
                 }
             }
         },
@@ -119,7 +110,7 @@ initDataTable('#manpowerRequestDT', {
                         <div class="dropdown-menu dropdown-menu-right">
                             <a 
                                 class="dropdown-item d-flex" 
-                                href="${R_WEB_ROUTE}manpower-requests/${ requisitionID }"
+                                href="${ROUTE.WEB.R}manpower-requests/${ requisitionID }"
                             >
                                 <div style="width: 2rem">
                                     <i class="fas fa-list mr-1"></i>
@@ -268,10 +259,10 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                     return `<div class="text-secondary font-italic">Not yet signed</div>`
                 else {
                     const signedByFullName = formatName("L, F M., S", {
-                        firstName: signedBy.first_name,
-                        middleName: signedBy.middle_name,
-                        lastName: signedBy.last_name,
-                        suffixName: signedBy.suffix_name
+                        firstName  : signedBy.first_name,
+                        middleName : signedBy.middle_name,
+                        lastName   : signedBy.last_name,
+                        suffixName : signedBy.suffix_name
                     });
                     return `
                         <div>${ signedByFullName }</div>
@@ -363,6 +354,6 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
 });
 
 /** Create Job Post */
-const createJobPost = (requisitionID) => location.assign(`${ R_WEB_ROUTE }add-job-post/${ requisitionID }`);
+const createJobPost = (requisitionID) => location.assign(`${ ROUTE.WEB.R }add-job-post/${ requisitionID }`);
 
 const createJobPostFromViewRequest = () => createJobPost(window.location.pathname.split('/')[3]);

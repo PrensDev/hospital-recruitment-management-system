@@ -1,8 +1,3 @@
-/** 
- * =====================================================
- * CONSTANTS
- * =====================================================
- */
 
 // Base URLs
 const BASE_URL_EXT = '';
@@ -20,7 +15,7 @@ const EMPLOYMENT_CONTRACT_PATH = `${ URL_WEB_FILES }employment_contracts/`;
 const ROUTE = {
     WEB: { /** WEB ROUTES */
         DH  : `${ BASE_URL_WEB }dh/`,
-        DM  : `${ BASE_URL_WEB }dh/`,
+        DM  : `${ BASE_URL_WEB }dm/`,
         H   : `${ BASE_URL_WEB }h/`,
         R   : `${ BASE_URL_WEB }r/`
     },
@@ -57,4 +52,15 @@ const SUMMERNOTE_TOOLBAR = [
 
 
 // Fetch Rows
-FETCH_ROWS = 10;
+const FETCH_ROWS = 10;
+
+
+// DateTime Formats
+const DATETIME_FORMATS = {
+    "Full DateTime" : "dddd, MMMM D, YYYY; hh:mm A",
+    "DateTime"      : "MMMM D, YYYY; hh:mm A",
+    "Full Date"     : "dddd, MMMM D, YYYY",
+    "Date"          : "MMMM D, YYYY",
+    "Short Date"    : "MMM. D, YYYY",
+    "Time"          : "hh:mm A"
+}

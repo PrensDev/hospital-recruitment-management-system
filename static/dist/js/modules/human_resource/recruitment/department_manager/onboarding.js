@@ -57,9 +57,10 @@ let addOnboardingEmployeeFormMessages = {
 }
 
 /** Check if no task function */
-const checkIfNoTasks = () => generalOnboardingTasks.length == 0 && addedOnboardingTasks.length == 0
-    ? disableElement('#addOnboardingEmployeeSubmitBtn')
-    : enableElement('#addOnboardingEmployeeSubmitBtn')
+const checkIfNoTasks = () => {
+    const hasTask = generalOnboardingTasks.length == 0 && addedOnboardingTasks.length == 0;
+    enableOrDisableElement('#addOnboardingEmployeeSubmitBtn', hasTask);
+}
 
 /** Get Hired Applicant Details */
 ifSelectorExist('#addOnboardingEmployeeForm', () => {
@@ -336,12 +337,8 @@ validateForm('#addOnboardingTaskForm', {
                     </div>
                 </td>
                 <td>
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
+                    ${
+                        TEMPLATE.DT.OPTIONS(`
                             <div 
                                 class="dropdown-item d-flex"
                                 role="button"
@@ -358,8 +355,8 @@ validateForm('#addOnboardingTaskForm', {
                                 <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
                                 <span>Remove</span>
                             </div>
-                        </div>
-                    </div>
+                        `)
+                    }
                 </td>
             </tr>
         `);
@@ -602,7 +599,7 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
                 setSessionedAlertAndRedirect({
                     theme: 'success',
                     message: 'A new onboarding employee has been added',
-                    redirectURL: `${ DM_WEB_ROUTE }onboarding-employees`
+                    redirectURL: `${ ROUTE.WEB.DM }onboarding-employees`
                 });
             }
         },
@@ -623,12 +620,12 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
 const addGeneralTask = (taskType = '') => {
     setValue('#taskType', taskType);
     setContent('#onboardingTaskDescription', () => {
-        if(taskType === "For new employees")
-            return "Add general task for new employees"
-        else if(taskType === "For the team")
-            return "Add general task for the team"
-        else if(taskType === "For department manager")
-            return "Add your general task as a department manager here"
+        const taskDescription = {
+            "For new employees": "Add general task for new employees",
+            "For the team": "Add general task for the team",
+            "Add general task for the team": "Add your general task as a department manager here"
+        }
+        return taskDescription[taskType]
     });
     showModal('#addGeneralTaskModal');
 }
@@ -770,24 +767,16 @@ const initGeneralTaskDT = (selector, url) => {
                 render: data => {
                     const onboardingTaskID = data.onboarding_task_id;
 
-                    return `
-                        <div class="text-center dropdown">
-                            <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div 
-                                    class="dropdown-item d-flex"
-                                    role="button"
-                                    onclick="viewOnboardingTaskDetails('${ onboardingTaskID }')"
-                                >
-                                    <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                    <span>View Details</span>
-                                </div>
-                            </div>
+                    return TEMPLATE.DT.OPTIONS(`
+                        <div 
+                            class="dropdown-item d-flex"
+                            role="button"
+                            onclick="viewOnboardingTaskDetails('${ onboardingTaskID }')"
+                        >
+                            <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                            <span>View Details</span>
                         </div>
-                    `
+                    `);
                 }
             }
         ]
@@ -829,10 +818,10 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
                     const addedBy = result.onboarding_task_added_by;
                     
                     return formatName('F M. L, S', {
-                        firstName: addedBy.first_name,
-                        middleName: addedBy.middle_name,
-                        lastName: addedBy.last_name,
-                        suffixName: addedBy.suffix_name
+                        firstName  :   addedBy.first_name,
+                        middleName : addedBy.middle_name,
+                        lastName   : addedBy.last_name,
+                        suffixName : addedBy.suffix_name
                     });
                 });
 
@@ -842,7 +831,7 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
                     return `
                         <div>${ formatDateTime(addedAt, 'Full Date') }</div>
                         <div>${ formatDateTime(addedAt, 'Time') }</div>
-                        <div class="small text-secondary">${ fromNow(addedAt) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(addedAt)) }
                     `
                 });
 
@@ -854,10 +843,10 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
                         return `<div class="text-secondary font-italic">Not updated yet</div>`
                     } else {
                         return formatName('F M. L, S', {
-                            firstName: updatedBy.first_name,
-                            middleName: updatedBy.middle_name,
-                            lastName: updatedBy.last_name,
-                            suffixName: updatedBy.suffix_name
+                            firstName  : updatedBy.first_name,
+                            middleName : updatedBy.middle_name,
+                            lastName   : updatedBy.last_name,
+                            suffixName : updatedBy.suffix_name
                         });
                     }
                 });
@@ -868,7 +857,7 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
                     return `
                         <div>${ formatDateTime(updatedAt, 'Full Date') }</div>
                         <div>${ formatDateTime(updatedAt, 'Time') }</div>
-                        <div class="small text-secondary">${ fromNow(updatedAt) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(updatedAt)) }
                     `
                 });
 
@@ -912,10 +901,10 @@ initDataTable('#onboardingEmployeesDT', {
             data: null,
             render: data => {
                 const fullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffix_name: data.suffix_name
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name
                 });
 
                 return `
@@ -954,9 +943,7 @@ initDataTable('#onboardingEmployeesDT', {
                 else if(taskProgress == 100) bgColor = 'success';
 
                 var completeStatus = taskProgress == 100
-                    ? `
-                        <small>All tasks are completed</small>
-                    `
+                    ? `<small>All tasks are completed</small>`
                     : `<small>${ taskProgress }% complete</small>`
 
                 return `
@@ -981,23 +968,15 @@ initDataTable('#onboardingEmployeesDT', {
         {
             data: null,
             render: data => {
-                return  `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a 
-                                href="${ DM_WEB_ROUTE }onboarding-employees/${ data.onboarding_employee_id }/onboarding-tasks"
-                                class="dropdown-item d-flex"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Tasks</div>
-                            </a>
-                        </div>
-                    </div>
-                `
+                return TEMPLATE.DT.OPTIONS(`
+                    <a 
+                        href="${ ROUTE.WEB.DM }onboarding-employees/${ data.onboarding_employee_id }/onboarding-tasks"
+                        class="dropdown-item d-flex"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Tasks</div>
+                    </a>
+                `);
             }
         }
     ]
@@ -1104,26 +1083,18 @@ initDataTable('#onboardingEmployeeTasksDT', {
                         : ''
                 }
 
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex"
-                                role="button"
-                                onclick="viewOnboardingEmployeeTaskDetails('${ onboardingEmplyeeTaskID }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <span>View Details</span>
-                            </div>
-                            ${ markAsCompletedLink() }
-                            ${ deleteTask() }
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex"
+                        role="button"
+                        onclick="viewOnboardingEmployeeTaskDetails('${ onboardingEmplyeeTaskID }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <span>View Details</span>
                     </div>
-                `
+                    ${ markAsCompletedLink() }
+                    ${ deleteTask() }
+                `);
             }
         }
     ]
@@ -1136,10 +1107,10 @@ const getOnboardingEmployeeDetails = () => {
 
             // Set Employee Full Name
             setContent('#employeeFullName', formatName('F M. L, S', {
-                firstName: result.first_name,
-                middleName: result.middle_name,
-                lastName: result.last_name,
-                suffixName: result.suffix_name
+                firstName  : result.first_name,
+                middleName : result.middle_name,
+                lastName   : result.last_name,
+                suffixName : result.suffix_name
             }));
 
             // Set Employee Position
@@ -1154,9 +1125,11 @@ const getOnboardingEmployeeDetails = () => {
                 let completed = 0;
 
                 tasks.forEach(t => { 
-                    if(t.status === 'Pending') pending++; 
-                    if(t.status === 'On Going') onGoing++; 
-                    if(t.status === 'Completed') completed++;
+                    switch(t.status) {
+                        case 'Pending': pending++; break;
+                        case 'On Going': onGoing++; break;
+                        case 'Completed': completed++; break;
+                    }
                 });
 
                 var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
@@ -1205,10 +1178,11 @@ ifSelectorExist('#onboardingEmployeeDetails', () => getOnboardingEmployeeDetails
 const changeProgressStatus = (onboardingEmployeeTaskID) => {
     GET_ajax(`${ ROUTE.API.DM }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, {
         success: result => {
-            const status = result.status;
-            if(status === "Pending") checkElement('#pending');
-            if(status === "On Going") checkElement('#onGoing');
-            if(status === "Completed") checkElement('#completed');
+            switch(result.status) {
+                case "Pending": checkElement('#pending'); break;
+                case "On Going": checkElement('#onGoing'); break;
+                case "Completed": checkElement('#completed'); break;
+            }
             setValue('#onboardingEmployeeTaskID', onboardingEmployeeTaskID);
             showModal('#changeTaskStatusModal');
         },
@@ -1247,10 +1221,7 @@ validateForm('#updateTaskStatusForm', {
                     hideModal('#changeTaskStatusModal');
 
                     // Set buttons to loading state
-                    btnToUnloadState('#saveOnboardingTaskStatusBtn', `
-                        <span>Save</span>
-                        <i class="fas fa-check ml-1"></i>
-                    `);
+                    btnToUnloadState('#saveOnboardingTaskStatusBtn', TEMPLATE.LABEL_ICON('Save', 'check'));
                     enableElement('#cancelSaveOnboardingTaskStatusBtn');
 
                     // Show alert
@@ -1288,14 +1259,14 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
             setContent('#taskStart', `
                 <div>${ formatDateTime(result.start_at, 'Full Date') }</div>
                 <div>${ formatDateTime(result.start_at, 'Time') }</div>
-                <div class="small text-secondary">${ fromNow(result.start_at) }</div>
+                ${ TEMPLATE.SUBTEXT(fromNow(result.start_at)) }
             `);
 
             // Task End
             setContent('#taskEnd', `
                 <div>${ formatDateTime(result.end_at, 'Full Date') }</div>
                 <div>${ formatDateTime(result.end_at, 'Time') }</div>
-                <div class="small text-secondary">${ fromNow(result.end_at) }</div>
+                ${ TEMPLATE.SUBTEXT(fromNow(result.end_at)) }
             `);
 
             // Task Status
@@ -1305,7 +1276,7 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
                     return `
                         <div>Completed</div>
                         <div>${ formatDateTime(result.completed_at, 'Full DateTime') }</div>
-                        <div class="small text-secondary">${ fromNow(result.completed_at) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(result.completed_at)) }
                     `
                 } else return status
             });

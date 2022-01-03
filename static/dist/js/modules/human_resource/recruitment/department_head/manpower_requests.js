@@ -39,34 +39,34 @@ initDataTable('#manpowerRequestDT', {
 
                 var bagdeTheme, badgeIcon, bagdeContent;
                 let validStatus = true;
-                
-                if(requestStatus === "For signature") {
-                    bagdeTheme = "warning";
-                    badgeIcon = "file-signature";
-                    bagdeContent = requestStatus
-                } else if(
-                    requestStatus === "For approval" || 
-                    requestStatus === "Approved"     || 
-                    requestStatus === "Completed"
-                ) {
-                    bagdeTheme = "success";
-                    badgeIcon = "check";
-                    bagdeContent = "Signed"
-                } else if(
-                    requestStatus === "Rejected for signing" || 
-                    requestStatus === "Rejected for approval"
-                ) {
-                    bagdeTheme = "danger";
-                    badgeIcon = "times";
-                    bagdeContent = requestStatus;
-                } else validStatus = false
+
+                switch(requestStatus) {
+                    case "For signature":
+                        bagdeTheme = "warning";
+                        badgeIcon = "file-signature";
+                        bagdeContent = requestStatus
+                        break;
+                    case "For approval":
+                    case "Approved":
+                    case "Completed":
+                        bagdeTheme = "success";
+                        badgeIcon = "check";
+                        bagdeContent = "Signed"
+                        break;
+                    case "Rejected for signing":
+                    case "Rejected for approval":
+                        bagdeTheme = "danger";
+                        badgeIcon = "times";
+                        bagdeContent = requestStatus;
+                        break;
+                    default:
+                        validStatus = false
+                        break;
+                }
 
                 return validStatus 
-                    ? `<div class="badge badge-${ bagdeTheme } p-2 w-100">
-                            <i class="fas fa-${ badgeIcon } mr-1"></i>
-                            <span>${ bagdeContent }</span>
-                        </div>` 
-                    : `<div class="badge badge-light p-2 w-100">Invalid data</div>`
+                    ? TEMPLATE.DT.BADGE(bagdeTheme, TEMPLATE.ICON_LABEL(badgeIcon, bagdeContent))
+                    : TEMPLATE.DT.BADGE("light", "Invalid data")
             }
         },
 
@@ -89,23 +89,15 @@ initDataTable('#manpowerRequestDT', {
             render: data => {
                 const requisitionID = data.requisition_id;
 
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a 
-                                class="dropdown-item d-flex"
-                                href="${ DH_WEB_ROUTE }manpower-requests/${ requisitionID }"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-eye mr-1"></i></div>
-                                <span>View Request</span>
-                            </a>
-                        </div>
-                    </div>
-                `
+                return TEMPLATE.DT.OPTIONS(`
+                    <a 
+                        class="dropdown-item d-flex"
+                        href="${ ROUTE.WEB.DH }manpower-requests/${ requisitionID }"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-eye mr-1"></i></div>
+                        <span>View Request</span>
+                    </a>
+                `)
             }
         }
     ],
@@ -172,10 +164,10 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             
             // Set Requestor Name
             setContent('#requestorName', formatName("L, F M., S", {
-                firstName: requestedBy.first_name,
-                middleName: requestedBy.middle_name,
-                lastName: requestedBy.last_name,
-                suffixName: requestedBy.suffix_name
+                firstName  : requestedBy.first_name,
+                middleName : requestedBy.middle_name,
+                lastName   : requestedBy.last_name,
+                suffixName : requestedBy.suffix_name
             }));
             
             // Set Requestor Department
@@ -233,10 +225,10 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                     return `<div class="text-secondary font-italic">Not yet signed</div>`
                 else {
                     const signedByFullName = formatName("L, F M., S", {
-                        firstName: signedBy.first_name,
-                        middleName: signedBy.middle_name,
-                        lastName: signedBy.last_name,
-                        suffixName: signedBy.suffix_name
+                        firstName  : signedBy.first_name,
+                        middleName : signedBy.middle_name,
+                        lastName   : signedBy.last_name,
+                        suffixName : signedBy.suffix_name
                     });
                     return `
                         <div>${ signedByFullName }</div>
@@ -271,14 +263,14 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                             return `<div class="text-danger">This request has been rejected for approval</div>`
                         else {
                             const approvedByFullName = formatName("L, F M., S", {
-                                firstName: approvedBy.first_name,
-                                middleName: approvedBy.middle_name,
-                                lastName: approvedBy.last_name,
-                                suffixName: approvedBy.suffix_name
+                                firstName  : approvedBy.first_name,
+                                middleName : approvedBy.middle_name,
+                                lastName   : approvedBy.last_name,
+                                suffixName : approvedBy.suffix_name
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
-                                <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
+                                ${ TEMPLATE.SUBTEXT(`${ approvedBy.position.name }, ${ approvedBy.position.department.name }`) }
                             `
                         }
                     }
@@ -489,13 +481,13 @@ const signRequest = (data) => {
                     setSessionedAlertAndRedirect({
                         theme: 'success',
                         message: 'A manpower request is successfully signed',
-                        redirectURL: `${ DH_WEB_ROUTE }manpower-requests`
+                        redirectURL: `${ ROUTE.WEB.DH }manpower-requests`
                     });
                 else if(data.request_status == "Rejected for signing")
                     setSessionedAlertAndRedirect({
                         theme: 'info',
                         message: 'A manpower request has been rejected for signing',
-                        redirectURL: `${ DH_WEB_ROUTE }manpower-requests`
+                        redirectURL: `${ ROUTE.WEB.DH }manpower-requests`
                     });
             } else ifError()
         },

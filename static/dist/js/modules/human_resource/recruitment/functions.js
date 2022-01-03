@@ -1,7 +1,7 @@
 /** 
- * =====================================================
+ * ===================================================================================
  * FUNCTIONS
- * =====================================================
+ * ===================================================================================
  * */
 
 
@@ -124,60 +124,42 @@ const initDataTable = (selector = "", dtOptions = {
             buttons: [
                 {
                     extend: "copy",
-                    text: `
-                        <span>Copy</span>
-                        <i class="fas fa-copy ml-1"></i>
-                    `,
+                    text: TEMPLATE.LABEL_ICON("Copy", "copy"),
                     className: "btn-sm btn-default",
                     exportOptions: {
                         columns: visibleCols
                     }
                 }, {
                     extend: "csv",
-                    text: `
-                        <span>CSV</span>
-                        <i class="fas fa-file-csv ml-1"></i>
-                    `,
+                    text: TEMPLATE.LABEL_ICON("CSV", "file-csv"),
                     className: "btn-sm btn-default",
                     exportOptions: {
                         columns: visibleCols
                     }
                 }, { 
                     extend: "excel",
-                    text: `
-                        <span>Excel</span>
-                        <i class="fas fa-file-excel ml-1"></i>
-                    `,
+                    text: TEMPLATE.LABEL_ICON("Excel", "file-excel"),
                     className: "btn-sm btn-default",
                     exportOptions: {
                         columns: visibleCols
                     }
                 }, {
                     extend: "pdf",
-                    text: `
-                        <span>PDF</span>
-                        <i class="fas fa-file-pdf ml-1"></i>
-                    `,
+                    text: TEMPLATE.LABEL_ICON("PDF", "file-pdf"),
                     className: "btn-sm btn-default",
                     exportOptions: {
                         columns: visibleCols
                     }
                 }, {
                     extend: "print",
-                    text: `
-                        <span>Print</span>
-                        <i class="fas fa-print ml-1"></i>
-                    `,
+                    text: TEMPLATE.LABEL_ICON("Print", "print"),
                     className: "btn-sm btn-default",
                     exportOptions: {
                         columns: visibleCols
                     }
                 }, {
                     extend: "colvis",
-                    text: `
-                        <i class="fas fa-eye mr-1"></i>
-                        <span>Columns</span>
-                    `,
+                    text: TEMPLATE.LABEL_ICON("Columns", "eye"),
                     className: "btn-sm btn-default",
                     columns: columnOpts
                 }
@@ -331,19 +313,9 @@ const isAfterToday = (datetime) => { return moment(datetime).isAfter(moment()) }
 
 /** Format DateTime */
 const formatDateTime = (datetime, format = "") => {
-    if(isEmptyOrNull(format))
-        return moment(datetime).format()
-    else {
-        const formats = {
-            "Full DateTime" : "dddd, MMMM D, YYYY; hh:mm A",
-            "DateTime"      : "MMMM D, YYYY; hh:mm A",
-            "Full Date"     : "dddd, MMMM D, YYYY",
-            "Date"          : "MMMM D, YYYY",
-            "Short Date"    : "MMM. D, YYYY",
-            "Time"          : "hh:mm A"
-        }
-        return moment(datetime).format( format in formats ? formats[format] : format )
-    }
+    return isEmptyOrNull(format)
+        ? moment(datetime).format()
+        : moment(datetime).format( format in DATETIME_FORMATS ? DATETIME_FORMATS[format] : format )
 }
 
 
@@ -386,17 +358,24 @@ const getValue = (selector) => { return ifSelectorExist(selector, () => { return
 /** Enable/Disable Element */
 const enableElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("disabled", false));
 const disableElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("disabled", true));
-
+const enableOrDisableElement = (selector, condition) => ifSelectorExist(selector, () => {
+    condition ? $(selector).prop("disabled", true) : $(selector).prop("disabled", false)
+});
 
 /** Check/Uncheck Element */
 const checkElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("checked", true));
 const uncheckElement = (selector) => ifSelectorExist(selector, () => $(selector).prop("checked", false));
+const checkOrUncheckElement = (selector, condition) => ifSelectorExist(selector, () => {
+    condition ? $(selector).prop("checked", true) : $(selector).prop("checked", false)
+})
 
 
 /** Show/Hide Element */
 const showElement = (selector) => ifSelectorExist(selector, () => $(selector).show());
 const hideElement = (selector) => ifSelectorExist(selector, () => $(selector).hide());
-
+const showOrHideElement = (selector, condition) => ifSelectorExist(selector, () => {
+    condition ? $(selector).show() : $(selector).hide()
+});
 
 /** On Event */
 const onEvent = (selector, event, handler = () => {}) => ifSelectorExist(selector, () => $(selector).on(event, () => handler()))
@@ -430,8 +409,8 @@ const formatName = (format = '', fullName = {firstName: '', middleName: '', last
     S = isEmptyOrNull(S) ? '' : `, ${ S }`;
 
     const formats = {
-        "L, F M., S"    : L + ', ' + F + Mi + S,
-        "F M. L, S"     : F + Mi + ' ' + L + S 
+        "L, F M., S" : L + ', ' + F + Mi + S,
+        "F M. L, S"  : F + Mi + ' ' + L + S 
     }
 
     return format in formats ? formats[format] : () => {
@@ -536,18 +515,22 @@ $(() => {
         const alertTheme = localStorage.getItem('sessioned_alert_theme');
         const alertMessage = localStorage.getItem('sessioned_alert_message');
 
-        setTimeout(() => {
-            if(alertTheme === 'success') toastr.success(alertMessage);
-            if(alertTheme === 'info')    toastr.info(alertMessage);
-            if(alertTheme === 'warning') toastr.warning(alertMessage);
-            if(alertTheme === 'error')   toastr.error(alertMessage);
-        }, 1000)
+        const alerts = {
+            "success" : () => toastr.success(alertMessage),
+            "info"    : () => toastr.info(alertMessage),
+            "warning" : () => toastr.warning(alertMessage),
+            "error"   : () => toastr.error(alertMessage)
+        }
 
-        setTimeout(() => {
-            localStorage.removeItem('sessioned_alert');
-            localStorage.removeItem('sessioned_alert_theme');
-            localStorage.removeItem('sessioned_alert_message');
-        }, 500);
+        setTimeout(() => alerts[alertTheme](), 1000);
+
+        const sessions = [
+            "sessioned_alert", 
+            "sessioned_alert_theme", 
+            "sessioned_alert_message"
+        ];
+
+        setTimeout(() => sessions.forEach(s => localStorage.removeItem(s)), 500);
     }
 })
 
@@ -625,9 +608,8 @@ const setPagination = (selector, attr = {
 }) => {
     const totalRows = parseInt(attr.totalRows);
     const currentPage = parseInt(attr.currentPage);
-    const query = attr.query;
 
-    const getLink = (pageNumber) => { return query.replace('[page]', pageNumber); }
+    const getLink = (pageNumber) => { return attr.query.replace('[page]', pageNumber); }
 
     const totalPages = Math.ceil(totalRows / FETCH_ROWS);
     

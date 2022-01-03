@@ -116,7 +116,7 @@ initDataTable('#onboardingEmployeesDT', {
 
                         <div class="dropdown-menu dropdown-menu-right">
                             <a 
-                                href="${ DH_WEB_ROUTE }onboarding-employees/${ data.onboarding_employee_id }/onboarding-tasks"
+                                href="${ ROUTE.WEB.DH }onboarding-employees/${ data.onboarding_employee_id }/onboarding-tasks"
                                 class="dropdown-item d-flex"
                             >
                                 <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>

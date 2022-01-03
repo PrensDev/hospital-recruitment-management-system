@@ -29,15 +29,15 @@ initDataTable('#hiredApplicantsDT', {
             class: "w-100",
             render: data => {
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name
                 });
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -53,7 +53,7 @@ initDataTable('#hiredApplicantsDT', {
 
                 return `
                     <div>${ formatDateTime(appliedAt, 'MMM. D, YYYY') }</div>
-                    <div class="small text-secondary">${ fromNow(appliedAt) }</div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(appliedAt)) }
                 `
             }
         },
@@ -64,41 +64,31 @@ initDataTable('#hiredApplicantsDT', {
             render: data => {
                 const onboardingEmployeeID = data.onboarding_employee_id;
 
-                return `
-                    <div class="text-center dropdown">
-                        <div class="d-block d-md-inline-block btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v d-none d-md-inline-block"></i>
-                            <i class="fas fa-ellipsis-h d-md-none mr-1 mr-md-0"></i>
-                            <span class="d-md-none">More</span>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex"
-                                role="button"
-                                onclick="viewApplicantDetails('${ onboardingEmployeeID }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <span>View applicant details</span>
-                            </div>
-                            <a 
-                                href="${ EMPLOYMENT_CONTRACT_PATH + data.employment_contract }"
-                                class="dropdown-item d-flex"
-                                target="_blank"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
-                                <span>View contract</span>
-                            </a>
-                            <a 
-                                href="${ DM_WEB_ROUTE }onboard-employee/${ onboardingEmployeeID }"
-                                class="dropdown-item d-flex"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-user-tie mr-1"></i></div>
-                                <span>Onboard this applicant</span>
-                            </a>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex"
+                        role="button"
+                        onclick="viewApplicantDetails('${ onboardingEmployeeID }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <span>View applicant details</span>
                     </div>
-                `
+                    <a 
+                        href="${ EMPLOYMENT_CONTRACT_PATH + data.employment_contract }"
+                        class="dropdown-item d-flex"
+                        target="_blank"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
+                        <span>View contract</span>
+                    </a>
+                    <a 
+                        href="${ ROUTE.WEB.DM }onboard-employee/${ onboardingEmployeeID }"
+                        class="dropdown-item d-flex"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-user-tie mr-1"></i></div>
+                        <span>Onboard this applicant</span>
+                    </a>
+                `)
             }
         }
     ]

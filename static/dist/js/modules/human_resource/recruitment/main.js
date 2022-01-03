@@ -1,7 +1,7 @@
 /** 
- * =====================================================
+ * ===================================================================================
  * APP FUNCTIONS
- * =====================================================
+ * ===================================================================================
  */
 
 /** Set Manpower Request Timeline */
@@ -15,10 +15,10 @@ const setManpowerRequestTimeline = (selector, data) => {
     const createdAt = data.created_at;
     const createdBy = data.manpower_request_by;
     const createdByFullName = formatName('F M. L, S', {
-        firstName: createdBy.first_name,
-        middleName: createdBy.middle_name,
-        lastName: createdBy.last_name,
-        suffixName: createdBy.suffix_name
+        firstName  : createdBy.first_name,
+        middleName : createdBy.middle_name,
+        lastName   : createdBy.last_name,
+        suffixName : createdBy.suffix_name
     });
     timelineData.push({
         icon: "edit",
@@ -37,10 +37,10 @@ const setManpowerRequestTimeline = (selector, data) => {
     if(!isEmptyOrNull(signedAt)) {
         const signedBy = data.manpower_request_signed_by;
         const signedByFullName = formatName('F M. L, S', {
-            firstName: signedBy.first_name,
-            middleName: signedBy.middle_name,
-            lastName: signedBy.last_name,
-            suffixName: signedBy.suffix_name
+            firstName  : signedBy.first_name,
+            middleName : signedBy.middle_name,
+            lastName   : signedBy.last_name,
+            suffixName : signedBy.suffix_name
         })
         timelineData.push({
             icon: "file-signature",
@@ -56,10 +56,10 @@ const setManpowerRequestTimeline = (selector, data) => {
     } else if(requestStatus === "Rejected for signing") {
         const rejectedBy = data.manpower_request_rejected_by;
         const rejectedByFullName = formatName('F M. L, S', {
-            firstName: rejectedBy.first_name,
-            middleName: rejectedBy.middle_name,
-            lastName: rejectedBy.last_name,
-            suffixName: rejectedBy.suffix_name
+            firstName  : rejectedBy.first_name,
+            middleName : rejectedBy.middle_name,
+            lastName   : rejectedBy.last_name,
+            suffixName : rejectedBy.suffix_name
         });
         timelineData.push({
             icon: "times",
@@ -79,10 +79,10 @@ const setManpowerRequestTimeline = (selector, data) => {
     if(!isEmptyOrNull(reviewedAt)) {
         const reviewedBy = data.manpower_request_reviewed_by;
         const reviewedByFullName = formatName('F M. L, S', {
-            firstName: reviewedBy.first_name,
-            middleName: reviewedBy.middle_name,
-            lastName: reviewedBy.last_name,
-            suffixName: reviewedBy.suffix_name
+            firstName  : reviewedBy.first_name,
+            middleName : reviewedBy.middle_name,
+            lastName   : reviewedBy.last_name,
+            suffixName : reviewedBy.suffix_name
         });
         timelineData.push({
             icon: "thumbs-up",
@@ -98,10 +98,10 @@ const setManpowerRequestTimeline = (selector, data) => {
     } else if(requestStatus === "Rejected for approval") {
         const rejectedBy = data.manpower_request_rejected_by;
         const rejectedByFullName = formatName('F M. L, S', {
-            firstName: rejectedBy.first_name,
-            middleName: rejectedBy.middle_name,
-            lastName: rejectedBy.last_name,
-            suffixName: rejectedBy.suffix_name
+            firstName  : rejectedBy.first_name,
+            middleName : rejectedBy.middle_name,
+            lastName   : rejectedBy.last_name,
+            suffixName : rejectedBy.suffix_name
         });
 
         timelineData.push({
@@ -144,10 +144,10 @@ const setApplicantTimeline = (selector, data) => {
     // Applied
     const createdAt = data.created_at;
     const applicantFullName = formatName   ('F M. L, S', {
-        firstName: data.first_name,
-        middleName: data.middle_name,
-        lastName: data.last_name,
-        suffixName: data.suffix_name,
+        firstName  : data.first_name,
+        middleName : data.middle_name,
+        lastName   : data.last_name,
+        suffixName : data.suffix_name,
     });
     timelineData.push({
         icon: "file-export",
@@ -189,10 +189,10 @@ const setApplicantTimeline = (selector, data) => {
     const screenedBy = data.screening_done_by;
     if(!isEmptyOrNull(screenedAt) && !isEmptyOrNull(screenedBy)) {
         const screenedByFullName = formatName('F M. L, S', {
-            firstName: screenedBy.first_name,
-            middleName: screenedBy.middle_name,
-            lastName: screenedBy.last_name,
-            suffixName: screenedBy.suffix_name
+            firstName  : screenedBy.first_name,
+            middleName : screenedBy.middle_name,
+            lastName   : screenedBy.last_name,
+            suffixName : screenedBy.suffix_name
         });
         timelineData.push({
             icon: "check",
@@ -212,10 +212,10 @@ const setApplicantTimeline = (selector, data) => {
     const hiredBy = data.hiring_done_by;
     if(!isEmptyOrNull(hiredAt) && !isEmptyOrNull(hiredBy)) {
         const hiredByFullName = formatName('F M. L, S', {
-            firstName: hiredBy.first_name,
-            middleName: hiredBy.middle_name,
-            lastName: hiredBy.last_name,
-            suffixName: hiredBy.suffix_name
+            firstName  : hiredBy.first_name,
+            middleName : hiredBy.middle_name,
+            lastName   : hiredBy.last_name,
+            suffixName : hiredBy.suffix_name
         });
         timelineData.push({
             icon: "handshake",
@@ -241,10 +241,10 @@ const setApplicantTimeline = (selector, data) => {
         const rejectedBy = data.rejection_done_by;
         if(!isEmptyOrNull(rejectedAt) && !isEmptyOrNull(rejectedBy)) {
             const rejectedByFullName = formatName('F M. L, S', {
-                firstName: rejectedBy.first_name,
-                middleName: rejectedBy.middle_name,
-                lastName: rejectedBy.last_name,
-                suffixName: rejectedBy.suffix_name
+                firstName  : rejectedBy.first_name,
+                middleName : rejectedBy.middle_name,
+                lastName   : rejectedBy.last_name,
+                suffixName : rejectedBy.suffix_name
             });
             timelineData.push({
                 icon: "times",
@@ -268,49 +268,25 @@ const setApplicantTimeline = (selector, data) => {
 
 /** Get Onboarding Employee Task Status */
 const getOnboardingEmployeeTaskStatus = (status, startAt, deadline, completedAt) => {
-    if(status == "Pending") {
-        if(isAfterToday(startAt) && isAfterToday(deadline))
-            return `
-                <span class="badge badge-secondary p-2">
-                    <i class="fas fa-stopwatch mr-1"></i>
-                    <span>Soon<span>
-                </span>
-            `
-        else if(isBeforeToday(startAt) && isAfterToday(deadline))
-            return `
-                <span class="badge badge-warning p-2">
-                    <i class="fas fa-exclamation-circle mr-1"></i>
-                    <span>Pending (Must working)<span>
-                </span<
-            `
-        else 
-            return `
-                <span class="badge badge-danger p-2">
-                    <i class="fas fa-exclamation-triangle mr-1"></i>
-                    <span>Pending (Not worked)<span>
-                </span>
-            `
-    } else if(status == "On Going") 
-        return isAfterToday(deadline)
-            ? `<span class="badge badge-info p-2">
-                    <i class="fas fa-sync-alt mr-1"></i>
-                    <span>On Going<span>
-                </span>`
-            : `<span class="badge badge-warning p-2">
-                    <i class="fas fa-sync-alt mr-1"></i>
-                    <span>On Going (Must be done)<span>
-                </span>`
-    else if(status == "Completed") 
-        return moment(completedAt).isBefore(moment(deadline))
-            ? `<span class="badge badge-success p-2">
-                    <i class="fas fa-check mr-1"></i>
-                    <span>Completed (On Time)<span>
-                <span>`
-            : `<span class="badge badge-success p-2">
-                    <i class="fas fa-check mr-1"></i>
-                    <span>Completed (Late)<span>
-                <span>`
-    else return `<span class="badge badge-light p-2">Invalid data</span>`
+    switch(status) {
+        case "Pending":
+            if(isAfterToday(startAt) && isAfterToday(deadline))
+                return TEMPLATE.BADGE('secondary', TEMPLATE.ICON_LABEL('stopwatch', 'Soon'))
+            else if(isBeforeToday(startAt) && isAfterToday(deadline))
+                return TEMPLATE.BADGE('warning', TEMPLATE.ICON_LABEL('exclamation-circle', 'Pending (Must working)'))
+            else 
+                return TEMPLATE.BADGE('danger', TEMPLATE.ICON_LABEL('exclamation-triangle', 'Pending (Not worked)'))
+        case "On Going":
+            return isAfterToday(deadline)
+                ? TEMPLATE.BADGE('danger', TEMPLATE.ICON_LABEL('sync-alt', 'On Going'))
+                : TEMPLATE.BADGE('warning', TEMPLATE.ICON_LABEL('sync-alt', 'On Going (Must be done)'))
+        case "Completed":
+            return moment(completedAt).isBefore(moment(deadline))
+                ? TEMPLATE.BADGE('success', TEMPLATE.ICON_LABEL('check', 'Completed (On Time)'))
+                : TEMPLATE.BADGE('success', TEMPLATE.ICON_LABEL('check', 'Completed (Late)'))
+        default:
+            return TEMPLATE.BADGE('light', 'Invalid data')
+    }
 }
 
 
@@ -320,10 +296,10 @@ const setJobPostTimeline = (selector, data) => {
     
     const jobPostedBy = data.job_posted_by;
     const jobPostedByFullName = formatName('F M. L, S', {
-        firstName: jobPostedBy.first_name,
-        middleName: jobPostedBy.middle_name,
-        lastName: jobPostedBy.last_name,
-        suffix_name: jobPostedBy.suffix_name
+        firstName  : jobPostedBy.first_name,
+        middleName : jobPostedBy.middle_name,
+        lastName   : jobPostedBy.last_name,
+        suffixName : jobPostedBy.suffix_name
     });
 
     // Created
@@ -335,8 +311,8 @@ const setJobPostTimeline = (selector, data) => {
         timelineTitle: 'Created',
         timelineBody: `
             <div class="small mb-3">You, <span class="font-weight-bold">${ jobPostedByFullName }</span>, created this job post</div>
-            <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
-            <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
+            ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Full Date")) }
+            ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Time")) }
         `
     });
 
@@ -349,8 +325,8 @@ const setJobPostTimeline = (selector, data) => {
         timelineTitle: 'Last Updated',
         timelineBody: `
             <div class="small mb-3">You are the last person updated this job post</div>
-            <div class="small text-secondary">${ formatDateTime(lastUpdated, "Full Date") }</div>
-            <div class="small text-secondary">${ formatDateTime(lastUpdated, "Time") }</div>
+            ${ TEMPLATE.SUBTEXT(formatDateTime(lastUpdated, "Full Date")) }
+            ${ TEMPLATE.SUBTEXT(formatDateTime(lastUpdated, "Time")) }
         `
     });
 
@@ -370,10 +346,10 @@ const setOnboardingEmployeeTaskTimeline = (selector, data) => {
     const assignedAt = data.created_at;
     const assignedBy = data.onboarding_employee_task_assigned_by;
     const assignedByFullName = formatName('F M. L, S', {
-        firstName: assignedBy.first_name,
-        middleName: assignedBy.middle_name,
-        lastName: assignedBy.last_name,
-        suffixName: assignedBy.suffix_name
+        firstName  : assignedBy.first_name,
+        middleName : assignedBy.middle_name,
+        lastName   : assignedBy.last_name,
+        suffixName : assignedBy.suffix_name
     });
     timelineData.push({
         icon: "clipboard",
@@ -382,8 +358,8 @@ const setOnboardingEmployeeTaskTimeline = (selector, data) => {
         timelineTitle: 'Assigned',
         timelineBody: `
             <div class="small mb-3">Task was created and assigned by <b>${ assignedByFullName }</b></div>
-            <div class="small text-secondary">${ formatDateTime(assignedAt, "Full Date") }</div>
-            <div class="small text-secondary">${ formatDateTime(assignedAt, "Time") }</div>
+            ${ TEMPLATE.SUBTEXT(formatDateTime(assignedAt, "Full Date")) }
+            ${ TEMPLATE.SUBTEXT(formatDateTime(assignedAt, "Time")) }
         `
     });
 
@@ -392,10 +368,10 @@ const setOnboardingEmployeeTaskTimeline = (selector, data) => {
     const completedBy = data.onboarding_employee_task_completed_by;
     if(!isEmptyOrNull(completedAt) && !isEmptyOrNull(completedBy)) {
         const completedByFullName = formatName('F M. L, S', {
-            firstName: completedBy.first_name,
-            middleName: completedBy.middle_name,
-            lastName: completedBy.last_name,
-            suffixName: completedBy.suffix_name
+            firstName  : completedBy.first_name,
+            middleName : completedBy.middle_name,
+            lastName   : completedBy.last_name,
+            suffixName : completedBy.suffix_name
         });
         timelineData.push({
             icon: "check",
@@ -404,8 +380,8 @@ const setOnboardingEmployeeTaskTimeline = (selector, data) => {
             timelineTitle: 'Completed',
             timelineBody: `
                 <div class="small mb-3">Task was completed marked by <b>${ completedByFullName }</b></div>
-                <div class="small text-secondary">${ formatDateTime(completedAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(completedAt, "Time") }</div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(completedAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(completedAt, "Time")) }
             `
         });
     }

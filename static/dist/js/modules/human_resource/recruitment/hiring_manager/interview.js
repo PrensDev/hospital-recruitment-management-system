@@ -478,14 +478,15 @@ initDataTable('#intervieweesDT', {
                     userActions = `
                         <a 
                             class="dropdown-item d-flex"
-                            href="${ H_WEB_ROUTE }interview/${ data.interviewee_id }"                                  
+                            href="${ ROUTE.WEB.H }interview/${ data.interviewee_id }"                                  
                         >
                             <div style="width: 2rem"><i class="fas fa-tasks mr-1"></i></div>
                             <div>Interview this applicant</div>
                         <a>
                         <div 
                             class="dropdown-item d-flex"
-                            role="button"                            
+                            role="button"
+                            onclick="markAsNotInterviewed()"
                         >
                             <div style="width: 2rem"><i class="fas fa-times mr-1"></i></div>
                             <div>Mark as Not Interviewed</div>
