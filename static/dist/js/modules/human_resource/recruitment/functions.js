@@ -1,6 +1,6 @@
 /** 
  * ===================================================================================
- * FUNCTIONS
+ * * FUNCTIONS
  * ===================================================================================
  * */
 
@@ -184,10 +184,6 @@ const initDataTable = (selector = "", dtOptions = {
 
 /** Reload DataTable */
 const reloadDataTable = (selector) => ifSelectorExist(selector, () => $(selector).DataTable().ajax.reload());
-
-
-/** DataTable Badge */
-const dtBadge = (theme = "light", content) => { return `<div class="badge badge-${ theme } p-2 w-100">${ content }</div>` }
 
 
 /** jQuery Validation Methods */

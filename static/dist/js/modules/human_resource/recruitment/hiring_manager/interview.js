@@ -36,7 +36,7 @@ initDataTable('#generalInterviewQuestionsDT', {
                 const addedAt = data.created_at;
                 return `
                     <div>${ formatDateTime(addedAt, 'MMM. D, YYYY') }</div>
-                    <div class="small text-secondary">${ fromNow(addedAt) }</div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(addedAt)) }
                 `
             }
         },
@@ -47,32 +47,24 @@ initDataTable('#generalInterviewQuestionsDT', {
             render: data => {
                 const interviewQuestionID = data.interview_question_id;
                 
-                return `
-                    <div class="dropdown text-center">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex"
-                                role="button"
-                                onclick="viewGenInterviewQuestionDetails('${ interviewQuestionID }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Details</div>
-                            </div>
-                            <div 
-                                class="dropdown-item d-flex"
-                                role="button"
-                                onclick="editGenInterviewQuestion('${ interviewQuestionID }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
-                                <div>Edit Question</div>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex"
+                        role="button"
+                        onclick="viewGenInterviewQuestionDetails('${ interviewQuestionID }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Details</div>
                     </div>
-                `
+                    <div 
+                        class="dropdown-item d-flex"
+                        role="button"
+                        onclick="editGenInterviewQuestion('${ interviewQuestionID }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
+                        <div>Edit Question</div>
+                    </div>
+                `)
             }
         }
     ]
@@ -122,10 +114,7 @@ const addGeneralInterviewQuestion = () => {
                 hideModal('#addGeneralInterviewQuestionModal');
 
                 // Set buttons to unload state
-                btnToUnloadState('#addGeneralInterviewQuestionBtn', `
-                    <span>Add</span>
-                    <i class="fas fa-plus ml-1"></i>
-                `);
+                btnToUnloadState('#addGeneralInterviewQuestionBtn', TEMPLATE.LABEL_ICON('Add', 'plus'));
                 enableElement('#cancelGeneralInterviewQuestionBtn');
 
                 // Reload DataTable
@@ -141,10 +130,7 @@ const addGeneralInterviewQuestion = () => {
             hideModal('#addGeneralInterviewQuestionModal');
 
             // Set buttons to unload state
-            btnToUnloadState('#addGeneralInterviewQuestionBtn', `
-                <span>Add</span>
-                <i class="fas fa-plus ml-1"></i>
-            `);
+            btnToUnloadState('#addGeneralInterviewQuestionBtn', TEMPLATE.LABEL_ICON('Add', 'plus'));
             enableElement('#cancelGeneralInterviewQuestionBtn');
 
             // Alert error message
@@ -177,10 +163,10 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
                     const addedBy = result.interview_question_added_by;
 
                     const fullName = formatName('F M. L, S', {
-                        firstName: addedBy.first_name,
-                        middleName: addedBy.middle_name,
-                        lastName: addedBy.last_name,
-                        suffixName: addedBy.suffix_name
+                        firstName  : addedBy.first_name,
+                        middleName : addedBy.middle_name,
+                        lastName   : addedBy.last_name,
+                        suffixName : addedBy.suffix_name
                     });
 
                     const position = addedBy.position;
@@ -198,7 +184,7 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
                     return `
                         <div>${ formatDateTime(addedAt, 'Full Date') }</div>
                         <div>${ formatDateTime(addedAt, 'Time') }</div>
-                        <div class="small text-secondary">${ fromNow(addedAt) }</div>
+                        ${ TEMPLATE.SUBTEXT(romNow(addedAt)) }
                     `
                 })
                 
@@ -207,10 +193,10 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
                     const updatedBy = result.interview_question_updated_by;
 
                     const fullName = formatName('F M. L, S', {
-                        firstName: updatedBy.first_name,
-                        middleName: updatedBy.middle_name,
-                        lastName: updatedBy.last_name,
-                        suffixName: updatedBy.suffix_name
+                        firstName  : updatedBy.first_name,
+                        middleName : updatedBy.middle_name,
+                        lastName   : updatedBy.last_name,
+                        suffixName : updatedBy.suffix_name
                     });
 
                     const position = updatedBy.position;
@@ -228,7 +214,7 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
                     return `
                         <div>${ formatDateTime(updatedAt, 'Full Date') }</div>
                         <div>${ formatDateTime(updatedAt, 'Time') }</div>
-                        <div class="small text-secondary">${ fromNow(updatedAt) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(updatedAt)) }
                     `
                 });
 
@@ -244,14 +230,10 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
 const editGenInterviewQuestion = (interviewQuestionID) => {
     GET_ajax(`${ ROUTE.API.H }interview-questions/${ interviewQuestionID }`, {
         success: result => {
-
-            // Set Interview Question ID
-            setValue('#interviewQuestionID', result.interview_question_id);
-
-            // Set Value
-            setValue('#questionForEdit', result.question);
-
-            // Show Modal
+            setValue({
+                '#interviewQuestionID': result.interview_question_id,
+                '#questionForEdit': result.question
+            });
             showModal('#editGeneralInterviewQuestionModal');
         },
         error: () => toastr.error('There was an erro in getting general interview question details')
@@ -264,14 +246,10 @@ onHideModal('#editGeneralInterviewQuestionModal', () => resetForm('#editGeneralI
 
 validateForm('#editGeneralInterviewQuestionForm', {
     rules: {
-        question: {
-            required: true
-        }
+        question: { required: true }
     },
     messages: {
-        question: {
-            required: 'Interview question is required'
-        }
+        question: { required: 'Interview question is required' }
     },
     submitHandler: () => {
 
@@ -291,10 +269,7 @@ validateForm('#editGeneralInterviewQuestionForm', {
                     reloadDataTable('#generalInterviewQuestionsDT');
 
                     // Set buttons to unload state
-                    btnToUnloadState('#saveGenInterviewQuestionBtn', `
-                        <span>Save</span>
-                        <i class="fas fa-check ml-1"></i>
-                    `);
+                    btnToUnloadState('#saveGenInterviewQuestionBtn', TEMPLATE.LABEL_ICON('Save', 'check'));
                     enableElement('#cancelGenInterviewQuestionBtnForEdit');
 
                     // Hide modal
@@ -339,25 +314,25 @@ ifSelectorExist('#interviewScheduleDetails', () => {
                     if(isAfterToday(startSession) && isAfterToday(endSession)) {
                         return `
                             <div class="badge badge-warning p-2 mr-2">Will happen soon</div>
-                            <div class="small text-secondary">Started ${ fromNow(startSession) }</div>
+                            ${ TEMPLATE.SUBTEXT(`Started ${ fromNow(startSession) }`) }
                         `
                     } else if(isBeforeToday(startSession) && isAfterToday(endSession)) {
                         return `
                             <div class="badge badge-info p-2 mr-2">On going</div>
-                            <div class="small text-secondary">Started ${ fromNow(startSession) }</div>
+                            ${ TEMPLATE.SUBTEXT(`Started ${ fromNow(startSession) }`) }
                         `
                     } else {
                         return `
                             <div class="badge badge-danger p-2 mr-2">Ended today</div>
-                            <div class="small text-secondary">${ fromNow(endSession) }</div>
+                            ${ TEMPLATE.SUBTEXT(fromNow(endSession)) }
                         `
                     }
                 } else if(isAfterToday(startSession)) {
-                    return `<div class="small text-secondary">${ fromNow(startSession) }</div>`
+                    return `${ TEMPLATE.SUBTEXT(fromNow(startSession)) }`
                 } else {
                     return `
                         <div class="badge badge-danger p-2 mr-2">Ended</div>
-                        <div class="small text-secondary">${ fromNow(endSession) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(endSession)) }
                     `
                 }
             }
@@ -416,15 +391,15 @@ initDataTable('#intervieweesDT', {
             render: data => {
                 const applicant = data.applicant_info;
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: applicant.first_name,
-                    middleName: applicant.middle_name,
-                    lastName: applicant.last_name,
-                    suffixName: applicant.suffixName
+                    firstName  : applicant.first_name,
+                    middleName : applicant.middle_name,
+                    lastName   : applicant.last_name,
+                    suffixName : applicant.suffixName
                 });
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ applicant.email }</div>
-                    <div class="small text-secondary">${ applicant.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(applicant.email) }
+                    ${ TEMPLATE.SUBTEXT(applicant.contact_number) }
                 `
             }
         },
@@ -437,7 +412,7 @@ initDataTable('#intervieweesDT', {
                 const appliedAt = data.applicant_info.created_at;
                 return `
                     <div>${ formatDateTime(appliedAt, 'MMM. D, YYYY') }<div>
-                    <div class="small text-secodary">${ fromNow(appliedAt) }<div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(appliedAt)) }
                 `
             }
         },
@@ -448,21 +423,11 @@ initDataTable('#intervieweesDT', {
             render: data => {
                 const isInterviewed = data.is_interviewed;
                 if(isEmptyOrNull(isInterviewed))
-                    return `<div class="badge bg-warning p-2 w-100">Not interviewed yet</div>`
+                    return TEMPLATE.DT.BADGE('warning', TEMPLATE.ICON_LABEL('question', "Not interviewed yet"))
                 else if(isInterviewed)
-                    return `
-                        <div class="badge bg-success p-2 w-100">
-                            <i class="fas fa-check mr-1"></i>
-                            <span>Interviewed</span>   
-                        </div>
-                    `
+                    return TEMPLATE.DT.BADGE('success', TEMPLATE.ICON_LABEL('check', "Interviewed"))
                 else
-                    return `
-                        <div class="badge bg-danger p-2 w-100">
-                            <i class="fas fa-times mr-1"></i>
-                            <span>Not Interviewed</span>   
-                        </div>
-                    `
+                    return TEMPLATE.DT.BADGE('danger', TEMPLATE.ICON_LABEL('times', "Not Interviewed"))
             }
         },
 
@@ -470,12 +435,8 @@ initDataTable('#intervieweesDT', {
         {
             data: null,
             render: data => {
-                const isInterviewed = data.is_interviewed;
-
-                let userActions = '';
-
-                if(isEmptyOrNull(isInterviewed)) {
-                    userActions = `
+                if(isEmptyOrNull(data.is_interviewed)) {
+                    return TEMPLATE.DT.OPTIONS(`
                         <a 
                             class="dropdown-item d-flex"
                             href="${ ROUTE.WEB.H }interview/${ data.interviewee_id }"                                  
@@ -491,9 +452,9 @@ initDataTable('#intervieweesDT', {
                             <div style="width: 2rem"><i class="fas fa-times mr-1"></i></div>
                             <div>Mark as Not Interviewed</div>
                         <div>
-                    `
+                    `)
                 } else {
-                    userActions = `
+                    return TEMPLATE.DT.OPTIONS(`
                         <div 
                             class="dropdown-item d-flex"
                             role="button"                            
@@ -501,20 +462,8 @@ initDataTable('#intervieweesDT', {
                             <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                             <div>View Details</div>
                         <div>
-                    `;
+                    `)
                 }
-
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            ${ userActions }
-                        </div>
-                    </div>
-                `
             }
         }
     ]
@@ -536,27 +485,21 @@ ifSelectorExist('#applicantDetails', () => {
         success: result => {
             const applicant = result.applicant_info;
 
-            // Set interviweee name
-            setContent('#intervieweeName', formatName('L, F M., S', {
-                firstName: applicant.first_name,
-                middleName: applicant.middle_name,
-                lastName: applicant.last_name,
-                suffixName: applicant.suffixName
-            }));
-
-            // Set Applying for
-            setContent('#applyingFor', applicant.applied_job.manpower_request.vacant_position.name);
-
-            // Set Email
-            setContent('#applicantEmail', applicant.email);
-
-            // Set Contact Number
-            setContent('#applicantContactNumber', applicant.contact_number);
-
-            // Set Applied Date
-            setContent('#appliedDate', formatDateTime(applicant.created_at, 'Full Date'));
-            setContent('#appliedTime', formatDateTime(applicant.created_at, 'Time'));
-            setContent('#appliedAtHumanized', fromNow(applicant.created_at));
+            // Set Dynamic content
+            setContent({
+                '#intervieweeName': formatName('L, F M., S', {
+                    firstName  : applicant.first_name,
+                    middleName : applicant.middle_name,
+                    lastName   : applicant.last_name,
+                    suffixName : applicant.suffixName
+                }),
+                '#applyingFor': applicant.applied_job.manpower_request.vacant_position.name,
+                '#applicantEmail': applicant.email,
+                '#applicantContactNumber': applicant.contact_number,
+                '#appliedDate': formatDateTime(applicant.created_at, 'Full Date'),
+                '#appliedTime': formatDateTime(applicant.created_at, 'Time'),
+                '#appliedAtHumanized': fromNow(applicant.created_at),
+            });
 
             // Set Resume
             $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ applicant.resume }`)
@@ -650,9 +593,7 @@ ifSelectorExist('#generalInterviewQuestionsForIntervieweeDT', () => {
             }
 
         },
-        error: () => {
-            toastr.error('There was an error in getting the general interview questions')
-        }
+        error: () => toastr.error('There was an error in getting the general interview questions')
     })
 });
 
@@ -667,14 +608,10 @@ validateForm('#interviewScoresheetForm', {
 /** Validate Add Interview Question Modal */
 validateForm('#addInterviewQuestionForm', {
     rules: {
-        question: {
-            required: true
-        }
+        question: { required: true }
     },
     messages: {
-        question: {
-            required: 'Please type your additional question here'
-        }
+        question: { required: 'Please type your additional question here' }
     },
     submitHandler: () => {
         const question = generateFormData('#addInterviewQuestionForm').get('question');
@@ -702,22 +639,16 @@ validateForm('#addInterviewQuestionForm', {
                     </div>
                 </td>
                 <td>
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
+                    ${ TEMPLATE.DT.OPTIONS(`
+                        <div 
+                            class="dropdown-item d-flex"
+                            role="button"
+                            onclick="removeAddedQuestion('${ inputName }')"
+                        >
+                            <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
+                            <span>Remove</span>
                         </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex"
-                                role="button"
-                                onclick="removeAddedQuestion('${ inputName }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
-                                <span>Remove</span>
-                            </div>
-                        </div>
-                    </div>
+                    `) }
                 </td>
             </tr>
         `);
@@ -814,10 +745,7 @@ onClick('#saveScoresheetBtn', () => {
                 }
             },
             error: () => {
-                btnToUnloadState('#saveScoresheetBtn', `
-                    <span>Yes, save it!</span>
-                    <i class="fas fa-check ml-1"></i>
-                `);
+                btnToUnloadState('#saveScoresheetBtn', TEMPLATE.LABEL_ICON('Yes, save it!', 'check'));
                 enableElement('#cancelConfirmSaveScoresheetModalBtn');
                 toastr.error('There was an error in updating interviewee record')
             }
@@ -840,14 +768,10 @@ const removeAddedQuestion = (inputName) => {
 /** Validate Confirm Added Question Form */
 validateForm('#confirmRemoveAddedQuestionForm', {
     rules: {
-        addedInputName: {
-            required: true
-        }
+        addedInputName: { required: true }
     },
     messages: {
-        addedInputName: {
-            required: 'This field must have value'
-        }
+        addedInputName: { required: 'This field must have value' }
     },
     submitHandler: () => {
 

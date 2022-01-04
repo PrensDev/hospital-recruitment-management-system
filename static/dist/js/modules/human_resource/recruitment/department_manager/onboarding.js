@@ -687,10 +687,7 @@ const addOnboardingTask = () => {
                 hideModal('#addGeneralTaskModal');            
                 
                 // Ste button to unload state
-                btnToUnloadState('#addGeneralTaskBtn', `
-                    <span>Add</span>
-                    <i class="fas fa-plus ml-1"></i>
-                `);
+                btnToUnloadState('#addGeneralTaskBtn', TEMPLATE.LABEL_ICON('Add', 'plus'));
                 enableElement('#cancelAddGeneralTaskBtn');
 
                 // Reload datatable
@@ -708,10 +705,7 @@ const addOnboardingTask = () => {
             hideModal('#addGeneralTaskModal');            
             
             // Set buttons to unload state
-            btnToUnloadState('#addGeneralTaskBtn', `
-                <span>Add</span>
-                <i class="fas fa-plus ml-1"></i>
-            `);
+            btnToUnloadState('#addGeneralTaskBtn', TEMPLATE.LABEL_ICON('Add', 'plus'));
             enableElement('#cancelAddGeneralTaskBtn');
 
             // Show error alert
@@ -743,7 +737,7 @@ const initGeneralTaskDT = (selector, url) => {
                 render: data => {
                     return `
                         <div>${ data.title }</div>
-                        <div class="small text-secondary">${ data.description }</div>
+                        ${ TEMPLATE.SUBTEXT(data.description) }
                     `
                 }
             },
@@ -756,7 +750,7 @@ const initGeneralTaskDT = (selector, url) => {
                     const dateAdded = data.created_at;
                     return `
                         <div>${ formatDateTime(dateAdded, 'MMM. D, YYYY') }</div>
-                        <div class="small text-secondary">${ fromNow(dateAdded) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(dateAdded)) }
                     `
                 }
             },
@@ -818,7 +812,7 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
                     const addedBy = result.onboarding_task_added_by;
                     
                     return formatName('F M. L, S', {
-                        firstName  :   addedBy.first_name,
+                        firstName  : addedBy.first_name,
                         middleName : addedBy.middle_name,
                         lastName   : addedBy.last_name,
                         suffixName : addedBy.suffix_name
@@ -1335,10 +1329,7 @@ validateForm('#deleteOnbaordingEmployeeTaskForm', {
                     hideModal('#deleteOnboardingEmployeeTaskModal');
 
                     // Set buttons to unload state
-                    btnToUnloadState('#deleteOnboardingEmployeeTaskBtn', `
-                        <span>Yes, delete it.</span>
-                        <i class="fas fa-trash-alt ml-1"></i>
-                    `);
+                    btnToUnloadState('#deleteOnboardingEmployeeTaskBtn', TEMPLATE.LABEL_ICON('Yes, delete it.', 'trash-alt'));
                     enableElement('#cancelDeleteOnboardingEmployeeTaskBtn');
 
                     // Show alert
@@ -1445,10 +1436,7 @@ validateForm('#addOnboardingEmployeeTaskForm', {
                                 if(result) {
 
                                     // Set buttons to unload state
-                                    btnToUnloadState('#addOnboardingEmployeeTaskBtn', `
-                                        <span>Add</span>
-                                        <i class="fas fa-plus ml-1"></i>
-                                    `);
+                                    btnToUnloadState('#addOnboardingEmployeeTaskBtn', TEMPLATE.LABEL_ICON('Add', 'plus'));
                                     enableElement('#cancelAddOnboardingEmployeeTaskBtn');
 
                                     // Reload DataTable

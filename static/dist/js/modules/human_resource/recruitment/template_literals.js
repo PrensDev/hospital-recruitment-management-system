@@ -1,6 +1,6 @@
 /** 
  * ===================================================================================
- * TEMPLATE LITERALS
+ * * TEMPLATE LITERALS
  * ===================================================================================
  */
 
@@ -32,6 +32,9 @@ const TEMPLATE = {
             <span>${label}<span>
             <i class="fa${iconType} fa-${icon} ml-1"></i>
         `
+    },
+    UNSET: (content) => {
+        return `<div class="text-secondary font-italic">-- ${ content } --</div>`
     },
 
     /**

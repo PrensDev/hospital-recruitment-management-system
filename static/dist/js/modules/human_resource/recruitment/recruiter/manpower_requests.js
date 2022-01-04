@@ -72,7 +72,7 @@ initDataTable('#manpowerRequestDT', {
             render: data => {
                 const deadline = data.deadline;
                 return isEmptyOrNull(deadline)
-                    ? `<div class="text-secondary font-italic">Unset</div>`
+                    ? TEMPLATE.UNSET('Mo deadline has been set')
                     : `
                         <div>${ formatDateTime(deadline, "MMM. D, YYYY") }</div>
                         <div class="small text-secondary">${ fromNow(deadline) }</div>

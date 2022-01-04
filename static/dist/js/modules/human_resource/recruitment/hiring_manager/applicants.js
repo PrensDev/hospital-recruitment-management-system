@@ -27,11 +27,11 @@ ifSelectorExist('#jobPostSummary', () => {
             setContent('#jobPostStatus', () => {
                 const expiresAt = result.expiration_date;
                 if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
-                    return dtBadge('info', 'On Going');
+                    return TEMPLATE.DT.BADGE('info', 'On Going');
                 else if(isBeforeToday(expiresAt))
-                    return dtBadge('danger', 'Ended');
+                    return TEMPLATE.DT.BADGE('danger', 'Ended');
                 else
-                    return dtBadge('warning', 'Last day today');
+                    return TEMPLATE.DT.BADGE('warning', 'Last day today');
             });
 
             //  Set Job Posted At
@@ -83,15 +83,15 @@ initDataTable('#applicantsDT', {
             class: 'w-100',
             render: data => {
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name,
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name,
                 });
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -110,7 +110,7 @@ initDataTable('#applicantsDT', {
                 const dateApplied = data.created_at;
                 return `
                     <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }         
                 `;
             }
         },
@@ -120,42 +120,23 @@ initDataTable('#applicantsDT', {
             data: null,
             render: data => {
                 const status = data.status;
-                if(status === "For evaluation") {
-                    return dtBadge('warning', `
-                        <i class="fas fa-sync-alt mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else if(status === "For screening") {
-                    return dtBadge('secondary', `
-                        <i class="fas fa-search mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else if(status === "For interview") {
-                    return dtBadge('info', `
-                        <i class="fas fa-user-friends mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else if(status === "Hired") {
-                    return dtBadge('success', `
-                        <i class="fas fa-handshake mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else if(status === "Contract signed") {
-                    return dtBadge('primary', `
-                        <i class="fas fa-file-signature mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else if(
-                    status === "Rejected from evaluation" || 
-                    status === "Rejected from screening"  || 
-                    status === "Rejected from interview"
-                ) {
-                    return dtBadge('danger', `
-                        <i class="fas fa-times mr-1"></i>
-                        <span>${ status }</span>
-                    `);
-                } else {
-                    return dtBadge('light', `<span>Invalid data</span>`);
+                switch(status) {
+                    case "For evaluation":
+                        return TEMPLATE.DT.BADGE('warning', TEMPLATE.ICON_LABEL('sync-alt', status))
+                    case "For screening":
+                        return TEMPLATE.DT.BADGE('secondary', TEMPLATE.ICON_LABEL('search', status))
+                    case "For interview":
+                        return TEMPLATE.DT.BADGE('info', TEMPLATE.ICON_LABEL('user-friends', status))
+                    case "Hired":
+                        return TEMPLATE.DT.BADGE('success', TEMPLATE.ICON_LABEL('handshake', status))
+                    case "Contract signed":
+                        return TEMPLATE.DT.BADGE('primary', TEMPLATE.ICON_LABEL('file-signature', status))
+                    case "Rejected from evaluation":
+                    case "Rejected from screening":
+                    case "Rejected from interview":
+                        return TEMPLATE.DT.BADGE('danger', TEMPLATE.ICON_LABEL('times', status))
+                    default:
+                        return TEMPLATE.DT.BADGE('light', 'Invalid data')
                 }
             }
         },
@@ -164,24 +145,16 @@ initDataTable('#applicantsDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex" 
-                                role="button" 
-                                onclick="viewApplicantDetails('${ data.applicant_id }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Details</div>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex" 
+                        role="button" 
+                        onclick="viewApplicantDetails('${ data.applicant_id }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Details</div>
                     </div>
-                `
+                `)
             }
         }
     ]
@@ -204,10 +177,10 @@ const viewApplicantDetails = (applicantID) => {
             setValue('#applicantID', result.applicant_id)
 
             const applicantFullName = formatName('F M. L, S', {
-                firstName: result.first_name,
-                middleName: result.middle_name,
-                lastName: result.last_name,
-                suffixName: result.suffixName
+                firstName  : result.first_name,
+                middleName : result.middle_name,
+                lastName   : result.last_name,
+                suffixName : result.suffixName
             });
 
             // Set Applicant Full Name
@@ -257,13 +230,12 @@ onHideModal('#applicantDetailsModal', () => {
 const applicantsAnalytics = () => {
     GET_ajax(`${ ROUTE.API.H }applicants/analytics`, {
         success: result => {
-
             setContent({
-                '#totalApplicantsCount': formatNumber(result.total),
-                '#forEvaluationCount': formatNumber(result.for_evaluation),
-                '#forScreeningCount': formatNumber(result.for_screening),
-                '#forInterviewCount': formatNumber(result.for_interview),
-                '#rejectedApplicantsCount': formatNumber(result.rejected.total)
+                '#totalApplicantsCount'    : formatNumber(result.total),
+                '#forEvaluationCount'      : formatNumber(result.for_evaluation),
+                '#forScreeningCount'       : formatNumber(result.for_screening),
+                '#forInterviewCount'       : formatNumber(result.for_interview),
+                '#rejectedApplicantsCount' : formatNumber(result.rejected.total)
             });
         },
         error: () => toastr.error('There was an error in getting applciants analytics')
@@ -285,29 +257,24 @@ const applicantsPerJobAnalytics = () => {
         success: result => {
 
             // Show Count or Hide Element
-            const a = (s, c) => { if(c > 0) {
-                setContent(s, formatNumber(c));
-                showElement(s);
-            }}
+            const c = (obj) => Object.keys(obj).forEach(key => {
+                if(obj[key] > 0) {
+                    setContent(key, formatNumber(obj[key]));
+                    showElement(key);
+                }
+            })
 
-            // Set Total Applicants
-            a('#totalApplicantsCount', result.total);
-
-            // Set For Screening Count
-            a('#forScreeningCount', result.for_screening);
-
-            // Set For Evaluation Count
-            a('#forInterviewCount', result.for_interview);
-
-            // Set Interviewed Count
-            a('#interviewedApplicantsCount', result.interviewed);
-
-            // Set Hired Count
-            a('#hiredCount', result.hired);
-
-            // Set Rejected Count
-            const rejected = result.rejected.from_screening + result.rejected.from_interview;
-            a('#rejectedCount', formatNumber(rejected));
+            c({
+                '#totalApplicantsCount': result.total,
+                '#forScreeningCount': result.for_screening,
+                '#forInterviewCount': result.for_interview,
+                '#interviewedApplicantsCount': result.interviewed,
+                '#hiredCount': result.hired,
+                '#rejectedCount': formatNumber(
+                    result.rejected.from_screening 
+                    + result.rejected.from_interview
+                )
+            });
 
             // Remove Loader in the menus
             $('#menuLoader').remove();
@@ -333,10 +300,10 @@ const setApplicantDetailsAndTimeline = (result) => {
 
     // Set Applicant Full Name
     setContent('#applicantFullName', formatName('F M. L, S', {
-        firstName: result.first_name,
-        middleName: result.middle_name,
-        lastName: result.last_name,
-        suffixName: result.suffixName
+        firstName  : result.first_name,
+        middleName : result.middle_name,
+        lastName   : result.last_name,
+        suffixName : result.suffixName
     }));
 
     // Set Applicant Contact Number
@@ -500,16 +467,16 @@ initDataTable('#applicantsForScreeningDT', {
             class: 'w-100',
             render: data => {
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name,
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name,
                 });
 
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -522,7 +489,7 @@ initDataTable('#applicantsForScreeningDT', {
                 const dateApplied = data.created_at;
                 return `
                     <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }            
                 `
             }
         },
@@ -531,24 +498,16 @@ initDataTable('#applicantsForScreeningDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex" 
-                                role="button" 
-                                onclick="viewScreeningApplicantDetails('${ data.applicant_id }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Details</div>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex" 
+                        role="button" 
+                        onclick="viewScreeningApplicantDetails('${ data.applicant_id }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Details</div>
                     </div>
-                `
+                `)
             }
         }
     ]
@@ -672,16 +631,16 @@ initDataTable('#applicantsForInterviewDT', {
             class: 'w-100',
             render: data => {
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name,
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name,
                 });
 
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -691,21 +650,10 @@ initDataTable('#applicantsForInterviewDT', {
             data: null,
             render: data => {
                 const intervieweeInfo = data.interviewee_info;
-                if(isEmptyOrNull(intervieweeInfo)) {
-                    return `
-                        <div class="badge bg-warning p-2 w-100">
-                            <span>No schedule yet</span>
-                        </div>
-                    `
-                } else {
-                    if(intervieweeInfo[0].interviewee_schedule != [] && isEmptyOrNull(intervieweeInfo[0].is_interviewed)) {
-                        return `
-                            <div class="badge bg-info p-2 w-100">
-                                <span>Schedule is set</span>
-                            </div>
-                        `
-                    }
-                }
+                if(isEmptyOrNull(intervieweeInfo))
+                    return TEMPLATE.DT.BADGE('warning', 'No schedule yet')
+                if(intervieweeInfo[0].interviewee_schedule != [] && isEmptyOrNull(intervieweeInfo[0].is_interviewed))
+                    return TEMPLATE.DT.BADGE('info', 'Schedule is set')
             }
         },
 
@@ -717,7 +665,7 @@ initDataTable('#applicantsForInterviewDT', {
                 const dateApplied = data.created_at;
                 return `
                     <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }           
                 `
             }
         },
@@ -726,24 +674,16 @@ initDataTable('#applicantsForInterviewDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex" 
-                                role="button" 
-                                onclick="viewForInterviewApplicantDetails('${ data.applicant_id }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Details</div>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex" 
+                        role="button" 
+                        onclick="viewForInterviewApplicantDetails('${ data.applicant_id }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Details</div>
                     </div>
-                `
+                `)
             }
         }
     ]
@@ -859,7 +799,7 @@ onClick('#custom-content-below-schedules-tab', () => getInterviewSchedulesPerJob
 let selectApplicant = $('#selectApplicant');
 let selectedApplicants = [];
 
-/** If Create Interview Schedule Form Exist */
+/** If Create Interview Schedule Form is loaded */
 ifSelectorExist('#createInterviewScheduleForm', () => {
     GET_ajax(`${ ROUTE.API.H }job-posts/${ jobPostID }/applicants/for-interview`, {
         success: result => {
@@ -872,10 +812,10 @@ ifSelectorExist('#createInterviewScheduleForm', () => {
 
                     if(isEmptyOrNull(intervieweeInfo)) {
                         const applicantName = formatName('F M. L, S', {
-                            firstName: i.first_name,
-                            middleName: i.middle_name,
-                            lastName: i.last_name,
-                            suffixName: i.suffix_name
+                            firstName   : i.first_name,
+                            middleName  : i.middle_name,
+                            lastName    : i.last_name,
+                            suffixName  : i.suffix_name
                         });
 
                         selectApplicant.append(`<option value="${ i.applicant_id }">${ applicantName }</option>`);
@@ -901,10 +841,10 @@ ifSelectorExist('#createInterviewScheduleForm', () => {
         GET_ajax(`${ ROUTE.API.H }applicants/${ selectedApplicant }/interviewee-info`, {
             success: result => {
                 const intervieweeFullName = formatName('F M. L, S', {
-                    firstName: result.first_name,
-                    middleName: result.middle_name,
-                    lastName: result.last_name,
-                    suffixName: result.suffix_name
+                    firstName  : result.first_name,
+                    middleName : result.middle_name,
+                    lastName   : result.last_name,
+                    suffixName : result.suffix_name
                 });
 
                 const dtBody = $('#selectedApplicantsDTBody');
@@ -915,8 +855,8 @@ ifSelectorExist('#createInterviewScheduleForm', () => {
                     <tr id="interviewee-${ result.applicant_id }">
                         <td class="w-100">
                             <div>${ intervieweeFullName }</div>
-                            <div class="small text-secondary">${ result.email }</div>
-                            <div class="small text-secondary">${ result.contact_number }</div>
+                            ${ TEMPLATE.SUBTEXT(result.email) }
+                            ${ TEMPLATE.SUBTEXT(result.contact_number) }
                         </td>
                         <td class="text-center">
                             <a 
@@ -948,18 +888,12 @@ ifSelectorExist('#createInterviewScheduleForm', () => {
 
                 selectApplicant.val('').trigger('change');
 
-                setContent('#addApplicantBtn', `
-                    <span>Add</span>
-                    <i class="fas fa-plus ml-1"></i>
-                `);
+                setContent('#addApplicantBtn', TEMPLATE.LABEL_ICON('Add', 'plus'));
                 enableElement('#selectApplicant');
             },
             error: () => {
                 toastr.error('There was na error in getting applicant details');
-                btnToUnloadState('#addApplicantBtn', `
-                    <span>Add</span>
-                    <i class="fas fa-plus ml-1"></i>
-                `);
+                btnToUnloadState('#addApplicantBtn', TEMPLATE.LABEL_ICON('Add', 'plus'));
             }
         });
     });
@@ -974,14 +908,10 @@ const removeApplicant = (applicantID) => {
 /** Validate Confirm Remove Applicant Form */
 validateForm('#confirmRemoveApplicantForm', {
     rules: {
-        applicantID: {
-            required: true
-        }
+        applicantID: { required: true }
     },
     messages: {
-        applicantID: {
-            required: 'This must have a value'
-        }
+        applicantID: { required: 'This must have a value' }
     },
     submitHandler: () => {
         const applicantID = generateFormData('#confirmRemoveApplicantForm').get('applicantID');
@@ -1080,10 +1010,7 @@ onClick('#createScheduleBtn', () => {
         error: () => {
             hideModal('#confirmCreateInterviewScheduleModal');
 
-            btnToUnloadState('#createScheduleBtn', `
-                <span>Yes, create it!</span>
-                <i class="fas fa-check ml-1"></i>
-            `);
+            btnToUnloadState('#createScheduleBtn', TEMPLATE.LABEL_ICON('Yes, create it!', 'check'));
             enableElement('#cancelConfirmCreateInterviewScheduleBtn');
 
             toastr.error('There was an error in creating an interview schedule');
@@ -1113,15 +1040,15 @@ initDataTable('#interviewedApplicantsDT', {
             class: 'w-100',
             render: data => {
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name
                 });
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -1134,7 +1061,7 @@ initDataTable('#interviewedApplicantsDT', {
                 const dateApplied = data.created_at;
                 return `
                     <div>${ formatDateTime(dateApplied, 'MMM. D, YYYY') }</div>
-                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }
                 `
             }
         },
@@ -1155,24 +1082,16 @@ initDataTable('#interviewedApplicantsDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex" 
-                                role="button" 
-                                onclick="viewInterviewedApplicantDetails('${ data.applicant_id }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Details</div>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex" 
+                        role="button" 
+                        onclick="viewInterviewedApplicantDetails('${ data.applicant_id }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Details</div>
                     </div>
-                `
+                `)
             }
         }
     ]
@@ -1252,10 +1171,7 @@ const hireOrRejectApplicant = () => {
                 reloadDataTable('#interviewedApplicantsDT');
                 
                 // Set buttons to unload state
-                btnToUnloadState('#submitBtn', `
-                    <span>Submit</span>
-                    <i class="fas fa-check ml-1"></i>
-                `);
+                btnToUnloadState('#submitBtn', TEMPLATE.LABEL_ICON('Submit', 'check'));
                 enableElement('#cancelApplicantHiringBtn');
 
                 // Reload analytics
@@ -1273,10 +1189,7 @@ const hireOrRejectApplicant = () => {
             hideModal('#applicantDetailsModal');
 
             // Set buttons to unload state
-            btnToUnloadState('#submitBtn', `
-                <span>Submit</span>
-                <i class="fas fa-check ml-1"></i>
-            `);
+            btnToUnloadState('#submitBtn', TEMPLATE.LABEL_ICON('Submit', 'check'));
             enableElement('#cancelApplicantHiringBtn');
 
             // Show error alert
@@ -1293,7 +1206,6 @@ const hireOrRejectApplicant = () => {
 
 /** Hired Applicants DataTable */
 initDataTable('#hiredApplicantsDT', {
-    // debugMode: true,
     url: `${ ROUTE.API.H }job-posts/${ jobPostID }/applicants/hired`,
     columns: [
         
@@ -1306,16 +1218,16 @@ initDataTable('#hiredApplicantsDT', {
             class: 'w-100',
             render: data => {
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name,
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name,
                 });
 
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -1328,7 +1240,7 @@ initDataTable('#hiredApplicantsDT', {
                 const dateApplied = data.created_at;
                 return `
                     <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }         
                 `
             }
         },
@@ -1337,24 +1249,16 @@ initDataTable('#hiredApplicantsDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex" 
-                                role="button" 
-                                onclick="viewHiredApplicantDetails('${ data.applicant_id }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Details</div>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex" 
+                        role="button" 
+                        onclick="viewHiredApplicantDetails('${ data.applicant_id }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Details</div>
                     </div>
-                `
+                `);
             }
         }
     ]
@@ -1382,15 +1286,15 @@ initDataTable('#rejectedApplicantsDT', {
             class: 'w-100',
             render: data => {
                 const applicantFullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffixName: data.suffix_name,
+                    firstName  : data.first_name,
+                    middleName : data.middle_name,
+                    lastName   : data.last_name,
+                    suffixName : data.suffix_name,
                 });
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -1403,7 +1307,7 @@ initDataTable('#rejectedApplicantsDT', {
                 const dateApplied = data.created_at;
                 return `
                     <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }
                 `
             }
         },
@@ -1413,12 +1317,7 @@ initDataTable('#rejectedApplicantsDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="badge bg-danger p-2 w-100">
-                        <i class="fas fa-times mr-1"></i>
-                        <span>${ data.status }</span>
-                    </div>
-                `
+                return TEMPLATE.DT.BADGE('danger', TEMPLATE.ICON_LABEL('times', data.status));
             }
         },
 
@@ -1426,24 +1325,16 @@ initDataTable('#rejectedApplicantsDT', {
         {
             data: null,
             render: data => {
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex" 
-                                role="button" 
-                                onclick="viewRejectedApplicantDetails('${ data.applicant_id }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Details</div>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex" 
+                        role="button" 
+                        onclick="viewRejectedApplicantDetails('${ data.applicant_id }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Details</div>
                     </div>
-                `
+                `)
             }
         }
     ]

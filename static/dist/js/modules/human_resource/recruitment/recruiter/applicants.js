@@ -57,7 +57,7 @@ initDataTable('#applicantsDT', {
                 const dateApplied = data.created_at;
                 return `
                     <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }
                 `;
             }
         },
@@ -204,11 +204,11 @@ ifSelectorExist('#jobPostSummary', () => {
             setContent('#jobPostStatus', () => {
                 const expiresAt = result.expiration_date;
                 if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
-                    return dtBadge('info', 'On Going');
+                    return TEMPLATE.BADGE('info', 'On Going');
                 else if(isBeforeToday(expiresAt))
-                    return dtBadge('danger', 'Ended');
+                    return TEMPLATE.BADGE('danger', 'Ended');
                 else
-                    return dtBadge('warning', 'Last day today');
+                    return TEMPLATE.BADGE('warning', 'Last day today');
             });
 
             //  Set Job Posted At
@@ -326,7 +326,7 @@ initDataTable('#applicantsForEvaluationDT', {
                 const dateApplied = data.created_at;
                 return `
                     <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }                
                 `
             }
         },
@@ -378,8 +378,8 @@ initDataTable('#evaluatedApplicantsDT', {
                 });
                 return `
                     <div>${ applicantFullName }</div>
-                    <div class="small text-secondary">${ data.email }</div>
-                    <div class="small text-secondary">${ data.contact_number }</div>
+                    ${ TEMPLATE.SUBTEXT(data.email) }
+                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
                 `
             }
         },
@@ -392,7 +392,7 @@ initDataTable('#evaluatedApplicantsDT', {
                 const dateApplied = data.created_at;
                 return `
                     <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    <div class="small text-secondary">${ fromNow(dateApplied) }</div>                
+                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }
                 `
             }
         },
@@ -559,10 +559,7 @@ const evaluateApplicant = () => {
         hideModal('#applicantDetailsModal');
 
         // Set modal buttons to unload state
-        btnToUnloadState('#submitBtn', `
-            <span>Submit</span>
-            <i class="fas fa-check ml-1"></i>
-        `);
+        btnToUnloadState('#submitBtn', TEMPLATE.LABEL_ICON('Submit', 'check'));
         enableElement('#applicationDetailsCloseModalBtn');
 
         // Show error alert

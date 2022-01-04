@@ -17,14 +17,11 @@ ifSelectorExist('#jobPostsAnalytics', () => {
     GET_ajax(`${ ROUTE.API.H }job-posts/analytics`, {
         success: result => {
             if(result) {
-                // Set Total Job Post
-                setContent('#totalJobPostsCount', result.total);
-
-                // Set On Going Job Posts
-                setContent('#ongoingJobPostsCount', result.on_going);
-
-                // Set Ended Job Posts
-                setContent('#endedJobPostsCount', result.ended);
+                setContent({
+                    '#totalJobPostsCount': result.total,
+                    '#ongoingJobPostsCount': result.on_going,
+                    '#endedJobPostsCount': result.ended
+                });
             } else toastr.error('There was an error in getting job posts analytics')
         },
         error: () => toastr.error('There was an error in getting job posts analytics')
@@ -74,13 +71,12 @@ initDataTable('#jobPostsDT', {
             data: null,
             render: data => {
                 const expirationDate = data.expiration_date;
-
                 if(isAfterToday(expirationDate) || isEmptyOrNull(expirationDate))
-                    return dtBadge('info', 'On Going');
+                    return TEMPLATE.DT.BADGE('info', 'On Going');
                 else if(isBeforeToday(expirationDate))
-                    return dtBadge('danger', 'Ended');
+                    return TEMPLATE.DT.BADGE('danger', 'Ended');
                 else
-                    return dtBadge('warning', 'Last day today');
+                    return TEMPLATE.DT.BADGE('warning', 'Last day today');
             }
         },
 
@@ -90,12 +86,11 @@ initDataTable('#jobPostsDT', {
             class: 'text-nowrap',
             render: data => {
                 const expirationDate = data.expiration_date;
-
                 return isEmptyOrNull(expirationDate)
-                    ? `<div class="text-secondary font-italic">No expiration</div>`
+                    ? TEMPLATE.UNSET('No expiration')
                     : `
                         <div>${ formatDateTime(expirationDate, "MMM. D, YYYY") }</div>
-                        <div class="small text-secondary">${ fromNow(expirationDate) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(expirationDate)) }
                     `
             }
         },
@@ -106,7 +101,6 @@ initDataTable('#jobPostsDT', {
             render: data => {
                 const jobPostID = data.job_post_id;
                 const requisitionID = data.manpower_request.requisition_id;
-
                 const applicants = data.applicants.length > 0
                     ? `
                         <a 
@@ -119,31 +113,23 @@ initDataTable('#jobPostsDT', {
                     `
                     : '';
 
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a 
-                                class="dropdown-item d-flex"
-                                href="${ ROUTE.WEB.H }job-posts/${ jobPostID }"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Job Post</div>
-                            </a>
-                            ${ applicants }
-                            <a 
-                                class="dropdown-item d-flex"
-                                href="${ ROUTE.WEB.H }manpower-requests/${ requisitionID }"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
-                                <div>View Manpower Request</div>
-                            </a>
-                        </div>
-                    </div>
-                `
+                return TEMPLATE.DT.OPTIONS(`
+                    <a 
+                        class="dropdown-item d-flex"
+                        href="${ ROUTE.WEB.H }job-posts/${ jobPostID }"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Job Post</div>
+                    </a>
+                    ${ applicants }
+                    <a 
+                        class="dropdown-item d-flex"
+                        href="${ ROUTE.WEB.H }manpower-requests/${ requisitionID }"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
+                        <div>View Manpower Request</div>
+                    </a>
+                `)
             }
         }
     ]
@@ -168,11 +154,11 @@ ifSelectorExist('#jobPostDetails', () => {
             const expiresAt = result.expiration_date;
 
             if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
-                setContent('#jobPostStatus', dtBadge('info', 'On Going'))
+                setContent('#jobPostStatus', TEMPLATE.BADGE('info', 'On Going'))
             else if(isBeforeToday(expiresAt))
-                setContent('#jobPostStatus', dtBadge('danger', 'Ended'))
+                setContent('#jobPostStatus', TEMPLATE.BADGE('danger', 'Ended'))
             else
-                setContent('#jobPostStatus', dtBadge('warning', 'Last Day Today'))
+                setContent('#jobPostStatus', TEMPLATE.BADGE('warning', 'Last Day Today'))
 
             // Set Posted At
             setContent('#postedAt', `Posted ${ formatDateTime(result.created_at, 'Date') }`);
@@ -211,12 +197,10 @@ ifSelectorExist('#jobPostDetails', () => {
             /** Job Post Options */
             setContent('#jobPostOptions', `
                 <a class="btn btn-sm btn-secondary btn-block" target="_blank" href="${ BASE_URL_WEB }careers/${ jobPostID }">
-                    <i class="fas fa-eye mr-1"></i>
-                    <span>View post in public portal</span>
+                    ${ TEMPLATE.ICON_LABEL('eye', 'View post in public portal') }
                 </a>
                 <a class="btn btn-sm btn-secondary btn-block" href="${ ROUTE.WEB.H }job-posts/${ jobPostID }/applicants">
-                    <i class="fas fa-users mr-1"></i>
-                    <span>View applicants</span>
+                    ${ TEMPLATE.ICON_LABEL('users', 'View applicants') }
                 </a>
             `);
 
@@ -249,11 +233,11 @@ ifSelectorExist('#jobPostDetails', () => {
             setContent('#deadlineForSummary', () => {
                 const deadline = manpowerRequest.deadline;
                 return isEmptyOrNull(deadline) 
-                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    ? TEMPLATE.UNSET('No deadline has been set') 
                     : `
                         <div>${ formatDateTime(deadline, "Full Date") }</div>
                         <div>${ formatDateTime(deadline, "Time") }</div>
-                        <div class="small text-secondary">${ fromNow(deadline) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(deadline)) }
                     `
             });
 

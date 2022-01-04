@@ -232,10 +232,7 @@ validateForm('#signedContractForm', {
                             hideModal('#uploadSignedContractModal');
 
                             // Set buttons to unload state
-                            btnToUnloadState('#submitContractBtn', `
-                                <i class="fas fa-file-export mr-1"></i>
-                                <span>Submit</span>
-                            `);
+                            btnToUnloadState('#submitContractBtn', TEMPLATE.ICON_LABEL('file-export', 'Submit'));
                             enableElement('#cancelSubmitContractBtn');
 
                             // Show alert

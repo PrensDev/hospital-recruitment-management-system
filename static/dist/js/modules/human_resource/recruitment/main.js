@@ -1,6 +1,6 @@
 /** 
  * ===================================================================================
- * APP FUNCTIONS
+ * * APP FUNCTIONS
  * ===================================================================================
  */
 
@@ -27,8 +27,8 @@ const setManpowerRequestTimeline = (selector, data) => {
         timelineTitle: 'Created',
         timelineBody: `
             <div class="small mb-3">This request has been created by <b>${ createdByFullName }</b></div>
-            <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
-            <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
+            ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Full Date")) }
+            ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Time")) }
         `
     });
 
@@ -49,8 +49,8 @@ const setManpowerRequestTimeline = (selector, data) => {
             timelineTitle: 'Signed',
             timelineBody: `
                 <div class="small mb-3">This request has been signed by <b>${ signedByFullName }</b></div>
-                <div class="small text-secondary">${ formatDateTime(signedAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(signedAt, "Time") }</div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(signedAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(signedAt, "Time")) }
             `
         });
     } else if(requestStatus === "Rejected for signing") {
@@ -68,8 +68,8 @@ const setManpowerRequestTimeline = (selector, data) => {
             timelineTitle: 'Rejected',
             timelineBody: `
                 <div class="small mb-3">This request has been rejected for signing by <b>${ rejectedByFullName }</b></div>
-                <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Time")) }
             `
         });
     }
@@ -91,8 +91,8 @@ const setManpowerRequestTimeline = (selector, data) => {
             timelineTitle: 'Approved',
             timelineBody: `
                 <div class="small mb-3">This request has been reviewed and approved by <b>${ reviewedByFullName }</b></div>
-                <div class="small text-secondary">${ formatDateTime(reviewedAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(reviewedAt, "Time") }</div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(reviewedAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(reviewedAt, "Time")) }
             `
         });
     } else if(requestStatus === "Rejected for approval") {
@@ -111,8 +111,8 @@ const setManpowerRequestTimeline = (selector, data) => {
             timelineTitle: 'Rejected',
             timelineBody: `
                 <div class="small mb-3">This request has been rejected for approval by <b>${ rejectedByFullName }</b></div>
-                <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Time")) }
             `
         });
     }
@@ -127,8 +127,8 @@ const setManpowerRequestTimeline = (selector, data) => {
             timelineTitle: 'Completed',
             timelineBody: `
                 <div class="small mb-3">This request had been marked as completed</b></div>
-                <div class="small text-secondary">${ formatDateTime(completedAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(completedAt, "Time") }</div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(completedAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(completedAt, "Time")) }
             `
         });
     } 
@@ -156,8 +156,8 @@ const setApplicantTimeline = (selector, data) => {
         timelineTitle: 'Applied',
         timelineBody: `
             <div class="small mb-3">Application was submitted by <b>${ applicantFullName }</b></div>
-            <div class="small text-secondary">${ formatDateTime(createdAt, "Full Date") }</div>
-            <div class="small text-secondary">${ formatDateTime(createdAt, "Time") }</div>
+            ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Full Date")) }
+            ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Time")) }
         `
     });
 
@@ -178,8 +178,8 @@ const setApplicantTimeline = (selector, data) => {
             timelineTitle: 'Evaluated',
             timelineBody: `
                 <div class="small mb-3">Evaluation was done by <b>${ evaluatedByFullName }</b></div>
-                <div class="small text-secondary">${ formatDateTime(evaluatedAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(evaluatedAt, "Time") }</div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(evaluatedAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(evaluatedAt, "Time")) }
             `
         });
     }
@@ -201,8 +201,8 @@ const setApplicantTimeline = (selector, data) => {
             timelineTitle: 'Screened',
             timelineBody: `
                 <div class="small mb-3">Screening was done by <b>${ screenedByFullName }</b></div>
-                <div class="small text-secondary">${ formatDateTime(screenedAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(screenedAt, "Time") }</div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(screenedAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(screenedAt, "Time")) }
             `
         });
     }
@@ -224,8 +224,8 @@ const setApplicantTimeline = (selector, data) => {
             timelineTitle: 'Hired',
             timelineBody: `
                 <div class="small mb-3">Hiring was done by <b>${ hiredByFullName }</b></div>
-                <div class="small text-secondary">${ formatDateTime(hiredAt, "Full Date") }</div>
-                <div class="small text-secondary">${ formatDateTime(hiredAt, "Time") }</div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(hiredAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(hiredAt, "Time")) }
             `
         });
     }
@@ -254,8 +254,8 @@ const setApplicantTimeline = (selector, data) => {
                 timelineBody: `
                     <div class="small mb-1">Applicant was ${ status.toLowerCase() } by <b>${ rejectedByFullName }</b></div>
                     <div class="small mb-3"><span class="text-danger font-weight-bold mr-1">Remarks:</span>${ data.remarks }</div>
-                    <div class="small text-secondary">${ formatDateTime(rejectedAt, "Full Date") }</div>
-                    <div class="small text-secondary">${ formatDateTime(rejectedAt, "Time") }</div>
+                    ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Full Date")) }
+                    ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Time")) }
                 `
             });
         }

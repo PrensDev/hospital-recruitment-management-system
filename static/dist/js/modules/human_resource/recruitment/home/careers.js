@@ -73,8 +73,7 @@ ifSelectorExist('#availableJobList', () => {
                                 </div>
                                 <div class="card-footer text-right">
                                     <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-list mr-1"></i>
-                                        <span>View Details</span>
+                                        ${ TEMPLATE.ICON_LABEL('list', 'View Details') }
                                     </a>
                                 </div>
                             </div>
@@ -169,10 +168,10 @@ ifSelectorExist('#availableJobDetails', () => {
             setContent('#openUntil', () => {
                 const expiresAt = result.expiration_date;
                 return isEmptyOrNull(expiresAt)
-                    ? `<div class="text-secondary font-italic">No deadline</div>`
+                    ? TEMPLATE.UNSET('No deadline')
                     : `
                         <div>${ formatDateTime(expiresAt, "Date") }</div>
-                        <div class="small text-secondary">${ fromNow(expiresAt) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(expiresAt)) }
                     `
             });
 

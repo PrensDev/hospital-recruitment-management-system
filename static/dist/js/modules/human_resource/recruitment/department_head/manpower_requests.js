@@ -78,7 +78,7 @@ initDataTable('#manpowerRequestDT', {
                 return `
                     <div>${ formatDateTime(createdAt, "MMM. D, YYYY") }</div>
                     <div>${ formatDateTime(createdAt, "Time") }</div>
-                    <div class="small text-secondary">${ fromNow(createdAt) }</div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(createdAt)) }
                 `
             }
         },
@@ -122,11 +122,9 @@ const manpowerRequestAnalytics = () => GET_ajax(`${ ROUTE.API.DH }requisitions/a
             // For Signature Count
             setContent('#forSignatureCount', () => {
                 const forSignatureCount = parseInt(result.for_signature);
-                if(forSignatureCount > 0) return `
-                    <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
-                    <span>${formatNumber(forSignatureCount)}</span>
-                ` 
-                else return 0
+                return forSignatureCount > 0
+                    ? TEMPLATE.ICON_LABEL('exclamation-triangle text-warning', formatNumber(forSignatureCount)) 
+                    : 0
             });
 
             // Set Signed Requests
@@ -208,7 +206,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                 const maxSalary = result.max_monthly_salary;
                 const hasNoSalaryRange = isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary);
                 return hasNoSalaryRange 
-                    ? `<div class="text-secondary font-italic">No salary has been set</div>`
+                    ? TEMPLATE.UNSET('No salary has been set')
                     : `${ formatCurrency(minSalary) } - ${ formatCurrency(maxSalary) }/month`;
             });
 
@@ -222,7 +220,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                 if(result.request_status === "Rejected for signing")
                     return `<div class="text-danger">This request has been rejected for signing</div>`
                 else if(isEmptyOrNull(signedBy) && result.request_status !== "Rejected for signing")
-                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                    return TEMPLATE.UNSET('Not yet signed')
                 else {
                     const signedByFullName = formatName("L, F M., S", {
                         firstName  : signedBy.first_name,
@@ -232,7 +230,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                     });
                     return `
                         <div>${ signedByFullName }</div>
-                        <div class="small text-secondary">${ signedBy.position.name }, ${ signedBy.position.department.name }</div>
+                        ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.department.name) }
                     `
                 }
             });
@@ -241,7 +239,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             setContent('#signedAt', () => {
                 const signedAt = result.signed_at;
                 return isEmptyOrNull(signedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    ? TEMPLATE.UNSET('No status approved')
                     : `
                         <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
                         <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
@@ -255,7 +253,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                         result.request_status === "Rejected for approval" ||
                         result.request_status === "Rejected for signing"
                     )
-                    ? `<div class="text-secondary font-italic">Not yet approved</div>`
+                    ? TEMPLATE.UNSET('Not yet approved')
                     : () => {
                         if(result.request_status === "Rejected for signing")
                             return `<div class="text-danger">This request has been rejected</div>`
@@ -280,7 +278,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             setContent('#approvedAt', () => {
                 const approvedAt = result.reviewed_at;
                 return isEmptyOrNull(approvedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    ? TEMPLATE.UNSET('No status')
                     : formatDateTime(approvedAt, "Date")
             });
 
@@ -288,7 +286,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             setContent('#completedAt', () => {
                 const completedAt = result.completed_at;
                 return isEmptyOrNull(completedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    ? TEMPLATE.UNSET('No status')
                     : formatDateTime(completedAt, "DateTime")
             });
 
@@ -296,8 +294,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             setContent('#manpowerRequestOptions', () => {
                 return `
                     <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                        <span>Print Manpower Request Form</span>
-                        <i class="fas fa-print ml-1"></i>
+                        ${ TEMPLATE.LABEL_ICON('Print Manpower Request Form', 'print') }
                     </div>
                 `
             });
@@ -313,10 +310,10 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             if(requestStatus == "Completed") {
                 const completedAt = result.completed_at;
                 const requestorFullName = formatName("F M. L, S", {
-                    firstName: requestedBy.first_name,
-                    middleName: requestedBy.middle_name,
-                    lastName: requestedBy.last_name,
-                    suffixName: requestedBy.suffix_name
+                    firstName  : requestedBy.first_name,
+                    middleName : requestedBy.middle_name,
+                    lastName   : requestedBy.last_name,
+                    suffixName : requestedBy.suffix_name
                 });
                 setContent('#manpowerRequestStatus', `
                     <div class="alert border-success">
@@ -328,10 +325,10 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             } else if(requestStatus == 'Rejected for signing' || requestStatus == 'Rejected for approval') {
                 const rejectedBy = result.manpower_request_rejected_by;
                 const rejectedByFullName = formatName("F M. L, S", {
-                    firstName: rejectedBy.first_name,
-                    middleName: rejectedBy.middle_name,
-                    lastName: rejectedBy.last_name,
-                    suffixName: rejectedBy.suffix_name
+                    firstName  : rejectedBy.first_name,
+                    middleName : rejectedBy.middle_name,
+                    lastName   : rejectedBy.last_name,
+                    suffixName : rejectedBy.suffix_name
                 });
                 const rejectedAt = result.rejected_at;
                 setContent('#manpowerRequestStatus', `
@@ -400,10 +397,8 @@ validateForm('#signatureForm', {
     submitHandler: () => {
         const requestStatus = generateFormData('#signatureForm').get('requestStatus');
 
-        if(requestStatus == "For approval") 
-            showModal('#confirmSignRequestModal');
-        else if(requestStatus == "Rejected for signature") 
-            showModal('#rejectRequestModal');
+        if(requestStatus == "For approval") showModal('#confirmSignRequestModal');
+        else if(requestStatus == "Rejected for signature") showModal('#rejectRequestModal');
         
         return false;
     }
@@ -452,10 +447,7 @@ const signRequest = (data) => {
         if(data.request_status == "For approval") {
     
             // Buttons to unload state
-            btnToUnloadState('#submitSignRequestBtn', `
-                <span>Yes, sign it!</span>
-                <i class="fas fa-file-signature ml-1"></i>
-            `);
+            btnToUnloadState('#submitSignRequestBtn', TEMPLATE.LABEL_ICON('Yes, sign it!', 'file-signature'));
             enableElement('#cancelSignRequestBtn');
 
             // Hide modal
@@ -463,10 +455,7 @@ const signRequest = (data) => {
         } else if(data.request_status == "Rejected for signing") {
             
             // Buttons to loading state
-            btnToLoadingState('#submitRejectRequestBtn', `
-                <span>Submit</span>
-                <i class="fas fa-check ml-1"></i>
-            `);
+            btnToLoadingState('#submitRejectRequestBtn', TEMPLATE.LABEL_ICON('Submit', 'check'));
             disableElement('#cancelRejectRequestBtn');
 
             // Hide modal

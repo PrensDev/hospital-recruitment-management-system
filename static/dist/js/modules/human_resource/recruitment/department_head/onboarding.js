@@ -39,15 +39,15 @@ initDataTable('#onboardingEmployeesDT', {
             data: null,
             render: data => {
                 const fullName = formatName('F M. L, S', {
-                    firstName: data.first_name,
-                    middleName: data.middle_name,
-                    lastName: data.last_name,
-                    suffix_name: data.suffix_name
+                    firstName   : data.first_name,
+                    middleName  : data.middle_name,
+                    lastName    : data.last_name,
+                    suffix_name : data.suffix_name
                 });
 
                 return `
                     <div>${ fullName }</div>
-                    <div class="small text-secondary">${ data.onboarding_employee_position.name }</div>
+                    ${ TEMPLATE.SUBTEXT(data.onboarding_employee_position.name) }
                 `
             }
         },
@@ -81,9 +81,7 @@ initDataTable('#onboardingEmployeesDT', {
                 else if(taskProgress == 100) bgColor = 'success';
 
                 var completeStatus = taskProgress == 100
-                    ? `
-                        <small>All tasks are completed</small>
-                    `
+                    ? `<small>All tasks are completed</small>`
                     : `<small>${ taskProgress }% complete</small>`
 
                 return `
@@ -108,23 +106,15 @@ initDataTable('#onboardingEmployeesDT', {
         {
             data: null,
             render: data => {
-                return  `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a 
-                                href="${ ROUTE.WEB.DH }onboarding-employees/${ data.onboarding_employee_id }/onboarding-tasks"
-                                class="dropdown-item d-flex"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Tasks</div>
-                            </a>
-                        </div>
-                    </div>
-                `
+                return  TEMPLATE.DT.OPTIONS(`
+                    <a 
+                        href="${ ROUTE.WEB.DH }onboarding-employees/${ data.onboarding_employee_id }/onboarding-tasks"
+                        class="dropdown-item d-flex"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Tasks</div>
+                    </a>
+                `)
             }
         }
     ]
@@ -190,24 +180,16 @@ initDataTable('#onboardingEmployeeTasksDT', {
             render: data => {
                 const onboardingEmplyeeTaskID = data.onboarding_employee_task_id;
 
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div 
-                                class="dropdown-item d-flex"
-                                role="button"
-                                onclick="viewOnboardingEmployeeTaskDetails('${ onboardingEmplyeeTaskID }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <span>View Details</span>
-                            </div>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <div 
+                        class="dropdown-item d-flex"
+                        role="button"
+                        onclick="viewOnboardingEmployeeTaskDetails('${ onboardingEmplyeeTaskID }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <span>View Details</span>
                     </div>
-                `
+                `)
             }
         }
     ]
@@ -255,10 +237,10 @@ const getOnboardingEmployeeDetails = () => {
 
             setContent({
                 '#employeeFullName': formatName('F M. L, S', {
-                    firstName: result.first_name,
-                    middleName: result.middle_name,
-                    lastName: result.last_name,
-                    suffixName: result.suffix_name
+                    firstName  : result.first_name,
+                    middleName : result.middle_name,
+                    lastName   : result.last_name,
+                    suffixName : result.suffix_name
                 }),
                 '#employeePosition': result.onboarding_employee_position.name,
                 '#taskProgress': getTaskProgress(),
@@ -301,26 +283,26 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
             setContent('#taskStart', `
                 <div>${ formatDateTime(result.start_at, 'Full Date') }</div>
                 <div>${ formatDateTime(result.start_at, 'Time') }</div>
-                <div class="small text-secondary">${ fromNow(result.start_at) }</div>
+                ${ TEMPLATE.SUBTEXT(fromNow(result.start_at)) }
             `);
 
             // Task End
             setContent('#taskEnd', `
                 <div>${ formatDateTime(result.end_at, 'Full Date') }</div>
                 <div>${ formatDateTime(result.end_at, 'Time') }</div>
-                <div class="small text-secondary">${ fromNow(result.end_at) }</div>
+                ${ TEMPLATE.SUBTEXT(fromNow(result.end_at)) }
             `);
 
             // Task Status
             setContent('#taskStatus', () => {
                 const status = result.status;
-                if(status === "Completed") {
-                    return `
+                return status === "Completed"
+                    ? `
                         <div>Completed</div>
                         <div>${ formatDateTime(result.completed_at, 'Full DateTime') }</div>
-                        <div class="small text-secondary">${ fromNow(result.completed_at) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(result.completed_at)) }
                     `
-                } else return status
+                    : status
             });
 
             // Progress

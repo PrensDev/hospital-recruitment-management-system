@@ -1058,10 +1058,7 @@ validateForm('#endRecruitingForm', {
                     ifSelectorExist('#jobPostDetails', () => getJobPostDetails());
 
                     // Set Buttons to loading state
-                    btnToUnloadState('#confirmEndRecruitingBtn', `
-                        <span>Yes, end it!</span>
-                        <i class="fas fa-check ml-1"></i>
-                    `);
+                    btnToUnloadState('#confirmEndRecruitingBtn', TEMPLATE.LABEL_ICON('Yes, end it!', 'check'));
                     enableElement('#cancelEndRecruitingBtn');
 
                     // Show Alert

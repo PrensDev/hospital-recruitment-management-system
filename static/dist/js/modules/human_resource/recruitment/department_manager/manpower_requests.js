@@ -536,7 +536,7 @@ const getManpowerRequestDetails = () => {
             setContent('#approvedAt', () => {
                 const approvedAt = result.reviewed_at;
                 return isEmptyOrNull(approvedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    ? TEMPLATE.UNSET('No status') 
                     : `
                         <div class="text-nowrap">${ formatDateTime(approvedAt, "Date") }</div>
                         <div class="text-nowrap">${ formatDateTime(approvedAt, "Time") }</div>
@@ -547,7 +547,7 @@ const getManpowerRequestDetails = () => {
             const completedAt = result.completed_at;
             setContent('#completedAt', () => {
                 return isEmptyOrNull(completedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    ? TEMPLATE.UNSET('No status') 
                     :  `
                         <div class="text-nowrap">${ formatDateTime(completedAt, "Date") }</div>
                         <div class="text-nowrap">${ formatDateTime(completedAt, "Time") }</div>

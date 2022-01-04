@@ -23,7 +23,7 @@ initDataTable('#manpowerRequestDT', {
                 const vacantPosition = data.vacant_position;
                 return `
                     <div>${ vacantPosition.name }</div>
-                    <div class="small text-secondary">${ vacantPosition.department.name }</div>
+                    ${ TEMPLATE.SUBTEXT(vacantPosition.department.name) }
                 `
             }
         },
@@ -43,30 +43,34 @@ initDataTable('#manpowerRequestDT', {
             render: data => {
                 const requestStatus = data.request_status;
 
-                var bagdeTheme;
-                var badgeIcon;
+                var bagdeTheme, badgeIcon;
                 let validStatus = true;
-                
-                if(requestStatus === "For approval") {
-                    bagdeTheme = "warning";
-                    badgeIcon = "sync-alt";
-                } else if(requestStatus === "Approved") {
-                    bagdeTheme = "success";
-                    badgeIcon = "thumbs-up";
-                } else if(requestStatus === "Rejected for approval") {
-                    bagdeTheme = "danger";
-                    badgeIcon = "times";
-                } else if(requestStatus === "Completed") {
-                    bagdeTheme = "info";
-                    badgeIcon = "check";
-                } else validStatus = false
 
+                switch(requestStatus) {
+                    case "For approval":
+                        bagdeTheme = "warning";
+                        badgeIcon = "sync-alt";
+                        break;
+                    case "Approved":
+                        bagdeTheme = "success";
+                        badgeIcon = "thumbs-up";
+                        break;
+                    case "Rejected for approval":
+                        bagdeTheme = "danger";
+                        badgeIcon = "times";
+                        break;
+                    case "Completed":
+                        bagdeTheme = "info";
+                        badgeIcon = "check";
+                        break;
+                    default:
+                        validStatus = false
+                        break;
+                }
+                
                 return validStatus 
-                    ? dtBadge(bagdeTheme, `
-                        <i class="fas fa-${ badgeIcon } mr-1"></i>
-                        <span>${ requestStatus }</span>
-                    `)
-                    : `<div class="badge badge-light p-2 w-100">Undefined</div>`
+                    ? TEMPLATE.DT.BADGE(bagdeTheme, TEMPLATE.ICON_LABEL(badgeIcon, requestStatus))
+                    : TEMPLATE.DT.BADGE('light', 'Undefined')
             }
         },
 
@@ -77,7 +81,7 @@ initDataTable('#manpowerRequestDT', {
                 const createdAt = data.created_at
                 return `
                     <div>${ formatDateTime(createdAt, "MMM. D, YYYY") }<div>
-                    <div class="small text-secondary">${ fromNow(createdAt) }<div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(createdAt)) }
                 `
             }
         },
@@ -87,23 +91,15 @@ initDataTable('#manpowerRequestDT', {
             data: null,
             render: data => {
                 const requisitionID = data.requisition_id;
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a 
-                                class="dropdown-item d-flex"
-                                href="${ ROUTE.WEB.H }manpower-requests/${ requisitionID }"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <span>View Details</span>
-                            </a>
-                        </div>
-                    </div>
-                `
+                return TEMPLATE.DT.OPTIONS(`
+                    <a 
+                        class="dropdown-item d-flex"
+                        href="${ ROUTE.WEB.H }manpower-requests/${ requisitionID }"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
+                        <span>View Request</span>
+                    </a>
+                `)
             }
         }
     ],
@@ -173,10 +169,10 @@ ifSelectorExist('#manpowerRequestDocument', () => {
             
             // Set Requestor Name
             setContent('#requestorName', formatName("F M. L, S", {
-                firstName: requestedBy.first_name,
-                middleName: requestedBy.middle_name,
-                lastName: requestedBy.last_name,
-                suffixName: requestedBy.suffix_name
+                firstName  : requestedBy.first_name,
+                middleName : requestedBy.middle_name,
+                lastName   : requestedBy.last_name,
+                suffixName : requestedBy.suffix_name
             }));
             
             // Set Requestor Department
@@ -188,8 +184,9 @@ ifSelectorExist('#manpowerRequestDocument', () => {
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
-                if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No deadline</div>`
-                else return formatDateTime(result.deadline, "DateTime")
+                return isEmptyOrNull(deadline)
+                    ? TEMPLATE.UNSET('No deadline')
+                    : formatDateTime(deadline, "DateTime")
             });
 
             // Set Requested Position
@@ -215,7 +212,7 @@ ifSelectorExist('#manpowerRequestDocument', () => {
                 const minMonthlySalary = result.min_monthly_salary;
                 const maxMonthlySalary = result.max_monthly_salary;
                 return isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary) 
-                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    ? TEMPLATE.UNSET('Salary has not been set')
                     : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
             });
 
@@ -232,10 +229,10 @@ ifSelectorExist('#manpowerRequestDocument', () => {
                             return `<div class="text-danger">This request has been rejected</div>`
                         } else {
                             const approvedByFullName = formatName("L, F M., S", {
-                                firstName: approvedBy.first_name,
-                                middleName: approvedBy.middle_name,
-                                lastName: approvedBy.last_name,
-                                suffixName: approvedBy.suffix_name
+                                firstName  : approvedBy.first_name,
+                                middleName : approvedBy.middle_name,
+                                lastName   : approvedBy.last_name,
+                                suffixName : approvedBy.suffix_name
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
@@ -255,10 +252,10 @@ ifSelectorExist('#manpowerRequestDocument', () => {
                     return `<div class="text-secondary font-italic">Not yet signed</div>`
                 else {
                     const signedByFullName = formatName("L, F M., S", {
-                        firstName: signedBy.first_name,
-                        middleName: signedBy.middle_name,
-                        lastName: signedBy.last_name,
-                        suffixName: signedBy.suffix_name
+                        firstName  : signedBy.first_name,
+                        middleName : signedBy.middle_name,
+                        lastName   : signedBy.last_name,
+                        suffixName : signedBy.suffix_name
                     });
                     return `
                         <div>${ signedByFullName }</div>
@@ -282,7 +279,7 @@ ifSelectorExist('#manpowerRequestDocument', () => {
             setContent('#approvedAt', () => {
                 const approvedAt = result.reviewed_at;
                 return (isEmptyOrNull(approvedAt) || result.request_status === 'Rejected') 
-                    ? `<div class="text-secondary font-italic">No status</div>`
+                    ? TEMPLATE.UNSET("No status")
                     : formatDateTime(approvedAt, "DateTime")
             });
 
@@ -290,7 +287,7 @@ ifSelectorExist('#manpowerRequestDocument', () => {
             setContent('#completedAt', () => {
                 const completedAt = result.completed_at;
                 return isEmptyOrNull(completedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>`
+                    ? TEMPLATE.UNSET("No status")
                     : formatDateTime(completedAt, "Date")
             });
 
@@ -408,10 +405,7 @@ const requestApproval = (data) => {
         if(data.request_status == "Approved") {
     
             // Buttons to unload state
-            btnToUnloadState('#submitApproveRequestBtn', `
-                <span>Yes, approve it!</span>
-                <i class="fas fa-thumbs-up ml-1"></i>
-            `);
+            btnToUnloadState('#submitApproveRequestBtn', TEMPLATE.LABEL_ICON('Yes, approve it!', 'thumbs-up'));
             enableElement('#cancelSignRequestBtn');
 
             // Hide modal
@@ -419,10 +413,7 @@ const requestApproval = (data) => {
         } else if(data.request_status == "Rejected for approval") {
             
             // Buttons to loading state
-            btnToLoadingState('#submitRejectRequestBtn', `
-                <span>Submit</span>
-                <i class="fas fa-check ml-1"></i>
-            `);
+            btnToLoadingState('#submitRejectRequestBtn', TEMPLATE.LABEL_ICON("Submit", 'check'));
             disableElement('#cancelRejectRequestBtn');
 
             // Hide modal
