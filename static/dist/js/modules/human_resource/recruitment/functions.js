@@ -86,11 +86,11 @@ const initDataTable = (selector = "", dtOptions = {
 
     const dtOrder = [[0, 'desc']];
 
-    let visibleCols = [];
-    for(var i = 1; i < dtOptions.columns.length-1; i++) visibleCols.push(i);
-
-    let columnOpts = [];
-    for(var i = 2; i < dtOptions.columns.length-1; i++) columnOpts.push(i);
+    let visibleCols = [], columnOpts = [];
+    for(var i = 1; i < dtOptions.columns.length-1; i++) {
+        visibleCols.push(i);
+        if(i > 2) columnOpts.push(i);
+    }
 
     var dtParams;
 
@@ -281,8 +281,8 @@ const validateForm = (selector = "", validationOptions = { rules: {}, messages: 
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
             },
-            highlight: (element, errorClass, validClass) => $(element).addClass('is-invalid'),
-            unhighlight: (element, errorClass, validClass) => $(element).removeClass('is-invalid'),
+            highlight: (element) => $(element).addClass('is-invalid'),
+            unhighlight: (element) => $(element).removeClass('is-invalid'),
             submitHandler: validationOptions.submitHandler
         });
     }, false);
@@ -510,22 +510,22 @@ $(() => {
     if(localStorage.getItem('sessioned_alert')) {
         const alertTheme = localStorage.getItem('sessioned_alert_theme');
         const alertMessage = localStorage.getItem('sessioned_alert_message');
-
+        
+        // Show Alert
         const alerts = {
             "success" : () => toastr.success(alertMessage),
             "info"    : () => toastr.info(alertMessage),
             "warning" : () => toastr.warning(alertMessage),
             "error"   : () => toastr.error(alertMessage)
         }
-
         setTimeout(() => alerts[alertTheme](), 1000);
 
+        // Remove session after 1s
         const sessions = [
             "sessioned_alert", 
             "sessioned_alert_theme", 
             "sessioned_alert_message"
         ];
-
         setTimeout(() => sessions.forEach(s => localStorage.removeItem(s)), 500);
     }
 })
@@ -547,24 +547,15 @@ const setTimeline = (selector, attr = { title: "", timelineData: [] }) => {
 
         let timelines = "";
 
-        const timelineComponent = (properties = {
-            icon: "",
-            iconTheme: "",
-            dateTime: "",
-            timelineTitle: "",
-            timelineBody: ""
-        }) => {
+        const timelineComponent = (properties = {icon: "",iconTheme: "",dateTime: "",timelineTitle: "",timelineBody: ""}) => {
             return `
                 <div>
                     <i class="fas fa-${ properties.icon } bg-${ properties.iconTheme }"></i>
                     <div class="timeline-item">
                         <div class="time">
-                            <i class="fas fa-clock"></i>
-                            <span>${ fromNow(properties.dateTime) }</span>
+                            ${ TEMPLATE.ICON_LABEL('clock', fromNow(properties.dateTime)) }
                         </div>
-                        
                         <div class="timeline-header">${ properties.timelineTitle }</div>
-
                         <div class="timeline-body">${ properties.timelineBody }</div>
                     </div>
                 </div>
@@ -587,9 +578,7 @@ const setTimeline = (selector, attr = { title: "", timelineData: [] }) => {
                     <span class="bg-primary shadow-sm">${ attr.title }</span>
                 </div>
                 ${ timelines }
-                <div>
-                    <i class="fas fa-clock bg-secondary"></i>
-                </div>
+                <div><i class="fas fa-clock bg-secondary"></i></div>
             </div>
         `);
     });
@@ -597,11 +586,7 @@ const setTimeline = (selector, attr = { title: "", timelineData: [] }) => {
 
 
 /** Set Pagination */
-const setPagination = (selector, attr = {
-    query: '',
-    totalRows: 0, 
-    currentPage: 0 
-}) => {
+const setPagination = (selector, attr = {query: '', totalRows: 0,  currentPage: 0 }) => {
     const totalRows = parseInt(attr.totalRows);
     const currentPage = parseInt(attr.currentPage);
 

@@ -116,26 +116,16 @@ initDataTable('#manpowerRequestDT', {
 const manpowerRequestAnalytics = () => {
     GET_ajax(`${ ROUTE.API.H }requisitions/analytics`, {
         success: result => {
-            
-            // Set Total Manpower Requests
-            setContent('#totalManpowerRequestsCount', formatNumber(result.total));
-
-            // Set For Review Requests
-            setContent('#forReviewRequestsCount', () => {
-                const forReviewCount = result.for_review;
-                return forReviewCount > 0
-                    ? `
-                        <i class="fas fa-exclamation-triangle text-warning"></i>
-                        <span>${ formatNumber(forReviewCount) }</span>
-                    `
-                    : 0
+            setContent({
+                '#totalManpowerRequestsCount':formatNumber(result.total),
+                '#forReviewRequestsCount': () => {
+                    return result.for_review > 0
+                        ? TEMPLATE.ICON_LABEL('exclamation-triangle text-warning', formatNumber(forReviewCount))
+                        : 0
+                },  
+                '#approvedRequestsCount': formatNumber(result.approved),
+                '#rejectedRequestsCount': formatNumber(result.rejected)
             });
-
-            // Set Approved Requests
-            setContent('#approvedRequestsCount', formatNumber(result.approved));
-
-            // Set Rejected Requests
-            setContent('#rejectedRequestsCount', formatNumber(result.rejected));
         },
         error: () => toastr.error('There was an error in getting manpower request analytics')
     });

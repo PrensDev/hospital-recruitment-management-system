@@ -145,25 +145,17 @@ const viewApplicantDetails = (applicantID) => {
         success: result => {
 
             /** APPLICANT DETAILS */
-
-            // Set Applicant ID
             setValue('#applicantID', result.applicant_id)
-
-            const applicantFullName = formatName('F M. L, S', {
-                firstName  : result.first_name,
-                middleName : result.middle_name,
-                lastName   : result.last_name,
-                suffixName : result.suffixName
-            });
-
-            // Set Applicant Full Name
-            setContent('#applicantFullName', applicantFullName);
-
-            // Set Applicant Contact Number
-            setContent("#applicantContactNumber", result.contact_number);
-
-            // Set Applicant Email
-            setContent("#applicantEmail", result.email);
+            setContent({
+                '#applicantFullName': formatName('F M. L, S', {
+                    firstName  : result.first_name,
+                    middleName : result.middle_name,
+                    lastName   : result.last_name,
+                    suffixName : result.suffixName
+                }),
+                '#applicantContactNumber': result.contact_number,
+                '#applicantEmail': result.email
+            })
 
             // Set Resume Link
             $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
@@ -510,26 +502,14 @@ onHideModal('#applicantDetailsModal', () => {
 /** Validate Applicant Evaluation Form */
 validateForm('#applicantEvaluationForm', {
     rules: {
-        applicantID: {
-            required: true
-        },
-        applicantStatus: {
-            required: true
-        },
-        remarks: {
-            required: true
-        }
+        applicantID: { required: true },
+        applicantStatus: { required: true },
+        remarks: { required: true }
     },
     messages: {
-        applicantID: {
-            required: "This must have a value"
-        },
-        applicantStatus: {
-            required: "Please select a status for this applicant"
-        },
-        remarks: {
-            required: "You must insert remarks here for rejected this applicant from evaluation"
-        }
+        applicantID: { required: "This must have a value" },
+        applicantStatus: { required: "Please select a status for this applicant" },
+        remarks: { required: "You must insert remarks here for rejected this applicant from evaluation" }
     },
     submitHandler: () => evaluateApplicant()
 });

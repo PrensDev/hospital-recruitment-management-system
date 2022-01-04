@@ -172,25 +172,17 @@ const viewApplicantDetails = (applicantID) => {
         success: result => {
 
             /** APPLICANT DETAILS */
-
-            // Set Applicant ID
-            setValue('#applicantID', result.applicant_id)
-
-            const applicantFullName = formatName('F M. L, S', {
-                firstName  : result.first_name,
-                middleName : result.middle_name,
-                lastName   : result.last_name,
-                suffixName : result.suffixName
-            });
-
-            // Set Applicant Full Name
-            setContent('#applicantFullName', applicantFullName);
-
-            // Set Applicant Contact Number
-            setContent("#applicantContactNumber", result.contact_number);
-
-            // Set Applicant Email
-            setContent("#applicantEmail", result.email);
+            setValue('#applicantID', result.applicant_id);
+            setContent({
+                '#applicantFullName': formatName('F M. L, S', {
+                    firstName  : result.first_name,
+                    middleName : result.middle_name,
+                    lastName   : result.last_name,
+                    suffixName : result.suffixName
+                }),
+                '#applicantContactNumber': result.contact_number,
+                '#applicantEmail': result.email
+            })
 
             // Set Resume Link
             $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
@@ -299,18 +291,16 @@ const setApplicantDetailsAndTimeline = (result) => {
     /** APPLICANT DETAILS */
 
     // Set Applicant Full Name
-    setContent('#applicantFullName', formatName('F M. L, S', {
-        firstName  : result.first_name,
-        middleName : result.middle_name,
-        lastName   : result.last_name,
-        suffixName : result.suffixName
-    }));
-
-    // Set Applicant Contact Number
-    setContent("#applicantContactNumber", result.contact_number);
-
-    // Set Applicant Email
-    setContent("#applicantEmail", result.email);
+    setContent({
+        '#applicantFullName': formatName('F M. L, S', {
+            firstName  : result.first_name,
+            middleName : result.middle_name,
+            lastName   : result.last_name,
+            suffixName : result.suffixName
+        }),
+        "#applicantContactNumber": result.contact_number,
+        "#applicantEmail": result.email,
+    });
 
     // Set Resume
     $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
@@ -374,8 +364,7 @@ const viewInterviewedApplicantDetails = (applicantID) => {
             // Set ScoreSheet
             setContent('#applicantScoresheet', '');
             const scores = result.interviewee_info[0].interviewee_score;
-            let sum = 0;
-            let count = 1;
+            let sum = 0, count = 1;
 
             const interviewQuestionTypeBadge = {
                 "General": `<span class="badge border border-primary text-primary">General</span>`,
@@ -592,10 +581,7 @@ const screenApplicant = () => {
                 hideModal('#applicantDetailsModal');
 
                 // Set buttons to default
-                setContent('#submitBtn', `
-                    <span>Submit</span>
-                    <i class="fas fa-check ml-1"></i>
-                `);
+                setContent('#submitBtn', TEMPLATE.LABEL_ICON('Submit', 'check'));
                 enableElement('#closeApplicantDetailsModalBtn');
 
                 // Reload Applicants Per Job Analytics
@@ -714,25 +700,25 @@ const getInterviewSchedulesPerJobPost = () => {
                                 if(isAfterToday(startSession) && isAfterToday(endSession)) {
                                     return `
                                         <div class="badge badge-warning mr-2">Will happen soon</div>
-                                        <div class="small text-secondary">Started ${ fromNow(startSession) }</div>
+                                        ${ TEMPLATE.SUBTEXT(`Started ${ fromNow(startSession) }`) }
                                     `
                                 } else if(isBeforeToday(startSession) && isAfterToday(endSession)) {
                                     return `
                                         <div class="badge badge-info mr-2">On going</div>
-                                        <div class="small text-secondary">Started ${ fromNow(startSession) }</div>
+                                        ${ TEMPLATE.SUBTEXT(`Started ${ fromNow(startSession) }`) }
                                     `
                                 } else {
                                     return `
                                         <div class="badge badge-danger mr-2">Ended today</div>
-                                        <div class="small text-secondary">${ fromNow(endSession) }</div>
+                                        ${ TEMPLATE.SUBTEXT(fromNow(endSession)) }
                                     `
                                 }
                             } else if(isAfterToday(startSession)) {
-                                return `<div class="small text-secondary">${ fromNow(startSession) }</div>`
+                                return TEMPLATE.SUBTEXT(fromNow(startSession))
                             } else {
                                 return `
                                     <div class="badge badge-danger mr-2">Ended</div>
-                                    <div class="small text-secondary">${ fromNow(endSession) }</div>
+                                    ${ TEMPLATE.SUBTEXT(fromNow(endSession)) }
                                 `
                             }
                         }
@@ -757,8 +743,7 @@ const getInterviewSchedulesPerJobPost = () => {
                                                 class="btn btn-sm btn-secondary text-white" style="text-decoration: none" 
                                                 href="${ ROUTE.WEB.H }interview-schedules/${ r.interview_schedule_id }"
                                             >
-                                                <i class="fas fa-list mr-1"></i>
-                                                <span>View Details</span>
+                                                ${ TEMPLATE.ICON_LABEL('list', 'View Details') }
                                             </a>
                                         </div>
                                     </div>
@@ -796,8 +781,7 @@ onClick('#custom-content-below-schedules-tab', () => getInterviewSchedulesPerJob
  * ==============================================================================
 */
 
-let selectApplicant = $('#selectApplicant');
-let selectedApplicants = [];
+let selectApplicant = $('#selectApplicant'), selectedApplicants = [];
 
 /** If Create Interview Schedule Form is loaded */
 ifSelectorExist('#createInterviewScheduleForm', () => {
@@ -812,12 +796,11 @@ ifSelectorExist('#createInterviewScheduleForm', () => {
 
                     if(isEmptyOrNull(intervieweeInfo)) {
                         const applicantName = formatName('F M. L, S', {
-                            firstName   : i.first_name,
-                            middleName  : i.middle_name,
-                            lastName    : i.last_name,
-                            suffixName  : i.suffix_name
+                            firstName  : i.first_name,
+                            middleName : i.middle_name,
+                            lastName   : i.last_name,
+                            suffixName : i.suffix_name
                         });
-
                         selectApplicant.append(`<option value="${ i.applicant_id }">${ applicantName }</option>`);
                     }
                 });
@@ -1009,10 +992,8 @@ onClick('#createScheduleBtn', () => {
         },
         error: () => {
             hideModal('#confirmCreateInterviewScheduleModal');
-
             btnToUnloadState('#createScheduleBtn', TEMPLATE.LABEL_ICON('Yes, create it!', 'check'));
             enableElement('#cancelConfirmCreateInterviewScheduleBtn');
-
             toastr.error('There was an error in creating an interview schedule');
         }
     });
@@ -1115,20 +1096,12 @@ onHideModal('#applicantDetailsModal', () => {
 /** Validate Appicant Hiring Form */
 validateForm('#applicantHiringForm', {
     rules: {
-        applicantStatus: {
-            required: true
-        },
-        remarks: {
-            required: true
-        }
+        applicantStatus: { required: true },
+        remarks: { required: true }
     },
     messages: {
-        applicantStatus: {
-            required: 'Please select a status'
-        },
-        remarks: {
-            required: 'Please insert remarks for rejecting this applicant'
-        }
+        applicantStatus: { required: 'Please select a status' },
+        remarks: { required: 'Please insert remarks for rejecting this applicant' }
     },
     submitHandler: () => {
         hireOrRejectApplicant();

@@ -226,7 +226,7 @@ initDataTable('#manpowerRequestDT', {
                 staffsNeeded = data.staffs_needed;
                 return `
                     <div>${ data.vacant_position.name }</div>
-                    <div class="small text-secondary">${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }</div>
+                    ${TEMPLATE.SUBTEXT(staffsNeeded + ` new staff${ staffsNeeded > 1 ? "s" : "" }`)}
                 `;
             }
         },
@@ -433,7 +433,7 @@ const getManpowerRequestDetails = () => {
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
-                if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No data</div>`
+                if(isEmptyOrNull(deadline)) return TEMPLATE.UNSET('No deadline has been set')
                 else return `
                     <div>${ formatDateTime(deadline, "Date") }</div>
                     <div>${ formatDateTime(deadline, "Time") }</div>
@@ -464,7 +464,7 @@ const getManpowerRequestDetails = () => {
                 const maxSalary = result.max_monthly_salary;
                 const hasNoSalaryRange = isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary);
                 return hasNoSalaryRange 
-                    ? `<div class="text-secondary font-italic">No salary has been set</div>`
+                    ? TEMPLATE.UNSET('No salary has been set')
                     : `${ formatCurrency(minSalary) } - ${ formatCurrency(maxSalary) }/month`;
             });
 
@@ -478,7 +478,7 @@ const getManpowerRequestDetails = () => {
                 if(result.request_status === "Rejected for signing")
                     return `<div class="text-danger">This request has been rejected for signing</div>`
                 else if(isEmptyOrNull(signedBy))
-                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                    return TEMPLATE.UNSET('Not yet signed')
                 else {
                     const signedByFullName = formatName("L, F M., S", {
                         firstName  : signedBy.first_name,
@@ -497,7 +497,7 @@ const getManpowerRequestDetails = () => {
             setContent('#signedAt', () => {
                 const signedAt = result.signed_at;
                 return isEmptyOrNull(signedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    ? TEMPLATE.UNSET('No status')
                     : `
                         <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
                         <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
@@ -511,7 +511,7 @@ const getManpowerRequestDetails = () => {
                         result.request_status === "Rejected for approval" ||
                         result.request_status === "Rejected for signing"
                     )
-                    ? `<div class="text-secondary font-italic">Not yet approved</div>`
+                    ? TEMPLATE.UNSET('Not yet approved')
                     : () => {
                         if(result.request_status === "Rejected for signing")
                             return `<div class="text-danger">This request has been rejected</div>`
@@ -1093,7 +1093,6 @@ validateForm('#markAsCompletedForm', {
             },
             error: () => ifError()
         })
-
         return false;
     }
 });

@@ -364,7 +364,7 @@ ifSelectorExist('#interviewScheduleDetails', () => {
             // Set Deadline
             const deadline = jobPost.manpower_request.deadline;
             isEmptyOrNull(deadline)
-                ? setContent('#deadline', `<span class="text-secondary font-italic">No deadline</span>`)
+                ? setContent('#deadline', TEMPLATE.UNSET('No deadline'))
                 : setContent('#deadline', formatDateTime(deadline, 'Full DateTime'))
 
                 // Remove loaders
@@ -541,22 +541,16 @@ ifSelectorExist('#generalInterviewQuestionsForIntervieweeDT', () => {
                                 </div>
                             </td>
                             <td>
-                                <div class="text-center dropdown">
-                                    <div class="btn btn-sm btn-default" role="button" data-toggle="dropdown">
-                                        <i class="fas fa-ellipsis-v"></i>
+                                ${ TEMPLATE.DT.OPTIONS(`
+                                    <div 
+                                        class="dropdown-item d-flex"
+                                        role="button"
+                                        onclick="removeGeneralQuestion('${ 'test' }')"
+                                    >
+                                        <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
+                                        <span>Remove</span>
                                     </div>
-
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <div 
-                                            class="dropdown-item d-flex"
-                                            role="button"
-                                            onclick="removeGeneralQuestion('${ 'test' }')"
-                                        >
-                                            <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
-                                            <span>Remove</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                `)}
                             </td>
                         </tr>
                     `);

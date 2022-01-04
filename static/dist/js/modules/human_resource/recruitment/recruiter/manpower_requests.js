@@ -29,11 +29,9 @@ initDataTable('#manpowerRequestDT', {
                     suffixName : requestedBy.suffix_name
                 });
 
-                const requestedByDepartment = requestedBy.position.department.name;
-
                 return `
                     <div>${ requestedByFullName }</div>
-                    <div class="small text-secondary">${ requestedByDepartment }</div>
+                    ${ TEMPLATE.SUBTEXT(requestedBy.position.department.name) }
                 `
             }
         },
@@ -75,7 +73,7 @@ initDataTable('#manpowerRequestDT', {
                     ? TEMPLATE.UNSET('Mo deadline has been set')
                     : `
                         <div>${ formatDateTime(deadline, "MMM. D, YYYY") }</div>
-                        <div class="small text-secondary">${ fromNow(deadline) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(deadline)) }
                     `
             }
         },
@@ -85,7 +83,6 @@ initDataTable('#manpowerRequestDT', {
             data: null,
             render: data => {
                 const requisitionID = data.requisition_id;
-
                 const jobPost = data.job_post;
 
                 const createJobPostBtn = jobPost.length == 1 
@@ -101,27 +98,17 @@ initDataTable('#manpowerRequestDT', {
                         </div>
                     `;
                 
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <a 
+                        class="dropdown-item d-flex" 
+                        href="${ROUTE.WEB.R}manpower-requests/${ requisitionID }"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Details</div>
+                    </a>
 
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a 
-                                class="dropdown-item d-flex" 
-                                href="${ROUTE.WEB.R}manpower-requests/${ requisitionID }"
-                            >
-                                <div style="width: 2rem">
-                                    <i class="fas fa-list mr-1"></i>
-                                </div>
-                                <div>View Details</div>
-                            </a>
-
-                            ${ createJobPostBtn }
-                        </div>
-                    </div>
-                `
+                    ${ createJobPostBtn }
+                `)
             }
         }
     ]
@@ -177,10 +164,10 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             
             // Set Requestor Name
             setContent('#requestorName', formatName("F M. L, S", {
-                firstName: requestedBy.first_name,
-                middleName: requestedBy.middle_name,
-                lastName: requestedBy.last_name,
-                suffixName: requestedBy.suffix_name
+                firstName  : requestedBy.first_name,
+                middleName : requestedBy.middle_name,
+                lastName   : requestedBy.last_name,
+                suffixName : requestedBy.suffix_name
             }));
             
             // Set Requestor Department
@@ -192,8 +179,9 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
-                if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No deadline</div>`
-                else return formatDateTime(result.deadline, "DateTime")
+                return isEmptyOrNull(deadline)
+                    ? TEMPLATE.UNSET('No deadline')
+                    : formatDateTime(result.deadline, "DateTime")
             });
 
             // Set Requested Position
@@ -219,7 +207,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                 const minMonthlySalary = result.min_monthly_salary;
                 const maxMonthlySalary = result.max_monthly_salary;
                 return isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary) 
-                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    ? TEMPLATE.UNSET('No salary has been set') 
                     : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
             });
 
@@ -230,16 +218,16 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             setContent('#approvedBy', () => {
                 const approvedBy = result.manpower_request_reviewed_by;
                 return isEmptyOrNull(approvedBy)
-                    ? `<div class="text-secondary font-italic">Not yet approved</div>`
+                    ? TEMPLATE.UNSET('Not yet approved')
                     : () => {
                         if(result.request_status === "Rejected") {
                             return `<div class="text-danger">This request has been rejected</div>`
                         } else {
                             const approvedByFullName = formatName("L, F M., S", {
-                                firstName: approvedBy.first_name,
-                                middleName: approvedBy.middle_name,
-                                lastName: approvedBy.last_name,
-                                suffixName: approvedBy.suffix_name
+                                firstName  : approvedBy.first_name,
+                                middleName : approvedBy.middle_name,
+                                lastName   : approvedBy.last_name,
+                                suffixName : approvedBy.suffix_name
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
@@ -256,7 +244,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                 if(result.request_status === "Rejected for signing")
                     return `<div class="text-danger">This request has been rejected for signing</div>`
                 else if(isEmptyOrNull(signedBy))
-                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                    return TEMPLATE.UNSET('Not yet signed')
                 else {
                     const signedByFullName = formatName("L, F M., S", {
                         firstName  : signedBy.first_name,
@@ -275,7 +263,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             setContent('#signedAt', () => {
                 const signedAt = result.signed_at;
                 return isEmptyOrNull(signedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    ? TEMPLATE.UNSET('Not yet signed')
                     : `
                         <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
                         <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
@@ -286,7 +274,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             setContent('#approvedAt', () => {
                 const approvedAt = result.reviewed_at;
                 return (isEmptyOrNull(approvedAt) || result.request_status === 'Rejected') 
-                    ? `<div class="text-secondary font-italic">No status</div>`
+                    ? TEMPLATE.UNSET('No status')
                     : formatDateTime(approvedAt, "DateTime")
             });
 
@@ -294,7 +282,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             setContent('#completedAt', () => {
                 const completedAt = result.completed_at;
                 return isEmptyOrNull(completedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>`
+                    ? TEMPLATE.UNSET('No status')
                     : formatDateTime(completedAt, "Date")
             });
 
@@ -312,8 +300,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                         id="submitBtn"
                         disabled
                     >
-                        <span>Submit</span>
-                        <i class="fas fa-check ml-1"></i>
+                        ${ TEMPLATE.LABEL_ICON('Submit', 'check') }
                     </button>
                 `;
             } else {

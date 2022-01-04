@@ -633,26 +633,14 @@ const addGeneralTask = (taskType = '') => {
 /** Validate Add General Task Form */
 validateForm('#addGeneralTaskForm', {
     rules: {
-        taskType: {
-            required: true
-        },
-        taskTitle: {
-            required: true
-        },
-        description: {
-            required: true
-        }
+        taskType: { required: true },
+        taskTitle: { required: true },
+        description: { required: true }
     },
     messages: {
-        taskType: {
-            required: 'Task Type must have value'
-        },
-        taskTitle: {
-            required: 'Task title is required'
-        },
-        description: {
-            required: 'Description is required'
-        }
+        taskType: { required: 'Task Type must have value' },
+        taskTitle: { required: 'Task title is required' },
+        description: { required: 'Description is required' }
     },
     submitHandler: () => {
         addOnboardingTask();
@@ -903,7 +891,7 @@ initDataTable('#onboardingEmployeesDT', {
 
                 return `
                     <div>${ fullName }</div>
-                    <div class="small text-secondary">${ data.onboarding_employee_position.name }</div>
+                    ${ TEMPLATE.SUBTEXT(data.onboarding_employee_position.name) }
                 `
             }
         },
@@ -1009,13 +997,11 @@ initDataTable('#onboardingEmployeeTasksDT', {
 
                 const taskType = () => {
                     const taskType = task.task_type;
-                    
                     const taskTheme = {
                         "For new employees": "success",
                         "For the team": "info",
                         "For department manager": "warning"
                     }
-
                     return `<span class="badge border border-${ taskTheme[taskType] } text-${ taskTheme[taskType] }">${ taskType }</span>`
                 }
 
@@ -1112,13 +1098,9 @@ const getOnboardingEmployeeDetails = () => {
 
             // Set Task Progress
             setContent('#taskProgress', () => {
-                const tasks = result.onboarding_employee_tasks;
+                let pending = 0, onGoing = 0, completed = 0;
 
-                let pending = 0;
-                let onGoing = 0;
-                let completed = 0;
-
-                tasks.forEach(t => { 
+                result.onboarding_employee_tasks.forEach(t => { 
                     switch(t.status) {
                         case 'Pending': pending++; break;
                         case 'On Going': onGoing++; break;

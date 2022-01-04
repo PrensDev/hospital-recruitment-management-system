@@ -104,9 +104,7 @@ initDataTable('#hiredApplicantsDT', {
                         class="dropdown-item d-flex"
                         onclick="getHiredApplicantDetails('${ applicantID }')"
                     >
-                        <div style="width: 2rem">
-                            <i class="fas fa-list mr-1"></i>
-                        </div>
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                         <span>View Details</span>
                     </div>
 
@@ -124,16 +122,13 @@ const getHiredApplicantDetails = (applicantID) => {
         success: result => {
             
             /** APPLICANT DETAILS */
-            
-            const applicantFullName = formatName('F M. L, S', {
-                firstName  : result.first_name,
-                middleName : result.middle_name,
-                lastName   : result.last_name,
-                suffixName : result.suffixName
-            });
-
             setContent({
-                '#applicantFullName': applicantFullName,
+                '#applicantFullName': formatName('F M. L, S', {
+                    firstName  : result.first_name,
+                    middleName : result.middle_name,
+                    lastName   : result.last_name,
+                    suffixName : result.suffixName
+                }),
                 "#applicantContactNumber": result.contact_number,
                 "#applicantEmail": result.email
             });

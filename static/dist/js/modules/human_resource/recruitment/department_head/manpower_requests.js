@@ -396,10 +396,8 @@ const printManpowerRequest = () => {
 validateForm('#signatureForm', {
     submitHandler: () => {
         const requestStatus = generateFormData('#signatureForm').get('requestStatus');
-
         if(requestStatus == "For approval") showModal('#confirmSignRequestModal');
         else if(requestStatus == "Rejected for signature") showModal('#rejectRequestModal');
-        
         return false;
     }
 });

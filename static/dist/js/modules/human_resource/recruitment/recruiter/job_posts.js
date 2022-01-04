@@ -54,7 +54,7 @@ ifSelectorExist('#createJobPostForm', () => {
             setContent('#salaryRangeForSummary', () => {
                 if(isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary)) {
                     hideElement('#salaryRangeField');
-                    return `<div class="text-secondary font-italic">Unset</div>`;
+                    return TEMPLATE.UNSET('No salary has been set');
                 } else {
                     return `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
                 }
@@ -65,7 +65,7 @@ ifSelectorExist('#createJobPostForm', () => {
                 const deadline = result.deadline;
 
                 return isEmptyOrNull(deadline)
-                    ? `<div class="text-secondary font-italic">Unset</div>`
+                    ? TEMPLATE.UNSET('No deadline')
                     : `
                         <div>${ formatDateTime(deadline, "Full Date") }</div>
                         <div>${ formatDateTime(deadline, "Time") }</div>
@@ -86,10 +86,10 @@ ifSelectorExist('#createJobPostForm', () => {
             
             // Set Requestor Name
             setContent('#requestorName', formatName("F M. L, S", {
-                firstName: requestedBy.first_name,
-                middleName: requestedBy.middle_name,
-                lastName: requestedBy.last_name,
-                suffixName: requestedBy.suffix_name
+                firstName  : requestedBy.first_name,
+                middleName : requestedBy.middle_name,
+                lastName   : requestedBy.last_name,
+                suffixName : requestedBy.suffix_name
             }));
             
             // Set Requestor Department
@@ -101,8 +101,9 @@ ifSelectorExist('#createJobPostForm', () => {
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = result.deadline;
-                if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No deadline</div>`
-                else return formatDateTime(result.deadline, "DateTime")
+                return isEmptyOrNull(deadline)
+                    ? TEMPLATE.UNSET('No deadline')
+                    : formatDateTime(result.deadline, "DateTime")
             });
 
             // Set Requested Position
@@ -125,7 +126,7 @@ ifSelectorExist('#createJobPostForm', () => {
                 const minMonthlySalary = result.min_monthly_salary;
                 const maxMonthlySalary = result.max_monthly_salary;
                 return isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary) 
-                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    ? TEMPLATE.UNSET('No salary has been set')
                     : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
             });
 
@@ -136,7 +137,7 @@ ifSelectorExist('#createJobPostForm', () => {
             setContent('#approvedBy', () => {
                 const approvedBy = result.manpower_request_reviewed_by;
                 return isEmptyOrNull(approvedBy)
-                    ? `<div class="text-secondary font-italic">Not yet approved</div>`
+                    ? TEMPLATE.UNSET('Not yet approved')
                     : () => {
                         if(result.request_status === "Rejected") {
                             return `<div class="text-danger">This request has been rejected</div>`
@@ -162,7 +163,7 @@ ifSelectorExist('#createJobPostForm', () => {
                 if(result.request_status === "Rejected for signing")
                     return `<div class="text-danger">This request has been rejected for signing</div>`
                 else if(isEmptyOrNull(signedBy))
-                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                    return TEMPLATE.UNSET('Not signed yet')
                 else {
                     const signedByFullName = formatName("L, F M., S", {
                         firstName  : signedBy.first_name,
@@ -310,7 +311,7 @@ initDataTable('#jobPostsDT', {
             render: data => {
                 const applicants = data.applicants.length;
                 return applicants == 0 
-                    ? `<div class="text-secondary font-italic">No applicants yet</div>` 
+                    ? TEMPLATE.UNSET('No applicants yet')
                     : `${ applicants } applicant${ applicants > 1 ? 's' : '' }`
             }
         },
@@ -338,7 +339,7 @@ initDataTable('#jobPostsDT', {
                 const expirationDate = data.expiration_date;
 
                 return isEmptyOrNull(expirationDate)
-                    ? `<div class="text-secondary font-italic">No expiration</div>`
+                    ? TEMPLATE.UNSET('No expiration')
                     : `
                         <div>${ formatDateTime(expirationDate, "MMM. D, YYYY") }</div>
                         <div class="small text-secondary">${ fromNow(expirationDate) }</div>
@@ -382,41 +383,33 @@ initDataTable('#jobPostsDT', {
                         : ''
                 }
 
-                return `
-                    <div class="text-center dropdown">
-                        <div class="btn btn-sm btn-default" data-toggle="dropdown" role="button">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </div>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a 
-                                class="dropdown-item d-flex"
-                                href="${ ROUTE.WEB.R }job-posts/${ jobPostID }"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                                <div>View Job Post</div>
-                            </a>
-                            <div 
-                                class="dropdown-item d-flex"
-                                role="button"
-                                onclick="editJobPost('${ jobPostID }')"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
-                                <div>Edit Job Post</div>
-                            </div>
-                            ${ applicants }
-                            <div class="dropdown-divider"></div>
-                            <a
-                                class="dropdown-item d-flex"
-                                href="${ ROUTE.WEB.R }manpower-requests/${ requisitionID }"
-                            >
-                                <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
-                                <div>View Manpower Request</div>
-                            </a>
-                            ${ endJobPost() }
-                        </div>
+                return TEMPLATE.DT.OPTIONS(`
+                    <a 
+                        class="dropdown-item d-flex"
+                        href="${ ROUTE.WEB.R }job-posts/${ jobPostID }"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Job Post</div>
+                    </a>
+                    <div 
+                        class="dropdown-item d-flex"
+                        role="button"
+                        onclick="editJobPost('${ jobPostID }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
+                        <div>Edit Job Post</div>
                     </div>
-                `
+                    ${ applicants }
+                    <div class="dropdown-divider"></div>
+                    <a
+                        class="dropdown-item d-flex"
+                        href="${ ROUTE.WEB.R }manpower-requests/${ requisitionID }"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
+                        <div>View Manpower Request</div>
+                    </a>
+                    ${ endJobPost() }
+                `)
             }
         }
     ]
@@ -509,24 +502,20 @@ const getJobPostDetails = () => {
             setContent('#jobPostOptions', () => {
                 const endRecruiting = `
                     <button class="btn btn-sm btn-danger btn-block" onclick="endRecruiting('${ jobPostID }')">
-                        <i class="fas fa-hand-paper mr-1"></i>
-                        <span>End recruiting</span>
+                        ${ TEMPLATE.ICON_LABEL('hand-paper', 'End Recruiting') }
                     </button>
                 `
             
                 return `
                     <a class="btn btn-sm btn-secondary btn-block" target="_blank" href="${ BASE_URL_WEB }careers/${ jobPostID }">
-                        <i class="fas fa-eye mr-1"></i>
-                        <span>View post in public portal</span>
+                        ${ TEMPLATE.ICON_LABEL('eye', 'View post in public portal') }
                     </a>
                     <a class="btn btn-sm btn-secondary btn-block" href="${ ROUTE.WEB.R }job-posts/${ jobPostID }/applicants">
-                        <i class="fas fa-users mr-1"></i>
-                        <span>View applicants</span>
+                        ${ TEMPLATE.ICON_LABEL('users', 'View applicant') }
                     </a>
                     <div class="dropdown-divider"></div>
                     <a class="btn btn-sm btn-info btn-block" href="${ ROUTE.WEB.R }edit-job-post/${ jobPostID }">
-                        <i class="fas fa-edit mr-1"></i>
-                        <span>Edit this post</span>
+                        ${ TEMPLATE.ICON_LABEL('edit', 'Edit this post') }
                     </a>
 
                     ${ isEmptyOrNull(result.expiration_date) ? endRecruiting : ''}
@@ -550,23 +539,21 @@ const getJobPostDetails = () => {
 
             // Set Salary Range
             setContent('#salaryRangeForSummary', () => {
-                return isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)
-                    ? () => {
-                        hideElement('#salaryRangeField');
-                        return `<div class="text-secondary font-italic">Unset</div>`
-                    }
-                    : `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
+                if(isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)) {
+                    hideElement('#salaryRangeField');
+                    return TEMPLATE.UNSET('Unset')
+                } else return `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
             });
 
             // Set Deadline
             setContent('#deadlineForSummary', () => {
                 const deadline = manpowerRequest.deadline;
                 return isEmptyOrNull(deadline) 
-                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    ? TEMPLATE.UNSET('No deadline')
                     : `
                         <div>${ formatDateTime(deadline, "Full Date") }</div>
                         <div>${ formatDateTime(deadline, "Time") }</div>
-                        <div class="small text-secondary">${ fromNow(deadline) }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(deadline)) }
                     `
             });
             
@@ -600,7 +587,7 @@ const getJobPostDetails = () => {
             // Set Deadline
             setContent('#deadline', () => {
                 const deadline = manpowerRequest.deadline;
-                if(isEmptyOrNull(deadline)) return `<div class="text-secondary font-italic">No deadline</div>`
+                if(isEmptyOrNull(deadline)) return TEMPLATE.UNSET('No deadline')
                 else return formatDateTime(manpowerRequest.deadline, "DateTime")
             });
 
@@ -635,7 +622,7 @@ const getJobPostDetails = () => {
             setContent('#approvedBy', () => {
                 const approvedBy = manpowerRequest.manpower_request_reviewed_by;
                 return isEmptyOrNull(approvedBy)
-                    ? `<div class="text-secondary font-italic">Not yet approved</div>`
+                    ? TEMPLATE.UNSET('Not yet approved')
                     : () => {
                         if(manpowerRequest.request_status === "Rejected") {
                             return `<div class="text-danger">This request has been rejected</div>`
@@ -661,7 +648,7 @@ const getJobPostDetails = () => {
                 if(manpowerRequest.request_status === "Rejected for signing")
                     return `<div class="text-danger">This request has been rejected for signing</div>`
                 else if(isEmptyOrNull(signedBy))
-                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                    return TEMPLATE.UNSET('Not yet signed')
                 else {
                     const signedByFullName = formatName("L, F M., S", {
                         firstName  : signedBy.first_name,
@@ -680,7 +667,7 @@ const getJobPostDetails = () => {
             setContent('#signedAt', () => {
                 const signedAt = manpowerRequest.signed_at;
                 return isEmptyOrNull(signedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    ? TEMPLATE.UNSET('No status')
                     : `
                         <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
                         <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
@@ -769,19 +756,17 @@ ifSelectorExist('#editJobPostForm', () => {
 
             // Set Salary Range
             setContent('#salaryRangeForSummary', () => {
-                return isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)
-                    ? () => {
-                        hideElement('#salaryRangeField');
-                        return `<div class="text-secondary font-italic">Unset</div>`
-                    }
-                    : `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
+                if(isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)) {
+                    hideElement('#salaryRangeField');
+                    return `<div class="text-secondary font-italic">Unset</div>`
+                } else return `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
             });
 
             // Set Deadline
             setContent('#deadlineForSummary', () => {
                 const deadline = manpowerRequest.deadline;
                 return isEmptyOrNull(deadline) 
-                    ? `<div class="text-secondary font-italic">Unset</div>` 
+                    ? TEMPLATE.UNSET('No deadline has been set')
                     : `
                         <div>${ formatDateTime(deadline, "Full Date") }</div>
                         <div>${ formatDateTime(deadline, "Time") }</div>
@@ -832,7 +817,7 @@ ifSelectorExist('#editJobPostForm', () => {
             // Set Suggested Salary
             setContent('#suggestedSalary', () => {
                 return isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)
-                    ? `<div class="text-secondary font-italic">Unset</div>`
+                    ? TEMPLATE.UNSET('No salary has been set')
                     : `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
             });
 
@@ -847,7 +832,7 @@ ifSelectorExist('#editJobPostForm', () => {
                 if(manpowerRequest.request_status === "Rejected for signing")
                     return `<div class="text-danger">This request has been rejected for signing</div>`
                 else if(isEmptyOrNull(signedBy))
-                    return `<div class="text-secondary font-italic">Not yet signed</div>`
+                    return TEMPLATE.UNSET('Not yet signed')
                 else {
                     const signedByFullName = formatName("L, F M., S", {
                         firstName  : signedBy.first_name,
@@ -866,7 +851,7 @@ ifSelectorExist('#editJobPostForm', () => {
             setContent('#signedAt', () => {
                 const signedAt = manpowerRequest.signed_at;
                 return isEmptyOrNull(signedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
+                    ? TEMPLATE.UNSET('No status') 
                     : `
                         <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
                         <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
@@ -877,7 +862,7 @@ ifSelectorExist('#editJobPostForm', () => {
             setContent('#approvedBy', () => {
                 const approvedBy = manpowerRequest.manpower_request_reviewed_by;
                 return isEmptyOrNull(approvedBy)
-                    ? `<div class="text-secondary font-italic">Not yet approved</div>`
+                    ? TEMPLATE.UNSET('Not yet approved')
                     : () => {
                         if(result.request_status === "Rejected") {
                             return `<div class="text-danger">This request has been rejected</div>`
@@ -903,7 +888,7 @@ ifSelectorExist('#editJobPostForm', () => {
             setContent('#completedAt', () => {
                 const completedAt = manpowerRequest.completed_at;
                 return isEmptyOrNull(completedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>`
+                    ? TEMPLATE.UNSET('No status')
                     : formatDateTime(completedAt, "Date");
             });
 

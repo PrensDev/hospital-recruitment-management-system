@@ -201,13 +201,9 @@ const getOnboardingEmployeeDetails = () => {
         success: result => {
 
             const getTaskProgress = () => {
-                const tasks = result.onboarding_employee_tasks;
+                let pending = 0, onGoing = 0, completed = 0;
 
-                let pending = 0;
-                let onGoing = 0;
-                let completed = 0;
-
-                tasks.forEach(t => { 
+                result.onboarding_employee_tasks.forEach(t => { 
                     if(t.status === 'Pending') pending++; 
                     if(t.status === 'On Going') onGoing++; 
                     if(t.status === 'Completed') completed++;
