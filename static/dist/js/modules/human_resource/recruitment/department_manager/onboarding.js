@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * ==============================================================================
  * CONSTANTS
@@ -300,7 +302,7 @@ validateForm('#addOnboardingTaskForm', {
                 "For the team": "info",
                 "For department manager": "warning"
             }
-            return `<span class="badge border border-${ taskTheme[assignTaskTo] } text-${ taskTheme[assignTaskTo] }">${ taskType }</span>`
+            return `<span class="badge border border-${ taskTheme[assignTaskTo] } text-${ taskTheme[assignTaskTo] }">${ assignTaskTo }</span>`
         }
 
         if(addedOnboardingTasks.length == 0) $('#addedOnboardingTasksDTBody').empty();
@@ -310,7 +312,7 @@ validateForm('#addOnboardingTaskForm', {
                 <td>
                     <div>${ taskTitle }</div>
                     <div>${ taskType() }</div>
-                    <div class="small text-secondary">${ taskDescription }</div>
+                    ${ TEMPLATE.SUBTEXT(taskDescription) }
                 </td>
                 <td>
                     <div class="form-group">
@@ -393,8 +395,10 @@ validateForm('#addOnboardingTaskForm', {
             description: taskDescription
         });
 
+        // Check if there is no tasks
         checkIfNoTasks();
 
+        // Hide modal
         hideModal('#addOnboardingTaskModal');
 
         // Show success alert
@@ -623,9 +627,9 @@ const addGeneralTask = (taskType = '') => {
         const taskDescription = {
             "For new employees": "Add general task for new employees",
             "For the team": "Add general task for the team",
-            "Add general task for the team": "Add your general task as a department manager here"
+            "For department manager": "Add your general task as a department manager here"
         }
-        return taskDescription[taskType]
+        return taskDescription[taskType];
     });
     showModal('#addGeneralTaskModal');
 }
@@ -748,7 +752,6 @@ const initGeneralTaskDT = (selector, url) => {
                 data: null,
                 render: data => {
                     const onboardingTaskID = data.onboarding_task_id;
-
                     return TEMPLATE.DT.OPTIONS(`
                         <div 
                             class="dropdown-item d-flex"
@@ -1085,19 +1088,8 @@ const getOnboardingEmployeeDetails = () => {
     GET_ajax(`${ ROUTE.API.DM }onboarding-employees/${ onboardingEmployeeID }`, {
         success: result => {
 
-            // Set Employee Full Name
-            setContent('#employeeFullName', formatName('F M. L, S', {
-                firstName  : result.first_name,
-                middleName : result.middle_name,
-                lastName   : result.last_name,
-                suffixName : result.suffix_name
-            }));
-
-            // Set Employee Position
-            setContent('#employeePosition', result.onboarding_employee_position.name);
-
-            // Set Task Progress
-            setContent('#taskProgress', () => {
+            // Get task Progress
+            const getTaskProgress = () => {
                 let pending = 0, onGoing = 0, completed = 0;
 
                 result.onboarding_employee_tasks.forEach(t => { 
@@ -1111,12 +1103,10 @@ const getOnboardingEmployeeDetails = () => {
                 var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
                 var donutData = {
                     labels: ['Pending','On Going', 'Completed'],
-                    datasets: [
-                        {
-                            data: [pending, onGoing, completed],
-                            backgroundColor : ['#ea580c', '#06b6d4', '#10b981'],
-                        }
-                    ]
+                    datasets: [{
+                        data: [pending, onGoing, completed],
+                        backgroundColor : ['#ea580c', '#06b6d4', '#10b981'],
+                    }]
                 }
                 var donutOptions = {
                     maintainAspectRatio : false,
@@ -1127,17 +1117,35 @@ const getOnboardingEmployeeDetails = () => {
                     data: donutData,
                     options: donutOptions
                 });
-            });
+            }
 
-            // Set Email
-            setContent('#employeeEmail', result.email);
-
-            // Set Contact Number
-            setContent('#employeeContactNumber', result.contact_number);
-
-            // Set Start of Employment
-            setContent('#startOfEmploymentDate', formatDateTime(result.employment_start_date, 'Full Date'));
-            setContent('#startOfEmploymentHumanized', fromNow(result.employment_start_date));
+            // Set employee details
+            setContent({
+                '#employeeFullName': formatName('F M. L, S', {
+                    firstName  : result.first_name,
+                    middleName : result.middle_name,
+                    lastName   : result.last_name,
+                    suffixName : result.suffix_name
+                }),
+                '#employeePosition': result.onboarding_employee_position.name,
+                '#taskProgress': getTaskProgress(),
+                '#employeeEmail': result.email,
+                '#employeeContactNumber':result.contact_number,
+                '#startOfEmploymentDate': formatDateTime(result.employment_start_date, 'Full Date'),
+                '#startOfEmploymentHumanized': fromNow(result.employment_start_date),
+                '#employeeDetailsBtns': `
+                    <div class="btn btn-sm btn-secondary btn-block">
+                        ${ TEMPLATE.ICON_LABEL('list', 'View Full Details') }
+                    </div>
+                    <a 
+                        href="${ EMPLOYMENT_CONTRACT_PATH }${ result.employment_contract }" 
+                        class="btn btn-sm btn-secondary btn-block"
+                        target="_blank"
+                    >
+                        ${ TEMPLATE.ICON_LABEL('file-alt', 'View Employment Contract') }
+                    </a>
+                `
+            })
 
             // Remove loader and show container
             $('#onboardingEmployeeDetailsLoader').remove();
@@ -1206,7 +1214,6 @@ validateForm('#updateTaskStatusForm', {
             },
             error: () => toastr.error('There was an error in updating onboarding task')
         });
-
         return false;
     }
 })
@@ -1216,50 +1223,40 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
     GET_ajax(`${ ROUTE.API.DM }onboarding-employee-tasks/${ onboardingEmployeeTaskID }`, {
         success: result => {
 
-            console.log(result);
-
             /** ONBOARDING EMPLOYEE TASK DETAILS */
 
             const onboardingTask = result.onboarding_task;
 
-            // Task Title
-            setContent('#taskTitle', onboardingTask.title);
-
-            // Task Description
-            setContent('#taskDescription', onboardingTask.description);
-
-            // Asssigned for
-            setContent('#taskType', onboardingTask.task_type);
-
-            // Task Start
-            setContent('#taskStart', `
-                <div>${ formatDateTime(result.start_at, 'Full Date') }</div>
-                <div>${ formatDateTime(result.start_at, 'Time') }</div>
-                ${ TEMPLATE.SUBTEXT(fromNow(result.start_at)) }
-            `);
-
-            // Task End
-            setContent('#taskEnd', `
-                <div>${ formatDateTime(result.end_at, 'Full Date') }</div>
-                <div>${ formatDateTime(result.end_at, 'Time') }</div>
-                ${ TEMPLATE.SUBTEXT(fromNow(result.end_at)) }
-            `);
-
-            // Task Status
-            setContent('#taskStatus', () => {
+            // Get Task Status
+            const getTaskStatus = () => {
                 const status = result.status;
-                if(status === "Completed") {
-                    return `
+                return status === "Completed"
+                    ? `
                         <div>Completed</div>
                         <div>${ formatDateTime(result.completed_at, 'Full DateTime') }</div>
                         ${ TEMPLATE.SUBTEXT(fromNow(result.completed_at)) }
                     `
-                } else return status
+                    : status
+            }
+
+            // Set Onboarding Employee Task Details
+            setContent({
+                '#taskTitle': onboardingTask.title,
+                '#taskDescription': onboardingTask.description,
+                '#taskType': onboardingTask.task_type,
+                '#taskStart': `
+                    <div>${ formatDateTime(result.start_at, 'Full Date') }</div>
+                    <div>${ formatDateTime(result.start_at, 'Time') }</div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(result.start_at)) }
+                `,
+                '#taskEnd': `
+                    <div>${ formatDateTime(result.end_at, 'Full Date') }</div>
+                    <div>${ formatDateTime(result.end_at, 'Time') }</div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(result.end_at)) }
+                `,
+                '#taskStatus': getTaskStatus(),
+                '#progress': getOnboardingEmployeeTaskStatus(result.status, result.start_at, result.end_at, result.completed_at)
             });
-
-            // Progress
-            setContent('#progress', getOnboardingEmployeeTaskStatus(result.status, result.start_at, result.end_at, result.completed_at));
-
 
             /** ONBOARDING EMPLOYEE TASK TIMELINE */
             setOnboardingEmployeeTaskTimeline('#onboardingEmployeeTaskTimeline', result);

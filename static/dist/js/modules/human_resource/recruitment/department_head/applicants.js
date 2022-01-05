@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * ==============================================================================
  * HIRED APPLICANTS
@@ -85,18 +87,16 @@ initDataTable('#hiredApplicantsDT', {
             render: data => {
                 const applicantID = data.applicant_id;
 
-                const markContractAsSigned = () => {
-                    return data.status === "Hired"
-                        ? `<div
-                            role="button"
-                            class="dropdown-item d-flex"
-                            onclick="markContractAsSigned('${ applicantID }')"
-                        >
-                            <div style="width: 2rem"><i class="fas fa-check mr-1"></i></div>
-                            <span>Mark contract as signed</span>
-                        </div>`
-                        : ''
-                } 
+                const markContractAsSigned = data.status === "Hired"
+                    ? `<div
+                        role="button"
+                        class="dropdown-item d-flex"
+                        onclick="markContractAsSigned('${ applicantID }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-check mr-1"></i></div>
+                        <span>Mark contract as signed</span>
+                    </div>`
+                    : ''
 
                 return TEMPLATE.DT.OPTIONS(`
                     <div
@@ -107,8 +107,7 @@ initDataTable('#hiredApplicantsDT', {
                         <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                         <span>View Details</span>
                     </div>
-
-                    ${ markContractAsSigned() }
+                    ${ markContractAsSigned }
                 `);
             }
         },

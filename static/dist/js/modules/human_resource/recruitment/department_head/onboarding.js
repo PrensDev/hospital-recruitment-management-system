@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * ==============================================================================
  * CONSTANTS
@@ -201,24 +203,24 @@ const getOnboardingEmployeeDetails = () => {
         success: result => {
 
             const getTaskProgress = () => {
-                let pending = 0, onGoing = 0, completed = 0;
+                let pending = 0, onGoing = 0, completed = 0; 
 
-                result.onboarding_employee_tasks.forEach(t => { 
-                    if(t.status === 'Pending') pending++; 
-                    if(t.status === 'On Going') onGoing++; 
-                    if(t.status === 'Completed') completed++;
-                });
+                const taskProgress = {
+                    'Pending': () => pending++,
+                    'On Going': () => onGoing++,
+                    'Completed': () => completed++
+                }
+
+                result.onboarding_employee_tasks.forEach(t => taskProgress[t.status]());
 
                 var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
                 
                 var donutData = {
                     labels: ['Pending','On Going', 'Completed'],
-                    datasets: [
-                        {
-                            data: [pending, onGoing, completed],
-                            backgroundColor : ['#ea580c', '#06b6d4', '#10b981'],
-                        }
-                    ]
+                    datasets: [{
+                        data: [pending, onGoing, completed],
+                        backgroundColor : ['#ea580c', '#06b6d4', '#10b981'],
+                    }]
                 }
                 
                 new Chart(donutChartCanvas, {
@@ -243,7 +245,19 @@ const getOnboardingEmployeeDetails = () => {
                 '#employeeEmail': result.email,
                 '#employeeContactNumber': result.contact_number,
                 '#startOfEmploymentDate': formatDateTime(result.employment_start_date, 'Full Date'),
-                '#startOfEmploymentHumanized': fromNow(result.employment_start_date)
+                '#startOfEmploymentHumanized': fromNow(result.employment_start_date),
+                '#employeeDetailsBtns': `
+                    <div class="btn btn-sm btn-secondary btn-block">
+                        ${ TEMPLATE.ICON_LABEL('list', 'View Full Details') }
+                    </div>
+                    <a 
+                        href="${ EMPLOYMENT_CONTRACT_PATH }${ result.employment_contract }" 
+                        class="btn btn-sm btn-secondary btn-block"
+                        target="_blank"
+                    >
+                        ${ TEMPLATE.ICON_LABEL('file-alt', 'View Employment Contract') }
+                    </a>
+                `
             });
 
             // Remove loader and show container
@@ -266,31 +280,8 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
 
             const onboardingTask = result.onboarding_task;
 
-            // Task Title
-            setContent('#taskTitle', onboardingTask.title);
-
-            // Task Description
-            setContent('#taskDescription', onboardingTask.description);
-
-            // Asssigned for
-            setContent('#taskType', onboardingTask.task_type);
-            
-            // Task Start
-            setContent('#taskStart', `
-                <div>${ formatDateTime(result.start_at, 'Full Date') }</div>
-                <div>${ formatDateTime(result.start_at, 'Time') }</div>
-                ${ TEMPLATE.SUBTEXT(fromNow(result.start_at)) }
-            `);
-
-            // Task End
-            setContent('#taskEnd', `
-                <div>${ formatDateTime(result.end_at, 'Full Date') }</div>
-                <div>${ formatDateTime(result.end_at, 'Time') }</div>
-                ${ TEMPLATE.SUBTEXT(fromNow(result.end_at)) }
-            `);
-
-            // Task Status
-            setContent('#taskStatus', () => {
+            // Get Task Status
+            const getTaskStatus = () => {
                 const status = result.status;
                 return status === "Completed"
                     ? `
@@ -299,11 +290,26 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
                         ${ TEMPLATE.SUBTEXT(fromNow(result.completed_at)) }
                     `
                     : status
+            }
+
+            // Set Onboarding Employee Task Details
+            setContent({
+                '#taskTitle': onboardingTask.title,
+                '#taskDescription': onboardingTask.description,
+                '#taskType': onboardingTask.task_type,
+                '#taskStart': `
+                    <div>${ formatDateTime(result.start_at, 'Full Date') }</div>
+                    <div>${ formatDateTime(result.start_at, 'Time') }</div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(result.start_at)) }
+                `,
+                '#taskEnd': `
+                    <div>${ formatDateTime(result.end_at, 'Full Date') }</div>
+                    <div>${ formatDateTime(result.end_at, 'Time') }</div>
+                    ${ TEMPLATE.SUBTEXT(fromNow(result.end_at)) }
+                `,
+                '#taskStatus': getTaskStatus(),
+                '#progress': getOnboardingEmployeeTaskStatus(result.status, result.start_at, result.end_at, result.completed_at)
             });
-
-            // Progress
-            setContent('#progress', getOnboardingEmployeeTaskStatus(result.status, result.start_at, result.end_at, result.completed_at));
-
 
             /** ONBOARDING EMPLOYEE TASK TIMELINE */
             setOnboardingEmployeeTaskTimeline('#onboardingEmployeeTaskTimeline', result);

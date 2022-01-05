@@ -1,12 +1,16 @@
+"use strict";
+
 /**
  * ==============================================================================
- * USER INFORMATION
+ * * USER INFORMATION
  * ==============================================================================
  */
 
 /** Get User Information */
 GET_ajax(`${ ROUTE.API.H }info`, {
     success: result => {
+
+        // Set User info
         setContent({
             '#userFullName': formatName("F M. L, S", {
                 firstName  : result.first_name,
@@ -17,6 +21,8 @@ GET_ajax(`${ ROUTE.API.H }info`, {
             '#userPosition': result.position.name,
             '#userDepartment': result.position.department.name
         });
+
+        // Remove loaders
         showElement('#userFullNameDisplay');
         $('#userFullNameLoader').remove();
     },

@@ -1,3 +1,5 @@
+"use strict";
+
 /** 
  * ===================================================================================
  * * APP FUNCTIONS
@@ -143,7 +145,7 @@ const setApplicantTimeline = (selector, data) => {
 
     // Applied
     const createdAt = data.created_at;
-    const applicantFullName = formatName   ('F M. L, S', {
+    const applicantFullName = formatName('F M. L, S', {
         firstName  : data.first_name,
         middleName : data.middle_name,
         lastName   : data.last_name,

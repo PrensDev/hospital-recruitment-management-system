@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * ==============================================================================
  * CONSTANTS
@@ -223,11 +225,11 @@ const applicantsAnalytics = () => {
     GET_ajax(`${ ROUTE.API.H }applicants/analytics`, {
         success: result => {
             setContent({
-                '#totalApplicantsCount'    : formatNumber(result.total),
-                '#forEvaluationCount'      : formatNumber(result.for_evaluation),
-                '#forScreeningCount'       : formatNumber(result.for_screening),
-                '#forInterviewCount'       : formatNumber(result.for_interview),
-                '#rejectedApplicantsCount' : formatNumber(result.rejected.total)
+                '#totalApplicantsCount': formatNumber(result.total),
+                '#forEvaluationCount': formatNumber(result.for_evaluation),
+                '#forScreeningCount': formatNumber(result.for_screening),
+                '#forInterviewCount': formatNumber(result.for_interview),
+                '#rejectedApplicantsCount: formatNumber(result.rejected.total)
             });
         },
         error: () => toastr.error('There was an error in getting applciants analytics')

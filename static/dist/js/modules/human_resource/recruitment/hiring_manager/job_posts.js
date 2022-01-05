@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * ==============================================================================
  * CONSTANTS
@@ -57,11 +59,10 @@ initDataTable('#jobPostsDT', {
                 const applicants = data.applicants;
                 let applicantsCounter = 0;
                 applicants.forEach(a => {
-                    if(!(a.status == "For evaluation" || a.status == "Rejected from evaluation")) 
-                        applicantsCounter++;
+                    if(!(a.status == "For evaluation" || a.status == "Rejected from evaluation")) applicantsCounter++;
                 });
                 return applicantsCounter == 0 
-                    ? `<div class="text-secondary font-italic">No applicants yet</div>` 
+                    ? TEMPLATE.UNSET('No applicants yet')
                     : `${ applicantsCounter } applicant${ applicantsCounter > 1 ? 's' : '' }`
             }
         },
@@ -224,7 +225,7 @@ ifSelectorExist('#jobPostDetails', () => {
                 return isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)
                     ? () => {
                         hideElement('#salaryRangeField');
-                        return `<div class="text-secondary font-italic">Unset</div>`
+                        return TEMPLATE.UNSET('Mo salary has been set')
                     }
                     : `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
             });

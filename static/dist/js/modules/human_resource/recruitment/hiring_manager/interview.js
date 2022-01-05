@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * ==============================================================================
  * CONSTANTS
@@ -485,7 +487,7 @@ ifSelectorExist('#applicantDetails', () => {
         success: result => {
             const applicant = result.applicant_info;
 
-            // Set Dynamic content
+            // Set Applicant Details
             setContent({
                 '#intervieweeName': formatName('L, F M., S', {
                     firstName  : applicant.first_name,

@@ -1,3 +1,4 @@
+"use strict";
 
 /** Validate Login Form */
 validateForm("#loginForm", {

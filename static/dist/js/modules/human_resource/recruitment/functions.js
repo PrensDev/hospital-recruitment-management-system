@@ -1,3 +1,5 @@
+"use strict";
+
 /** 
  * ===================================================================================
  * * FUNCTIONS
@@ -126,37 +128,27 @@ const initDataTable = (selector = "", dtOptions = {
                     extend: "copy",
                     text: TEMPLATE.LABEL_ICON("Copy", "copy"),
                     className: "btn-sm btn-default",
-                    exportOptions: {
-                        columns: visibleCols
-                    }
+                    exportOptions: { columns: visibleCols }
                 }, {
                     extend: "csv",
                     text: TEMPLATE.LABEL_ICON("CSV", "file-csv"),
                     className: "btn-sm btn-default",
-                    exportOptions: {
-                        columns: visibleCols
-                    }
+                    exportOptions: { columns: visibleCols }
                 }, { 
                     extend: "excel",
                     text: TEMPLATE.LABEL_ICON("Excel", "file-excel"),
                     className: "btn-sm btn-default",
-                    exportOptions: {
-                        columns: visibleCols
-                    }
+                    exportOptions: { columns: visibleCols }
                 }, {
                     extend: "pdf",
                     text: TEMPLATE.LABEL_ICON("PDF", "file-pdf"),
                     className: "btn-sm btn-default",
-                    exportOptions: {
-                        columns: visibleCols
-                    }
+                    exportOptions: { columns: visibleCols }
                 }, {
                     extend: "print",
                     text: TEMPLATE.LABEL_ICON("Print", "print"),
                     className: "btn-sm btn-default",
-                    exportOptions: {
-                        columns: visibleCols
-                    }
+                    exportOptions: { columns: visibleCols }
                 }, {
                     extend: "colvis",
                     text: TEMPLATE.LABEL_ICON("Columns", "eye"),
@@ -177,7 +169,6 @@ const initDataTable = (selector = "", dtOptions = {
         }
 
     /** INITIATE DATATABLE */
-    
     $(selector).DataTable(dtParams);
 }));
 
@@ -650,4 +641,14 @@ const setPagination = (selector, attr = {query: '', totalRows: 0,  currentPage: 
     `;
 
     if(currentPage > 0 && currentPage <= totalPages) setContent(selector, paginationItems);
+}
+
+
+/** Print Content */
+const printContent = (pageTitle, content) => {
+    const w = window.open();
+    w.document.write(TEMPLATE.PRINT(pageTitle, content));
+    w.document.close();
+    w.print();
+    w.onafterprint = () => w.close();
 }

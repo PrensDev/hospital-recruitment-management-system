@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * ==============================================================================
  * SUBMIT MANPOWER REQUEST
@@ -223,7 +225,7 @@ initDataTable('#manpowerRequestDT', {
         { 
             data: null,
             render: data => {
-                staffsNeeded = data.staffs_needed;
+                const staffsNeeded = data.staffs_needed;
                 return `
                     <div>${ data.vacant_position.name }</div>
                     ${TEMPLATE.SUBTEXT(staffsNeeded + ` new staff${ staffsNeeded > 1 ? "s" : "" }`)}
@@ -488,7 +490,7 @@ const getManpowerRequestDetails = () => {
                     });
                     return `
                         <div>${ signedByFullName }</div>
-                        <div class="small text-secondary">${ signedBy.position.name }, ${ signedBy.position.department.name }</div>
+                        ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.department.name )}
                     `
                 }
             });
@@ -498,10 +500,10 @@ const getManpowerRequestDetails = () => {
                 const signedAt = result.signed_at;
                 return isEmptyOrNull(signedAt) 
                     ? TEMPLATE.UNSET('No status')
-                    : `
-                        <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
-                        <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
-                    `
+                    : TEMPLATE.NOWRAP([
+                        formatDateTime(signedAt, "Date"),
+                        formatDateTime(signedAt, "Time")
+                    ])
             });
 
             // Set Approved By
@@ -537,10 +539,10 @@ const getManpowerRequestDetails = () => {
                 const approvedAt = result.reviewed_at;
                 return isEmptyOrNull(approvedAt) 
                     ? TEMPLATE.UNSET('No status') 
-                    : `
-                        <div class="text-nowrap">${ formatDateTime(approvedAt, "Date") }</div>
-                        <div class="text-nowrap">${ formatDateTime(approvedAt, "Time") }</div>
-                    `
+                    : TEMPLATE.NOWRAP([
+                        formatDateTime(approvedAt, "Date"),
+                        formatDateTime(approvedAt, "Time")
+                    ])
             });
 
             // Set Completed At
@@ -548,67 +550,64 @@ const getManpowerRequestDetails = () => {
             setContent('#completedAt', () => {
                 return isEmptyOrNull(completedAt) 
                     ? TEMPLATE.UNSET('No status') 
-                    :  `
-                        <div class="text-nowrap">${ formatDateTime(completedAt, "Date") }</div>
-                        <div class="text-nowrap">${ formatDateTime(completedAt, "Time") }</div>
-                    `
+                    : TEMPLATE.NOWRAP([
+                        formatDateTime(completedAt, "Date"),
+                        formatDateTime(completedAt, "Time")
+                    ])
             });
             
             // Set Manpower Request Options
             setContent('#manpowerRequestOptions', () => {
                 const requisitionID = result.requisition_id;
 
-                if(requestStatus === "For signature") {
-                    return `
-                        <a 
-                            class="btn btn-sm btn-info btn-block"
-                            href="${ ROUTE.WEB.DM }edit-manpower-request/${ requisitionID }"
-                        >
-                            ${ TEMPLATE.ICON_LABEL("edit", "Edit Request") }
-                        </a>
+                switch(requestStatus) {
+                    case "For signature":
+                        return `
+                            <a 
+                                class="btn btn-sm btn-info btn-block"
+                                href="${ ROUTE.WEB.DM }edit-manpower-request/${ requisitionID }"
+                            >
+                                ${ TEMPLATE.ICON_LABEL("edit", "Edit Request") }
+                            </a>
 
-                        <div class="btn btn-sm btn-warning btn-block" onclick="cancelManpowerRequest('${ requisitionID }')">
-                            ${ TEMPLATE.ICON_LABEL("times-circle", "Cancel request") }
-                        </div>
-
-                        <hr>
-
-                        <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                            ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
-                        </div>
-                    `
-                } else if(requestStatus == "Approved") {
-                    $('#cancelManpowerRequestModal').remove();
-                    return `
-                        <div class="btn btn-sm btn-success btn-block" onclick="markAsCompleted('${ requisitionID }')">
-                            ${ TEMPLATE.ICON_LABEL("check-circle", "Mark as Completed") }
-                        </div>
-
-                        <hr>
-
-                        <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                            ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
-                        </div>
-                    `
-                }  else if(requestStatus == "Completed") {
-                    $('#cancelManpowerRequestModal').remove();
-                    $('#markAsCompletedModal').remove();
-                    return `
-                        <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                            ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
-                        </div>
-                        <a href="${ ROUTE.WEB.DM }manpower-requests/${ requisitionID }/report" class="btn btn-sm btn-info btn-block">
-                            ${ TEMPLATE.ICON_LABEL("file-alt", "Generate Report") }                            
-                        </a>
-                    `
-                } else {
-                    $('#cancelManpowerRequestModal').remove();
-                    $('#markAsCompletedModal').remove();
-                    return `
-                        <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                            ${ TEMPLATE.LABEL_ICON("Print Manpower Request Form", "print") }
-                        </div>
-                    `
+                            <div class="btn btn-sm btn-warning btn-block" onclick="cancelManpowerRequest('${ requisitionID }')">
+                                ${ TEMPLATE.ICON_LABEL("times-circle", "Cancel request") }
+                            </div>
+                            <hr>
+                            <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                                ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
+                            </div>
+                        `
+                    case "Approved":
+                        $('#cancelManpowerRequestModal').remove();
+                        return `
+                            <div class="btn btn-sm btn-success btn-block" onclick="markAsCompleted('${ requisitionID }')">
+                                ${ TEMPLATE.ICON_LABEL("check-circle", "Mark as Completed") }
+                            </div>
+                            <hr>
+                            <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                                ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
+                            </div>
+                        `
+                    case "Completed":
+                        $('#cancelManpowerRequestModal').remove();
+                        $('#markAsCompletedModal').remove();
+                        return `
+                            <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                                ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
+                            </div>
+                            <a href="${ ROUTE.WEB.DM }manpower-requests/${ requisitionID }/report" class="btn btn-sm btn-info btn-block">
+                                ${ TEMPLATE.ICON_LABEL("file-alt", "Generate Report") }                            
+                            </a>
+                        `
+                    default:
+                        $('#cancelManpowerRequestModal').remove();
+                        $('#markAsCompletedModal').remove();
+                        return `
+                            <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                                ${ TEMPLATE.LABEL_ICON("Print Manpower Request Form", "print") }
+                            </div>
+                        `
                 }
             });
 
@@ -666,27 +665,13 @@ const getManpowerRequestDetails = () => {
     });
 }
 
+
 /** View Manpower Request */
 ifSelectorExist('#manpowerRequestDocumentContainer', () => getManpowerRequestDetails());
 
+
 /** Print Manpower Request */
-const printManpowerRequest = () => {
-    var manpowerRequestDocument = $("#manpowerRequestDocument").html();
-    var w = window.open();
-    w.document.write(`
-        <!DOCTYPE html>
-        <html>
-            <title>Manpower Request Document</title>
-            <head>
-                <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-                <link rel="stylesheet" href="${BASE_URL_WEB}static/dist/css/adminlte.min.css">
-            </head>
-            <body onload="window.print()"> ${ manpowerRequestDocument } </body>
-        </html>`);
-    w.document.close();
-    w.print();
-    w.onafterprint = () => w.close();
-}
+const printManpowerRequest = () => printContent('Print Manpower Request Document', $("#manpowerRequestDocument").html())
 
 
 /** 
@@ -1081,10 +1066,7 @@ validateForm('#markAsCompletedForm', {
                     hideModal('#markAsCompletedModal');
 
                     // Set buttons to unload state
-                    btnToUnloadState('#confirmMarkAsCompletedBtn', `
-                        <span>Yes, mark it.</span>
-                        <i class="fas fa-check-circle ml-1"></i>
-                    `);
+                    btnToUnloadState('#confirmMarkAsCompletedBtn', TEMPLATE.LABEL_ICON('Yes, mark it.', 'check-circle'));
                     enableElement('#cancelMarkAsCompletedBtn');
 
                     // Show alert

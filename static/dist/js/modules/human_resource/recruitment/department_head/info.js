@@ -9,6 +9,8 @@
 GET_ajax(`${ ROUTE.API.DH }info`, {
     success: result => {
         if(result) {
+
+            // Set user info
             setContent({
                 '#userFullName': formatName("F M. L, S", {
                     firstName  : result.first_name,
@@ -19,6 +21,8 @@ GET_ajax(`${ ROUTE.API.DH }info`, {
                 '#userPosition': result.position.name,
                 '#userDepartment': result.position.department.name
             });
+
+            // Remove Loaders
             $('#userFullNameLoader').remove();
             showElement('#userFullNameDisplay');
         } else toastr.error('There was an error while getting your information');

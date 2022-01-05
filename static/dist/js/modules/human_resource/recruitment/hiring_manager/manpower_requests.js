@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * ==============================================================================
  * VIEW ALL MANPOWER REQUESTS
@@ -32,7 +34,7 @@ initDataTable('#manpowerRequestDT', {
         { 
             data: null,
             render: data => {
-                staffsNeeded = data.staffs_needed;
+                const staffsNeeded = data.staffs_needed;
                 return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`;
             }
         },

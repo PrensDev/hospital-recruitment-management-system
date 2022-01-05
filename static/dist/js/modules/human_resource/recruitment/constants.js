@@ -1,3 +1,5 @@
+"use strict";
+
 /** 
  * ===================================================================================
  * * CONSTANTS
@@ -35,7 +37,7 @@ const ROUTE = {
 
 
 // Configurations
-IF_SELECTOR_EXIST_DEBUG_MODE = false;
+const IF_SELECTOR_EXIST_DEBUG_MODE = false;
 
 
 // AJAX Header

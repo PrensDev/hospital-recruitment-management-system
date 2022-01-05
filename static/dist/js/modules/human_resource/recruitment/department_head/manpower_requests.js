@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * ==============================================================================
  * MANPOWER REQUESTS
@@ -23,7 +25,7 @@ initDataTable('#manpowerRequestDT', {
                 staffsNeeded = data.staffs_needed;
                 return `
                     <div>${ data.vacant_position.name }</div>
-                    <div class="small text-secondary">${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }</div>
+                    ${ TEMPLATE.SUBTEXT(`${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`) }
                 `;
             }
         },
@@ -178,8 +180,8 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             setContent('#deadline', () => {
                 const deadline = result.deadline;
                 return isEmptyOrNull(deadline)
-                    ? `<div class="text-secondary font-italic">No data</div>`
-                    : formatDateTime(result.deadline, "DateTime")
+                    ? TEMPLATE.UNSET('No deadline has been set')
+                    : formatDateTime(deadline, "DateTime")
             });
 
             // Set Requested Position
@@ -240,10 +242,10 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                 const signedAt = result.signed_at;
                 return isEmptyOrNull(signedAt) 
                     ? TEMPLATE.UNSET('No status approved')
-                    : `
-                        <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
-                        <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
-                    `
+                    : TEMPLATE.NOWRAP([
+                        formatDateTime(signedAt, "Date"),
+                        formatDateTime(signedAt, "Time"),
+                    ])
             });
 
             // Set Approved By
@@ -268,7 +270,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
-                                ${ TEMPLATE.SUBTEXT(`${ approvedBy.position.name }, ${ approvedBy.position.department.name }`) }
+                                ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.department.name) }
                             `
                         }
                     }
@@ -367,23 +369,7 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
  * ==============================================================================
  */
 
-const printManpowerRequest = () => {
-    var manpowerRequestDocument = $("#manpowerRequestDocument").html();
-    var w = window.open();
-    w.document.write(`
-        <!DOCTYPE html>
-        <html>
-            <title>Manpower Request Document</title>
-            <head>
-                <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-                <link rel="stylesheet" href="${BASE_URL_WEB}static/dist/css/adminlte.min.css">
-            </head>
-            <body onload="window.print()"> ${ manpowerRequestDocument } </body>
-        </html>`);
-    w.document.close();
-    w.print();
-    w.onafterprint = () => w.close();
-}
+const printManpowerRequest = () => printContent('Print Manpower Request Document', $("#manpowerRequestDocument").html())
 
 
 /**

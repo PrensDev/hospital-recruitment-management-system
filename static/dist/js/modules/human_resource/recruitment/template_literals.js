@@ -33,8 +33,31 @@ const TEMPLATE = {
             <i class="fa${iconType} fa-${icon} ml-1"></i>
         `
     },
+    NOWRAP: (content) => {
+        return `<div class="text-nowrap">${ content }</div>`
+    },
     UNSET: (content) => {
-        return `<div class="text-secondary font-italic">-- ${ content } --</div>`
+        const nowrap = (content) => { return `<div class="text-secondary font-italic">-- ${ content } --</div>` }
+        let contents = '';
+        if(typeof content == "object") {
+            content.forEach(c => contents += nowrap(c))
+            return contents
+        } else return nowrap(content)
+    },
+    PRINT: (pageTitle, content) => {
+        return `
+            <!DOCTYPE html>
+            <html>
+                <title>${ pageTitle }</title>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+                    <link rel="stylesheet" href="${BASE_URL_WEB}static/dist/css/adminlte.min.css">
+                </head>
+                <body onload="window.print()"> ${ content } </body>
+            </html>
+        `
     },
 
     /**
