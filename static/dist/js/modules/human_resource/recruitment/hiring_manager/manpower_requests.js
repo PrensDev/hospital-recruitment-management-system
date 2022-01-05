@@ -121,7 +121,8 @@ const manpowerRequestAnalytics = () => {
             setContent({
                 '#totalManpowerRequestsCount':formatNumber(result.total),
                 '#forReviewRequestsCount': () => {
-                    return result.for_review > 0
+                    const forReviewCount = result.for_review
+                    return forReviewCount > 0
                         ? TEMPLATE.ICON_LABEL('exclamation-triangle text-warning', formatNumber(forReviewCount))
                         : 0
                 },  

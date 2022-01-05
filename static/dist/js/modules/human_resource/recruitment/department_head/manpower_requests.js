@@ -22,7 +22,7 @@ initDataTable('#manpowerRequestDT', {
         { 
             data: null,
             render: data => {
-                staffsNeeded = data.staffs_needed;
+                const staffsNeeded = data.staffs_needed;
                 return `
                     <div>${ data.vacant_position.name }</div>
                     ${ TEMPLATE.SUBTEXT(`${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`) }

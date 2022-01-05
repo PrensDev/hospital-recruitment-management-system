@@ -227,9 +227,10 @@ const applicantsAnalytics = () => {
             setContent({
                 '#totalApplicantsCount': formatNumber(result.total),
                 '#forEvaluationCount': formatNumber(result.for_evaluation),
+                '#hiredApplicantsCount': formatNumber(result.hired),
                 '#forScreeningCount': formatNumber(result.for_screening),
                 '#forInterviewCount': formatNumber(result.for_interview),
-                '#rejectedApplicantsCount: formatNumber(result.rejected.total)
+                '#rejectedApplicantsCount': formatNumber(result.rejected.total)
             });
         },
         error: () => toastr.error('There was an error in getting applciants analytics')
@@ -382,8 +383,8 @@ const viewInterviewedApplicantDetails = (applicantID) => {
                 $('#applicantScoresheet').append(`
                     <tr>
                         <td class="text-right">${ count }</td>
-                        <td>
-                            <div>${ interviewQuestionType }</div>
+                        <td width="100%">
+                            <div>${ s.interview_question.question }</div>
                             <div>${ interviewQuestionTypeBadge[interviewQuestionType] }</div>
                         </td>
                         <td class="text-right">${ formatNumber(score) }%</td>
