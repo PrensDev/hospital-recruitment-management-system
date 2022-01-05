@@ -15,8 +15,8 @@ const TEMPLATE = {
     SUBTEXT: content => {
         return `<div class="small text-secondary">${ content }</div>`
     },
-    BADGE: (theme, content) => {
-        return `<span class="badge badge-${theme} p-2">${content}</span>`
+    BADGE: (theme, content, addClass='') => {
+        return `<span class="badge badge-${theme} p-2${ addClass !== '' ? ' ' + addClass : '' }">${content}</span>`
     },
     EMPTY: content => {
         return `<div class="text-secondary font-italic">${content}</div>`

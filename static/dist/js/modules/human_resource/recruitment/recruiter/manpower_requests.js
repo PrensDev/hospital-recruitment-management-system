@@ -127,12 +127,10 @@ initDataTable('#manpowerRequestDT', {
 const manpowerRequestAnalytics = () => {
     GET_ajax(`${ ROUTE.API.R }requisitions/analytics`, {
         success: result => {
-
-            // Set Approved Requests Count
-            setContent('#approvedRequestsCount', formatNumber(result.approved_requests));
-
-            // Set With Job Post Count
-            setContent('#withJobPostsCount', formatNumber(result.with_job_post));
+            setContent({
+                '#approvedRequestsCount': formatNumber(result.approved_requests),
+                '#withJobPostsCount': formatNumber(result.with_job_post)
+            });
         },
         error: () => toastr.error('There was an error in getting manpower request analytics')
     });
@@ -157,12 +155,13 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             /** SET MANPOWER REQUEST CONTENTS */
 
             const requestedBy = result.manpower_request_by;
+            
+            // Set Requisition ID
+            setValue('#requisitionID', result.requisition_id)
 
             // Set Requisition No
             setContent('#requisitionNo', result.requisition_no);
 
-            // Set Requisition ID
-            setValue('#requisitionID', result.requisition_id)
             
             // Set Requestor Name
             setContent('#requestorName', formatName("F M. L, S", {
@@ -233,7 +232,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
-                                <div class="small text-secondary">${ approvedBy.position.name }, ${ approvedBy.position.department.name }</div>
+                                ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.department.name) }
                             `
                         }
                     }
@@ -256,7 +255,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                     });
                     return `
                         <div>${ signedByFullName }</div>
-                        <div class="small text-secondary">${ signedBy.position.name }, ${ signedBy.position.department.name }</div>
+                        ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.department.name) }
                     `
                 }
             });
@@ -266,10 +265,10 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                 const signedAt = result.signed_at;
                 return isEmptyOrNull(signedAt) 
                     ? TEMPLATE.UNSET('Not yet signed')
-                    : `
-                        <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
-                        <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
-                    `
+                    : TEMPLATE.NOWRAP([
+                        formatDateTime(signedAt, "Date"),
+                        formatDateTime(signedAt, "Time")
+                    ])
             });
 
             // Set Approved At

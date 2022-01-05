@@ -261,11 +261,11 @@ ifSelectorExist('#manpowerRequestDocument', () => {
             setContent('#signedAt', () => {
                 const signedAt = result.signed_at;
                 return isEmptyOrNull(signedAt) 
-                    ? `<div class="text-secondary font-italic">No status</div>` 
-                    : `
-                        <div class="text-nowrap">${ formatDateTime(signedAt, "Date") }</div>
-                        <div class="text-nowrap">${ formatDateTime(signedAt, "Time") }</div>
-                    `
+                    ? TEMPLATE.UNSET('No status')
+                    : TEMPLATE.NOWRAP([
+                        formatDateTime(signedAt, "Date"),
+                        formatDateTime(signedAt, "Time") 
+                    ])
             });
 
             // Set Approved At

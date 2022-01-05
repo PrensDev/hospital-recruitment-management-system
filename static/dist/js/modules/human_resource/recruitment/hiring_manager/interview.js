@@ -82,14 +82,10 @@ initDataTable('#generalInterviewQuestionsDT', {
 // Validate Add General Interviwe Question Form
 validateForm('#addGeneralInterviewQuestionForm', {
     rules: {
-        question: {
-            required: true
-        }
+        question: { required: true }
     },
     messages: {
-        question: {
-            required: 'General interview question is required'
-        }
+        question: { required: 'General interview question is required' }
     },
     submitHandler: () => addGeneralInterviewQuestion()
 });
@@ -175,7 +171,7 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
 
                     return `
                         <div>${ fullName }</div>
-                        <div class="small text-secondary">${ position.name }, ${ position.department.name }</div>
+                        ${ TEMPLATE.SUBTEXT(position.name + ', ' + position.department.name) }
                     `
                 })
                 
@@ -205,7 +201,7 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
 
                     return `
                         <div>${ fullName }</div>
-                        <div class="small text-secondary">${ position.name }, ${ position.department.name }</div>
+                        ${ TEMPLATE.SUBTEXT(position.name + ', ' + position.department.name) }
                     `
                 })
                 
@@ -315,17 +311,17 @@ ifSelectorExist('#interviewScheduleDetails', () => {
                 if(moment().isSame(scheduledDate, 'date')) {
                     if(isAfterToday(startSession) && isAfterToday(endSession)) {
                         return `
-                            <div class="badge badge-warning p-2 mr-2">Will happen soon</div>
+                            ${ TEMPLATE.BADGE('warning', 'Will happen soon', 'mr-2') }
                             ${ TEMPLATE.SUBTEXT(`Started ${ fromNow(startSession) }`) }
                         `
                     } else if(isBeforeToday(startSession) && isAfterToday(endSession)) {
                         return `
-                            <div class="badge badge-info p-2 mr-2">On going</div>
+                            ${ TEMPLATE.BADGE('info', 'On going', 'mr-2') }
                             ${ TEMPLATE.SUBTEXT(`Started ${ fromNow(startSession) }`) }
                         `
                     } else {
                         return `
-                            <div class="badge badge-danger p-2 mr-2">Ended today</div>
+                            ${ TEMPLATE.BADGE('danger', 'Ended today', 'mr-2') }
                             ${ TEMPLATE.SUBTEXT(fromNow(endSession)) }
                         `
                     }
@@ -333,7 +329,7 @@ ifSelectorExist('#interviewScheduleDetails', () => {
                     return `${ TEMPLATE.SUBTEXT(fromNow(startSession)) }`
                 } else {
                     return `
-                        <div class="badge badge-danger p-2 mr-2">Ended</div>
+                        ${ TEMPLATE.BADGE('danger', 'Ended', 'mr-2') }
                         ${ TEMPLATE.SUBTEXT(fromNow(endSession)) }
                     `
                 }

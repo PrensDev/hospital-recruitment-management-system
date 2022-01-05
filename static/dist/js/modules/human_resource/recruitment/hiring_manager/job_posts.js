@@ -222,12 +222,10 @@ ifSelectorExist('#jobPostDetails', () => {
 
             // Set Salary Range
             setContent('#salaryRangeForSummary', () => {
-                return isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)
-                    ? () => {
-                        hideElement('#salaryRangeField');
-                        return TEMPLATE.UNSET('Mo salary has been set')
-                    }
-                    : `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
+                if(isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)) {
+                    hideElement('#salaryRangeField');
+                    return TEMPLATE.UNSET('Mo salary has been set')
+                } else `${formatCurrency(minSalary)} - ${formatCurrency(maxSalary)}`;
             });
 
             // Set Deadline
