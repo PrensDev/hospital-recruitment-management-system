@@ -107,40 +107,34 @@ initDataTable('#hiredApplicantsDT', {
 const viewApplicantDetails = (onboardingEmployeeID) => {
     GET_ajax(`${ ROUTE.API.DM }hired-applicants/${ onboardingEmployeeID }`, {
         success: result => {
-
-            console.log(result)
             
             /** APPLICANT DETAILS */
             
-            // const applicantFullName = formatName('F M. L, S', {
-            //     firstName: result.first_name,
-            //     middleName: result.middle_name,
-            //     lastName: result.last_name,
-            //     suffixName: result.suffixName
-            // });
+            // Set Applicant Full Name
+            setContent({
+                '#applicantFullName': formatName('F M. L, S', {
+                    firstName: result.first_name,
+                    middleName: result.middle_name,
+                    lastName: result.last_name,
+                    suffixName: result.suffixName
+                }),
+                "#applicantContactNumber": result.contact_number,
+                "#applicantEmail": result.email
+            });
 
-            // // Set Applicant Full Name
-            // setContent('#applicantFullName', applicantFullName);
-
-            // // Set Applicant Contact Number
-            // setContent("#applicantContactNumber", result.contact_number);
-
-            // // Set Applicant Email
-            // setContent("#applicantEmail", result.email);
-
-            // // Set Resume Link
-            // $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
+            // Set Resume Link
+            $('#employmentContractBtn').attr('href', `${ EMPLOYMENT_CONTRACT_PATH }${ result.employment_contract }`);
 
 
-            // /** APPLICANT TIMELINE */
-            // setApplicantTimeline('#applicantTimeline', result);
+            /** APPLICANT TIMELINE */
+            setApplicantTimeline('#applicantTimeline', result);
 
-            // // Remove Applicant Timeline Loader
-            // hideElement('#applicantTimelineLoader');
-            // showElement('#applicantTimeline');
+            // Remove Applicant Timeline Loader
+            hideElement('#applicantTimelineLoader');
+            showElement('#applicantTimeline');
 
-            // /** Show Modal */
-            // showModal('#applicantDetailsModal');
+            /** Show Modal */
+            showModal('#applicantDetailsModal');
         },
         error: () => toastr.error('There was an error in getting applicant details')
     });

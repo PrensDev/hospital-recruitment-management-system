@@ -1119,22 +1119,30 @@ const getOnboardingEmployeeDetails = () => {
                 });
             }
 
-            // Set employee details
+            const employeeFullName = formatName('F M. L, S', {
+                firstName  : result.first_name,
+                middleName : result.middle_name,
+                lastName   : result.last_name,
+                suffixName : result.suffix_name
+            })
+
+            const employmentStartDate = formatDateTime(result.employment_start_date, 'Full Date');
+
+            // Set employee details (summary)
             setContent({
-                '#employeeFullName': formatName('F M. L, S', {
-                    firstName  : result.first_name,
-                    middleName : result.middle_name,
-                    lastName   : result.last_name,
-                    suffixName : result.suffix_name
-                }),
+                '#employeeFullName': employeeFullName,
                 '#employeePosition': result.onboarding_employee_position.name,
                 '#taskProgress': getTaskProgress(),
                 '#employeeEmail': result.email,
                 '#employeeContactNumber':result.contact_number,
-                '#startOfEmploymentDate': formatDateTime(result.employment_start_date, 'Full Date'),
+                '#startOfEmploymentDate': employmentStartDate,
                 '#startOfEmploymentHumanized': fromNow(result.employment_start_date),
                 '#employeeDetailsBtns': `
-                    <div class="btn btn-sm btn-secondary btn-block">
+                    <div 
+                        class="btn btn-sm btn-secondary btn-block"
+                        data-toggle="modal"
+                        data-target="#onboardingEmployeeDetailsModal"
+                    >
                         ${ TEMPLATE.ICON_LABEL('list', 'View Full Details') }
                     </div>
                     <a 
@@ -1145,6 +1153,15 @@ const getOnboardingEmployeeDetails = () => {
                         ${ TEMPLATE.ICON_LABEL('file-alt', 'View Employment Contract') }
                     </a>
                 `
+            });
+
+            // Set employee details (summary)
+            setContent({
+                '#employeeFullNameForDetails': employeeFullName,
+                '#employeePositionForDetails': result.onboarding_employee_position.name,
+                '#employeeContactNumberForDetails': result.contact_number,
+                '#employeeEmailForDetails': result.email,
+                '#employmentStartDetails': employmentStartDate
             })
 
             // Remove loader and show container

@@ -119,6 +119,8 @@ initDataTable('#hiredApplicantsDT', {
 const getHiredApplicantDetails = (applicantID) => {
     GET_ajax(`${ ROUTE.API.DH }hired-applicants/${ applicantID }`, {
         success: result => {
+
+            console.log(result)
             
             /** APPLICANT DETAILS */
             setContent({

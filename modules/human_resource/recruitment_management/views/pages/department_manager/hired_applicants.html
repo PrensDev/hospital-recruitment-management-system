@@ -64,6 +64,11 @@
 {% endblock %}
 
 
+{% block page_modals %}
+    {% include "pages/department_manager/modals/hired_applicants_modal.html" %}
+{% endblock %}
+
+
 {% block page_scripts %}
     <script src="{{url_for('static', path='/dist/js/modules/human_resource/recruitment/department_manager/applicants.js')}}"></script>
 {% endblock %}

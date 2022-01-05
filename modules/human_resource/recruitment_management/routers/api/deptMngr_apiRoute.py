@@ -492,7 +492,13 @@ def get_all_hired_applicants(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, User.position_id == Position.position_id).first()
+            user_department = db.query(Department).join(Position).filter(
+                Department.department_id == Position.department_id
+            ).join(User).filter(
+                User.user_id == user_data.user_id, 
+                User.position_id == Position.position_id
+            ).first()
+            
             return db.query(OnboardingEmployee).filter(
                 OnboardingEmployee.status == "Pending"
             ).join(Position).filter(
@@ -518,7 +524,7 @@ def get_all_hired_applicants(
             onboarding_employee = db.query(OnboardingEmployee).filter(
                 OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
                 OnboardingEmployee.status == "Pending"
-            ).filter(
+            ).join(Position).filter(
                 OnboardingEmployee.position_id == Position.position_id
             ).join(Department).filter(
                 Position.department_id == Department.department_id, 

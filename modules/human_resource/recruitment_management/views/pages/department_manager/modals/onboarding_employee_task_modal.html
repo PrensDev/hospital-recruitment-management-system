@@ -1,3 +1,69 @@
+{# Onboarding Employee Details Modal #}
+<div class="modal fade" id="onboardingEmployeeDetailsModal">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-file-alt text-secondary mr-1"></i>
+                    <span>Onboarding Employee Details</span>
+                </div>
+            </div>
+            <div class="modal-body">
+
+                {# Onboarding Employee Details #}
+                <table class="table border-bottom">
+                    <tr>
+                        <th>Employee Name</th>
+                        <td id="employeeFullNameForDetails"></td>
+                    </tr>
+                    <tr>
+                        <th>Position</th>
+                        <td id="employeePositionForDetails"></td>
+                    </tr>
+                    <tr>
+                        <th>Contact Number</th>
+                        <td id="employeeContactNumberForDetails"></td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td id="employeeEmailForDetails"></td>
+                    </tr>
+                    <tr>
+                        <th>Start of Employment</th>
+                        <td id="employmentStartDetails"></td>
+                    </tr>
+                    <tr>
+                        <th>Employment Contract</th>
+                        <td>
+                            <a 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                class="btn btn-sm btn-secondary"
+                                id="employmentContractBtn"
+                            >
+                                <span>View Employment Contract</span>
+                                <i class="fas fa-file-alt ml-1"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Added by</th>
+                        <td id="employeeAddedByForDetails"></td>
+                    </tr>
+                    <tr>
+                        <th>Updated by</th>
+                        <td id="employeeUpdatedByForDetails"></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {# Change Task Progress Modal #}
 <div class="modal" id="changeTaskStatusModal" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
