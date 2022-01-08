@@ -408,7 +408,7 @@ def get_all_general_onboarding_tasks(
 
 
 # Get All General Onboarding Tasks for Department Manager
-@router.get("/onboarding-tasks/general/for-department-manager", response_model=List[deptMngr.ShowOnboardingTask])
+@router.get("/onboarding-tasks/general/my-tasks", response_model=List[deptMngr.ShowOnboardingTask])
 def get_all_general_onboarding_tasks(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)

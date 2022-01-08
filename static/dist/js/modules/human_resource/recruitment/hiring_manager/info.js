@@ -2,29 +2,45 @@
 
 /**
  * ==============================================================================
- * * USER INFORMATION
+ * USER INFORMATION
  * ==============================================================================
  */
 
+
 /** Get User Information */
-GET_ajax(`${ ROUTE.API.H }info`, {
-    success: result => {
+(() => {
+    const userInfo = JSON.parse(localStorage.getItem('user_info'));
 
-        // Set User info
+    const setUserInfo = () => {
         setContent({
-            '#userFullName': formatName("F M. L, S", {
-                firstName  : result.first_name,
-                middleName : result.middle_name,
-                lastName   : result.last_name,
-                suffixName : result.suffix_name
-            }),
-            '#userPosition': result.position.name,
-            '#userDepartment': result.position.department.name
+            '#userFullName': userInfo["fullName"],
+            '#userPosition': userInfo["position"],
+            '#userDepartment': userInfo["department"]
         });
-
-        // Remove loaders
-        showElement('#userFullNameDisplay');
         $('#userFullNameLoader').remove();
-    },
-    error: () => toastr.error('There was an error while getting your information')
-});
+        showElement('#userFullNameDisplay');
+    }
+
+    const getUserInfo = () => {
+        GET_ajax(`${ ROUTE.API.H }info`, {
+            success: result => {
+                if(result) {
+                    localStorage.setItem('user_info', JSON.stringify({
+                        "fullName": formatName("F M. L, S", {
+                            firstName  : result.first_name,
+                            middleName : result.middle_name,
+                            lastName   : result.last_name,
+                            suffixName : result.suffix_name
+                        }),
+                        "position": result.position.name,
+                        "department": result.position.department.name
+                    }));
+                    setUserInfo()
+                } else toastr.error('There was an error while getting your information');
+            },
+            error: () => toastr.error('There was an error while getting your information')
+        });
+    }
+
+    userInfo ? setUserInfo() : getUserInfo();
+})();

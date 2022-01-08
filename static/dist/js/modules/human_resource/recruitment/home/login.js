@@ -23,7 +23,7 @@ validateForm("#loginForm", {
     submitHandler: () => loginAJAX()
 })
 
-loginAJAX = () => {
+const loginAJAX = () => {
     setContent('#loginBtn', `<div class="spinner-border spinner-border-sm"></div>`);
     disableElement('#loginBtn');
 

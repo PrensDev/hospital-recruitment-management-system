@@ -36,6 +36,10 @@ const ROUTE = {
 }
 
 
+// URL Query Parameters
+const URL_QUERY_PARAMS = new URLSearchParams(window.location.search)
+
+
 // Configurations
 const IF_SELECTOR_EXIST_DEBUG_MODE = false;
 

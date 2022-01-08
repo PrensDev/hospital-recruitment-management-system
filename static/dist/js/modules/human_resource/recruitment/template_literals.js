@@ -34,15 +34,20 @@ const TEMPLATE = {
         `
     },
     NOWRAP: (content) => {
-        return `<div class="text-nowrap">${ content }</div>`
-    },
-    UNSET: (content) => {
-        const nowrap = (content) => { return `<div class="text-secondary font-italic">-- ${ content } --</div>` }
+        const nowrap = (content) => { return `<div class="text-nowrap">${ content }</div>` }
         let contents = '';
         if(typeof content == "object") {
             content.forEach(c => contents += nowrap(c))
             return contents
         } else return nowrap(content)
+    },
+    UNSET: (content) => {
+        const unset = (content) => { return `<div class="text-secondary font-italic">${ content }</div>` }
+        let contents = '';
+        if(typeof content == "object") {
+            content.forEach(c => contents += unset(c))
+            return contents
+        } else return unset(content)
     },
     PRINT: (pageTitle, content) => {
         return `

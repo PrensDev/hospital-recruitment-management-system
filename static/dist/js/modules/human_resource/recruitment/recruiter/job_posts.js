@@ -854,8 +854,7 @@ ifSelectorExist('#editJobPostForm', () => {
                     : TEMPLATE.NOWRAP([
                         formatDateTime(signedAt, "Date"),
                         formatDateTime(signedAt, "Time")
-                    ])`
-                    `
+                    ])
             });
 
             // Set Approved By

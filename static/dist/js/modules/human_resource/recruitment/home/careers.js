@@ -24,6 +24,7 @@ ifSelectorExist('#availableJobList', () => {
         url: `${ BASE_URL_API }home/job-posts?page=${ page }`,
         type: 'GET',
         success: result => {
+
             let jobList = '';
 
             if(result.length > 0) {
@@ -69,6 +70,9 @@ ifSelectorExist('#availableJobList', () => {
                                             </div>
                                             ${ salaryRange }
                                             ${ expirationDate }
+                                            <div class="pt-3 career-content-preview">
+                                                ${ r.content }
+                                            </div>
                                         </div>
                                     </div>
                                     
@@ -473,6 +477,9 @@ ifSelectorExist('#searchResultList', () => {
                                             </div>
                                             ${ salaryRange }
                                             ${ expirationDate }
+                                            <div class="pt-3 career-content-preview">
+                                                ${ r.content }
+                                            </div>
                                         </div>
                                     </div>
                                     

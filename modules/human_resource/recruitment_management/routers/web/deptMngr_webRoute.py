@@ -1,4 +1,6 @@
 # Import Packages
+from typing import Optional
+from sqlalchemy.sql.elements import Null
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -271,56 +273,24 @@ def render(
 
 # General Tasks
 @router.get("/general-tasks", response_class=HTMLResponse)
-def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return RedirectResponse("/dm/general-tasks/for-new-employees")
-    else:
-        return errTemplate.page_not_found(req)
-
-
-# General Tasks for new employees
-@router.get("/general-tasks/for-new-employees", response_class=HTMLResponse)
-def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "pages/general_tasks/for_new_employees.html", {
-            "request": req,
-            "page_title": "General Onboarding Tasks",
-            "sub_title": "Manage your general onboarding tasks here",
-            "active_navlink": "General Tasks",
-            'active_menu': "For new employees"
-        })
-    else:
-        return errTemplate.page_not_found(req)
-
-
-# General Tasks for the team
-@router.get("/general-tasks/for-the-team", response_class=HTMLResponse)
-def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "pages/general_tasks/for_team.html", {
-            "request": req,
-            "page_title": "General On-boarding Tasks",
-            "sub_title": "General On-boarding Tasks to manage employees tasks and monitor performances",
-            "active_navlink": "General Tasks",
-            'active_menu': "For the team"
-        })
-    else:
-        return errTemplate.page_not_found(req)
-
-
-# General Tasks for department head
-@router.get("/general-tasks/my-tasks", response_class=HTMLResponse)
-def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "pages/general_tasks/for_department_manager.html", {
-            "request": req,
-            "page_title": "General Onboarding Tasks",
-            "sub_title": "General Onboarding Tasks to manage employees tasks and monitor performances",
-            "active_navlink": "General Tasks",
-            'active_menu': "For department manager"
-        })
-    else:
-        return errTemplate.page_not_found(req)
+def render(req: Request, menu: Optional[str] = None, user_data: dict = Depends(get_token)):
+    try:
+        if not menu:
+            return RedirectResponse("/dm/general-tasks?menu=for-new-employees")
+        elif menu not in ["for-new-employees", "for-the-team", "my-tasks"]:
+            return errTemplate.page_not_found(req)
+        elif user_data['user_type'] == AUTHORIZED_USER:
+            return templates.TemplateResponse(TEMPLATES_PATH + "general_tasks.html", {
+                "request": req,
+                "page_title": "General Onboarding Tasks",
+                "sub_title": "Manage your general onboarding tasks here",
+                "active_navlink": "General Tasks",
+                'active_menu': menu
+            })
+        else:
+            return errTemplate.page_not_found(req)
+    except Exception as e:
+        print(e)
 
 
 # ===========================================================

@@ -621,16 +621,24 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
  */
 
 /** Add general task */
-const addGeneralTask = (taskType = '') => {
-    setValue('#taskType', taskType);
-    setContent('#onboardingTaskDescription', () => {
-        const taskDescription = {
-            "For new employees": "Add general task for new employees",
-            "For the team": "Add general task for the team",
-            "For department manager": "Add your general task as a department manager here"
+const addGeneralTask = () => {
+    const menu = URL_QUERY_PARAMS.get("menu");
+    const taskDetails = {
+        'for-new-employees': {
+            taskType: "For new employees",
+            taskDescription: "Add general task for new employees"
+        },
+        'for-the-team': {
+            taskType: "For the team",
+            taskDescription: "Add general task for the team"
+        },
+        'my-tasks': {
+            taskType: "For department manager",
+            taskDescription: "Add your general task as a department manager here"
         }
-        return taskDescription[taskType];
-    });
+    }
+    setValue('#taskType', taskDetails[menu].taskType);
+    setContent('#onboardingTaskDescription', taskDetails[menu].taskDescription);
     showModal('#addGeneralTaskModal');
 }
 
@@ -678,14 +686,12 @@ const addOnboardingTask = () => {
                 // Hide General Task Modal
                 hideModal('#addGeneralTaskModal');            
                 
-                // Ste button to unload state
+                // Set button to unload state
                 btnToUnloadState('#addGeneralTaskBtn', TEMPLATE.LABEL_ICON('Add', 'plus'));
                 enableElement('#cancelAddGeneralTaskBtn');
 
                 // Reload datatable
-                ifSelectorExist('#generalTasksForNewEmployeesDT', () => reloadDataTable('#generalTasksForNewEmployeesDT'));
-                ifSelectorExist('#generalTasksForTeamDT', () => reloadDataTable('#generalTasksForTeamDT'));
-                ifSelectorExist('#generalTasksForDepartmentManagerDT', () => reloadDataTable('#generalTasksForDepartmentManagerDT'));
+                reloadDataTable('#generalTasksDT');
 
                 // Show success alert
                 toastr.success('A new general onboarding task is successfully added');
@@ -714,14 +720,25 @@ const addOnboardingTask = () => {
  */
 
 /** Initialize General Tasks DataTable */
-const initGeneralTaskDT = (selector, url) => {
-    initDataTable(selector, {
-        url: url,
+const loadGeneralTasksDT = () => {
+
+    const menu = URL_QUERY_PARAMS.get("menu");
+
+    const titles = {
+        'for-new-employees': 'Tasks for new employees',
+        'for-the-team': 'Tasks for the team',
+        'my-tasks': 'Your tasks'
+    }
+
+    setContent('#generalTasksTitle', titles[menu])
+
+    initDataTable('#generalTasksDT', {
+        url: `${ ROUTE.API.DM }onboarding-tasks/general/${ menu }`,
         columns: [
-    
+
             // Created at (Hidden for default sorting)
             { data: 'created_at', visible: false },
-    
+
             // Task Title
             {
                 data: null,
@@ -733,7 +750,7 @@ const initGeneralTaskDT = (selector, url) => {
                     `
                 }
             },
-    
+
             // Date Added
             {
                 data: null,
@@ -761,6 +778,14 @@ const initGeneralTaskDT = (selector, url) => {
                             <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                             <span>View Details</span>
                         </div>
+                        <div 
+                            class="dropdown-item d-flex"
+                            role="button"
+                            onclick="removeGenOnboardingTask('${ onboardingTaskID }')"
+                        >
+                            <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
+                            <span>Remove task</span>
+                        </div>
                     `);
                 }
             }
@@ -768,23 +793,43 @@ const initGeneralTaskDT = (selector, url) => {
     });
 }
 
-/** For New Employees DataTable */
-ifSelectorExist('#generalTasksForNewEmployeesDT', () => initGeneralTaskDT(
-    '#generalTasksForNewEmployeesDT', 
-    `${ ROUTE.API.DM }onboarding-tasks/general/for-new-employees`
-));
+ifSelectorExist('#generalTasksDT', () => loadGeneralTasksDT());
 
-/** For The Team DataTable */
-ifSelectorExist('#generalTasksForTeamDT', () => initGeneralTaskDT(
-    '#generalTasksForTeamDT', 
-    `${ ROUTE.API.DM }onboarding-tasks/general/for-the-team`
-));
+const loadGeneralTasksContent = (query) => {
 
-/** For Department Manager DataTable */
-ifSelectorExist('#generalTasksForDepartmentManagerDT', () => initGeneralTaskDT(
-    '#generalTasksForDepartmentManagerDT', 
-    `${ ROUTE.API.DM }onboarding-tasks/general/for-department-manager`
-));
+    // Replace URL menu
+    URL_QUERY_PARAMS.set('menu', query)
+    history.replaceState(null, null, "?"+URL_QUERY_PARAMS.toString());
+
+    // ReloadDataTable
+    $('#generalTasksDT').dataTable().fnClearTable();
+    $('#generalTasksDT').dataTable().fnDestroy();
+    loadGeneralTasksDT();
+
+    // Remove active class
+    const menuIDs = ['#forNewEmployeesMenu', '#forTheTeamMenu', '#myTasksMenu'];
+    menuIDs.forEach(id => $(id).removeClass('text-primary'))
+}
+
+$('#forNewEmployeesMenu').on('click', () => {
+    if(URL_QUERY_PARAMS.get('menu') !== "for-new-employees") {
+        loadGeneralTasksContent('for-new-employees');
+        $('#forNewEmployeesMenu').addClass('text-primary');
+    }
+});
+$('#forTheTeamMenu').on('click', () => {
+    if(URL_QUERY_PARAMS.get('menu') !== "for-the-team") {
+        loadGeneralTasksContent('for-the-team');
+        $('#forTheTeamMenu').addClass('text-primary');
+    }
+});
+$('#myTasksMenu').on('click', () => {
+    if(URL_QUERY_PARAMS.get('menu') !== "my-tasks") {
+        loadGeneralTasksContent('my-tasks');
+        $('#myTasksMenu').addClass('text-primary');
+    }
+});
+
 
 /** View Onboarding Task Details */
 const viewOnboardingTaskDetails = (onboardingTaskID) => {
