@@ -6,16 +6,21 @@
  * ===================================================================================
  */
 
+
+/** 
+ * ===================================================================================
+ * TIMELINES
+ * ===================================================================================
+ */
+
 /** Set Manpower Request Timeline */
 const setManpowerRequestTimeline = (selector, data) => {
     let timelineData = [];
 
-    const requestStatus = data.request_status;
-    const rejectedAt = data.rejected_at;
+    const requestStatus = data.request_status, rejectedAt = data.rejected_at;
 
     // Created
-    const createdAt = data.created_at;
-    const createdBy = data.manpower_request_by;
+    const createdAt = data.created_at, createdBy = data.manpower_request_by;
     const createdByFullName = formatName('F M. L, S', {
         firstName  : createdBy.first_name,
         middleName : createdBy.middle_name,
@@ -164,8 +169,7 @@ const setApplicantTimeline = (selector, data) => {
     });
 
     // Evaluated
-    const evaluatedAt = data.evaluated_at;
-    const evaluatedBy = data.evaluation_done_by;
+    const evaluatedAt = data.evaluated_at, evaluatedBy = data.evaluation_done_by;
     if(!isEmptyOrNull(evaluatedAt) && !isEmptyOrNull(evaluatedBy)) {
         const evaluatedByFullName = formatName('F M. L, S', {
             firstName: evaluatedBy.first_name,
@@ -187,8 +191,7 @@ const setApplicantTimeline = (selector, data) => {
     }
 
     // Screened
-    const screenedAt = data.screened_at;
-    const screenedBy = data.screening_done_by;
+    const screenedAt = data.screened_at, screenedBy = data.screening_done_by;
     if(!isEmptyOrNull(screenedAt) && !isEmptyOrNull(screenedBy)) {
         const screenedByFullName = formatName('F M. L, S', {
             firstName  : screenedBy.first_name,
@@ -210,8 +213,7 @@ const setApplicantTimeline = (selector, data) => {
     }
 
     // Hired
-    const hiredAt = data.hired_at;
-    const hiredBy = data.hiring_done_by;
+    const hiredAt = data.hired_at, hiredBy = data.hiring_done_by;
     if(!isEmptyOrNull(hiredAt) && !isEmptyOrNull(hiredBy)) {
         const hiredByFullName = formatName('F M. L, S', {
             firstName  : hiredBy.first_name,
@@ -239,8 +241,7 @@ const setApplicantTimeline = (selector, data) => {
         status === "Rejected from screening"  || 
         status === "Rejected from interview" 
     ) {
-        const rejectedAt = data.rejected_at;
-        const rejectedBy = data.rejection_done_by;
+        const rejectedAt = data.rejected_at, rejectedBy = data.rejection_done_by;
         if(!isEmptyOrNull(rejectedAt) && !isEmptyOrNull(rejectedBy)) {
             const rejectedByFullName = formatName('F M. L, S', {
                 firstName  : rejectedBy.first_name,
@@ -268,34 +269,11 @@ const setApplicantTimeline = (selector, data) => {
 }
 
 
-/** Get Onboarding Employee Task Status */
-const getOnboardingEmployeeTaskStatus = (status, startAt, deadline, completedAt) => {
-    switch(status) {
-        case "Pending":
-            if(isAfterToday(startAt) && isAfterToday(deadline))
-                return TEMPLATE.BADGE('secondary', TEMPLATE.ICON_LABEL('stopwatch', 'Soon'))
-            else if(isBeforeToday(startAt) && isAfterToday(deadline))
-                return TEMPLATE.BADGE('warning', TEMPLATE.ICON_LABEL('exclamation-circle', 'Pending (Must working)'))
-            else 
-                return TEMPLATE.BADGE('danger', TEMPLATE.ICON_LABEL('exclamation-triangle', 'Pending (Not worked)'))
-        case "On Going":
-            return isAfterToday(deadline)
-                ? TEMPLATE.BADGE('danger', TEMPLATE.ICON_LABEL('sync-alt', 'On Going'))
-                : TEMPLATE.BADGE('warning', TEMPLATE.ICON_LABEL('sync-alt', 'On Going (Must be done)'))
-        case "Completed":
-            return moment(completedAt).isBefore(moment(deadline))
-                ? TEMPLATE.BADGE('success', TEMPLATE.ICON_LABEL('check', 'Completed (On Time)'))
-                : TEMPLATE.BADGE('success', TEMPLATE.ICON_LABEL('check', 'Completed (Late)'))
-        default:
-            return TEMPLATE.BADGE('light', 'Invalid data')
-    }
-}
-
-
 /** Set Job Post Timeline */
 const setJobPostTimeline = (selector, data) => {
     let timelineData = [];
     
+    // Created
     const jobPostedBy = data.job_posted_by;
     const jobPostedByFullName = formatName('F M. L, S', {
         firstName  : jobPostedBy.first_name,
@@ -303,8 +281,6 @@ const setJobPostTimeline = (selector, data) => {
         lastName   : jobPostedBy.last_name,
         suffixName : jobPostedBy.suffix_name
     });
-
-    // Created
     const createdAt = data.created_at;
     timelineData.push({
         icon: "edit",
@@ -345,8 +321,7 @@ const setOnboardingEmployeeTaskTimeline = (selector, data) => {
     let timelineData = [];
 
     // Assigned
-    const assignedAt = data.created_at;
-    const assignedBy = data.onboarding_employee_task_assigned_by;
+    const assignedAt = data.created_at, assignedBy = data.onboarding_employee_task_assigned_by;
     const assignedByFullName = formatName('F M. L, S', {
         firstName  : assignedBy.first_name,
         middleName : assignedBy.middle_name,
@@ -366,8 +341,7 @@ const setOnboardingEmployeeTaskTimeline = (selector, data) => {
     });
 
     // Completed
-    const completedAt = data.completed_at;
-    const completedBy = data.onboarding_employee_task_completed_by;
+    const completedAt = data.completed_at, completedBy = data.onboarding_employee_task_completed_by;
     if(!isEmptyOrNull(completedAt) && !isEmptyOrNull(completedBy)) {
         const completedByFullName = formatName('F M. L, S', {
             firstName  : completedBy.first_name,
@@ -393,4 +367,291 @@ const setOnboardingEmployeeTaskTimeline = (selector, data) => {
         title: 'Onboarding Task Timeline',
         timelineData: timelineData
     });
+}
+
+
+/** 
+ * ===================================================================================
+ * MANPOWER REQUEST
+ * ===================================================================================
+ */
+
+/** Set Manpower Request Document */
+const setManpowerRequestDocument = (data) => {
+    const requestedBy = data.manpower_request_by, requestStatus = data.request_status;
+
+    // Set Requisition No
+    setContent('#requisitionNo', data.requisition_no);
+    
+    // Set Requestor Name
+    setContent('#requestorName', formatName("L, F M., S", {
+        firstName  : requestedBy.first_name,
+        middleName : requestedBy.middle_name,
+        lastName   : requestedBy.last_name,
+        suffixName : requestedBy.suffix_name
+    }));
+    
+    // Set Requestor Department
+    setContent('#requestorDepartment', requestedBy.position.name + ', ' + requestedBy.position.department.name);
+    
+    // Set Date Requested
+    setContent('#dateRequested', `
+        <div>${ formatDateTime(data.created_at, "Date") }</div>
+        <div>${ formatDateTime(data.created_at, "Time") }</div>
+    `);
+    
+    // Set Deadline
+    setContent('#deadline', () => {
+        const deadline = data.deadline;
+        return isEmptyOrNull(deadline)
+            ? TEMPLATE.UNSET('No deadline has been set')
+            : `
+                <div>${ formatDateTime(deadline, "Date") }</div>
+                <div>${ formatDateTime(deadline, "Time") }</div>
+            `
+    });
+
+    // Set Requested Position
+    setContent('#requestedPosition', data.vacant_position.name);
+    
+    // Set No. of Staffs Needed
+    setContent('#noOfStaffsNeeded', () => {
+        const staffsNeeded = data.staffs_needed;
+        return `${ staffsNeeded } new ${ pluralize('staff', staffsNeeded) }`
+    });
+
+    // Set Employment Type
+    setContent('#employmentType', data.employment_type);
+    
+    // Set Request Nature
+    setContent('#requestNature', data.request_nature);
+
+    // Set Suggested Salary
+    setContent('#suggestedSalary', () => {
+        const minSalary = data.min_monthly_salary, maxSalary = data.max_monthly_salary;
+        return isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary) 
+            ? TEMPLATE.UNSET('No salary has been set')
+            : `${ formatCurrency(minSalary) } - ${ formatCurrency(maxSalary) }/month`;
+    });
+
+    // Set Request Description
+    setContent('#requestDescription', data.content);
+
+    // Set Signed By
+    setContent('#signedBy', () => {
+        const signedBy = data.manpower_request_signed_by;
+        
+        if(data.request_status === "Rejected for signing")
+            return `<div class="text-danger">This request has been rejected for signing</div>`
+        else if(isEmptyOrNull(signedBy))
+            return TEMPLATE.UNSET('Not yet signed')
+        else {
+            const signedByFullName = formatName("L, F M., S", {
+                firstName  : signedBy.first_name,
+                middleName : signedBy.middle_name,
+                lastName   : signedBy.last_name,
+                suffixName : signedBy.suffix_name
+            });
+            return `
+                <div>${ signedByFullName }</div>
+                ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.department.name )}
+            `
+        }
+    });
+
+    // Set Signed At
+    setContent('#signedAt', () => {
+        const signedAt = data.signed_at;
+        return isEmptyOrNull(signedAt) 
+            ? TEMPLATE.UNSET('No status')
+            : TEMPLATE.NOWRAP([
+                formatDateTime(signedAt, "Date"),
+                formatDateTime(signedAt, "Time")
+            ])
+    });
+
+    // Set Approved By
+    setContent('#approvedBy', () => {
+        const approvedBy = data.manpower_request_reviewed_by;
+        return isEmptyOrNull(approvedBy) && !(
+                data.request_status === "Rejected for approval" ||
+                data.request_status === "Rejected for signing"
+            )
+            ? TEMPLATE.UNSET('Not yet approved')
+            : () => {
+                if(data.request_status === "Rejected for signing")
+                    return `<div class="text-danger">This request has been rejected</div>`
+                else if(data.request_status === "Rejected for approval")
+                    return `<div class="text-danger">This request has been rejected for approval</div>`
+                else {
+                    const approvedByFullName = formatName("L, F M., S", {
+                        firstName  : approvedBy.first_name,
+                        middleName : approvedBy.middle_name,
+                        lastName   : approvedBy.last_name,
+                        suffixName : approvedBy.suffix_name
+                    });
+                    return `
+                        <div>${ approvedByFullName }</div>
+                        ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.department.name) }
+                    `
+                }
+            }
+    });
+
+    // Set Approved At
+    setContent('#approvedAt', () => {
+        const approvedAt = data.reviewed_at;
+        return isEmptyOrNull(approvedAt) 
+            ? TEMPLATE.UNSET('No status') 
+            : TEMPLATE.NOWRAP([
+                formatDateTime(approvedAt, "Date"),
+                formatDateTime(approvedAt, "Time")
+            ])
+    });
+
+    // Set Completed At
+    const completedAt = data.completed_at;
+    setContent('#completedAt', () => {
+        return isEmptyOrNull(completedAt) 
+            ? TEMPLATE.UNSET('No status') 
+            : TEMPLATE.NOWRAP([
+                formatDateTime(completedAt, "Date"),
+                formatDateTime(completedAt, "Time")
+            ])
+    });
+    
+    /** MANPOWER REQUEST STATUS */
+    if(requestStatus == "Completed") {
+        const requestorFullName = formatName("F M. L, S", {
+            firstName  : requestedBy.first_name,
+            middleName : requestedBy.middle_name,
+            lastName   : requestedBy.last_name,
+            suffixName : requestedBy.suffix_name
+        });
+        setContent('#manpowerRequestStatus', `
+            <div class="alert border-success">
+                <h5 class="text-success mb-0">This request has been completed</h5>
+                ${ TEMPLATE.SUBTEXT(`Marked by: ${ requestorFullName }, ${ requestedBy.position.name }`)}
+                ${ TEMPLATE.SUBTEXT(`${ formatDateTime(completedAt, 'Full DateTime') } (${ fromNow(completedAt) })`)}
+            </div>
+        `)
+    } else if(requestStatus == 'Rejected for signing' || requestStatus == 'Rejected for approval') {
+        const rejectedBy = data.manpower_request_rejected_by;
+        const rejectedByFullName = formatName("F M. L, S", {
+            firstName  : rejectedBy.first_name,
+            middleName : rejectedBy.middle_name,
+            lastName   : rejectedBy.last_name,
+            suffixName : rejectedBy.suffix_name
+        });
+        const rejectedAt = data.rejected_at;
+        setContent('#manpowerRequestStatus', `
+            <div class="alert border-danger">
+                <h5 class="text-danger mb-0">This request has been ${ data.request_status.toLowerCase() }</h5>
+                <div class="small text-secondary">Marked by: ${ rejectedByFullName }, ${ requestedBy.position.name }</div>
+                <div class="small text-secondary">${ formatDateTime(rejectedAt, 'Full DateTime') } (${ fromNow(rejectedAt) })</div>
+                <div class="mt-3">
+                    <div class="font-weight-bold">Details</div>
+                    <div class="ml-3 text-justify">${ data.remarks }</div>
+                </div>
+            </div>
+        `)
+    } else $('#manpowerRequestStatus').remove();
+
+    // Remove Loaders
+    $('#manpowerRequestDocumentLoader').remove();
+    showElement('#manpowerRequestDocumentContainer');
+}
+
+
+/** 
+ * ===================================================================================
+ * JOB POST
+ * ===================================================================================
+ */
+
+/** SET JOB POST DETAILS */
+const setJobPostDetails = (data) => {
+
+    // Set Job Post Status
+    const expiresAt = data.expiration_date;
+    if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
+        setContent('#jobPostStatus', TEMPLATE.BADGE('info', 'On Going'))
+    else if(isBeforeToday(expiresAt))
+        setContent('#jobPostStatus', TEMPLATE.BADGE('danger', 'Ended'))
+    else
+        setContent('#jobPostStatus', TEMPLATE.BADGE('warning', 'Last Day Today'))
+
+    // Set Posted At, Vacant Position, Employment Type
+    const manpowerRequest = data.manpower_request;
+    setContent({
+        '#postedAt': `Posted ${ formatDateTime(data.created_at, 'Date') }`,
+        '#postedAtHumanized': fromNow(data.created_at),
+        '#jobPostViews': formatNumber(data.views) + pluralize(' view', data.views),
+        '#vacantPosition': manpowerRequest.vacant_position.name,
+        '#employmentTypeForJobPost': manpowerRequest.employment_type
+    });
+
+    // Set Salary Range
+    const minSalary = manpowerRequest.min_monthly_salary, maxSalary = manpowerRequest.max_monthly_salary;
+    if((isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary)) || !data.salary_is_visible) {
+        hideElement('#salaryRangeDisplay');
+        setContent('#salaryRange', '');
+    } else {
+        showElement('#salaryRangeDisplay');
+        setContent('#salaryRange', `${ formatCurrency(minSalary) } - ${ formatCurrency(maxSalary) }`);
+    }
+
+    // Set Open Until
+    const openUntil = data.expiration_date;
+    if(isEmptyOrNull(openUntil)) {
+        hideElement('#openUntilDisplay');
+        setContent('#openUntil', '');
+    } else {
+        showElement('#openUntilDisplay');
+        setContent('#openUntil', formatDateTime(openUntil, "Full Date"))
+    }
+
+    // Set Job Description
+    setContent('#jobDescription', data.content);
+
+    /** Job Post Options */
+    setContent('#jobPostOptions', `
+        <a class="btn btn-sm btn-secondary btn-block" target="_blank" href="${ BASE_URL_WEB }careers/${ jobPostID }">
+            ${ TEMPLATE.ICON_LABEL('eye', 'View post in public portal') }
+        </a>
+        <a class="btn btn-sm btn-secondary btn-block" href="${ ROUTE.WEB.H }job-posts/${ jobPostID }/applicants">
+            ${ TEMPLATE.ICON_LABEL('users', 'View applicants') }
+        </a>
+    `);
+}
+
+
+/** 
+ * ===================================================================================
+ * ONBOARDING EMPLOYEE STATUS
+ * ===================================================================================
+ */
+
+
+/** Get Onboarding Employee Task Status */
+const getOnboardingEmployeeTaskStatus = (status, startAt, deadline, completedAt) => {
+    switch(status) {
+        case "Pending":
+            if(isAfterToday(startAt) && isAfterToday(deadline))
+                return TEMPLATE.BADGE('secondary', TEMPLATE.ICON_LABEL('stopwatch', 'Soon'))
+            else if(isBeforeToday(startAt) && isAfterToday(deadline))
+                return TEMPLATE.BADGE('warning', TEMPLATE.ICON_LABEL('exclamation-circle', 'Pending (Must working)'))
+            else 
+                return TEMPLATE.BADGE('danger', TEMPLATE.ICON_LABEL('exclamation-triangle', 'Pending (Not worked)'))
+        case "On Going":
+            return isAfterToday(deadline)
+                ? TEMPLATE.BADGE('danger', TEMPLATE.ICON_LABEL('sync-alt', 'On Going'))
+                : TEMPLATE.BADGE('warning', TEMPLATE.ICON_LABEL('sync-alt', 'On Going (Must be done)'))
+        case "Completed":
+            return moment(completedAt).isBefore(moment(deadline))
+                ? TEMPLATE.BADGE('success', TEMPLATE.ICON_LABEL('check', 'Completed (On Time)'))
+                : TEMPLATE.BADGE('success', TEMPLATE.ICON_LABEL('check', 'Completed (Late)'))
+        default:
+            return TEMPLATE.BADGE('light', 'Invalid data')
+    }
 }

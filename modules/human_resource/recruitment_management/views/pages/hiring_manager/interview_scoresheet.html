@@ -55,48 +55,60 @@
 
                             <div class="text-center">
                                 <h3 class="profile-username mb-0" id="intervieweeName"></h3>
-                                <p class="text-secondary small">Applicant</p>
+                                <p class="text-secondary small">Candidate/Talent/Applicant</p>
                             </div>
 
                             {# Applicant Details #}
                             <table class="table">
                                 <tr>
                                     <td>
-                                        <div class="font-weight-bold">
-                                            <i class="fas fa-user-tie mr-1 text-secondary"></i>
-                                            <span>Applying for</span>
+                                        <div class="d-flex">
+                                            <div style="width: 1.75rem" class="text-secondary">
+                                                <i class="fas fa-user-tie"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-weight-bold">Applying for</div>
+                                                <div id="applyingFor"></div>
+                                            </div>
                                         </div>
-                                        <div class="ml-3" id="applyingFor"></div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div class="font-weight-bold">
-                                            <i class="fas fa-envelope mr-1 text-secondary"></i>
-                                            <span>Email</span>
+                                        <div class="d-flex">
+                                            <div style="width: 1.75rem" class="text-secondary">
+                                                <i class="fas fa-envelope"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-weight-bold">Email</div>
+                                                <div id="applicantEmail"></div>
+                                            </div>
                                         </div>
-                                        <div class="ml-3" id="applicantEmail"></div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div class="font-weight-bold">
-                                            <i class="fas fa-phone mr-1 text-secondary"></i>
-                                            <span>Contact Number</span>
+                                        <div class="d-flex">
+                                            <div style="width: 1.75rem" class="text-secondary">
+                                                <i class="fas fa-phone-alt"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-weight-bold">Contact Number</div>
+                                                <div id="applicantContactNumber"></div>
+                                            </div>
                                         </div>
-                                        <div class="ml-3" id="applicantContactNumber"></div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div class="font-weight-bold">
-                                            <i class="fas fa-calendar-alt mr-1 text-secondary"></i>
-                                            <span>Date applied</span>
-                                        </div>
-                                        <div class="ml-3">
-                                            <div id="appliedDate"></div>
-                                            <div id="appliedTime"></div>
-                                            <div class="small text-secondary" id="appliedAtHumanized"></div>
+                                        <div class="d-flex">
+                                            <div style="width: 1.75rem" class="text-secondary">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-weight-bold">Date Applied</div>
+                                                <div id="appliedAtHumanized"></div>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>

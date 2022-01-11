@@ -52,7 +52,6 @@ initDataTable('#hiredApplicantsDT', {
             data: null,
             render: data => {
                 const appliedAt = data.created_at;
-
                 return `
                     <div>${ formatDateTime(appliedAt, 'MMM. D, YYYY') }</div>
                     ${ TEMPLATE.SUBTEXT(fromNow(appliedAt)) }

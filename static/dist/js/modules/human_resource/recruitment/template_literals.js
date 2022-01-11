@@ -41,8 +41,8 @@ const TEMPLATE = {
             return contents
         } else return nowrap(content)
     },
-    UNSET: (content) => {
-        const unset = (content) => { return `<div class="text-secondary font-italic">${ content }</div>` }
+    UNSET: (content, tag = "div") => {
+        const unset = (content) => { return `<${tag} class="text-secondary font-italic">${ content }</${tag}>` }
         let contents = '';
         if(typeof content == "object") {
             content.forEach(c => contents += unset(c))

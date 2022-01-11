@@ -66,12 +66,12 @@ class ShowJobPost(BaseModel):
     expiration_date: Optional[datetime]
     applicants: Optional[List[Applicant]]
     job_posted_by: ShowUser
+    views: int
     created_at: datetime
     updated_at: Optional[datetime]
 
     class Config():
         orm_mode = True
-
 
 
 # Show Applicant

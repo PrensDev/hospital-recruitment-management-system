@@ -42,6 +42,7 @@ class JobPost(BaseModel):
     content: str
     salary_is_visible: bool
     expiration_date: Optional[datetime]
+    views: int
     created_at: datetime
     updated_at: Optional[datetime]
 

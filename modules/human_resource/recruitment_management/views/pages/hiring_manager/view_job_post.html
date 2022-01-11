@@ -65,7 +65,7 @@
             {# Details #}
             <div class="col-lg-4">
 
-                {# Job Post Summary #}
+                {# Job Post Details #}
                 <div class="card card-primary card-outline">
                     <div class="card-header">
                         <div class="skeleton-loader w-50 m-0"></div>
@@ -144,54 +144,7 @@
 
             {# Job Post Details #}
             <div class="col-lg-8">
-
-                {# Job Post Card #}
-                <div class="card card-outline card-primary" id="jobPostDetails">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h3 class="card-title">Job Post</h3>
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-sm btn-default" onclick="history.back()">
-                                    <i class="fas fa-arrow-left"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-default" data-card-widget="maximize">
-                                    <i class="fas fa-expand"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-
-                        {# Job Summary #}
-                        <div class="mb-5">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <h1 class="m-0" id="vacantPosition"></h1>
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div id="jobPostStatus"></div>
-                                <div class="mx-2">|</div>
-                                <div id="postedAt"></div>
-                            </div>
-                            <div>
-                                <b>Employment Type: </b><span id="employmentTypeForJobPost"></span>
-                            </div>
-                            <div id="salaryRangeDisplay">
-                                <b>Offered Salary: </b><span id="salaryRange"></span>
-                            </div>
-                            <div id="openUntilDisplay">
-                                <b>Open Until: </b><span id="openUntil"></span>
-                            </div>
-                        </div>
-
-                        {# Job Description #}
-                        <div class="mb-5">
-                            <h3>Job Description</h3>
-                            <div class="dropdown-divider"></div>
-                            <div class="my-3" id="jobDescription"></div>
-                        </div>
-                    </div>
-                </div>
+                {% include 'components/job_post.html' %}
             </div>
             
             {# Job Post Details & Manpower Request #}

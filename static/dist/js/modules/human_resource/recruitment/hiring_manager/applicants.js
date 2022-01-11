@@ -42,7 +42,7 @@ ifSelectorExist('#jobPostSummary', () => {
             // Set Staff needed
             setContent('#staffsNeeded', () => {
                 const staffsNeeded = manpowerRequest.staffs_needed;
-                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' } `;
+                return `${ staffsNeeded } new ${ pluralize('staff', staffsNeeded) }`;
             });
             
             // Set Employment Type
@@ -367,30 +367,27 @@ const viewInterviewedApplicantDetails = (applicantID) => {
             // Set ScoreSheet
             setContent('#applicantScoresheet', '');
             const scores = result.interviewee_info[0].interviewee_score;
-            let sum = 0, count = 1;
+            let sum = 0;
 
             const interviewQuestionTypeBadge = {
                 "General": `<span class="badge border border-primary text-primary">General</span>`,
                 "Added": `<span class="badge border border-secondary text-secondary">Added</span>`
             };
 
-            scores.forEach(s => {
+            scores.forEach((s, i) => {
                 const score = s.score;
                 sum+=score;
 
-                const interviewQuestionType = s.interview_question.type;
-
                 $('#applicantScoresheet').append(`
                     <tr>
-                        <td class="text-right">${ count }</td>
+                        <td class="text-right">${ i+1 }</td>
                         <td width="100%">
                             <div>${ s.interview_question.question }</div>
-                            <div>${ interviewQuestionTypeBadge[interviewQuestionType] }</div>
+                            <div>${ interviewQuestionTypeBadge[s.interview_question.type] }</div>
                         </td>
                         <td class="text-right">${ formatNumber(score) }%</td>
                     </tr>
                 `);
-                count++;
             });
 
             $('#applicantScoresheet').append(`
@@ -402,9 +399,7 @@ const viewInterviewedApplicantDetails = (applicantID) => {
 
             showModal('#applicantDetailsModal');
         },
-        error: () => {
-            toastr.error('There was a problem in getting the applicant details');
-        }
+        error: () => toastr.error('There was a problem in getting the applicant details')
     })
 }
 
@@ -554,14 +549,10 @@ const screenApplicant = () => {
     const formData = generateFormData('#applicantScreeningForm');
     const get = (name) => { return formData.get(name) }
 
-    // Get data
-    const applicantStatus = get('applicantStatus');
-    const remarks = applicantStatus === 'Rejected from screening' ? get('remarks') : null;
-
     // Set Data
     const data = {
-        status: applicantStatus,
-        remarks: remarks
+        status: get('applicantStatus'),
+        remarks: applicantStatus === 'Rejected from screening' ? get('remarks') : null
     }
 
     // If error

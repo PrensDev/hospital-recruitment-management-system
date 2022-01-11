@@ -362,7 +362,7 @@ ifSelectorExist('#interviewScheduleDetails', () => {
             // Set Deadline
             const deadline = jobPost.manpower_request.deadline;
             isEmptyOrNull(deadline)
-                ? setContent('#deadline', TEMPLATE.UNSET('No deadline'))
+                ? setContent('#deadline', TEMPLATE.UNSET('No deadline', 'span'))
                 : setContent('#deadline', formatDateTime(deadline, 'Full DateTime'))
 
                 // Remove loaders
@@ -500,7 +500,7 @@ ifSelectorExist('#applicantDetails', () => {
             });
 
             // Set Resume
-            $('#viewResumeBtn').attr('href', `${ URL_RESUME_FILES }${ applicant.resume }`)
+            $('#viewResumeBtn').attr('href', URL_RESUME_FILES+applicant.resume)
 
             // Components to loaded state
             $('#applicantDetailsLoader').remove();
@@ -659,15 +659,9 @@ validateForm('#addInterviewQuestionForm', {
             }
         });
 
-        addedQuestions.push({
-            name: inputName,
-            question: question
-        });
-
+        addedQuestions.push({ name: inputName, question: question });
         hideModal('#addInterviewQuestionModal');
-
         toastr.success('A new interview question has been added');
-
         return false;
     }
 });
@@ -682,27 +676,21 @@ onClick('#saveScoresheetBtn', () => {
     btnToLoadingState('#saveScoresheetBtn');
     disableElement('#cancelConfirmSaveScoresheetModalBtn');
 
-    const formData = generateFormData('#interviewScoresheetForm');
-    const get = (n) => { return formData.get(n) }
+    const get = (n) => { return generateFormData('#interviewScoresheetForm').get(n) }
     
     generalQuestionInputs.forEach(g => {
         const data = {
             interview_question_id: g.interviewQuestionID,
             score: get(g.name)
         };
-
         POST_ajax(`${ ROUTE.API.H }interview-scores/${ intervieweeID }`, data, {
-            success: () => {},
             error: () => toastr.error('There was an error in saving interviewee score')
         });
     });
 
     if(addedQuestions.length > 0) {
         addedQuestions.forEach(a => {
-            const data = {
-                question: a.question,
-                type: 'Added'
-            }
+            const data = { question: a.question, type: 'Added' }
 
             POST_ajax(`${ ROUTE.API.H }interview-questions`, data, {
                 success: result => {

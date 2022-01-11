@@ -450,54 +450,9 @@ const getJobPostDetails = () => {
         success: result => {
             
             /** JOB POST DETAILS */
+            setJobPostDetails(result);
 
             const manpowerRequest = result.manpower_request;
-
-            // Set Job Post Status
-            const expiresAt = result.expiration_date;
-
-            if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
-                setContent('#jobPostStatus', TEMPLATE.DT.BADGE('info', 'On Going'))
-            else if(isBeforeToday(expiresAt))
-                setContent('#jobPostStatus', TEMPLATE.DT.BADGE('danger', 'Ended'))
-            else
-                setContent('#jobPostStatus', TEMPLATE.DT.BADGE('warning', 'Last Day Today'))
-
-            // Set Posted At
-            setContent('#postedAt', `Posted ${ formatDateTime(result.created_at, 'Date') }`);
-            setContent('#postedAtHumanized', fromNow(result.created_at) )
-
-            // Set Vacant Position
-            setContent('#vacantPosition', manpowerRequest.vacant_position.name);
-
-            // Set Employment Type
-            setContent('#employmentTypeForJobPost', manpowerRequest.employment_type);
-
-            // Set Salary Range
-            const minSalary = manpowerRequest.min_monthly_salary;
-            const maxSalary = manpowerRequest.max_monthly_salary;
-
-            if((isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary)) || !result.salary_is_visible) {
-                hideElement('#salaryRangeDisplay');
-                setContent('#salaryRange', '');
-            } else {
-                showElement('#salaryRangeDisplay');
-                setContent('#salaryRange', `${ formatCurrency(minSalary) } - ${ formatCurrency(maxSalary) }`);
-            }
-
-            // Set Open Until
-            const openUntil = result.expiration_date;
-            if(isEmptyOrNull(openUntil)) {
-                hideElement('#openUntilDisplay');
-                setContent('#openUntil', '');
-            } else {
-                showElement('#openUntilDisplay');
-                setContent('#openUntil', formatDateTime(openUntil, "Full Date"))
-            }
-
-            // Set Job Description
-            setContent('#jobDescription', result.content);
-
             /** Job Post Options */
             setContent('#jobPostOptions', () => {
                 const endRecruiting = `
@@ -531,13 +486,14 @@ const getJobPostDetails = () => {
             // Set Staffs Needed
             setContent('#staffsNeededForSummary', () => {
                 const staffsNeeded = manpowerRequest.staffs_needed;
-                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' }`;
+                return `${ staffsNeeded } new ${ pluralize('staff', staffsNeeded)}`;
             });
 
             // Set Employment Type
             setContent('#employmentTypeForSummary', manpowerRequest.employment_type);
 
             // Set Salary Range
+            const minSalary = manpowerRequest.min_monthly_salary, maxSalary = manpowerRequest.max_monthly_salary;
             setContent('#salaryRangeForSummary', () => {
                 if(isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)) {
                     hideElement('#salaryRangeField');

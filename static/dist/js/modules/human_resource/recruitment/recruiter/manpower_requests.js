@@ -82,8 +82,7 @@ initDataTable('#manpowerRequestDT', {
         {
             data: null,
             render: data => {
-                const requisitionID = data.requisition_id;
-                const jobPost = data.job_post;
+                const requisitionID = data.requisition_id, jobPost = data.job_post;
 
                 const createJobPostBtn = jobPost.length == 1 
                     ? "" 
@@ -151,136 +150,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
         success: result => {
             
             /** SET MANPOWER REQUEST CONTENTS */
-
-            const requestedBy = result.manpower_request_by;
-            
-            // Set Requisition ID
-            setValue('#requisitionID', result.requisition_id)
-
-            // Set Requisition No
-            setContent('#requisitionNo', result.requisition_no);
-
-            
-            // Set Requestor Name
-            setContent('#requestorName', formatName("F M. L, S", {
-                firstName  : requestedBy.first_name,
-                middleName : requestedBy.middle_name,
-                lastName   : requestedBy.last_name,
-                suffixName : requestedBy.suffix_name
-            }));
-            
-            // Set Requestor Department
-            setContent('#requestorDepartment', requestedBy.position.name + ', ' + requestedBy.position.department.name);
-            
-            // Set Date Requested
-            setContent('#dateRequested', formatDateTime(result.created_at, "DateTime"));
-            
-            // Set Deadline
-            setContent('#deadline', () => {
-                const deadline = result.deadline;
-                return isEmptyOrNull(deadline)
-                    ? TEMPLATE.UNSET('No deadline')
-                    : formatDateTime(deadline, "DateTime")
-            });
-
-            // Set Requested Position
-            setContent('#requestedPosition', result.vacant_position.name);
-            
-            // Set No. of Staffs Needed
-            setContent('#noOfStaffsNeeded', () => {
-                const staffsNeeded = result.staffs_needed;
-                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`
-            });
-
-            // Set Employment Type
-            setContent('#employmentType', result.employment_type);
-
-            // Set Request Nature
-            setContent('#requestNature', result.request_nature);
-
-            // Set Suggested Salary
-            setContent('#suggestedSalary', () => {
-                const minMonthlySalary = result.min_monthly_salary;
-                const maxMonthlySalary = result.max_monthly_salary;
-                return isEmptyOrNull(minMonthlySalary) && isEmptyOrNull(maxMonthlySalary) 
-                    ? TEMPLATE.UNSET('No salary has been set') 
-                    : `${ formatCurrency(minMonthlySalary) } - ${ formatCurrency(maxMonthlySalary) }/month`;
-            });
-
-            // Set Request Description
-            setContent('#requestDescription', result.content);
-
-            // Set Approved By
-            setContent('#approvedBy', () => {
-                const approvedBy = result.manpower_request_reviewed_by;
-                return isEmptyOrNull(approvedBy)
-                    ? TEMPLATE.UNSET('Not yet approved')
-                    : () => {
-                        if(result.request_status === "Rejected") {
-                            return `<div class="text-danger">This request has been rejected</div>`
-                        } else {
-                            const approvedByFullName = formatName("L, F M., S", {
-                                firstName  : approvedBy.first_name,
-                                middleName : approvedBy.middle_name,
-                                lastName   : approvedBy.last_name,
-                                suffixName : approvedBy.suffix_name
-                            });
-                            return `
-                                <div>${ approvedByFullName }</div>
-                                ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.department.name) }
-                            `
-                        }
-                    }
-            });
-
-            // Set Signed By
-            setContent('#signedBy', () => {
-                const signedBy = result.manpower_request_signed_by;
-                
-                if(result.request_status === "Rejected for signing")
-                    return `<div class="text-danger">This request has been rejected for signing</div>`
-                else if(isEmptyOrNull(signedBy))
-                    return TEMPLATE.UNSET('Not yet signed')
-                else {
-                    const signedByFullName = formatName("L, F M., S", {
-                        firstName  : signedBy.first_name,
-                        middleName : signedBy.middle_name,
-                        lastName   : signedBy.last_name,
-                        suffixName : signedBy.suffix_name
-                    });
-                    return `
-                        <div>${ signedByFullName }</div>
-                        ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.department.name) }
-                    `
-                }
-            });
-
-            // Set Signed At
-            setContent('#signedAt', () => {
-                const signedAt = result.signed_at;
-                return isEmptyOrNull(signedAt) 
-                    ? TEMPLATE.UNSET('Not yet signed')
-                    : TEMPLATE.NOWRAP([
-                        formatDateTime(signedAt, "Date"),
-                        formatDateTime(signedAt, "Time")
-                    ])
-            });
-
-            // Set Approved At
-            setContent('#approvedAt', () => {
-                const approvedAt = result.reviewed_at;
-                return (isEmptyOrNull(approvedAt) || result.request_status === 'Rejected') 
-                    ? TEMPLATE.UNSET('No status')
-                    : formatDateTime(approvedAt, "DateTime")
-            });
-
-            // Set Approved At
-            setContent('#completedAt', () => {
-                const completedAt = result.completed_at;
-                return isEmptyOrNull(completedAt) 
-                    ? TEMPLATE.UNSET('No status')
-                    : formatDateTime(completedAt, "Date")
-            });
+            setManpowerRequestDocument(result);
 
             // Set Modal Footer and Other Fields
             const requestStatus = result.request_status;
@@ -314,10 +184,6 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             setManpowerRequestTimeline('#manpowerRequestTimeline', result)
 
             /** REMOVE LOADERS */
-            
-            // Remove Manpower Request Document Loader
-            $('#manpowerRequestDocumentLoader').remove();
-            showElement('#manpowerRequestDocumentContainer');
             
             // Remove Manpower Request Timeline Loader
             $('#manpowerRequestTimelineLoader').remove();

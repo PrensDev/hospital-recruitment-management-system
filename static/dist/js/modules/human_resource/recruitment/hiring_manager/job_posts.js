@@ -61,9 +61,9 @@ initDataTable('#jobPostsDT', {
                 applicants.forEach(a => {
                     if(!(a.status == "For evaluation" || a.status == "Rejected from evaluation")) applicantsCounter++;
                 });
-                return applicantsCounter == 0 
+                return applicantsCounter === 0 
                     ? TEMPLATE.UNSET('No applicants yet')
-                    : `${ applicantsCounter } applicant${ applicantsCounter > 1 ? 's' : '' }`
+                    : applicantsCounter + pluralize('applicant', applicantsCounter)
             }
         },
 
@@ -150,61 +150,7 @@ ifSelectorExist('#jobPostDetails', () => {
             const manpowerRequest = result.manpower_request;
 
             /** JOB POST DETAILS */
-
-            // Set Job Post Status
-            const expiresAt = result.expiration_date;
-
-            if(isEmptyOrNull(expiresAt) || isAfterToday(expiresAt))
-                setContent('#jobPostStatus', TEMPLATE.BADGE('info', 'On Going'))
-            else if(isBeforeToday(expiresAt))
-                setContent('#jobPostStatus', TEMPLATE.BADGE('danger', 'Ended'))
-            else
-                setContent('#jobPostStatus', TEMPLATE.BADGE('warning', 'Last Day Today'))
-
-            // Set Posted At
-            setContent('#postedAt', `Posted ${ formatDateTime(result.created_at, 'Date') }`);
-
-            // Set Vacant Position
-            setContent('#vacantPosition', manpowerRequest.vacant_position.name);
-            
-            // Set Employment Type
-            setContent('#employmentTypeForJobPost', manpowerRequest.employment_type);
-
-            // Set Salary Range
-            const minSalary = manpowerRequest.min_monthly_salary;
-            const maxSalary = manpowerRequest.max_monthly_salary;
-
-            if((isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary)) || !result.salary_is_visible) {
-                hideElement('#salaryRangeDisplay');
-                setContent('#salaryRange', '');
-            } else {
-                showElement('#salaryRangeDisplay');
-                setContent('#salaryRange', `${ formatCurrency(minSalary) } - ${ formatCurrency(maxSalary) }`);
-            }
-
-            // Set Open Until
-            const openUntil = result.expiration_date;
-            if(isEmptyOrNull(openUntil)) {
-                hideElement('#openUntilDisplay');
-                setContent('#openUntil', '');
-            } else {
-                showElement('#openUntilDisplay');
-                setContent('#openUntil', formatDateTime(openUntil, "Full Date"))
-            }
-
-            // Set Job Description
-            setContent('#jobDescription', result.content);
-
-            /** Job Post Options */
-            setContent('#jobPostOptions', `
-                <a class="btn btn-sm btn-secondary btn-block" target="_blank" href="${ BASE_URL_WEB }careers/${ jobPostID }">
-                    ${ TEMPLATE.ICON_LABEL('eye', 'View post in public portal') }
-                </a>
-                <a class="btn btn-sm btn-secondary btn-block" href="${ ROUTE.WEB.H }job-posts/${ jobPostID }/applicants">
-                    ${ TEMPLATE.ICON_LABEL('users', 'View applicants') }
-                </a>
-            `);
-
+            setJobPostDetails(result);
 
             /** MANPOWER REQUEST SUMMARY */
 
@@ -214,13 +160,14 @@ ifSelectorExist('#jobPostDetails', () => {
             // Set Staffs Needed
             setContent('#staffsNeededForSummary', () => {
                 const staffsNeeded = manpowerRequest.staffs_needed;
-                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' }`;
+                return `${ staffsNeeded } new ${ pluralize('staff', staffsNeeded) }`;
             });
 
             // Set Employment Type
             setContent('#employmentTypeForSummary', manpowerRequest.employment_type);
 
             // Set Salary Range
+            const minSalary = manpowerRequest.min_monthly_salary, maxSalary = manpowerRequest.max_monthly_salary;
             setContent('#salaryRangeForSummary', () => {
                 if(isEmptyOrNull(minSalary) && isEmptyOrNull(minSalary)) {
                     hideElement('#salaryRangeField');

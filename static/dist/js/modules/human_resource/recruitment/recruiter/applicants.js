@@ -120,9 +120,11 @@ initDataTable('#applicantsDT', {
 const applicantsAnalytics = () => {
     GET_ajax(`${ ROUTE.API.R }applicants/analytics`, {
         success: result => {
+            console.log(result);
             setContent({
                 '#totalApplicantsCount': formatNumber(result.total),
                 '#forEvaluationCount': formatNumber(result.for_evaluation),
+                '#hiredApplicantsCount': formatNumber(result.hired),
                 '#forScreeningCount': formatNumber(result.for_screening),
                 '#forInterviewCount': formatNumber(result.for_interview),
                 '#rejectedApplicantsCount': formatNumber(result.rejected.total)
@@ -211,7 +213,7 @@ ifSelectorExist('#jobPostSummary', () => {
             // Set Staff needed
             setContent('#staffsNeeded', () => {
                 const staffsNeeded = manpowerRequest.staffs_needed;
-                return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' } `;
+                return `${ staffsNeeded } new ${ pluralize('staff', staffsNeeded) } `;
             });
             
             // Set Employment Type
