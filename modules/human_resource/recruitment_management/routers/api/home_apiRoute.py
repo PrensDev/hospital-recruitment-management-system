@@ -106,6 +106,23 @@ def get_one_job_post(job_post_id: str, db: Session = Depends(get_db)):
         print(e)
 
 
+# Update page view
+@router.put("/job-posts/{job_post_id}/increment-views")
+def update_page_views(job_post_id: str, db: Session = Depends(get_db)):
+    try:
+        job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id)
+        if not job_post.first():
+            return HTTPException(status_code=404, detail=JOB_POST_NOT_FOUND_RESPONSE)
+        else:
+            views = job_post.first().views
+            views = views + 1
+            job_post.update({"views": views})
+            db.commit()
+            return views
+    except Exception as e:
+        print(e)
+
+
 # ====================================================================
 # APPLICATION
 # ====================================================================

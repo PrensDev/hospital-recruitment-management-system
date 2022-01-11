@@ -339,7 +339,8 @@ def get_all_general_onboarding_tasks(
                     else:
                         return db.query(OnboardingTask).filter(
                             OnboardingTask.department_id == department_id,
-                            OnboardingTask.is_general == True
+                            OnboardingTask.is_general == True,
+                            OnboardingTask.is_deleted == False
                         ).all()
     except Exception as e:
         print(e)
@@ -370,7 +371,8 @@ def get_all_general_onboarding_tasks(
                         return db.query(OnboardingTask).filter(
                             OnboardingTask.department_id == department_id, 
                             OnboardingTask.task_type == "For new employees",
-                            OnboardingTask.is_general == True
+                            OnboardingTask.is_general == True,
+                            OnboardingTask.is_deleted == False
                         ).all()
     except Exception as e:
         print(e)
@@ -401,7 +403,8 @@ def get_all_general_onboarding_tasks(
                         return db.query(OnboardingTask).filter(
                             OnboardingTask.department_id == department_id, 
                             OnboardingTask.task_type == "For the team",
-                            OnboardingTask.is_general == True
+                            OnboardingTask.is_general == True,
+                            OnboardingTask.is_deleted == False
                         ).all()
     except Exception as e:
         print(e)
@@ -432,7 +435,8 @@ def get_all_general_onboarding_tasks(
                         return db.query(OnboardingTask).filter(
                             OnboardingTask.department_id == department_id, 
                             OnboardingTask.task_type == "For department manager",
-                            OnboardingTask.is_general == True
+                            OnboardingTask.is_general == True,
+                            OnboardingTask.is_deleted == False
                         ).all()
     except Exception as e:
         print(e)
@@ -463,8 +467,9 @@ def get_one_onboarding_task(
                     else:
                         onboarding_task = db.query(OnboardingTask).filter(
                             OnboardingTask.department_id == department_id, 
+                            OnboardingTask.onboarding_task_id == onboarding_task_id,
                             OnboardingTask.is_general == True, 
-                            OnboardingTask.onboarding_task_id == onboarding_task_id
+                            OnboardingTask.is_deleted == False
                         ).first()
                         if not onboarding_task:
                             raise HTTPException(status_code=404, detail=ONBOARDING_TASK_NOT_FOUND)
@@ -473,6 +478,42 @@ def get_one_onboarding_task(
     except Exception as e:
         print(e)
 
+
+# Remove General Onboarding Task
+@router.put("/onboarding-tasks/{onboarding_task_id}/delete")
+def remove_general_onboarding_task(
+    onboarding_task_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+            if not user_info:
+                raise HTTPException(status_code=404, detail="User does not exist")
+            else:
+                position_id = user_info.position_id
+                user_position = db.query(Position).filter(Position.position_id == position_id).first()
+                if not user_position:
+                    raise HTTPException(status_code=404, detail="Position does not exist")
+                else:
+                    department_id = user_position.department_id
+                    user_department = db.query(Department).filter(Department.department_id == department_id).first()
+                    if not user_department:
+                        raise HTTPException(status_code=404, detail="Deparment does not exist")
+                    else:
+                        onboarding_task = db.query(OnboardingTask).filter(
+                            OnboardingTask.department_id == department_id, 
+                            OnboardingTask.onboarding_task_id == onboarding_task_id,
+                            OnboardingTask.is_general == True, 
+                            OnboardingTask.is_deleted == False
+                        )
+                        if not onboarding_task.first():
+                            raise HTTPException(status_code=404, detail=ONBOARDING_TASK_NOT_FOUND)
+                        else:
+                            return "Test"
+    except Exception as e:
+        print(e)
 
 
 # ====================================================================

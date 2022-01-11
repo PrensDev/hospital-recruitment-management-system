@@ -902,6 +902,18 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
 
 /**
  * ==============================================================================
+ * REMOVE GENERAL ONBOARDING TASKS
+ * ==============================================================================
+ */
+
+const removeGenOnboardingTask = (onboardingTaskID) => {
+    setValue('#onboardingTaskID', onboardingTaskID);
+    showModal('#removeGenOnboardingTaskModal');
+}
+
+
+/**
+ * ==============================================================================
  * ONBOARDING EMPLOYEES
  * ==============================================================================
  */

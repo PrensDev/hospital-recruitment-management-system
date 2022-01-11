@@ -121,14 +121,14 @@
             <div class="dropdown-divider"></div>
             <div class="mb-3">
                 <div>
-                    <div class="d-flex mb-3">
-                        <div>
-                            <i class="fas fa-clock mr-2 text-secondary"></i>
-                        </div>
-                        <div>
-                            <div id="datePosted"></div>
-                            <div class="small text-secondary" id="datePostedHumanized"></div>
-                        </div>
+                    <div>
+                        <span id="datePosted"></span>
+                        <span span="mx-3">&middot;</span>
+                        <span id="datePostedHumanized"></span>
+                    </div>
+                    <div class="text-secondary">
+                        <i class="fas fa-eye mr-2"></i>
+                        <span id="jobPostViews">0 views</span>
                     </div>
                 </div>
             </div>
@@ -142,21 +142,31 @@
                 <div class="col-lg-8 order-1 order-lg-0">
 
                     {# Applications not available #}
-                    <div class="py-5 border border-danger rounded text-center mb-3 bg-white" id="applicationsNotAvailable" style="display: none">
+                    <div class="py-5 border border-danger rounded text-center mb-4 bg-white" id="applicationsNotAvailable" style="display: none">
                         <h4>Oops! The application for this job has ended</h4>
-                        <div class="text-secondary">You may search for other job opportunities here!</div>
+                        <div class="text-secondary mb-3">You may search for other job opportunities here!</div>
+                        <button href="../careers" class="btn btn-primary" onclick="backToCareers()">
+                            <i class="fas fa-caret-left mr-1"></i>
+                            <span>Go to Careers</span>
+                        </button>
+                        <script>
+                            const backToCareers = () => location.assign(`${ BASE_URL_WEB }careers`)
+                        </script>
                     </div>
 
                     {# Job Description #}
-                    <div class="mb-5">
-                        <div class="mb-3" id="jobDescription"></div>
+                    <div class="mt-3">
+                        <h3>Job Description</h3>
+                        <div class="dropdown-divider"></div>
+                        <div class="mb-5">
+                            <div class="mb-3" id="jobDescription"></div>
+                        </div>
                     </div>
 
                     {# Application form #}
                     <form class="mb-5" id="applicationForm">
 
                         <h3 id="applyNow">Apply Here</h3>
-
                         <div class="dropdown-divider"></div>
 
                         <input type="hidden" id="jobPostID" name="jobPostID">
@@ -313,25 +323,43 @@
                             <table class="table">
                                 <tr>
                                     <td>
-                                        <h6 class="mb-1">Employment Type</h6>
-                                        <div class="ml-3" id="employmentType"></div>
+                                        <div class="d-flex">
+                                            <div class="mr-3 text-center text-secondary"><i class="fas fa-briefcase"></i></div>
+                                            <div>
+                                                <div class="font-weight-bold">Employment Type:</div>
+                                                <div id="employmentType"></div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr id="salaryRangeDisplay">
                                     <td>
-                                        <h6 class="mb-1">Offered Salary</h6>
-                                        <div class="ml-3" id="salaryRange"></div>
+                                        <div class="d-flex">
+                                            <div class="mr-3 text-center text-secondary"><i class="fas fa-handshake"></i></div>
+                                            <div>
+                                                <div class="font-weight-bold">Offered Salary:</div>
+                                                <div id="salaryRange"></div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <h6 class="mb-1">Open Until</h6>
-                                        <div class="ml-3" id="openUntil"></div>
+                                        <div class="d-flex">
+                                            <div class="mr-3 text-center text-secondary"><i class="fas fa-clock"></i></div>
+                                            <div>
+                                                <div class="font-weight-bold">Open Until:</div>
+                                                <div id="openUntil"></div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <a href="#applyNow" class="btn btn-primary btn-block">Apply Now</a>
+                                        <a href="#applyNow" class="btn btn-primary btn-block">
+                                            <span>Apply Now!</span>
+                                            <i class="fas fa-hand-point-up ml-1"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             </table>

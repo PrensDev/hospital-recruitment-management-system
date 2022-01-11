@@ -171,7 +171,11 @@
                             <div class="d-flex align-items-center mb-3">
                                 <div id="jobPostStatus"></div>
                                 <div class="mx-2">|</div>
-                                <div id="postedAt"></div>
+                                <div>
+                                    <span id="postedAt"></span>
+                                    <span class="mx-1">&middot;</span>
+                                    <span id="postedAtHumanized"></span>
+                                </div>
                             </div>
                             <div>
                                 <b>Employment Type: </b><span id="employmentTypeForJobPost"></span>
@@ -182,6 +186,12 @@
                             <div id="openUntilDisplay">
                                 <b>Open Until: </b><span id="openUntil"></span>
                             </div>
+                        </div>
+                        
+                        {# Warning if manpower request is completed #}
+                        <div class="alert alert-danger py-4 mb-5 rounded">
+                            <h4>This post must be ended</h4>
+                            <div>Candidate acquisition must end since manpower request has been completed</div>
                         </div>
 
                         {# Job Description #}

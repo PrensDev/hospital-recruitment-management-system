@@ -465,6 +465,7 @@ const getJobPostDetails = () => {
 
             // Set Posted At
             setContent('#postedAt', `Posted ${ formatDateTime(result.created_at, 'Date') }`);
+            setContent('#postedAtHumanized', fromNow(result.created_at) )
 
             // Set Vacant Position
             setContent('#vacantPosition', manpowerRequest.vacant_position.name);
@@ -510,7 +511,7 @@ const getJobPostDetails = () => {
                         ${ TEMPLATE.ICON_LABEL('eye', 'View post in public portal') }
                     </a>
                     <a class="btn btn-sm btn-secondary btn-block" href="${ ROUTE.WEB.R }job-posts/${ jobPostID }/applicants">
-                        ${ TEMPLATE.ICON_LABEL('users', 'View applicant') }
+                        ${ TEMPLATE.ICON_LABEL('users', 'View applicants') }
                     </a>
                     <div class="dropdown-divider"></div>
                     <a class="btn btn-sm btn-info btn-block" href="${ ROUTE.WEB.R }edit-job-post/${ jobPostID }">
@@ -1040,6 +1041,9 @@ validateForm('#endRecruitingForm', {
 
                     // Reload Job Post Details
                     ifSelectorExist('#jobPostDetails', () => getJobPostDetails());
+
+                    // Reload Job Post Analytics
+                    jobPostsAnalytics();
 
                     // Set Buttons to loading state
                     btnToUnloadState('#confirmEndRecruitingBtn', TEMPLATE.LABEL_ICON('Yes, end it!', 'check'));

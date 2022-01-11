@@ -44,7 +44,7 @@ initDataTable('#manpowerRequestDT', {
             render: data => { 
                 return `
                     <div>${ data.vacant_position.name }</div>
-                    <div class="small text-secondary">${ data.staffs_needed } new staff${ data.staffs_needed > 1 ? 's' : '' }</div>
+                    ${ TEMPLATE.SUBTEXT(`${ data.staffs_needed } new ${ pluralize('staff', data.staffs_needed) }`) }
                 `
             }
         },
@@ -53,11 +53,9 @@ initDataTable('#manpowerRequestDT', {
         {
             data: null,
             render: data => {
-                const jobPost = data.job_post;
-
                 if(data.request_status === "Completed")
                     return TEMPLATE.DT.BADGE('info', TEMPLATE.ICON_LABEL('check', 'Completed'))
-                else if(jobPost.length == 1)
+                else if(data.job_post.length == 1)
                     return TEMPLATE.DT.BADGE('success', TEMPLATE.ICON_LABEL('briefcase', 'Job post is created'))
                 else {
                     return TEMPLATE.DT.BADGE('warning', TEMPLATE.ICON_LABEL('exclamation-triangle', 'No job post yet'))
@@ -72,7 +70,7 @@ initDataTable('#manpowerRequestDT', {
             render: data => {
                 const deadline = data.deadline;
                 return isEmptyOrNull(deadline)
-                    ? TEMPLATE.UNSET('Mo deadline has been set')
+                    ? TEMPLATE.UNSET('No deadline')
                     : `
                         <div>${ formatDateTime(deadline, "MMM. D, YYYY") }</div>
                         ${ TEMPLATE.SUBTEXT(fromNow(deadline)) }
@@ -172,7 +170,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             }));
             
             // Set Requestor Department
-            setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
+            setContent('#requestorDepartment', requestedBy.position.name + ', ' + requestedBy.position.department.name);
             
             // Set Date Requested
             setContent('#dateRequested', formatDateTime(result.created_at, "DateTime"));
@@ -182,7 +180,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                 const deadline = result.deadline;
                 return isEmptyOrNull(deadline)
                     ? TEMPLATE.UNSET('No deadline')
-                    : formatDateTime(result.deadline, "DateTime")
+                    : formatDateTime(deadline, "DateTime")
             });
 
             // Set Requested Position
@@ -193,9 +191,6 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
                 const staffsNeeded = result.staffs_needed;
                 return `${ staffsNeeded } new staff${ staffsNeeded > 1 ? "s" : "" }`
             });
-
-            // Set Employment Type
-            setContent('#employmentType', result.employment_type);
 
             // Set Employment Type
             setContent('#employmentType', result.employment_type);

@@ -652,3 +652,9 @@ const printContent = (pageTitle, content) => {
     w.print();
     w.onafterprint = () => w.close();
 }
+
+
+/** Pluralize Word */
+const pluralize = (word, count) => {
+    return count > 1 ? word + 's' : word
+}

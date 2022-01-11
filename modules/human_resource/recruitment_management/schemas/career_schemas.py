@@ -25,6 +25,7 @@ class ShowJobPost(BaseModel):
     content: str
     expiration_date: Optional[datetime]
     job_post_id: str
+    views: int
     manpower_request: ManpowerRequest
     created_at: datetime
     updated_at: Optional[datetime]

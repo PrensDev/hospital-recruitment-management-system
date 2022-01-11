@@ -423,6 +423,11 @@ class JobPost(Base):
         ForeignKey("users.user_id"),
         nullable = False
     )
+    views = Column(
+        Integer,
+        nullable = False,
+        default = 0
+    )
     created_at = Column(
         DateTime,
         default = text('NOW()'),
@@ -945,6 +950,11 @@ class OnboardingTask(Base):
         String(36),
         ForeignKey("users.user_id"),
         nullable = True
+    )
+    is_deleted = Column(
+        Boolean,
+        nullable = False,
+        default = False
     )
     created_at = Column(
         DateTime,
