@@ -31,6 +31,7 @@ const logout = () => {
         success: result => {
             if(result.logout_status === "Success") {
                 localStorage.clear();
+                sessionStorage.clear();
                 location.assign(`${ BASE_URL_WEB }login`)
             } else err()
         },

@@ -3,7 +3,7 @@
 
 {% block content %}
 
-    <!-- Content Header (Page header) -->
+    {# Page Header #}
     <section class="content-header">
         <div class="container-fluid">
             <h1>{{ page_title }}</h1>
@@ -11,70 +11,64 @@
         </div>
     </section>
 
-    <!-- Main content -->
+    {# Main Content #}
     <section class="content">
         <div class="container-fluid">
             
-            <!-- Info Cards -->
+            {# Info Cards #}
             <div class="row">
-                <div class="col-lg-3 col-6">
+
+                {# Completed Manpower Requests Count #}
+                <div class="col-lg-4">
                     <div class="small-box" style="background: white;">
                         <div class="inner">
-                            <h3 class="text-info mb-1">150</h3>
-                            <p class="font-weight-bold">New Orders</p>
+                            <h3 class="text-info mb-1" id="completedManpowerRequestsCount">
+                                <span class="spinner-border"></span>
+                            </h3>
+                            <p class="font-weight-bold">Completed Manpower Requests</p>
                         </div>
                         <div class="icon text-info" style="opacity: 50%;">
-                        <i class="fas fa-shopping-cart"></i>
+                        <i class="fas fa-copy"></i>
                         </div>
-                        <a href="#" class="small-box-footer bg-info">
+                        <a href="manpower-requests" class="small-box-footer bg-info">
                             <span>More info</span>
                             <i class="fas fa-arrow-circle-right ml-1"></i>
                         </a>
                     </div>
                 </div>
-
-                <div class="col-lg-3 col-6">
+                
+                {# Hired Applicants Count #}
+                <div class="col-lg-4">
                     <div class="small-box" style="background: white;">
                         <div class="inner">
-                            <h3 class="text-success mb-1">53<sup style="font-size: 20px">%</sup></h3>
-                            <p class="font-weight-bold">Bounce Rate</p>
+                            <h3 class="text-success mb-1" id="hiredApplicantsCount">
+                                <span class="spinner-border"></span>
+                            </h3>
+                            <p class="font-weight-bold">Hired Applicants</p>
                         </div>
                         <div class="icon text-success" style="opacity: 50%;">
-                            <i class="fas fa-bars"></i>
+                            <i class="fas fa-handshake"></i>
                         </div>
-                        <a href="#" class="small-box-footer bg-success">
+                        <a href="hired-applicants" class="small-box-footer bg-success">
                             <span>More info</span>
                             <i class="fas fa-arrow-circle-right ml-1"></i>
                         </a>
                     </div>
                 </div>
-
-                <div class="col-lg-3 col-6">
+                
+                {# Onboarding Employees Count #}
+                <div class="col-lg-4">
                     <div class="small-box" style="background: white;">
                         <div class="inner">
-                            <h3 class="text-warning mb-1">44</h3>
-                            <p class="font-weight-bold">User Registrations</p>
+                            <h3 class="text-warning mb-1" id="onboardingEmployeesCount">
+                                <span class="spinner-border"></span>
+                            </h3>
+                            <p class="font-weight-bold">Onboarding Employees</p>
                         </div>
                         <div class="icon text-warning" style="opacity: 50%;">
-                            <i class="fas fa-user-plus"></i>
+                            <i class="fas fa-user-tie"></i>
                         </div>
-                        <a href="#" class="small-box-footer bg-warning">
-                            <span>More info</span>
-                            <i class="fas fa-arrow-circle-right ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-6">
-                    <div class="small-box" style="background: white;">
-                        <div class="inner">
-                            <h3 class="text-danger mb-1">65</h3>
-                            <p class="font-weight-bold">Unique Visitors</p>
-                        </div>
-                        <div class="icon text-danger" style="opacity: 50%">
-                            <i class="fas fa-chart-pie"></i>
-                        </div>
-                        <a href="#" class="small-box-footer bg-danger">
+                        <a href="onboarding-employees" class="small-box-footer bg-warning">
                             <span>More info</span>
                             <i class="fas fa-arrow-circle-right ml-1"></i>
                         </a>
@@ -82,13 +76,13 @@
                 </div>
             </div>
 
-            <!-- Monthly Recap Report -->
+            {# Daily Manpower Requests #}
             <div class="row">
                 <div class="col-md-12">
                     <div class="card card-outline card-primary">
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
-                                <h3 class="card-title">Monthly Recap Report</h5>
+                                <h3 class="card-title">Daily Manpower Requests</h5>
                 
                                 <div class="card-tools">
                                     <div class="btn-group">
@@ -256,7 +250,6 @@
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
                                 <h3 class="card-title">Pie Chart</h3>
-                
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-sm btn-default" data-card-widget="collapse">
                                         <i class="fas fa-minus"></i>
@@ -276,7 +269,7 @@
 
 
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/admin/dashboard.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/modules/human_resource/recruitment/department_manager/dashboard.js')}}"></script>
 
     <script>
         

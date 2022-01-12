@@ -99,7 +99,10 @@ initDataTable('#manpowerRequestDT', {
                         href="${ ROUTE.WEB.H }manpower-requests/${ requisitionID }"
                     >
                         <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
-                        <span>View Request</span>
+                        <div>
+                            <div>View Request</div>
+                            <div class="small">See the details of requisition</div>
+                        </div>
                     </a>
                 `)
             }
@@ -150,13 +153,20 @@ ifSelectorExist('#manpowerRequestDocument', () => {
     GET_ajax(`${ ROUTE.API.H }requisitions/${ requisitionID }`, {
         success: result => {
 
-            /** SET MANPOWER REQUEST DOCUMENT */
+            // Set Manpower Request Document
             setManpowerRequestDocument(result);
 
-            /** SET MANPOWER REQUEST TIMELINE */
+            // Set Manpower Request Timeline
             setManpowerRequestTimeline('#manpowerRequestTimeline', result)
+
+            // For Manpower Request Approval
+            const requestStatus = result.request_status;
+            if(requestStatus === "Approved" || requestStatus === "Rejected for approval") 
+                $('#approvalForm').remove()
+            else if(requestStatus == "For approval")
+                showElement('#approvalForm');
             
-            // REMOVE MANPOWER REQUEST TIMELINE LOADER
+            // Remove Manpower Request Timeline Loader
             $('#manpowerRequestTimelineLoader').remove();
             showElement('#manpowerRequestTimeline');
         },

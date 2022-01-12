@@ -93,7 +93,10 @@ initDataTable('#manpowerRequestDT', {
                             onclick="createJobPost('${ requisitionID }')"
                         >
                             <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
-                            <div>Create Job Post</div>
+                            <div>
+                                <div>Create Job Post</div>
+                                <div class="small">Compose available job for applicants</div>
+                            </div>
                         </div>
                     `;
                 
@@ -102,8 +105,11 @@ initDataTable('#manpowerRequestDT', {
                         class="dropdown-item d-flex" 
                         href="${ROUTE.WEB.R}manpower-requests/${ requisitionID }"
                     >
-                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                        <div>View Details</div>
+                        <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
+                        <div>
+                            <div>View Request</div>
+                            <div class="small">View the details of requisition</div>
+                        </div>
                     </a>
 
                     ${ createJobPostBtn }

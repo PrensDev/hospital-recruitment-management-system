@@ -247,15 +247,20 @@ const getOnboardingEmployeeDetails = () => {
                 '#startOfEmploymentDate': formatDateTime(result.employment_start_date, 'Full Date'),
                 '#startOfEmploymentHumanized': fromNow(result.employment_start_date),
                 '#employeeDetailsBtns': `
-                    <div class="btn btn-sm btn-secondary btn-block">
-                        ${ TEMPLATE.ICON_LABEL('list', 'View Full Details') }
+                    <div class="dropdown-item d-flex">
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <div>View Full Details</div>
                     </div>
                     <a 
                         href="${ EMPLOYMENT_CONTRACT_PATH }${ result.employment_contract }" 
-                        class="btn btn-sm btn-secondary btn-block"
+                        class="dropdown-item d-flex"
                         target="_blank"
                     >
-                        ${ TEMPLATE.ICON_LABEL('file-alt', 'View Employment Contract') }
+                        <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
+                        <div>
+                            <div>View Employment Contract</div>
+                            <div class="small">Click here to view contract</div>
+                        </div>
                     </a>
                 `
             });

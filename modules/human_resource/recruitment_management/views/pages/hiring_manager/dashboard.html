@@ -15,16 +15,20 @@
     <section class="content">
         <div class="container-fluid">
             
-            <!-- Info Cards -->
+            {# Info Cards #}
             <div class="row">
-                <div class="col-lg-3 col-6">
+
+                {# Manpower Requests For Approval Count #}
+                <div class="col-lg-4">
                     <div class="small-box" style="background: white;">
                         <div class="inner">
-                            <h3 class="text-info mb-1">150</h3>
-                            <p class="font-weight-bold">New Orders</p>
+                            <h3 class="text-info mb-1">
+                                <span class="spinner-border"></span>
+                            </h3>
+                            <p class="font-weight-bold">Manpower Requests For Approval</p>
                         </div>
                         <div class="icon text-info" style="opacity: 50%;">
-                        <i class="fas fa-shopping-cart"></i>
+                        <i class="fas fa-copy"></i>
                         </div>
                         <a href="#" class="small-box-footer bg-info">
                             <span>More info</span>
@@ -33,14 +37,17 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-6">
+                {# On Going Job Posts Count #}
+                <div class="col-lg-4">
                     <div class="small-box" style="background: white;">
                         <div class="inner">
-                            <h3 class="text-success mb-1">53<sup style="font-size: 20px">%</sup></h3>
-                            <p class="font-weight-bold">Bounce Rate</p>
+                            <h3 class="text-success mb-1">
+                                <span class="spinner-border"></span>
+                            </h3>
+                            <p class="font-weight-bold">On Going Job Posts</p>
                         </div>
                         <div class="icon text-success" style="opacity: 50%;">
-                            <i class="fas fa-bars"></i>
+                            <i class="fas fa-briefcase"></i>
                         </div>
                         <a href="#" class="small-box-footer bg-success">
                             <span>More info</span>
@@ -49,11 +56,14 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-6">
+                {# Total Applicants Count #}
+                <div class="col-lg-4">
                     <div class="small-box" style="background: white;">
                         <div class="inner">
-                            <h3 class="text-warning mb-1">44</h3>
-                            <p class="font-weight-bold">User Registrations</p>
+                            <h3 class="text-warning mb-1">
+                                <span class="spinner-border"></span>
+                            </h3>
+                            <p class="font-weight-bold">Total Applicants</p>
                         </div>
                         <div class="icon text-warning" style="opacity: 50%;">
                             <i class="fas fa-user-plus"></i>
@@ -65,7 +75,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-6">
+                <!-- <div class="col-lg-3 col-6">
                     <div class="small-box" style="background: white;">
                         <div class="inner">
                             <h3 class="text-danger mb-1">65</h3>
@@ -79,7 +89,7 @@
                             <i class="fas fa-arrow-circle-right ml-1"></i>
                         </a>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- Monthly Recap Report -->
@@ -276,7 +286,7 @@
 
 
 {% block page_scripts %}
-    <script src="{{url_for('static', path='/dist/js/pages/admin/dashboard.js')}}"></script>
+    <script src="{{url_for('static', path='/dist/js/modules/human_resource/recruitment/hiring_manager/dashboard.js')}}"></script>
 
     <script>
         

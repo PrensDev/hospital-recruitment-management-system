@@ -357,8 +357,11 @@ initDataTable('#manpowerRequestDT', {
                         class="dropdown-item d-flex"
                         href="${ ROUTE.WEB.DM }manpower-requests/${ requisitionID }"
                     >
-                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                        <span>View Details</span>
+                        <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
+                        <div>
+                            <div>View Request</div>
+                            <div class="small">See the details of requisition</div>
+                        </div>
                     </a>
                     ${ additionalOptions }
                 `);
@@ -375,19 +378,21 @@ initDataTable('#manpowerRequestDT', {
  */
 
 /** Manpower Requests Analytics */
-const manpowerRequestAnalytics = () => GET_ajax(`${ ROUTE.API.DM }requisitions/analytics`, {
-    success: result => {
-        if(result) {
-            setContent({
-                '#totalManpowerRequestsCount': formatNumber(result.total),
-                '#completedRequestsCount': formatNumber(result.completed),
-                '#approvedRequestsCount': formatNumber(result.approved),
-                '#rejectedRequestsCount': formatNumber(result.rejected.total)
-            });
-        } else toastr.error('There was an error in getting manpower request analytics')
-    },
-    error: () => toastr.error('There was an error in getting manpower request analytics')
-});
+const manpowerRequestAnalytics = () => 
+    GET_ajax(`${ ROUTE.API.DM }requisitions/analytics`, {
+        success: result => {
+            if(result) {
+                setContent({
+                    '#totalManpowerRequestsCount': formatNumber(result.total),
+                    '#completedRequestsCount': formatNumber(result.completed),
+                    '#signedRequestsCount': formatNumber(result.for_approval),
+                    '#approvedRequestsCount': formatNumber(result.approved),
+                    '#rejectedRequestsCount': formatNumber(result.rejected.total)
+                });
+            } else toastr.error('There was an error in getting manpower request analytics')
+        },
+        error: () => toastr.error('There was an error in getting manpower request analytics')
+    });
 
 /** Get Manpower Requests Analytics */
 ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
@@ -708,8 +713,7 @@ validateForm('#editManpowerRequestForm', {
 
 /** Submit Manpower Request */
 onClick('#confirmEditManpowerRequestBtn', () => {
-    const formData = generateFormData('#editManpowerRequestForm');
-    const get = (name) => { return formData.get(name) }
+    const get = (name) => { return generateFormData('#editManpowerRequestForm').get(name) }
     
     const data = {
         position_id: get('vacantPosition'),
@@ -722,9 +726,7 @@ onClick('#confirmEditManpowerRequestBtn', () => {
         deadline: isChecked('#setDeadlline') ? null : formatDateTime(get("deadline"))
     }
 
-    const requisitionID = get('requisitionID');
-
-    PUT_ajax(`${ ROUTE.API.DM }requisitions/${ requisitionID }`, data, {
+    PUT_ajax(`${ ROUTE.API.DM }requisitions/${ get('requisitionID') }`, data, {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({

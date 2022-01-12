@@ -811,6 +811,7 @@ const loadGeneralTasksContent = (query) => {
     menuIDs.forEach(id => $(id).removeClass('text-primary'))
 }
 
+
 $('#forNewEmployeesMenu').on('click', () => {
     if(URL_QUERY_PARAMS.get('menu') !== "for-new-employees") {
         loadGeneralTasksContent('for-new-employees');
@@ -910,6 +911,25 @@ const removeGenOnboardingTask = (onboardingTaskID) => {
     setValue('#onboardingTaskID', onboardingTaskID);
     showModal('#removeGenOnboardingTaskModal');
 }
+
+validateForm('#removeGenOnboardingTaskForm', {
+    submitHandler: () => {
+        const onboardingTaskID = generateFormData('#removeGenOnboardingTaskForm').get('onboardingTaskID')
+        DELETE_ajax(`${ ROUTE.API.DM }onboarding-tasks/${ onboardingTaskID }/remove`, {
+            success: result => {
+                if(result) {
+                    $('#generalTasksDT').dataTable().fnClearTable();
+                    $('#generalTasksDT').dataTable().fnDestroy();
+                    loadGeneralTasksDT();
+                    hideModal('#removeGenOnboardingTaskModal');
+                    toastr.info("A general onboarding task has been removed");
+                }
+            },
+            error: () => toastr.error('There was an error in removing general onboarding task')
+        })
+        return false;
+    }
+})
 
 
 /**
@@ -1051,9 +1071,7 @@ initDataTable('#onboardingEmployeeTasksDT', {
             data: null,
             class: 'w-100',
             render: data => {
-                const task = data.onboarding_task;
-                const startAt = data.start_at;
-                const deadline = data.end_at;
+                const task = data.onboarding_task, startAt = data.start_at, deadline = data.end_at;
 
                 const taskType = () => {
                     const taskType = task.task_type;
@@ -1196,19 +1214,32 @@ const getOnboardingEmployeeDetails = () => {
                 '#startOfEmploymentHumanized': fromNow(result.employment_start_date),
                 '#employeeDetailsBtns': `
                     <div 
-                        class="btn btn-sm btn-secondary btn-block"
+                        class="dropdown-item d-flex"
                         data-toggle="modal"
                         data-target="#onboardingEmployeeDetailsModal"
                     >
-                        ${ TEMPLATE.ICON_LABEL('list', 'View Full Details') }
+                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                        <span>View Full Details</span>
                     </div>
                     <a 
                         href="${ EMPLOYMENT_CONTRACT_PATH }${ result.employment_contract }" 
-                        class="btn btn-sm btn-secondary btn-block"
+                        class="dropdown-item d-flex"
                         target="_blank"
                     >
-                        ${ TEMPLATE.ICON_LABEL('file-alt', 'View Employment Contract') }
+                        <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
+                        <div>
+                            <div>View Employment Contract</div>
+                            <div class="small">Click here to view contract</div>
+                        </div>
                     </a>
+                    <div 
+                        class="dropdown-item d-flex"
+                        data-toggle="modal"
+                        data-target="#editOnboardingEmployeeDetailsModal"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
+                        <span>Edit Details</span>
+                    </div>
                 `
             });
 

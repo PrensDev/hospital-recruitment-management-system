@@ -480,7 +480,7 @@ def get_one_onboarding_task(
 
 
 # Remove General Onboarding Task
-@router.put("/onboarding-tasks/{onboarding_task_id}/delete")
+@router.delete("/onboarding-tasks/{onboarding_task_id}/remove")
 def remove_general_onboarding_task(
     onboarding_task_id: str,
     db: Session = Depends(get_db),
@@ -511,7 +511,13 @@ def remove_general_onboarding_task(
                         if not onboarding_task.first():
                             raise HTTPException(status_code=404, detail=ONBOARDING_TASK_NOT_FOUND)
                         else:
-                            return "Test"
+                            onboarding_tasks_count = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_task_id == onboarding_task_id).count()
+                            if onboarding_tasks_count > 0:
+                                onboarding_task.update({"is_deleted": True})
+                            else:
+                                onboarding_task.delete(synchronize_session = False)
+                            db.commit()
+                            return "Onboarding Task is successfully removed"
     except Exception as e:
         print(e)
 
@@ -548,6 +554,35 @@ def get_all_hired_applicants(
                 Position.department_id == Department.department_id, 
                 Department.department_id ==  user_department.department_id
             ).all()
+    except Exception as e:
+        print(e)
+
+
+# Hired applicants ccount
+@router.get("/hired-applicants/analytics")
+def hired_applicants_count(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            user_department = db.query(Department).join(Position).filter(
+                Department.department_id == Position.department_id
+            ).join(User).filter(
+                User.user_id == user_data.user_id, 
+                User.position_id == Position.position_id
+            ).first()
+            
+            hired_applicants_count = db.query(OnboardingEmployee).filter(
+                OnboardingEmployee.status == "Pending"
+            ).join(Position).filter(
+                OnboardingEmployee.position_id == Position.position_id
+            ).join(Department).filter(
+                Position.department_id == Department.department_id, 
+                Department.department_id ==  user_department.department_id
+            ).count()
+
+            return {"hired_applicants": hired_applicants_count}
     except Exception as e:
         print(e)
 

@@ -9,7 +9,7 @@
 
 /** Get User Information */
 (() => {
-    const userInfo = JSON.parse(localStorage.getItem('user_info'));
+    const userInfo = JSON.parse(sessionStorage.getItem('user_info'));
 
     const setUserInfo = () => {
         setContent({
@@ -25,7 +25,7 @@
         GET_ajax(`${ ROUTE.API.DH }info`, {
             success: result => {
                 if(result) {
-                    localStorage.setItem('user_info', JSON.stringify({
+                    sessionStorage.setItem('user_info', JSON.stringify({
                         "fullName": formatName("F M. L, S", {
                             firstName  : result.first_name,
                             middleName : result.middle_name,

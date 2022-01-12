@@ -72,7 +72,7 @@ initDataTable('#hiredApplicantsDT', {
                         onclick="viewApplicantDetails('${ onboardingEmployeeID }')"
                     >
                         <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                        <span>View applicant details</span>
+                        <div>View applicant details</div>
                     </div>
                     <a 
                         href="${ EMPLOYMENT_CONTRACT_PATH + data.employment_contract }"
@@ -80,14 +80,20 @@ initDataTable('#hiredApplicantsDT', {
                         target="_blank"
                     >
                         <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
-                        <span>View contract</span>
+                        <div>
+                            <div>View Contract</div>
+                            <div class="small">See employment contract for this applicant</div>
+                        </div>
                     </a>
                     <a 
                         href="${ ROUTE.WEB.DM }onboard-employee/${ onboardingEmployeeID }"
                         class="dropdown-item d-flex"
                     >
-                        <div style="width: 2rem"><i class="fas fa-user-tie mr-1"></i></div>
-                        <span>Onboard this applicant</span>
+                        <div style="width: 2rem"><i class="fas fa-user-cog mr-1"></i></div>
+                        <div>
+                            <div>Onboard this applicant</div>
+                            <div class="small">Set onboarding tasks for new employee</div>
+                        </div>
                     </a>
                 `)
             }

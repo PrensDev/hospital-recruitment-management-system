@@ -63,7 +63,7 @@ initDataTable('#jobPostsDT', {
                 });
                 return applicantsCounter === 0 
                     ? TEMPLATE.UNSET('No applicants yet')
-                    : applicantsCounter + pluralize('applicant', applicantsCounter)
+                    : applicantsCounter + pluralize(' applicant', applicantsCounter)
             }
         },
 
@@ -109,7 +109,10 @@ initDataTable('#jobPostsDT', {
                             href="${ ROUTE.WEB.H }job-posts/${ data.job_post_id }/applicants"
                         >
                             <div style="width: 2rem"><i class="fas fa-users mr-1"></i></div>
-                            <div>View Applicants</div>
+                            <div>
+                                <div>View Applicants</div>
+                                <div class="small">Manage applicants for this job</div>
+                            </div>
                         </a>
                     `
                     : '';
@@ -120,7 +123,10 @@ initDataTable('#jobPostsDT', {
                         href="${ ROUTE.WEB.H }job-posts/${ jobPostID }"
                     >
                         <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                        <div>View Job Post</div>
+                        <div>
+                            <div>View Job Post</div>
+                            <div class="small">See the details of this job</div>
+                        </div>
                     </a>
                     ${ applicants }
                     <a 
@@ -128,7 +134,10 @@ initDataTable('#jobPostsDT', {
                         href="${ ROUTE.WEB.H }manpower-requests/${ requisitionID }"
                     >
                         <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
-                        <div>View Manpower Request</div>
+                        <div>
+                            <div>View Manpower Request</div>
+                            <div class="small">See the requisition details</div>
+                        </div>
                     </a>
                 `)
             }

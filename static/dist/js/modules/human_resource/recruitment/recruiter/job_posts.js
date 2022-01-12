@@ -361,7 +361,10 @@ initDataTable('#jobPostsDT', {
                             href="${ ROUTE.WEB.R }job-posts/${ data.job_post_id }/applicants"
                         >
                             <div style="width: 2rem"><i class="fas fa-users mr-1"></i></div>
-                            <div>View Applicants</div>
+                            <div>
+                                <div>View Applicants</div>
+                                <div class="small">Manage applicants for this job</div>
+                            </div>
                         </a>
                     `
                     : '';
@@ -376,7 +379,10 @@ initDataTable('#jobPostsDT', {
                                 onclick="endRecruiting('${ jobPostID }')"
                             >
                                 <div style="width: 2rem"><i class="fas fa-hand-paper mr-1"></i></div>
-                                <div>End recruiting</div>
+                                <div>
+                                    <div>End Recruiting</div>
+                                    <div class="small">End accepting candidates for this job</div>
+                                </div>
                             </div>
                         `
                         : ''
@@ -388,7 +394,10 @@ initDataTable('#jobPostsDT', {
                         href="${ ROUTE.WEB.R }job-posts/${ jobPostID }"
                     >
                         <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                        <div>View Job Post</div>
+                        <div>
+                            <div>View Job Post</div>
+                            <div class="small">See the details of vacant job</div>
+                        </div>
                     </a>
                     <div 
                         class="dropdown-item d-flex"
@@ -405,7 +414,10 @@ initDataTable('#jobPostsDT', {
                         href="${ ROUTE.WEB.R }manpower-requests/${ requisitionID }"
                     >
                         <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
-                        <div>View Manpower Request</div>
+                        <div>
+                            <div>View Manpower Request</div>
+                            <div class="small">See the details of requisition</div>
+                        </div>
                     </a>
                     ${ endJobPost() }
                 `)
