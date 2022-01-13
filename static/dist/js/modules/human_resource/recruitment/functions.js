@@ -91,7 +91,7 @@ const initDataTable = (selector = "", dtOptions = {
     let visibleCols = [], columnOpts = [];
     for(var i = 1; i < dtOptions.columns.length-1; i++) {
         visibleCols.push(i);
-        if(i > 2) columnOpts.push(i);
+        if(i >= 2) columnOpts.push(i);
     }
 
     var dtParams;

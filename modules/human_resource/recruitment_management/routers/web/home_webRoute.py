@@ -23,32 +23,32 @@ router = APIRouter(
 # Login
 @router.get("/login", response_class=HTMLResponse)
 def index(req: Request):
-    try:
-        access_token_cookie = req.cookies.get('access_token')
-        if not access_token_cookie:
-            return templates.TemplateResponse("pages/auth/login.html", {
-                "request": req,
-                "page_title": "Login"
-            })
-        else:
-            return RedirectResponse("/redirect")
-    except Exception as e:
-        print(e)
+    
+    # Return to login page if no access token
+    if not req.cookies.get('access_token'):
+        return templates.TemplateResponse("pages/auth/login.html", {
+            "request": req,
+            "page_title": "Login"
+        })
+
+    # Redirect if has access token
+    return RedirectResponse("/redirect")
 
 
 # User Redirect
 @router.get("/redirect")
 def redirect(req: Request, user_data: dict = Depends(get_token)):
-    if(user_data["user_type"] == "Department Head"):
-        return RedirectResponse("/dh")
-    elif(user_data["user_type"] == "Department Manager"):
-        return RedirectResponse("/dm")
-    elif(user_data["user_type"] == "Hiring Manager"):
-        return RedirectResponse("/h")
-    elif(user_data["user_type"] == "Recruiter"):
-        return RedirectResponse("/r")
-    else:
+    paths = {
+        "Department Head": "/dh",
+        "Department Manager": "/dm",
+        "Hiring Manager": "/h",
+        "Recruiter": "/r"
+    }
+
+    if not user_data["user_type"] in paths:
         return errTemplate.page_not_found(req)
+
+    return RedirectResponse(paths[user_data["user_type"]])
 
 
 # ===========================================================
@@ -58,14 +58,11 @@ def redirect(req: Request, user_data: dict = Depends(get_token)):
 
 # Home Page
 @router.get("/")
-def careers(req: Request, page: Optional[int] = None):
-    try:
-        return templates.TemplateResponse("pages/home/index.html", {
-            "request": req,
-            "page_title": "HoMIES - Hospital Management System"
-        })
-    except Exception as e:
-        print(e)
+def home(req: Request, page: Optional[int] = None):
+    return templates.TemplateResponse("pages/home/index.html", {
+        "request": req,
+        "page_title": "HoMIES - Hospital Management System"
+    })
 
 
 # ===========================================================
@@ -76,45 +73,41 @@ def careers(req: Request, page: Optional[int] = None):
 # Careers
 @router.get("/careers")
 def careers(req: Request, page: Optional[int] = None):
-    try:
-        return templates.TemplateResponse("pages/home/careers.html", {
-            "request": req,
-            "page_title": "Careers",
-            "page_subtitle": "Discover job opportunities here",
-            "active_navlink": "Careers"
-        })
-    except Exception as e:
-        print(e)
+    return templates.TemplateResponse("pages/home/careers.html", {
+        "request": req,
+        "page_title": "Careers",
+        "page_subtitle": "Discover job opportunities here",
+        "active_navlink": "Careers"
+    })
 
 
 # Search Job
 @router.get("/careers/search")
 def search(req: Request, query: str, page: Optional[int] = 1):
-    try:
-        if not query:
-            return errTemplate.page_not_found(req)
-        else:
-            return templates.TemplateResponse("pages/home/search_result.html", {
-                "request": req,
-                "page_title": "Search Result for \"" + query + "\"",
-                "active_navlink": "Careers"
-            })
-    except Exception as e:
-        print(e)
+    
+    # If query is not declared
+    if not query:
+        return errTemplate.page_not_found(req)
+    
+    # If no error, return template response
+    return templates.TemplateResponse("pages/home/search_result.html", {
+        "request": req,
+        "page_title": "Search Result for \"" + query + "\"",
+        "active_navlink": "Careers"
+        })
 
 
 # Available Job Details
 @router.get("/careers/{job_post_id}")
 def available_job_details(job_post_id: str, req: Request, db: Session = Depends(get_db)):
-    try:
-        job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
-        if not job_post:
-            return errTemplate.page_not_found(req)
-        else:
-            return templates.TemplateResponse("pages/home/available_job_details.html", {
-                "request": req,
-                "page_title": "Available Job Details",
-                "active_navlink": "Careers"
-            })
-    except Exception as e:
-        print(e)
+    
+    # Check if job_post_id is existing in database
+    if not db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first():
+        return errTemplate.page_not_found(req)
+    
+    # If no error, return template response
+    return templates.TemplateResponse("pages/home/available_job_details.html", {
+        "request": req,
+        "page_title": "Available Job Details",
+        "active_navlink": "Careers"
+    })

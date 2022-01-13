@@ -34,29 +34,35 @@ AUTHORIZED_USER = "Department Head"
 # Home Page
 @router.get("", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
-            "request": req,
-            "page_title": "Main Dashboard",
-            "sub_title": "Manage your tasks and activities here using this dashboard",
-            "active_navlink": "Main Dashboard"
-        })
-    else:
+
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
+        "request": req,
+        "page_title": "Main Dashboard",
+        "sub_title": "Manage your tasks and activities here using this dashboard",
+        "active_navlink": "Main Dashboard"
+    })
 
 
 # Department Head Dashboard
 @router.get("/dashboard", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
-            "request": req,
-            "page_title": "Dashboard",
-            "sub_title": "Manage your tasks and activities here using this dashboard",
-            "active_navlink": "Dashboard"
-        })
-    else:
+
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+    
+    # If nno error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
+        "request": req,
+        "page_title": "Dashboard",
+        "sub_title": "Manage your tasks and activities here using this dashboard",
+        "active_navlink": "Dashboard"
+    })
 
 
 # ===========================================================
@@ -67,15 +73,18 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
-            "request": req,
-            "page_title": "Manpower Requests",
-            "sub_title": "Manpower Requests to manage requests for employees",
-            "active_navlink": "Manpower Requests"
-        })
-    else:
+
+    # If user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
+        "request": req,
+        "page_title": "Manpower Requests",
+        "sub_title": "Manpower Requests to manage requests for employees",
+        "active_navlink": "Manpower Requests"
+    })
 
 
 # Manpower Request Details

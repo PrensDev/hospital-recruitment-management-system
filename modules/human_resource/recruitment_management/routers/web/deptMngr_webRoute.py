@@ -52,15 +52,18 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 # Department Head Dashboard
 @router.get("/dashboard", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
-            "request": req,
-            "page_title": "Dashboard",
-            "sub_title": "Manage your tasks and activities here using this dashboard",
-            "active_navlink": "Dashboard"
-        })
-    else:
+
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
+        "request": req,
+        "page_title": "Dashboard",
+        "sub_title": "Manage your tasks and activities here using this dashboard",
+        "active_navlink": "Dashboard"
+    })
 
 
 # ===========================================================
@@ -71,15 +74,18 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
-            "request": req,
-            "page_title": "Manpower Requests",
-            "sub_title": "Manpower Requests to manage requests for employees",
-            "active_navlink": "Manpower Requests"
-        })
-    else:
+
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
+        "request": req,
+        "page_title": "Manpower Requests",
+        "sub_title": "Manpower Requests to manage requests for employees",
+        "active_navlink": "Manpower Requests"
+    })
 
 
 # Manpower Request Details
@@ -90,19 +96,21 @@ def render(
     db: Session = Depends(get_db), 
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
-        if not requisition:
-            return errTemplate.page_not_found(req)
-        else:
-            return templates.TemplateResponse(TEMPLATES_PATH  + "view_manpower_request.html", {
-                "request": req,
-                "page_title": "Manpower Request Details",
-                "sub_title": "View the details of manpower request here",
-                "active_navlink": "Manpower Requests"
-            })
-    else:
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+    
+    # Check if manpower request is not existing in database
+    if not db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first():
+        return errTemplate.page_not_found(req)
+    
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH  + "view_manpower_request.html", {
+        "request": req,
+        "page_title": "Manpower Request Details",
+        "sub_title": "View the details of manpower request here",
+        "active_navlink": "Manpower Requests"
+    })
 
 
 # Manpower Requests
@@ -113,19 +121,21 @@ def render(
     db: Session = Depends(get_db),
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
-        if not requisition:
-            return errTemplate.page_not_found(req)
-        else:
-            return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants_per_request.html", {
-                "request": req,
-                "page_title": "Hired Applicants",
-                "sub_title": "Hired Applicants to manage new hired employees",
-                "active_navlink": "Hired Applicants"
-            })
-    else:
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # Check if manpower request is not existing in databse
+    if not db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first():
+        return errTemplate.page_not_found(req)
+    
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants_per_request.html", {
+        "request": req,
+        "page_title": "Hired Applicants",
+        "sub_title": "Hired Applicants to manage new hired employees",
+        "active_navlink": "Hired Applicants"
+    })
 
 
 # Manpower Request Report
@@ -136,33 +146,38 @@ def render(
     db: Session = Depends(get_db), 
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
-        if not requisition:
-            return errTemplate.page_not_found(req)
-        else:
-            return templates.TemplateResponse(TEMPLATES_PATH  + "manpower_request_report.html", {
-                "request": req,
-                "page_title": "Manpower Requisition Report",
-                "sub_title": "View the details of manpower request here",
-                "active_navlink": "Manpower Requests"
-            })
-    else:
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+    
+    # Check if manpower request is not existing in the database
+    if not db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first():
+        return errTemplate.page_not_found(req)
+    
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH  + "manpower_request_report.html", {
+        "request": req,
+        "page_title": "Manpower Requisition Report",
+        "sub_title": "View the details of manpower request here",
+        "active_navlink": "Manpower Requests"
+    })
 
 
 # Add Manpower Request
 @router.get("/add-manpower-request", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "add_manpower_request.html", {
-            "request": req,
-            "page_title": "Create Manpower Request",
-            "sub_title": "Create manpower request here using this form",
-            "active_navlink": "Manpower Requests"
-        })
-    else:
+
+    # Check if user is not athorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "add_manpower_request.html", {
+        "request": req,
+        "page_title": "Create Manpower Request",
+        "sub_title": "Create manpower request here using this form",
+        "active_navlink": "Manpower Requests"
+    })
 
 
 # Edit Manpower Request
@@ -173,25 +188,30 @@ def render(
     db: Session = Depends(get_db), 
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        if not requisition_id:
-            return errTemplate.page_not_found(req)
-        else:
-            requisition = db.query(Requisition).filter(
-                Requisition.requisition_id == requisition_id,
-                Requisition.request_status == 'For signature'
-            ).first()
-            if not requisition:
-                return errTemplate.page_not_found(req)
-            else:
-                return templates.TemplateResponse(TEMPLATES_PATH + "edit_manpower_request.html", {
-                    "request": req,
-                    "page_title": "Edit Manpower Request",
-                    "sub_title": "Edit your manpower request here",
-                    "active_navlink": "Manpower Requests"
-                })
-    else:
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # Check if requisition_id is ot declared
+    if not requisition_id:
+        return errTemplate.page_not_found(req)
+    
+    # Check if requisition is not in database
+    requisition = db.query(Requisition).filter(
+        Requisition.requisition_id == requisition_id,
+        Requisition.request_status == 'For signature'
+    ).first()
+    
+    if not requisition:
+        return errTemplate.page_not_found(req)
+    
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "edit_manpower_request.html", {
+        "request": req,
+        "page_title": "Edit Manpower Request",
+        "sub_title": "Edit your manpower request here",
+        "active_navlink": "Manpower Requests"
+    })
 
 
 # ===========================================================
@@ -202,15 +222,18 @@ def render(
 # Hired Applicants
 @router.get("/hired-applicants", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants.html", {
-            "request": req,
-            "page_title": "Hired Applicants",
-            "sub_title": "Hired Applicants to manage new hired employees",
-            "active_navlink": "Hired Applicants"
-        })
-    else:
+    
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "hired_applicants.html", {
+        "request": req,
+        "page_title": "Hired Applicants",
+        "sub_title": "Hired Applicants to manage new hired employees",
+        "active_navlink": "Hired Applicants"
+    })
 
 
 # ===========================================================
@@ -221,15 +244,18 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 # Onboarding Employees
 @router.get("/onboarding-employees", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employees.html", {
-            "request": req,
-            "page_title": "Onboarding Employees",
-            "sub_title": "Onboarding Employees to manage new employees on board",
-            "active_navlink": "Onboarding Employees"
-        })
-    else:
+
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+    
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employees.html", {
+        "request": req,
+        "page_title": "Onboarding Employees",
+        "sub_title": "Onboarding Employees to manage new employees on board",
+        "active_navlink": "Onboarding Employees"
+    })
 
 
 # Add Onboarding Employee Details
@@ -240,30 +266,41 @@ def render(
     db: Session = Depends(get_db), 
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        if not onboarding_employee_id:
-            return errTemplate.page_not_found(req)
-        else:
-            user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data['user_id'], User.position_id == Position.position_id).first()
-            onboarding_employee = db.query(OnboardingEmployee).filter(
-                OnboardingEmployee.onboarding_employee_id == onboarding_employee_id
-            ).join(Position).filter(
-                OnboardingEmployee.position_id == Position.position_id
-            ).join(Department).filter(
-                Position.department_id == Department.department_id, 
-                Department.department_id ==  user_department.department_id
-            ).first()
-            if not onboarding_employee:
-                return errTemplate.page_not_found(req)
-            else:
-                return templates.TemplateResponse(TEMPLATES_PATH + "onboard_employee.html", {
-                    "request": req,
-                    "page_title": "Onboard new employee",
-                    "sub_title": "Review details and update tasks to on board new employee",
-                    "active_navlink": "Onboarding Employees"
-                })
-    else:
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+    
+    # Chech if onboarding_employee_id is not declared
+    if not onboarding_employee_id:
+        return errTemplate.page_not_found(req)
+    
+    # Check if onboarding employee is existing in database
+    user_department = db.query(Department).join(Position).filter(
+        Department.department_id == Position.department_id
+    ).join(User).filter(
+        User.user_id == user_data['user_id'], 
+        User.position_id == Position.position_id
+    ).first()
+    
+    onboarding_employee = db.query(OnboardingEmployee).filter(
+        OnboardingEmployee.onboarding_employee_id == onboarding_employee_id
+    ).join(Position).filter(
+        OnboardingEmployee.position_id == Position.position_id
+    ).join(Department).filter(
+        Position.department_id == Department.department_id, 
+        Department.department_id ==  user_department.department_id
+    ).first()
+    
+    if not onboarding_employee:
+        return errTemplate.page_not_found(req)
+    
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "onboard_employee.html", {
+        "request": req,
+        "page_title": "Onboard new employee",
+        "sub_title": "Review details and update tasks to on board new employee",
+        "active_navlink": "Onboarding Employees"
+    })
 
 
 # ===========================================================
@@ -274,23 +311,27 @@ def render(
 # General Tasks
 @router.get("/general-tasks", response_class=HTMLResponse)
 def render(req: Request, menu: Optional[str] = None, user_data: dict = Depends(get_token)):
-    try:
-        if not menu:
-            return RedirectResponse("/dm/general-tasks?menu=for-new-employees")
-        elif menu not in ["for-new-employees", "for-the-team", "my-tasks"]:
-            return errTemplate.page_not_found(req)
-        elif user_data['user_type'] == AUTHORIZED_USER:
-            return templates.TemplateResponse(TEMPLATES_PATH + "general_tasks.html", {
-                "request": req,
-                "page_title": "General Onboarding Tasks",
-                "sub_title": "Manage your general onboarding tasks here",
-                "active_navlink": "General Tasks",
-                'active_menu': menu
-            })
-        else:
-            return errTemplate.page_not_found(req)
-    except Exception as e:
-        print(e)
+        
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
+        return errTemplate.page_not_found(req)
+
+    # Check if menu is not declared, redirect to appropriate page
+    if not menu:
+        return RedirectResponse("/dm/general-tasks?menu=for-new-employees")
+    
+    # Check if menu is valid
+    if menu not in ["for-new-employees", "for-the-team", "my-tasks"]:
+        return errTemplate.page_not_found(req)
+    
+    # If no error return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "general_tasks.html", {
+        "request": req,
+        "page_title": "General Onboarding Tasks",
+        "sub_title": "Manage your general onboarding tasks here",
+        "active_navlink": "General Tasks",
+        'active_menu': menu
+    })
 
 
 # ===========================================================
@@ -306,25 +347,35 @@ def render(
     db: Session = Depends(get_db), 
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data['user_id'], User.position_id == Position.position_id).first()
-        onboarding_employee = db.query(OnboardingEmployee).filter(
-            OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
-            OnboardingEmployee.status == "Onboarding",
-        ).join(Position).filter(
-            OnboardingEmployee.position_id == Position.position_id
-        ).join(Department).filter(
-            Position.department_id == Department.department_id, 
-            Department.department_id ==  user_department.department_id
-        ).first()
-        if not onboarding_employee:
-            return errTemplate.page_not_found(req)
-        else:
-            return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
-                "request": req,
-                "page_title": "Onboarding Tasks",
-                "sub_title": "Manage employee tasks and monitor performance",
-                "active_navlink": "Onboarding Employees"
-            })
-    else:
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # Check if onboarding employee is existing in database
+    user_department = db.query(Department).join(Position).filter(
+        Department.department_id == Position.department_id
+    ).join(User).filter(
+        User.user_id == user_data['user_id'], 
+        User.position_id == Position.position_id
+    ).first()
+
+    onboarding_employee = db.query(OnboardingEmployee).filter(
+        OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
+        OnboardingEmployee.status == "Onboarding",
+    ).join(Position).filter(
+        OnboardingEmployee.position_id == Position.position_id
+    ).join(Department).filter(
+        Position.department_id == Department.department_id, 
+        Department.department_id ==  user_department.department_id
+    ).first()
+
+    if not onboarding_employee:
+        return errTemplate.page_not_found(req)
+    
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
+        "request": req,
+        "page_title": "Onboarding Tasks",
+        "sub_title": "Manage employee tasks and monitor performance",
+        "active_navlink": "Onboarding Employees"
+    })

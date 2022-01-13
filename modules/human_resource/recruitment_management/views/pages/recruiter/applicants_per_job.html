@@ -135,50 +135,47 @@
 
                                         {# For evaluation link #}
                                         <li class="nav-item">
-                                            <a 
-                                                href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/for-evaluation" 
-                                                class="nav-link{% if active_menu == 'For evaluation' %} text-primary{% endif %}"
-                                            >
+                                            <div type="button" class="nav-link" id="forEvaluationMenu">
                                                 <i class="fas fa-sync-alt" style="width: 1.5rem"></i>
                                                 <span>For evaluation</span>
                                                 <span 
                                                     class="badge bg-warning float-right" 
                                                     id="forEvaluationCount" 
                                                     style="display: none"
-                                                >0</span>
-                                            </a>
+                                                >
+                                                    <div class="spinner-border spinner-border-sm"></div>
+                                                </span>
+                                            </div>
                                         </li>
 
                                         {# Evaluated link #}
                                         <li class="nav-item">
-                                            <a 
-                                                href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/evaluated" 
-                                                class="nav-link{% if active_menu == 'Evaluated' %} text-primary{% endif %}"
-                                            >
+                                            <div type="button" class="nav-link" id="evaluatedMenu">
                                                 <i class="fas fa-check" style="width: 1.5rem"></i>
                                                 <span>Evaluated</span>
                                                 <span 
                                                     class="badge bg-success float-right" 
                                                     id="evaluatedCount" 
                                                     style="display: none"
-                                                >0</span>
-                                            </a>
+                                                >
+                                                    <div class="spinner-border spinner-border-sm"></div>
+                                                </span>
+                                            </div>
                                         </li>
 
                                         {# Rejected link #}
                                         <li class="nav-item">
-                                            <a 
-                                                href="{{ R_WEB_ROUTE }}job-posts/{{ job_post_id }}/applicants/rejected" 
-                                                class="nav-link{% if active_menu == 'Rejected' %} text-primary{% endif %}"
-                                            >
+                                            <div type="button" class="nav-link" id="rejectedMenu">
                                                 <i class="fas fa-times" style="width: 1.5rem"></i>
                                                 <span>Rejected</span>
                                                 <span 
                                                     class="badge bg-danger float-right" 
                                                     id="rejectedCount" 
                                                     style="display: none"
-                                                >0</span>
-                                            </a>
+                                                >
+                                                    <div class="spinner-border spinner-border-sm"></div>
+                                                </span>
+                                            </div>
                                         </li>
                                     </ul>
                                 </div>
@@ -188,14 +185,123 @@
                 </div>
 
                 {# Applicant List #}
-                <div class="col-lg-9">
-                    {% block dataTable %}
-                    {% endblock %}
+                <div class="col-lg-9" id="applicantsPerJob">
+
+                    <div class="card card-primary card-outline" id="applicantsForEvaluationCard">
+                        <div class="card-header align-items-center">
+                            <div class="card-title">List of Applicants</div>
+                
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-sm btn-default" data-card-widget="maximize">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                
+                                {# Applicants for Evaluation #}
+                                <table 
+                                    id="applicantsForEvaluationDT" 
+                                    class="table table-bordered table-hover w-100" 
+                                    width="100" 
+                                    cellspacing="0"
+                                >
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="w-100">Applicant Name</th>
+                                            <th>Date Applied</th>
+                                            <th class="text-center"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="4">
+                                                <div class="text-center py-5">
+                                                    <div class="spinner-border text-primary my-3" role="status">
+                                                        <span class="sr-only">Loading ...</span>
+                                                    </div>
+                                                    <div class="text-secondary">Loading ...</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                {# Evaluated Applicants #}
+                                <table 
+                                    id="evaluatedApplicantsDT" 
+                                    class="table table-bordered table-hover w-100" 
+                                    width="100" 
+                                    cellspacing="0"
+                                    style="display: none"
+                                >
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="w-100">Applicant Name</th>
+                                            <th>Date Applied</th>
+                                            <th class="text-center"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="4">
+                                                <div class="text-center py-5">
+                                                    <div class="spinner-border text-primary my-3" role="status">
+                                                        <span class="sr-only">Loading ...</span>
+                                                    </div>
+                                                    <div class="text-secondary">Loading ...</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                {# Rejected Applicants #}
+                                <table 
+                                    id="rejectedApplicantsDT" 
+                                    class="table table-bordered table-hover w-100" 
+                                    width="100" 
+                                    cellspacing="0"
+                                    style="display: none"
+                                >
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="w-100">Applicant Name</th>
+                                            <th>Date Applied</th>
+                                            <th class="text-center"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="4">
+                                                <div class="text-center py-5">
+                                                    <div class="spinner-border text-primary my-3" role="status">
+                                                        <span class="sr-only">Loading ...</span>
+                                                    </div>
+                                                    <div class="text-secondary">Loading ...</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </div>
     </section>
+{% endblock %}
+
+
+{% block page_modals %}
+    {% include "pages/recruiter/modals/applicants_per_job_modal.html" %}
 {% endblock %}
 
 

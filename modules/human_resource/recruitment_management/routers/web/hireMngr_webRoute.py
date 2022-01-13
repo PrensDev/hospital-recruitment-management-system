@@ -111,15 +111,18 @@ def render(
 # Job Posts
 @router.get("/job-posts", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "job_posts.html", {
-            "request": req,
-            "page_title": "Job Posts",
-            "sub_title": "Manage applicants per job post here",
-            "active_navlink": "Job Posts"
-        })
-    else:
+    
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+    
+    # If error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "job_posts.html", {
+        "request": req,
+        "page_title": "Job Posts",
+        "sub_title": "Manage applicants per job post here",
+        "active_navlink": "Job Posts"
+    })
 
 
 # Job Posts Details
@@ -130,19 +133,21 @@ def render(
     db: Session = Depends(get_db),
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
-        if not job_post:
-            return errTemplate.page_not_found(req)
-        else:
-            return templates.TemplateResponse(TEMPLATES_PATH + "view_job_post.html", {
-                "request": req,
-                "page_title": "Job Posts",
-                "sub_title": "Manage applicants per job post here",
-                "active_navlink": "Job Posts"
-            })
-    else:
+    # Check if user is not authorized 
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+    
+    # Check if job post is not existing in database
+    if not db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first():
+        return errTemplate.page_not_found(req)
+    
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "view_job_post.html", {
+        "request": req,
+        "page_title": "Job Posts",
+        "sub_title": "Manage applicants per job post here",
+        "active_navlink": "Job Posts"
+    })
 
 
 # ===========================================================
@@ -153,15 +158,18 @@ def render(
 # Applicants
 @router.get("/applicants", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "applicants.html", {
-            "request": req,
-            "page_title": "Applicants",
-            "sub_title": "Applicants to manage potential candidates",
-            "active_navlink": "Applicants"
-        })    
-    else:
+
+    # Check if user is authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "applicants.html", {
+        "request": req,
+        "page_title": "Applicants",
+        "sub_title": "Applicants to manage potential candidates",
+        "active_navlink": "Applicants"
+    })    
 
 
 # Applicants Per Job Post
@@ -172,17 +180,20 @@ def render(
     db: Session = Depends(get_db),
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        if not job_post_id:
-            return errTemplate.page_not_found(req)
-        else:
-            job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
-            if not job_post:
-                return errTemplate.page_not_found(req)
-            else:
-                return RedirectResponse(f"/h/job-posts/{job_post_id}/applicants/for-screening")
-    else:
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # Check if job_post_id is not declared
+    if not job_post_id:
+        return errTemplate.page_not_found(req)
+
+    # Check if job post is not exisiting in database
+    if not db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first():
+        return errTemplate.page_not_found(req)
+
+    # if no error, redirect for default page
+    return RedirectResponse(f"/h/job-posts/{job_post_id}/applicants/for-screening")
 
 
 # Applicants Per Job Post (For Screening)
@@ -193,24 +204,27 @@ def render(
     db: Session = Depends(get_db),
     user_data: dict = Depends(get_token)
 ):
+    # Check if user is not authorized
     if user_data['user_type'] == AUTHORIZED_USER:
-        if not job_post_id:
-            return errTemplate.page_not_found(req)
-        else:
-            job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
-            if not job_post:
-                return errTemplate.page_not_found(req)
-            else:
-                return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/for_screening.html", {
-                    "request": req,
-                    "page_title": "Applicants - For Screening",
-                    "sub_title": "Applicants to manage potential candidates",
-                    "active_navlink": "Applicants",
-                    "active_menu": "For screening",
-                    "job_post_id": f"{job_post_id}"
-                })
-    else:
         return errTemplate.page_not_found(req)
+
+    # Check if job_post_id is not declared
+    if not job_post_id:
+        return errTemplate.page_not_found(req)
+
+    # Check if job post is not existing in database
+    if not db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first():
+        return errTemplate.page_not_found(req)
+
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/for_screening.html", {
+        "request": req,
+        "page_title": "Applicants - For Screening",
+        "sub_title": "Applicants to manage potential candidates",
+        "active_navlink": "Applicants",
+        "active_menu": "For screening",
+        "job_post_id": f"{job_post_id}"
+    })
 
 
 # Applicants Per Job Post (Interviewed)
@@ -394,19 +408,21 @@ def render(
     db: Session = Depends(get_db),
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        interview_schedule = db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first()
-        if not interview_schedule:
-            return errTemplate.page_not_found(req)
-        else:
-            return templates.TemplateResponse(TEMPLATES_PATH + "interview_scoresheet.html", {
-                "request": req,
-                "page_title": "Interview Scoresheet",
-                "sub_title": "Lorem ipsum dolor sit amet",
-                "active_navlink": "Applicants"
-            })
-    else:
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # Check if interviewee is not existing in database
+    if not db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first():
+        return errTemplate.page_not_found(req)
+
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "interview_scoresheet.html", {
+        "request": req,
+        "page_title": "Interview Scoresheet",
+        "sub_title": "Lorem ipsum dolor sit amet",
+        "active_navlink": "Applicants"
+    })
 
 
 
@@ -417,17 +433,16 @@ def render(
 
 # Interview Questions
 @router.get("/interview-questions", response_class=HTMLResponse)
-def render(
-    req: Request, 
-    db: Session = Depends(get_db),
-    user_data: dict = Depends(get_token)
-):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "interview_questions.html", {
-            "request": req,
-            "page_title": "Interview Questions",
-            "sub_title": "Manage general interview questions here for all applicants",
-            "active_navlink": "Interview Questions",
-        })
-    else:
+def render(req: Request, user_data: dict = Depends(get_token)):
+    
+    # Check if user is not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
+
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "interview_questions.html", {
+        "request": req,
+        "page_title": "Interview Questions",
+        "sub_title": "Manage general interview questions here for all applicants",
+        "active_navlink": "Interview Questions",
+    })

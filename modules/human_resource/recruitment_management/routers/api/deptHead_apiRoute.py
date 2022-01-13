@@ -34,15 +34,11 @@ def get_user_info(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
 ):
-    try:
-        if(authorized(user_data, AUTHORIZED_USER)):
-            user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
-            if not user_info:
-                raise HTTPException(status_code = 404, detail = {"message": "User does not exist"})
-            else:
-                return user_info
-    except Exception as e:
-        print(e)
+    if(authorized(user_data, AUTHORIZED_USER)):
+        user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+        if not user_info:
+            raise HTTPException(status_code = 404, detail = {"message": "User does not exist"})
+        return user_info
 
 
 # ====================================================================

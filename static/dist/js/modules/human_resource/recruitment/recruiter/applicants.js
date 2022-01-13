@@ -179,6 +179,13 @@ const viewApplicantDetails = (applicantID) => {
     });
 }
 
+/** On Applicant details modal is going to be hidden  */
+onHideModal('#applicantDetailsModal', () => {
+    showElement('#applicantTimelineLoader');
+    hideElement('#applicantTimeline');
+    $('#applicantDetailsTab').tab('show');
+});
+
 
 /**
  * ==============================================================================
@@ -245,10 +252,12 @@ const applicantsPerJobAnalytics = () => {
         success: result => {
 
             // Show Count or Hide Element
-            const a = (s, c) => { if(c > 0) {
-                setContent(s, formatNumber(c));
-                showElement(s);
-            }}
+            const a = (s, c) => { 
+                if(c > 0) {
+                    setContent(s, formatNumber(c));
+                    showElement(s);
+                } else hideElement(s)
+            }
 
             // Set Total Applicants
             a('#totalApplicantsCount', result.total);
@@ -284,198 +293,283 @@ ifSelectorExist('#applicantsMenu', () => applicantsPerJobAnalytics());
 
 /**
  * ==============================================================================
- * APPLICANTS FOR EVALUATION
+ * APPLICANTS PER JOB
  * ==============================================================================
 */
 
 /** Applicants for Evaluation DataTable */
-initDataTable('#applicantsForEvaluationDT', {
-    url: `${ ROUTE.API.R }job-posts/${ jobPostID }/applicants/for-evaluation`,
-    columns: [
-        
-        // Created at (Hidden for default sorting)
-        { data: 'created_at', visible: false },
-
-        // Applicant
-        {
-            data: null,
-            render: data => {
-                const applicantFullName = formatName('F M. L, S', {
-                    firstName  : data.first_name,
-                    middleName : data.middle_name,
-                    lastName   : data.last_name,
-                    suffixName : data.suffix_name,
-                });
-                return `
-                    <div>${ applicantFullName }</div>
-                    ${ TEMPLATE.SUBTEXT(data.email) }
-                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
-                `
+const loadApplicantsForEvaluationDT = () => {
+    initDataTable('#applicantsForEvaluationDT', {
+        url: `${ ROUTE.API.R }job-posts/${ jobPostID }/applicants/for-evaluation`,
+        columns: [
+            
+            // Created at (Hidden for default sorting)
+            { data: 'created_at', visible: false },
+    
+            // Applicant
+            {
+                data: null,
+                render: data => {
+                    const applicantFullName = formatName('F M. L, S', {
+                        firstName  : data.first_name,
+                        middleName : data.middle_name,
+                        lastName   : data.last_name,
+                        suffixName : data.suffix_name,
+                    });
+                    return `
+                        <div>${ applicantFullName }</div>
+                        ${ TEMPLATE.SUBTEXT(data.email) }
+                        ${ TEMPLATE.SUBTEXT(data.contact_number) }
+                    `
+                }
+            },
+    
+            // Date Applied
+            {
+                data: null,
+                class: 'text-nowrap',
+                render: data => {
+                    const dateApplied = data.created_at;
+                    return `
+                        <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }                
+                    `
+                }
+            },
+    
+            // User Actions
+            {
+                data: null,
+                render: data => {
+                    return TEMPLATE.DT.OPTIONS(`
+                        <div 
+                            class="dropdown-item d-flex" 
+                            role="button" 
+                            onclick="evaluateApplicant('${ data.applicant_id }')"
+                        >
+                            <div style="width: 2rem"><i class="fas fa-user-cog mr-1"></i></div>
+                            <div>Evaluate applicant</div>
+                        </div>
+                    `);
+                }
             }
-        },
+        ]
+    });
+    showElement('#applicantsForEvaluationDT');
+}
 
-        // Date Applied
-        {
-            data: null,
-            class: 'text-nowrap',
-            render: data => {
-                const dateApplied = data.created_at;
-                return `
-                    <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }                
-                `
-            }
-        },
-
-        // User Actions
-        {
-            data: null,
-            render: data => {
-                return TEMPLATE.DT.OPTIONS(`
-                    <div 
-                        class="dropdown-item d-flex" 
-                        role="button" 
-                        onclick="viewApplicantDetails('${ data.applicant_id }')"
-                    >
-                        <div style="width: 2rem"><i class="fas fa-user-cog mr-1"></i></div>
-                        <div>Evaluate applicant</div>
-                    </div>
-                `);
-            }
-        }
-    ]
-});
-
-
-/**
- * ==============================================================================
- * EVALUATED APPLICANTS
- * ==============================================================================
-*/
 
 /** Applicants For Evaluation DataTable */
-initDataTable('#evaluatedApplicantsDT', {
-    // debugMode: true,
-    url: `${ ROUTE.API.R }job-posts/${ jobPostID }/applicants/evaluated`,
-    columns: [
-        
-        // Created at (Hidden for default sorting)
-        { data: 'created_at', visible: false },
-
-        // Applicant
-        {
-            data: null,
-            render: data => {
-                const applicantFullName = formatName('F M. L, S', {
-                    firstName  : data.first_name,
-                    middleName : data.middle_name,
-                    lastName   : data.last_name,
-                    suffixName : data.suffix_name,
-                });
-                return `
-                    <div>${ applicantFullName }</div>
-                    ${ TEMPLATE.SUBTEXT(data.email) }
-                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
-                `
+const loadEvaluatedApplicantsDT = () => {
+    initDataTable('#evaluatedApplicantsDT', {
+        // debugMode: true,
+        url: `${ ROUTE.API.R }job-posts/${ jobPostID }/applicants/evaluated`,
+        columns: [
+            
+            // Created at (Hidden for default sorting)
+            { data: 'created_at', visible: false },
+    
+            // Applicant
+            {
+                data: null,
+                render: data => {
+                    const applicantFullName = formatName('F M. L, S', {
+                        firstName  : data.first_name,
+                        middleName : data.middle_name,
+                        lastName   : data.last_name,
+                        suffixName : data.suffix_name,
+                    });
+                    return `
+                        <div>${ applicantFullName }</div>
+                        ${ TEMPLATE.SUBTEXT(data.email) }
+                        ${ TEMPLATE.SUBTEXT(data.contact_number) }
+                    `
+                }
+            },
+    
+            // Date Applied
+            {
+                data: null,
+                class: 'text-nowrap',
+                render: data => {
+                    const dateApplied = data.created_at;
+                    return `
+                        <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }
+                    `
+                }
+            },
+    
+            // User Actions
+            {
+                data: null,
+                render: data => {
+                    return TEMPLATE.DT.OPTIONS(`
+                        <div 
+                            class="dropdown-item d-flex" 
+                            role="button" 
+                            onclick="viewApplicantDetails('${ data.applicant_id }')"
+                        >
+                            <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                            <div>View Details</div>
+                        </div>
+                    `)
+                }
             }
-        },
+        ]
+    });
+    showElement('#evaluatedApplicantsDT');
+}
 
-        // Date Applied
-        {
-            data: null,
-            class: 'text-nowrap',
-            render: data => {
-                const dateApplied = data.created_at;
-                return `
-                    <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }
-                `
-            }
-        },
-
-        // User Actions
-        {
-            data: null,
-            render: data => {
-                return TEMPLATE.DT.OPTIONS(`
-                    <div 
-                        class="dropdown-item d-flex" 
-                        role="button" 
-                        onclick="viewApplicantDetails('${ data.applicant_id }')"
-                    >
-                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                        <div>View Details</div>
-                    </div>
-                `)
-            }
-        }
-    ]
-});
-
-
-/**
- * ==============================================================================
- * APPLICANTS REJECTED FROM EVALUATION
- * ==============================================================================
-*/
 
 /** Applicants For Evaluation DataTable */
-initDataTable('#rejectedApplicantsDT', {
-    // debugMode: true,
-    url: `${ ROUTE.API.R }job-posts/${ jobPostID }/applicants/rejected`,
-    columns: [
-        
-        // Created at (Hidden for default sorting)
-        { data: 'created_at', visible: false },
-
-        // Applicant
-        {
-            data: null,
-            render: data => {
-                const applicantFullName = formatName('F M. L, S', {
-                    firstName  : data.first_name,
-                    middleName : data.middle_name,
-                    lastName   : data.last_name,
-                    suffixName : data.suffix_name,
-                });
-                return `
-                    <div>${ applicantFullName }</div>
-                    ${ TEMPLATE.SUBTEXT(data.email) }
-                    ${ TEMPLATE.SUBTEXT(data.contact_number) }
-                `
+const loadRejectedApplicantsDT = () => {
+    initDataTable('#rejectedApplicantsDT', {
+        // debugMode: true,
+        url: `${ ROUTE.API.R }job-posts/${ jobPostID }/applicants/rejected`,
+        columns: [
+            
+            // Created at (Hidden for default sorting)
+            { data: 'created_at', visible: false },
+    
+            // Applicant
+            {
+                data: null,
+                render: data => {
+                    const applicantFullName = formatName('F M. L, S', {
+                        firstName  : data.first_name,
+                        middleName : data.middle_name,
+                        lastName   : data.last_name,
+                        suffixName : data.suffix_name,
+                    });
+                    return `
+                        <div>${ applicantFullName }</div>
+                        ${ TEMPLATE.SUBTEXT(data.email) }
+                        ${ TEMPLATE.SUBTEXT(data.contact_number) }
+                    `
+                }
+            },
+    
+            // Date Applied
+            {
+                data: null,
+                class: 'text-nowrap',
+                render: data => {
+                    const dateApplied = data.created_at;
+                    return `
+                        <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
+                        ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }               
+                    `
+                }
+            },
+    
+            // User Actions
+            {
+                data: null,
+                render: data => {
+                    return TEMPLATE.DT.OPTIONS(`
+                        <div 
+                            class="dropdown-item d-flex" 
+                            role="button" 
+                            onclick="viewApplicantDetails('${ data.applicant_id }')"
+                        >
+                            <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
+                            <div>View Details</div>
+                        </div>
+                    `)
+                }
             }
+        ]
+    });
+    showElement('#rejectedApplicantsDT');
+}
+
+
+ifSelectorExist('#applicantsPerJob', () => {
+    const menu = URL_QUERY_PARAMS.get('menu');
+    const menus = {
+        'for-evaluation': {
+            loadDT: () => loadApplicantsForEvaluationDT(),
+            activeMenu: '#forEvaluationMenu'
         },
-
-        // Date Applied
-        {
-            data: null,
-            class: 'text-nowrap',
-            render: data => {
-                const dateApplied = data.created_at;
-                return `
-                    <div>${ formatDateTime(dateApplied, "MMM. D, YYYY") }</div>
-                    ${ TEMPLATE.SUBTEXT(fromNow(dateApplied)) }               
-                `
-            }
+        'evaluated': {
+            loadDT: () => loadEvaluatedApplicantsDT(),
+            activeMenu: '#evaluatedMenu'
         },
+        'rejected': {
+            loadDT: () => loadRejectedApplicantsDT(),
+            activeMenu: '#rejectedMenu'
+        } 
+    };
 
-        // User Actions
-        {
-            data: null,
-            render: data => {
-                return TEMPLATE.DT.OPTIONS(`
-                    <div 
-                        class="dropdown-item d-flex" 
-                        role="button" 
-                        onclick="viewApplicantDetails('${ data.applicant_id }')"
-                    >
-                        <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                        <div>View Details</div>
-                    </div>
-                `)
-            }
+    // Hide all tables
+    const hideTables = () => {
+        hideElement('#applicantsForEvaluationDT');
+        hideElement('#evaluatedApplicantsDT');
+        hideElement('#rejectedApplicantsDT');
+    }
+    
+    const destroyDT = () => {
+        if(URL_QUERY_PARAMS.get('menu') === 'for-evaluation') {
+            $('#applicantsForEvaluationDT').dataTable().fnClearTable();
+            $('#applicantsForEvaluationDT').dataTable().fnDestroy();
         }
-    ]
+        if(URL_QUERY_PARAMS.get('menu') === 'evaluated') {
+            $('#evaluatedApplicantsDT').dataTable().fnClearTable();
+            $('#evaluatedApplicantsDT').dataTable().fnDestroy();
+        }
+        if(URL_QUERY_PARAMS.get('menu') === 'rejected') {
+            $('#rejectedApplicantsDT').dataTable().fnClearTable();
+            $('#rejectedApplicantsDT').dataTable().fnDestroy();
+        }
+    }
+
+    // Load the datatable
+    hideTables();
+    menus[menu].loadDT();
+
+    // Set menus to unactive
+    const setActiveMenu = (selector) => {
+        $('#forEvaluationMenu').removeClass('text-primary');
+        $('#evaluatedMenu').removeClass('text-primary');
+        $('#rejectedMenu').removeClass('text-primary');
+        $(selector).addClass('text-primary');
+    }
+
+    setActiveMenu(menus[menu].activeMenu);
+    
+    onClick('#forEvaluationMenu', () => {
+        if(URL_QUERY_PARAMS.get('menu') !== 'for-evaluation') {
+            destroyDT();
+            hideTables();
+            loadApplicantsForEvaluationDT();
+            setActiveMenu('#forEvaluationMenu');
+            URL_QUERY_PARAMS.set('menu', 'for-evaluation');
+            history.replaceState(null, null, "?"+URL_QUERY_PARAMS.toString());
+        }
+    });
+
+    onClick('#evaluatedMenu', () => {
+        if(URL_QUERY_PARAMS.get('menu') !== 'evaluated') {
+            destroyDT();
+            hideTables();
+            loadEvaluatedApplicantsDT();
+            setActiveMenu('#evaluatedMenu');
+            URL_QUERY_PARAMS.set('menu', 'evaluated');
+            history.replaceState(null, null, "?"+URL_QUERY_PARAMS.toString());
+        }
+    });
+
+    onClick('#rejectedMenu', () => {
+        if(URL_QUERY_PARAMS.get('menu') !== 'rejected') {
+            destroyDT();
+            hideTables();
+            loadRejectedApplicantsDT();
+            setActiveMenu('#rejectedMenu');
+            URL_QUERY_PARAMS.set('menu', 'rejected');
+            history.replaceState(null, null, "?"+URL_QUERY_PARAMS.toString());
+        }
+    });
 });
 
 
@@ -484,6 +578,42 @@ initDataTable('#rejectedApplicantsDT', {
  * APPLICANT EVALUATION
  * ==============================================================================
 */
+
+/** View Applicant Details */
+const evaluateApplicant = (applicantID) => {
+    GET_ajax(`${ ROUTE.API.R }applicants/${ applicantID }`, {
+        success: result => {
+
+            /** APPLICANT DETAILS */
+            setValue('#applicantIDForEval', result.applicant_id)
+            setContent({
+                '#applicantFullNameForEval': formatName('F M. L, S', {
+                    firstName  : result.first_name,
+                    middleName : result.middle_name,
+                    lastName   : result.last_name,
+                    suffixName : result.suffixName
+                }),
+                '#applicantContactNumberForEval': result.contact_number,
+                '#applicantEmailForEval': result.email
+            })
+
+            // Set Resume Link
+            $('#viewResumeBtnForEval').attr('href', `${ URL_RESUME_FILES }${ result.resume }`);
+
+
+            /** APPLICANT TIMELINE */
+            setApplicantTimeline('#applicantTimelineForEval', result);
+
+            // Remove Applicant Timeline Loader
+            hideElement('#applicantTimelineLoaderForEval');
+            showElement('#applicantTimelineForEval');
+
+            /** Show Modal */
+            showModal('#evaluateApplicantModal');
+        },
+        error: () => toastr.error('There was an error in getting applicant details')
+    });
+}
 
 /** If user select reject for evaluation */
 $("#approveForScreening, #rejectFromEvaluation").on('change', () => {
@@ -494,13 +624,13 @@ $("#approveForScreening, #rejectFromEvaluation").on('change', () => {
 });
 
 /** On Applicant details modal is going to be hidden  */
-onHideModal('#applicantDetailsModal', () => {
+onHideModal('#evaluateApplicantModal', () => {
     resetForm('#applicantEvaluationForm');
     hideElement("#remarksField");
     disableElement('#submitBtn');
-    showElement('#applicantTimelineLoader');
-    hideElement('#applicantTimeline');
-    $('#applicantDetailsTab').tab('show');
+    showElement('#applicantTimelineLoaderForEval');
+    hideElement('#applicantTimelineForEval');
+    $('#applicantDetailsTabForEval').tab('show');
 });
 
 /** Validate Applicant Evaluation Form */
@@ -515,11 +645,11 @@ validateForm('#applicantEvaluationForm', {
         applicantStatus: { required: "Please select a status for this applicant" },
         remarks: { required: "You must insert remarks here for rejected this applicant from evaluation" }
     },
-    submitHandler: () => evaluateApplicant()
+    submitHandler: () => saveApplicantEvaluation()
 });
 
 /** Evaluate Applicant */
-const evaluateApplicant = () => {
+const saveApplicantEvaluation = () => {
     
     // Buttons to loading state
     btnToLoadingState('#submitBtn');
@@ -556,7 +686,7 @@ const evaluateApplicant = () => {
             if(result) {
 
                 // Hide Applicant Details Modal
-                hideModal('#applicantDetailsModal');
+                hideModal('#evaluateApplicantModal');
 
                 // Set modal buttons to unload state
                 btnToUnloadState('#submitBtn', TEMPLATE.LABEL_ICON("Submit", "check"));
