@@ -68,10 +68,57 @@ const FETCH_ROWS = 10;
 
 // DateTime Formats
 const DATETIME_FORMATS = {
-    "Full DateTime" : "dddd, MMMM D, YYYY; hh:mm A",
-    "DateTime"      : "MMMM D, YYYY; hh:mm A",
-    "Full Date"     : "dddd, MMMM D, YYYY",
-    "Date"          : "MMMM D, YYYY",
-    "Short Date"    : "MMM. D, YYYY",
-    "Time"          : "hh:mm A"
+    "Full DateTime"  : "dddd, MMMM D, YYYY; hh:mm A",
+    "DateTime"       : "MMMM D, YYYY; hh:mm A",
+    "Short DateTime" : "MMM. D, YYYY; hh:mm A",
+    "Full Date"      : "dddd, MMMM D, YYYY",
+    "Date"           : "MMMM D, YYYY",
+    "Short Date"     : "MMM. D, YYYY",
+    "Time"           : "hh:mm A"
 }
+
+// Date Ranges
+const DATE_RANGES = {
+    'Today': [
+        moment().startOf('day'), 
+        moment().endOf('day')
+    ],
+    'Yesterday': [
+        moment().subtract(1, 'days').startOf('day'), 
+        moment().subtract(1, 'days').endOf('day')
+    ],
+    'Last 7 Days': [
+        moment().subtract(6, 'days').startOf('day'), 
+        moment().endOf('day')
+    ],
+    'Last 30 Days': [
+        moment().subtract(29, 'days').startOf('day'), 
+        moment().endOf('day')
+    ],
+    'This Month': [
+        moment().startOf('month'),
+        moment().endOf('month')
+    ],
+    'Last Month': [
+        moment().subtract(1, 'month').startOf('month'), 
+        moment().subtract(1, 'month').endOf('month')
+    ],
+    'This Year': [
+        moment().startOf('year'), 
+        moment().endOf('year')
+    ],
+    'Last Year': [
+        moment().subtract(1, 'year').startOf('year'), 
+        moment().subtract(1, 'year').endOf('year')
+    ],
+}
+
+// Default Filter Range
+let DATE_RANGE_PARAM = URL_QUERY_PARAMS.get('dateRange')
+const DEFAULT_FILTER_RANGE = DATE_RANGE_PARAM && DATE_RANGE_PARAM in DATE_RANGES 
+    ? DATE_RANGE_PARAM 
+    : "This Month"
+
+// Start and End Date Range
+const START_DATE_RANGE = DATE_RANGES[DEFAULT_FILTER_RANGE][0];
+const END_DATE_RANGE = DATE_RANGES[DEFAULT_FILTER_RANGE][1];

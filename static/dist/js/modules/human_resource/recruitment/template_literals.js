@@ -68,6 +68,17 @@ const TEMPLATE = {
 
     /**
      * =====================================================================
+     * UNIVESAL RESOURCE LOCATOR (URL) QUERY PARAMETER TEMPLATE LITERALS
+     * =====================================================================
+     */
+    URL_QUERY_PARAM: {
+        DATE_RANGE: (start, end) => {
+            return start && end ? `?start=${ start }&end=${ end }` : '';
+        }
+    },
+
+    /**
+     * =====================================================================
      * DATATABLE TEMPLATE LITERALS
      * =====================================================================
      */

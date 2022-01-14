@@ -1,6 +1,7 @@
 # Import Packages
-from sqlalchemy.sql.expression import or_
-from typing import List, Text
+from email.quoprimime import quote
+from sqlalchemy import func, and_, cast, Date
+from typing import List, Optional
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
@@ -89,65 +90,118 @@ def get_all_requisitions(
 @router.get("/requisitions/analytics")
 def requisition_analytics(
     db: Session = Depends(get_db), 
+    start: Optional[str] = None,
+    end: Optional[str] = None,
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
             query = db.query(Requisition)
-
-            # Total Count
-            total = query.filter(Requisition.requested_by == user_data.user_id).count()
             
-            # For signature
-            for_signature = query.filter(
+            # Total Query
+            total_query = query.filter(Requisition.requested_by == user_data.user_id)
+
+            # For signature Query
+            for_signature_query = query.filter(
                 Requisition.request_status == "For signature",
                 Requisition.requested_by == user_data.user_id
-            ).count()
-
-            # For Review Count
-            for_approval = query.filter(
+            )
+            
+            # For Review Query
+            for_approval_query = query.filter(
                 Requisition.request_status == "For approval",
                 Requisition.requested_by == user_data.user_id
-            ).count()
+            )
             
-            # Approved
-            approved = query.filter(
+            # Approved Query
+            approved_query = query.filter(
                 Requisition.request_status == "Approved",
                 Requisition.requested_by == user_data.user_id
-            ).count()
+            )
             
-            # Rejected
-            rejected_for_signing = query.filter(
+            # Rejected Query
+            rejected_for_signing_query = query.filter(
                 Requisition.request_status == "Rejected for signing",
                 Requisition.requested_by == user_data.user_id
-            ).count()
+            )
 
-            # Rejected for approval
-            rejected_for_approval = query.filter(
+            # Rejected for approval Query
+            rejected_for_approval_query = query.filter(
                 Requisition.request_status == "Rejected for approval",
                 Requisition.requested_by == user_data.user_id
-            ).count()
+            )
 
-            total_rejected = rejected_for_signing + rejected_for_approval
-            
-            # Completed
-            completed = query.filter(
+            # Completed Query
+            completed_query = query.filter(
                 Requisition.request_status == "Completed",
                 Requisition.requested_by == user_data.user_id
-            ).count()
+            )
+
+            if start and end:
+                date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
+                total = total_query.filter(date_filter)
+                for_signature = for_signature_query.filter(date_filter)
+                for_approval = for_approval_query.filter(date_filter)
+                approved = approved_query.filter(date_filter)
+                rejected_for_signing = rejected_for_signing_query.filter(date_filter)
+                rejected_for_approval = rejected_for_approval_query.filter(date_filter)
+                completed = completed_query.filter(date_filter)
+            else:
+                total = total_query
+                for_signature = for_signature_query
+                for_approval = for_approval_query
+                approved = approved_query
+                rejected_for_signing = rejected_for_signing_query
+                rejected_for_approval = rejected_for_approval_query
+                completed = completed_query
+
+            total_on_going = for_signature.count() + for_approval.count() + approved.count()
+            total_rejected = rejected_for_signing.count() + rejected_for_approval.count()
             
             return {
-                "total": total,
-                "for_signature": for_signature,
-                "for_approval": for_approval,
-                "approved": approved,
+                "total": total.count(),
+                "on_going": {
+                    "total": total_on_going,
+                    "for_signature": for_signature.count(),
+                    "for_approval": for_approval.count(),
+                    "approved": approved.count(),
+                },
                 "rejected": {
                     "total": total_rejected,
-                    "for_signing": rejected_for_signing,
-                    "for_approval": rejected_for_approval
+                    "for_signing": rejected_for_signing.count(),
+                    "for_approval": rejected_for_approval.count()
                 },
-                "completed": completed
+                "completed": completed.count()
             }
+    except Exception as e:
+        print(e)
+
+
+# Manpower Request Data
+@router.get("/requisitions/data")
+def requisition_data(
+    db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+
+            owner_filter = Requisition.requested_by == user_data.user_id
+
+            requests_query = db.query(
+                cast(Requisition.created_at, Date).label("created_at"), 
+                func.count(Requisition.requisition_id).label("total")
+            ).filter(owner_filter).group_by(
+                cast(Requisition.created_at, Date)
+            )
+
+            if start and end:
+                date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
+                return requests_query.filter(date_filter).all()
+            else:
+                return requests_query.all()
     except Exception as e:
         print(e)
 

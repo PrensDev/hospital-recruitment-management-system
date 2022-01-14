@@ -658,3 +658,15 @@ const printContent = (pageTitle, content) => {
 const pluralize = (word, count) => {
     return count > 1 ? word + 's' : word
 }
+
+
+/** Create days labels for chart */
+const daysLabels = (start, end) => {
+    let days = [];
+    let currDate = start.startOf('day');
+    while(currDate.diff(end.endOf('day')) <= 0) {
+        days.push(currDate.format());
+        currDate = currDate.add(1, 'days');
+    }
+    return days;
+}

@@ -385,8 +385,8 @@ const manpowerRequestAnalytics = () =>
                 setContent({
                     '#totalManpowerRequestsCount': formatNumber(result.total),
                     '#completedRequestsCount': formatNumber(result.completed),
-                    '#signedRequestsCount': formatNumber(result.for_approval),
-                    '#approvedRequestsCount': formatNumber(result.approved),
+                    '#signedRequestsCount': formatNumber(result.on_going.for_approval),
+                    '#approvedRequestsCount': formatNumber(result.on_going.approved),
                     '#rejectedRequestsCount': formatNumber(result.rejected.total)
                 });
             } else toastr.error('There was an error in getting manpower request analytics')

@@ -54,6 +54,13 @@
 {# Select2 #}
 <script src="{{url_for('static', path='/plugins/select2/js/select2.full.min.js')}}"></script>
 
+{# Date Picker #}
+<script src="{{url_for('static', path='/plugins/daterangepicker/daterangepicker.js')}}"></script>
+<script src="{{url_for('static', path='/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
+
+{# Tempusdominus Bootstrap 4 #}
+<script src="{{url_for('static', path='/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
+
 {# Summernote #}
 <script src="{{url_for('static', path='/plugins/summernote/summernote-bs4.min.js')}}"></script>
 
@@ -61,7 +68,8 @@
 <script src="{{url_for('static', path='/plugins/bs-stepper/js/bs-stepper.min.js')}}"></script>
 
 {# Chart JS #}
-<script src="{{url_for('static', path='/plugins/chart.js/Chart.min.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
 {# AdminLTE JS #}
 <script src="{{url_for('static', path='/dist/js/adminlte.min.js')}}"></script>
