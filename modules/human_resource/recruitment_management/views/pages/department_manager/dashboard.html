@@ -112,103 +112,99 @@
             </div>
 
             {# Manpower Requests #}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card card-outline card-primary">
-                        <div class="card-header">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <h3 class="card-title">Manpower Requests</h5>
-                                <div class="card-tools">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fas fa-wrench"></i>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <a href="#" class="dropdown-item">Action</a>
-                                        <a href="#" class="dropdown-item">Another action</a>
-                                        <a href="#" class="dropdown-item">Something else here</a>
-                                        <a class="dropdown-divider"></a>
-                                        <a href="#" class="dropdown-item">Separated link</a>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-default btn-sm" data-card-widget="collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="card-title">Manpower Requests</h5>
+                        <div class="card-tools">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fas fa-wrench"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" role="menu">
+                                <a href="#" class="dropdown-item">Action</a>
+                                <a href="#" class="dropdown-item">Another action</a>
+                                <a href="#" class="dropdown-item">Something else here</a>
+                                <a class="dropdown-divider"></a>
+                                <a href="#" class="dropdown-item">Separated link</a>
                                 </div>
                             </div>
+                            <button type="button" class="btn btn-default btn-sm" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                            <div class="col-md-8">
-                                <p class="font-weight-bold">Total Manpower Request</p>
-                                <div class="chart">
-                                    <canvas id="manpowerRequestsBarChart" style="
-                                        min-height: 250px; 
-                                        height: 250px; 
-                                        max-height: 250px; 
-                                    "></canvas>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="font-weight-bold">Distribution of Manpower Requests</p>
-                                <div class="chart">
-                                    <canvas id="manpowerRequestsPieChart" style="
-                                        min-height: 250px; 
-                                        height: 250px; 
-                                        max-height: 250px; 
-                                    "></canvas>
-                                </div>
-                            </div>
-                            </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                    <div class="col-md-8">
+                        <p class="font-weight-bold">Total Manpower Request</p>
+                        <div class="chart">
+                            <canvas id="manpowerRequestsBarChart" style="
+                                min-height: 250px; 
+                                height: 250px; 
+                                max-height: 250px; 
+                            "></canvas>
                         </div>
-                        <div class="card-footer">
-                            <div class="row">
-                            <div class="col-sm-3 col-6">
-                                <div class="description-block border-right">
-                                <span class="description-percentage">
-                                    <i class="fas fa-copy"></i>
-                                </span>
-                                <h5 class="description-header" id="totalRequests">
-                                    <span class="spinner-border spinner-border-sm"></span>
-                                </h5>
-                                <span class="description-text">TOTAL REQUESTS</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-3 col-6">
-                                <div class="description-block border-right">
-                                <span class="description-percentage text-success">
-                                    <i class="fas fa-sync-alt"></i>
-                                </span>
-                                <h5 class="description-header text-success" id="totalOnGoingRequests">
-                                    <span class="spinner-border spinner-border-sm"></span>
-                                </h5>
-                                <span class="description-text">ON GOING</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-3 col-6">
-                                <div class="description-block border-right">
-                                <span class="description-percentage text-info">
-                                    <i class="fas fa-check"></i>
-                                </span>
-                                <h5 class="description-header text-info" id="totalCompletedRequests">
-                                    <span class="spinner-border spinner-border-sm"></span>
-                                </h5>
-                                <span class="description-text">COMPLETED</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-3 col-6">
-                                <div class="description-block">
-                                <span class="description-percentage text-danger">
-                                    <i class="fas fa-times"></i>
-                                </span>
-                                <h5 class="description-header text-danger" id="totalRejectedRequests">
-                                    <span class="spinner-border spinner-border-sm"></span>
-                                </h5>
-                                <span class="description-text">REJECTED</span>
-                                </div>
-                            </div>
-                            </div>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="font-weight-bold">Distribution of Manpower Requests</p>
+                        <div class="chart">
+                            <canvas id="manpowerRequestsPieChart" style="
+                                min-height: 250px; 
+                                height: 250px; 
+                                max-height: 250px; 
+                            "></canvas>
                         </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block border-right">
+                        <span class="description-percentage">
+                            <i class="fas fa-copy"></i>
+                        </span>
+                        <h5 class="description-header" id="totalRequests">
+                            <span class="spinner-border spinner-border-sm"></span>
+                        </h5>
+                        <span class="description-text">TOTAL REQUESTS</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block border-right">
+                        <span class="description-percentage text-success">
+                            <i class="fas fa-sync-alt"></i>
+                        </span>
+                        <h5 class="description-header text-success" id="totalOnGoingRequests">
+                            <span class="spinner-border spinner-border-sm"></span>
+                        </h5>
+                        <span class="description-text">ON GOING</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block border-right">
+                        <span class="description-percentage text-info">
+                            <i class="fas fa-check"></i>
+                        </span>
+                        <h5 class="description-header text-info" id="totalCompletedRequests">
+                            <span class="spinner-border spinner-border-sm"></span>
+                        </h5>
+                        <span class="description-text">COMPLETED</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block">
+                        <span class="description-percentage text-danger">
+                            <i class="fas fa-times"></i>
+                        </span>
+                        <h5 class="description-header text-danger" id="totalRejectedRequests">
+                            <span class="spinner-border spinner-border-sm"></span>
+                        </h5>
+                        <span class="description-text">REJECTED</span>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>

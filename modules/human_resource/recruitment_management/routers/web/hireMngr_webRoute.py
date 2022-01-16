@@ -205,7 +205,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if user_data['user_type'] == AUTHORIZED_USER:
+    if not user_data['user_type'] == AUTHORIZED_USER:
         return errTemplate.page_not_found(req)
 
     # Check if job_post_id is not declared
