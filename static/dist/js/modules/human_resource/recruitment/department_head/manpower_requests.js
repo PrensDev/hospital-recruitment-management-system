@@ -176,7 +176,9 @@ ifSelectorExist('#manpowerRequestFormDocument', () => {
             });
             
             // Show signature form if request status is for signature
-            result.request_status === "For signature" ? showElement('#signatureForm') : $('#signatureForm').remove();
+            result.request_status === "For signature" 
+                ? showElement('#signatureForm') 
+                : $('#signatureForm').remove();
 
             // Remove Manpower Request Options Loader
             $('#optionsLoader').remove();

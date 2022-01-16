@@ -166,7 +166,13 @@ validateForm('#addManpowerRequestForm', {
 
 /** Submit Manpower Request */
 onClick('#confirmAddManpowerRequestBtn', () => {
-    const get = (n) => { return generateFormData('#addManpowerRequestForm').get(n) }
+
+    // Set buttons to loading state
+    btnToLoadingState('#confirmAddManpowerRequestBtn');
+    disableElement('#cancelAddManpowerRequestBtn');
+
+    const formData = generateFormData('#addManpowerRequestForm')
+    const get = (n) => { return formData.get(n) }
     
     const data = {
         requisition_no: get('requisitionNo'),
@@ -180,6 +186,19 @@ onClick('#confirmAddManpowerRequestBtn', () => {
         deadline: isChecked('#setDeadline') ? formatDateTime(get("deadline")) : null
     }
 
+    // If error
+    const ifError = () => {
+        
+        // Set modal buttons to unload state
+        btnToUnloadState('#confirmAddManpowerRequestBtn', TEMPLATE.LABEL_ICON('Yes, submit it', 'check'));
+        enableElement('#cancelAddManpowerRequestBtn');
+
+        // Show error alert
+        hideModal('#confirmAddManpowerRequestModal')
+        toastr.error("There was an error in creating manpower request");
+    }
+
+    // Request create new manpower request
     POST_ajax(`${ ROUTE.API.DM }requisitions`, data, {
         success: result => {
             if(result) {
@@ -188,15 +207,9 @@ onClick('#confirmAddManpowerRequestBtn', () => {
                     message: 'A new request has been submitted', 
                     redirectURL: `${ ROUTE.WEB.DM }manpower-requests`
                 });
-            } else {
-                hideModal('#confirmAddManpowerRequestModal')
-                toastr.error("There was an error in creating manpower request");
-            }
+            } else ifError()
         },
-        error: () => {
-            hideModal('#confirmAddManpowerRequestModal')
-            toastr.error("There was an error in creating manpower request");
-        }
+        error: () => ifError()
     });
 });
 
@@ -209,7 +222,6 @@ onClick('#confirmAddManpowerRequestBtn', () => {
 
 /** ManPower Requests DataTable */
 initDataTable('#manpowerRequestDT', {
-    // debugMode: true,
     url: `${ ROUTE.API.DM }requisitions`,
     enableButtons: true,
     columns: [

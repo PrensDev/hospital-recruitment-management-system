@@ -27,31 +27,29 @@ const manpowerRequestBarChart = new Chart($('#manpowerRequestsBarChart').get(0).
                 time: {
                     unit: 'day',
                     displayFormats: {
-                        day: 'MMM. d, yy'
+                        day: 'MMM. d, yyyy'
                     },
                 },
                 min: START_DATE_RANGE.format("YYYY-MM-DD"),
                 max: END_DATE_RANGE.format("YYYY-MM-DD"),
+            },
+            y: {
+                ticks: {
+                    stepSize: 1
+                }
             }
         },
         parsing: {
             xAxisKey: 'created_at',
             yAxisKey: 'total',
         }
-    }
+    },
 });
 
 // Manpower Request Pie Chart
 const manpowerRequestPieChart = new Chart($('#manpowerRequestsPieChart').get(0).getContext('2d'), {
     type: 'pie',
-    data: {
-        labels: ['On Going','Completed','Rejected',],
-        datasets: [{
-            backgroundColor : ['#68c389', '#5dd0e3', '#f48585'],
-            borderColor: ['#16a34a', '#06b6d4', '#ef4444'],
-            borderWidth: 2
-        }]
-    }
+    data: CHART_CONFIG.NO_DATA
 });
 
 
@@ -68,19 +66,45 @@ const renderData = (start, end) => {
             setContent('#manpowerRequestsCountForInfoBox', formatNumber(result.total));
             
             // Update footer manpower request data
-            setContent('#totalRequests', formatNumber(result.total));
-            setContent('#totalOnGoingRequests', formatNumber(result.on_going.total));
-            setContent('#totalCompletedRequests', formatNumber(result.completed));
-            setContent('#totalRejectedRequests', formatNumber(result.rejected.total));
+            setContent({
+                '#totalRequests': formatNumber(result.total),
+                '#totalOnGoingRequests': formatNumber(result.on_going.total),
+                '#totalCompletedRequests': formatNumber(result.completed),
+                '#totalRejectedRequests': formatNumber(result.rejected.total),
+            });
 
             // Configure Pie Chart
             const chartConfig = manpowerRequestPieChart.config;
 
-            // Update datasets
-            chartConfig.data.datasets[0].data = [result.on_going.total, result.completed, result.rejected.total];
+            if(result.total > 0) chartConfig.data = {
+                labels: ['On Going','Completed','Rejected',],
+                datasets: [{
+                    data: [
+                        result.on_going.total,
+                        result.completed, 
+                        result.rejected.total
+                    ],
+                    backgroundColor : [
+                        CHART_BG.SUCCESS,
+                        CHART_BG.INFO,
+                        CHART_BG.DANGER
+                    ],
+                    borderColor:  [
+                        CHART_BD.SUCCESS,
+                        CHART_BD.INFO,
+                        CHART_BD.DANGER
+                    ],
+                    borderWidth: 2
+                }]
+            }
+            else chartConfig.data = CHART_CONFIG.NO_DATA
 
             // Commit Update
             manpowerRequestPieChart.update();
+
+            // Hide Chart Loader
+            hideElement('#manpowerRequestsBarChartLoader');
+            showElement('#manpowerRequestsBarChart');
         },
         error: () => toastr.error('There was an error in getting completed manpower requests count')
     });

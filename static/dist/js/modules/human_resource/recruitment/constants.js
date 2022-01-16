@@ -119,6 +119,44 @@ const DEFAULT_FILTER_RANGE = DATE_RANGE_PARAM && DATE_RANGE_PARAM in DATE_RANGES
     ? DATE_RANGE_PARAM 
     : "This Month"
 
+
 // Start and End Date Range
 const START_DATE_RANGE = DATE_RANGES[DEFAULT_FILTER_RANGE][0];
 const END_DATE_RANGE = DATE_RANGES[DEFAULT_FILTER_RANGE][1];
+
+
+// Chart Colors
+const CHART_STYLE = {
+    BACKGROUND: {
+        PRIMARY: '#67c389',
+        SECONDARY: '#9fa5aa',
+        SUCCESS: '#64d1ad',
+        INFO: '#5dcfe3',
+        WARNING: '#f19261',
+        DANGER: '#f48686'
+    },
+    BORDER: {
+        WIDTH: 2,
+        PRIMARY: '#16a34a',
+        SECONDARY: '#6c757d',
+        SUCCESS: '#10b981',
+        INFO: '#06b6d4',
+        WARNING: '#ea580c',
+        DANGER: '#ef4444'
+    }
+}
+const CHART_BG = CHART_STYLE.BACKGROUND;
+const CHART_BD = CHART_STYLE.BORDER;
+
+
+const CHART_CONFIG = {
+    NO_DATA: {
+        labels: ['No data'],
+        datasets: [{
+            data: [100],
+            backgroundColor : [CHART_BG.SECONDARY],
+            borderColor: [CHART_BD.SECONDARY],
+            borderWidth: CHART_BD.WIDTH
+        }]
+    }
+}

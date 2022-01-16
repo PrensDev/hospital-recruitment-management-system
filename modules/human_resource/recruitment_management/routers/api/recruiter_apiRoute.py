@@ -1,7 +1,9 @@
 # Import Packages
-from typing import List
+from re import L
+from typing import List, Optional
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
+from sqlalchemy import cast, func, and_
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, authorized
@@ -155,19 +157,35 @@ def get_all_job_posts(
 
 # Job Posts Analytics
 @router.get("/job-posts/analytics")
-async def job_posts_analytics(
+def job_posts_analytics(
     db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
             query = db.query(JobPost)
-            total = query.count()
-            on_going = query.filter(or_(
+
+            # On Going Query
+            on_going_query = query.filter(or_(
                 JobPost.expiration_date >= datetime.today(), 
                 JobPost.expiration_date == None
-            )).count()
-            ended = query.filter(JobPost.expiration_date <= datetime.today()).count()
+            ))
+
+            # Ended Query
+            ended_query = query.filter(JobPost.expiration_date <= datetime.today())
+
+            if start and end:
+                date_filter = and_(JobPost.created_at >= start, JobPost.created_at <= end)
+                total = query.filter(date_filter).count()
+                on_going = on_going_query.filter(date_filter).count()
+                ended = ended_query.filter(date_filter).count()
+            else:
+                total = query.count()
+                on_going = on_going_query.count()
+                ended = ended_query.count()
+            
             return {
                 "total": total,
                 "on_going": on_going,
@@ -177,9 +195,36 @@ async def job_posts_analytics(
         print(e)   
 
 
+# Get Job Posts Data
+@router.get("/job-posts/data")
+def get_job_posts_data(
+    db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            
+            job_posts = db.query(
+                cast(JobPost.created_at, Date).label("created_at"), 
+                func.count(JobPost.job_post_id).label("total")
+            ).group_by(
+                cast(JobPost.created_at, Date)
+            )
+
+            if start and end:
+                date_filter = and_(JobPost.created_at >= start, JobPost.created_at <= end)
+                return job_posts.filter(date_filter).all()
+            else:
+                return job_posts.all()
+    except Exception as e:
+        print(e)
+
+
 # Get One Job Posts
 @router.get("/job-posts/{job_post_id}", response_model = recruiter.ShowJobPost)
-async def get_one_job_post(
+def get_one_job_post(
     job_post_id,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -197,7 +242,7 @@ async def get_one_job_post(
 
 # Post Vacant Job
 @router.post("/job-posts", status_code = 201)
-async def post_vacant_job(
+def post_vacant_job(
     req: recruiter.CreateJobPost,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -221,7 +266,7 @@ async def post_vacant_job(
 
 # Update Job Post
 @router.put("/job-posts/{job_post_id}")
-async def update_job_post(
+def update_job_post(
     job_post_id: str,
     req: recruiter.UpdateJobPost,
     db: Session = Depends(get_db),
@@ -242,7 +287,7 @@ async def update_job_post(
 
 # End Recruitment
 @router.put("/job-posts/{job_post_id}/end-recruiting")
-async def end_recruiting(
+def end_recruiting(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -273,7 +318,7 @@ APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
 
 # Get All Applicants
 @router.get("/applicants", response_model = List[recruiter.ShowApplicant])
-async def get_all_applicants(
+def get_all_applicants(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -286,40 +331,55 @@ async def get_all_applicants(
 
 # Applicants Analytics
 @router.get("/applicants/analytics")
-async def applicants_analytics(
+def applicants_analytics(
     db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
             query = db.query(Applicant)
 
-            total = query.count()
-            for_evaluation = query.filter(Applicant.status == "For evaluation").count()
-            for_screening = query.filter(Applicant.status == "For screening").count()
-            for_interview = query.filter(Applicant.status == "For interview").count()
-            hired = query.filter(Applicant.status == "Hired").count()
-            
-            rejected_from_evaluation = \
-                query.filter(Applicant.status == "Rejected from evaluation").count()
+            for_evaluation_query = query.filter(Applicant.status == "For evaluation")
+            for_screening_query = query.filter(Applicant.status == "For screening")
+            for_interview_query = query.filter(Applicant.status == "For interview")
+            hired_query = query.filter(Applicant.status == "Hired")
+            rejected_from_evaluation_query = query.filter(Applicant.status == "Rejected from evaluation")
+            rejected_from_screening_query = query.filter(Applicant.status == "Rejected from screening")
+            rejected_from_interview_query = query.filter(Applicant.status == "Rejected from interview")
 
-            rejected_from_screening = \
-                query.filter(Applicant.status == "Rejected from screening").count()
-            
-            rejected_from_interview = \
-                query.filter(Applicant.status == "Rejected from interview").count()
-            
-            total_rejected = \
-                rejected_from_evaluation + rejected_from_screening + rejected_from_interview
+            if start and end:
+                date_filter = and_(Applicant.created_at >= start, Applicant.created_at <= end)
+                total = query.filter(date_filter).count()
+                for_evaluation = for_evaluation_query.filter(date_filter).count()
+                for_screening = for_screening_query.filter(date_filter).count()
+                for_interview = for_interview_query.filter(date_filter).count()
+                hired = hired_query.filter(date_filter).count()
+                rejected_from_evaluation = rejected_from_evaluation_query.filter(date_filter).count()
+                rejected_from_screening = rejected_from_screening_query.filter(date_filter).count()
+                rejected_from_interview = rejected_from_interview_query.filter(date_filter).count()
+            else:
+                total = query.count()
+                for_evaluation = for_evaluation_query.count()
+                for_screening = for_screening_query.count()
+                for_interview = for_interview_query.count()
+                hired = hired_query.count()
+                rejected_from_evaluation = rejected_from_evaluation_query.count()
+                rejected_from_screening = rejected_from_screening_query.count()
+                rejected_from_interview = rejected_from_interview_query.count()
             
             return {
                 "total": total,
                 "for_evaluation": for_evaluation,
-                "for_screening": for_screening,
-                "for_interview": for_interview,
-                "hired": hired,
+                "evaluated": {
+                    "total": for_screening + for_interview + hired,
+                    "for_screening": for_screening,
+                    "for_interview": for_interview,
+                    "hired": hired,
+                },
                 "rejected": {
-                    "total": total_rejected,
+                    "total": rejected_from_evaluation + rejected_from_screening + rejected_from_interview,
                     "from_evaluation": rejected_from_evaluation,
                     "from_screening": rejected_from_screening,
                     "from_interview": rejected_from_interview
@@ -329,9 +389,33 @@ async def applicants_analytics(
         print(e)
 
 
+# Applicants Data
+@router.get("/applicants/data")
+def get_applicants_data(
+    db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            applicants_query = db.query(
+                cast(Applicant.created_at, Date).label("created_at"), 
+                func.count(Applicant.applicant_id).label("total")
+            ).group_by(cast(Applicant.created_at, Date))
+
+            if start and end:
+                date_filter = and_(Applicant.created_at >= start, Applicant.created_at <= end)
+                return applicants_query.filter(date_filter).all()
+            else:
+                return applicants_query.all()
+    except Exception as e:
+        print(e)
+
+
 # Get One Applicant
 @router.get("/applicants/{applicant_id}", response_model = recruiter.ShowApplicant)
-async def get_one_applicant(
+def get_one_applicant(
     applicant_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -349,7 +433,7 @@ async def get_one_applicant(
 
 # Evaluate Applicant Status
 @router.put("/applicants/{applicant_id}", status_code = 202)
-async def evaluate_applicant(
+def evaluate_applicant(
     applicant_id: str,
     req: recruiter.ApplicantEvaluation,
     db: Session = Depends(get_db),
@@ -435,7 +519,7 @@ async def evaluate_applicant(
 
 # Get All Applicants Per Job
 @router.get("/job-posts/{job_post_id}/applicants", response_model = List[recruiter.ShowApplicant])
-async def get_all_applicants_per_job(
+def get_all_applicants_per_job(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -449,7 +533,7 @@ async def get_all_applicants_per_job(
 
 # Applicants Per Job Analytics
 @router.get("/job-posts/{job_post_id}/applicants/analytics")
-async def applicants_per_job_analytics(
+def applicants_per_job_analytics(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -533,7 +617,7 @@ async def applicants_per_job_analytics(
 
 # Get All Applicants Per (For evaluation)
 @router.get("/job-posts/{job_post_id}/applicants/for-evaluation", response_model = List[recruiter.ShowApplicant])
-async def for_evaluation_applicants(
+def for_evaluation_applicants(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -550,7 +634,7 @@ async def for_evaluation_applicants(
 
 # Get All Applicants Per Job (Evaluated)
 @router.get("/job-posts/{job_post_id}/applicants/evaluated", response_model = List[recruiter.ShowApplicant])
-async def evaluated_applicants(
+def evaluated_applicants(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
@@ -574,7 +658,7 @@ async def evaluated_applicants(
 
 # Get All Applicants Per Job (Rejected)
 @router.get("/job-posts/{job_post_id}/applicants/rejected", response_model = List[recruiter.ShowApplicant])
-async def rejected_applicants(
+def rejected_applicants(
     job_post_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)

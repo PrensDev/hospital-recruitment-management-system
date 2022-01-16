@@ -120,13 +120,12 @@ initDataTable('#applicantsDT', {
 const applicantsAnalytics = () => {
     GET_ajax(`${ ROUTE.API.R }applicants/analytics`, {
         success: result => {
-            console.log(result);
             setContent({
                 '#totalApplicantsCount': formatNumber(result.total),
                 '#forEvaluationCount': formatNumber(result.for_evaluation),
-                '#hiredApplicantsCount': formatNumber(result.hired),
-                '#forScreeningCount': formatNumber(result.for_screening),
-                '#forInterviewCount': formatNumber(result.for_interview),
+                '#hiredApplicantsCount': formatNumber(result.evaluated.hired),
+                '#forScreeningCount': formatNumber(result.evaluated.for_screening),
+                '#forInterviewCount': formatNumber(result.evaluated.for_interview),
                 '#rejectedApplicantsCount': formatNumber(result.rejected.total)
             });
         },

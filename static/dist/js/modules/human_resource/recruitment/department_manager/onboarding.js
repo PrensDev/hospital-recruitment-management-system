@@ -1158,6 +1158,23 @@ initDataTable('#onboardingEmployeeTasksDT', {
     ]
 });
 
+
+/** Initialize Onboarding Employee Tasks Doughnut Chart */
+const onboardingEmployeeTasksDoughnutChart = new Chart($('#onboardingEmployeeTasksDoughnutChart').get(0).getContext('2d'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Pending','On Going', 'Completed'],
+        datasets: [{
+            data: [0, 0, 0],
+            backgroundColor : ['#ea580c', '#06b6d4', '#10b981'],
+        }]
+    },
+    options: {
+        maintainAspectRatio : false,
+        responsive : true,
+    }
+});
+
 /** Get Onboarding Employee Details */
 const getOnboardingEmployeeDetails = () => {
     GET_ajax(`${ ROUTE.API.DM }onboarding-employees/${ onboardingEmployeeID }`, {
@@ -1174,24 +1191,12 @@ const getOnboardingEmployeeDetails = () => {
                         case 'Completed': completed++; break;
                     }
                 });
+                
+                // Configure Onboarding Employee Task Doughnut Chart
+                const chartConfig = onboardingEmployeeTasksDoughnutChart.config;
+                chartConfig.data.datasets[0].data = [pending, onGoing, completed];
 
-                var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
-                var donutData = {
-                    labels: ['Pending','On Going', 'Completed'],
-                    datasets: [{
-                        data: [pending, onGoing, completed],
-                        backgroundColor : ['#ea580c', '#06b6d4', '#10b981'],
-                    }]
-                }
-                var donutOptions = {
-                    maintainAspectRatio : false,
-                    responsive : true,
-                }
-                new Chart(donutChartCanvas, {
-                    type: 'doughnut',
-                    data: donutData,
-                    options: donutOptions
-                });
+                onboardingEmployeeTasksDoughnutChart.update();
             }
 
             const employeeFullName = formatName('F M. L, S', {

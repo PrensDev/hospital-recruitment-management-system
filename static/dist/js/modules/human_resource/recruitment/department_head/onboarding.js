@@ -197,6 +197,24 @@ initDataTable('#onboardingEmployeeTasksDT', {
     ]
 });
 
+
+/** Initialize Onboarding Employee Tasks Doughnut Chart */
+const onboardingEmployeeTasksDoughnutChart = new Chart($('#onboardingEmployeeTasksDoughnutChart').get(0).getContext('2d'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Pending','On Going', 'Completed'],
+        datasets: [{
+            data: [0, 0, 0],
+            backgroundColor : ['#ea580c', '#06b6d4', '#10b981'],
+        }]
+    },
+    options: {
+        maintainAspectRatio : false,
+        responsive : true,
+    }
+});
+
+
 /** Get Onboarding Employee Details */
 const getOnboardingEmployeeDetails = () => {
     GET_ajax(`${ ROUTE.API.DH }onboarding-employees/${ onboardingEmployeeID }`, {
@@ -213,24 +231,12 @@ const getOnboardingEmployeeDetails = () => {
 
                 result.onboarding_employee_tasks.forEach(t => taskProgress[t.status]());
 
-                var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
-                
-                var donutData = {
-                    labels: ['Pending','On Going', 'Completed'],
-                    datasets: [{
-                        data: [pending, onGoing, completed],
-                        backgroundColor : ['#ea580c', '#06b6d4', '#10b981'],
-                    }]
-                }
-                
-                new Chart(donutChartCanvas, {
-                    type: 'doughnut',
-                    data: donutData,
-                    options: {
-                        maintainAspectRatio : false,
-                        responsive : true,
-                    }
-                });
+                // Configure Onboarding Employee Task Doughnut Chart
+                const chartConfig = onboardingEmployeeTasksDoughnutChart.config;
+                chartConfig.data.datasets[0].data = [pending, onGoing, completed];
+
+                // Update Onboarding Employee Task Doughnut Chart
+                onboardingEmployeeTasksDoughnutChart.update();
             }
 
             setContent({
