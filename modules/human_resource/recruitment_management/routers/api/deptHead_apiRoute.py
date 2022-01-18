@@ -237,7 +237,13 @@ def get_all_hired_applicants(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, Position.position_id == User.position_id).first()
+            user_department = db.query(Department).join(Position).filter(
+                Department.department_id == Position.department_id
+            ).join(User).filter(
+                User.user_id == user_data.user_id, 
+                Position.position_id == User.position_id
+            ).first()
+            
             return db.query(Applicant).filter(or_(
                 Applicant.status == "Hired",
                 Applicant.status == "Contract signed",
@@ -251,6 +257,42 @@ def get_all_hired_applicants(
                 Position.department_id == Department.department_id, 
                 Department.department_id ==  user_department.department_id
             ).all()
+    except Exception as e:
+        print(e)
+
+
+# Get all hired applicants analytics
+@router.get("/hired-applicants/analytics")
+def hired_applicants_analytics(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            user_department = db.query(Department).join(Position).filter(
+                Department.department_id == Position.department_id
+            ).join(User).filter(
+                User.user_id == user_data.user_id, 
+                Position.position_id == User.position_id
+            ).first()
+            
+            hired_applicants = db.query(Applicant).filter(or_(
+                Applicant.status == "Hired",
+                Applicant.status == "Contract signed",
+            )).join(JobPost).filter(
+                Applicant.job_post_id == JobPost.job_post_id
+            ).join(Requisition).filter(
+                JobPost.requisition_id == Requisition.requisition_id
+            ).join(Position).filter(
+                Requisition.position_id == Position.position_id
+            ).join(Department).filter(
+                Position.department_id == Department.department_id, 
+                Department.department_id ==  user_department.department_id
+            ).count()
+
+            return {
+                "hired_applicants": hired_applicants
+            }
     except Exception as e:
         print(e)
 

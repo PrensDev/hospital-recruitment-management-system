@@ -152,6 +152,17 @@ const renderData = (start, end) => {
         error: () => toastr.error('There was an error in getting completed manpower requests count')
     });
 
+    // Hired Applicants Analytics
+    GET_ajax(`${ ROUTE.API.DH }hired-applicants/analytics`, {
+        success: result => setContent('#hiredApplicantsCountForInfoCard', formatNumber(result.hired_applicants)),
+        error: () => toastr.error('There was an error in getting hired applicants analytics')
+    });
+
+    // Onboarding Employees Analytics
+    GET_ajax(`${ ROUTE.API.DH }onboarding-employees/analytics`, {
+        success: result => setContent('#onboardingEmployeesCountForInfoCard', formatNumber(result.total)),
+        error: () => toastr.error('There was an error in getting onboarding employees analytics')
+    });
 
     /** FOR BAR AND LINE GRAPHS */
 

@@ -83,6 +83,9 @@ const setPageToLoadingState = () => {
     });
 
     /** MANPOWER REQUEST */
+
+    // Footer
+
     setContent({
         '#totalRequests': SPINNER_SM,
         '#totalOnGoingRequests': SPINNER_SM,

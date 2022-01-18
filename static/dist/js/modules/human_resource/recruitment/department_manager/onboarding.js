@@ -1162,13 +1162,7 @@ initDataTable('#onboardingEmployeeTasksDT', {
 /** Initialize Onboarding Employee Tasks Doughnut Chart */
 const onboardingEmployeeTasksDoughnutChart = new Chart($('#onboardingEmployeeTasksDoughnutChart').get(0).getContext('2d'), {
     type: 'doughnut',
-    data: {
-        labels: ['Pending','On Going', 'Completed'],
-        datasets: [{
-            data: [0, 0, 0],
-            backgroundColor : ['#ea580c', '#06b6d4', '#10b981'],
-        }]
-    },
+    data: CHART_CONFIG.NO_DATA,
     options: CHART_CONFIG.PIE.OPTIONS,
     plugins: CHART_CONFIG.PIE.PLUGINS
 });
