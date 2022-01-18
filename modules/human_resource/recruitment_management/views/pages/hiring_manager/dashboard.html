@@ -53,249 +53,361 @@
             {# Info Cards #}
             <div class="row">
 
-                {# Manpower Requests For Approval Count #}
+                {# Manpower Requests Count #}
                 <div class="col-lg-4">
                     <div class="small-box" style="background: white;">
                         <div class="inner">
-                            <h3 class="text-info mb-1">
+                            <h3 class="text-info mb-1" id="manpowerRequestsCountForInfoCard">
                                 <span class="spinner-border"></span>
                             </h3>
-                            <p class="font-weight-bold">Manpower Requests For Approval</p>
+                            <p class="font-weight-bold">Manpower Requests</p>
                         </div>
                         <div class="icon text-info" style="opacity: 50%;">
                         <i class="fas fa-copy"></i>
                         </div>
-                        <a href="#" class="small-box-footer bg-info">
+                        <a href="manpower-requests" class="small-box-footer bg-info">
                             <span>More info</span>
-                            <i class="fas fa-arrow-circle-right ml-1"></i>
+                            <i class="fas fa-long-arrow-alt-right ml-1"></i>
                         </a>
                     </div>
                 </div>
 
-                {# On Going Job Posts Count #}
+                {# Job Posts Count #}
                 <div class="col-lg-4">
                     <div class="small-box" style="background: white;">
                         <div class="inner">
-                            <h3 class="text-success mb-1">
+                            <h3 class="text-success mb-1" id="jobPostsCountForInfoCard">
                                 <span class="spinner-border"></span>
                             </h3>
-                            <p class="font-weight-bold">On Going Job Posts</p>
+                            <p class="font-weight-bold">Job Posts</p>
                         </div>
                         <div class="icon text-success" style="opacity: 50%;">
                             <i class="fas fa-briefcase"></i>
                         </div>
-                        <a href="#" class="small-box-footer bg-success">
+                        <a href="job-posts" class="small-box-footer bg-success">
                             <span>More info</span>
-                            <i class="fas fa-arrow-circle-right ml-1"></i>
+                            <i class="fas fa-long-arrow-alt-right ml-1"></i>
                         </a>
                     </div>
                 </div>
 
-                {# Total Applicants Count #}
+                {# Applications Count #}
                 <div class="col-lg-4">
                     <div class="small-box" style="background: white;">
                         <div class="inner">
-                            <h3 class="text-warning mb-1">
+                            <h3 class="text-warning mb-1" id="applicationsCountForInfoCard">
                                 <span class="spinner-border"></span>
                             </h3>
-                            <p class="font-weight-bold">Total Applicants</p>
+                            <p class="font-weight-bold">Applications</p>
                         </div>
                         <div class="icon text-warning" style="opacity: 50%;">
                             <i class="fas fa-user-plus"></i>
                         </div>
-                        <a href="#" class="small-box-footer bg-warning">
+                        <a href="applicants" class="small-box-footer bg-warning">
                             <span>More info</span>
-                            <i class="fas fa-arrow-circle-right ml-1"></i>
+                            <i class="fas fa-long-arrow-alt-right ml-1"></i>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Monthly Recap Report -->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card card-outline card-primary">
-                        <div class="card-header">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <h3 class="card-title">Monthly Recap Report</h5>
-                
-                                <div class="card-tools">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fas fa-wrench"></i>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <a href="#" class="dropdown-item">Action</a>
-                                        <a href="#" class="dropdown-item">Another action</a>
-                                        <a href="#" class="dropdown-item">Something else here</a>
-                                        <a class="dropdown-divider"></a>
-                                        <a href="#" class="dropdown-item">Separated link</a>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-default btn-sm" data-card-widget="collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
+            {# Manpower Requests #}
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="card-title">Manpower Requests</h5>
+
+                        <div class="card-tools">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fas fa-wrench"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" role="menu">
+                                <a href="#" class="dropdown-item">Action</a>
+                                <a href="#" class="dropdown-item">Another action</a>
+                                <a href="#" class="dropdown-item">Something else here</a>
+                                <a class="dropdown-divider"></a>
+                                <a href="#" class="dropdown-item">Separated link</a>
                                 </div>
+                            </div>
+                            <button type="button" class="btn btn-default btn-sm" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {# Manpower Requests Bar Chart #}
+                        <div class="col-md-8">
+                            <p class="font-weight-bold">Manpower Requests</p>
+
+                            <div class="chart">
+                                <canvas id="manpowerRequestsBarChart" style="
+                                    min-height: 250px; 
+                                    height: 250px; 
+                                    max-height: 250px; 
+                                "></canvas>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                            <div class="col-md-8">
-                                <p class="text-center font-weight-bold">Applications: 1 Jan, 2014 - 30 Jul, 2014</p>
-            
-                                <div class="chart">
-                                <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="text-center">
-                                <strong>Goal Completion</strong>
-                                </p>
-            
-                                <div class="progress-group">
-                                Add Products to Cart
-                                <span class="float-right"><b>160</b>/200</span>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-primary" style="width: 80%"></div>
-                                </div>
-                                </div>
-            
-                                <div class="progress-group">
-                                Complete Purchase
-                                <span class="float-right"><b>310</b>/400</span>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-danger" style="width: 75%"></div>
-                                </div>
-                                </div>
-            
-                                <!-- /.progress-group -->
-                                <div class="progress-group">
-                                <span class="progress-text">Visit Premium Page</span>
-                                <span class="float-right"><b>480</b>/800</span>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-success" style="width: 60%"></div>
-                                </div>
-                                </div>
-            
-                                <div class="progress-group">
-                                Send Inquiries
-                                <span class="float-right"><b>250</b>/500</span>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-warning" style="width: 50%"></div>
-                                </div>
-                                </div>
-                            </div>
+
+                        {# Application Status #}
+                        <div class="col-md-4">
+                            <p class="font-weight-bold">Manpower Request Status Breakdown</p>
+                            <div class="chart">
+                                <canvas id="manpowerRequestsStatusPieChart" style="
+                                    min-height: 250px; 
+                                    height: 250px; 
+                                    max-height: 250px; 
+                                "></canvas>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <div class="row">
-                            <div class="col-sm-3 col-6">
-                                <div class="description-block border-right">
-                                <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 17%</span>
-                                <h5 class="description-header">$35,210.43</h5>
-                                <span class="description-text">TOTAL REVENUE</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block border-right">
+                        <span class="description-percentage text-primary">
+                            <i class="fas fa-copy"></i>
+                        </span>
+                        <h5 class="description-header text-primary" id="totalMRCountForFooter">
+                            <div class="spinner-border spinner-border-sm"></div>
+                        </h5>
+                        <span class="description-text">TOTAL MANPOWER REQUESTS</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block border-right">
+                        <span class="description-percentage text-warning">
+                            <i class="fas fa-sync-alt"></i>
+                        </span>
+                        <h5 class="description-header text-warning" id="forReviewMRCountForFooter">
+                            <div class="spinner-border spinner-border-sm"></div>
+                        </h5>
+                        <span class="description-text">FOR REVIEW</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block border-right">
+                        <span class="description-percentage text-success">
+                            <i class="fas fa-thumbs-up"></i>
+                        </span>
+                        <h5 class="description-header text-success" id="approvedMRCountForFooter">
+                            <div class="spinner-border spinner-border-sm"></div>
+                        </h5>
+                        <span class="description-text">APPROVED</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block">
+                        <span class="description-percentage text-danger">
+                            <i class="fas fa-file-excel"></i>
+                        </span>
+                        <h5 class="description-header text-danger" id="rejectedMRCountForFooter">
+                            <div class="spinner-border spinner-border-sm"></div>
+                        </h5>
+                        <span class="description-text">REJECTED</span>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Job Posts #}
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="card-title">Job Posts</h5>
+
+                        <div class="card-tools">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fas fa-wrench"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" role="menu">
+                                <a href="#" class="dropdown-item">Action</a>
+                                <a href="#" class="dropdown-item">Another action</a>
+                                <a href="#" class="dropdown-item">Something else here</a>
+                                <a class="dropdown-divider"></a>
+                                <a href="#" class="dropdown-item">Separated link</a>
                                 </div>
                             </div>
-                            <div class="col-sm-3 col-6">
-                                <div class="description-block border-right">
-                                <span class="description-percentage text-warning"><i class="fas fa-caret-left"></i> 0%</span>
-                                <h5 class="description-header">$10,390.90</h5>
-                                <span class="description-text">TOTAL COST</span>
-                                </div>
+                            <button type="button" class="btn btn-default btn-sm" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p class="font-weight-bold">Job Posts Status Breakdown</p>
+                            <div class="chart">
+                                <canvas id="jobPostsStatusPieChart" style="
+                                    min-height: 250px; 
+                                    height: 250px; 
+                                    max-height: 250px; 
+                                "></canvas>
                             </div>
-                            <div class="col-sm-3 col-6">
-                                <div class="description-block border-right">
-                                <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 20%</span>
-                                <h5 class="description-header">$24,813.53</h5>
-                                <span class="description-text">TOTAL PROFIT</span>
-                                </div>
+                        </div>
+                        <div class="col-md-8">
+                            <p class="font-weight-bold">Job Posts Created</p>
+
+                            <div class="chart">
+                                <canvas id="jobPostsBarChart" style="
+                                    min-height: 250px; 
+                                    height: 250px; 
+                                    max-height: 250px; 
+                                "></canvas>
                             </div>
-                            <div class="col-sm-3 col-6">
-                                <div class="description-block">
-                                <span class="description-percentage text-danger"><i class="fas fa-caret-down"></i> 18%</span>
-                                <h5 class="description-header">1200</h5>
-                                <span class="description-text">GOAL COMPLETIONS</span>
-                                </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+
+                        {# Total Job Posts #}
+                        <div class="col-sm-4">
+                            <div class="description-block border-right">
+                            <span class="description-percentage text-primary">
+                                <i class="fas fa-briefcase"></i>
+                            </span>
+                            <h5 class="description-header text-primary" id="totalJPCountForFooter">
+                                <div class="spinner-border spinner-border-sm"></div>
+                            </h5>
+                            <span class="description-text">TOTAL JOB POSTS</span>
                             </div>
+                        </div>
+
+                        {# On Going #}
+                        <div class="col-sm-4">
+                            <div class="description-block border-right">
+                            <span class="description-percentage text-info">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <h5 class="description-header text-info" id="onGoingJPCountForFooter">
+                                <div class="spinner-border spinner-border-sm"></div>
+                            </h5>
+                            <span class="description-text">ON GOING</span>
+                            </div>
+                        </div>
+
+                        {# Closed/Ended #}
+                        <div class="col-sm-4">
+                            <div class="description-block border-right">
+                            <span class="description-percentage text-danger">
+                                <i class="fas fa-check-double"></i>
+                            </span>
+                            <h5 class="description-header text-danger" id="endedJPCountForFooter">
+                                <div class="spinner-border spinner-border-sm"></div>
+                            </h5>
+                            <span class="description-text">CLOSED/ENDED</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Bar and Pie Chart -->
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="card card-outline card-primary">
-                        <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h3 class="card-title">Sales</h3>
-                            <div class="card-tools">
-                                <a class="btn btn-default btn-sm" href="javascript:void(0);">View Report</a>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fas fa-wrench"></i>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                    <a href="#" class="dropdown-item">Action</a>
-                                    <a href="#" class="dropdown-item">Another action</a>
-                                    <a href="#" class="dropdown-item">Something else here</a>
-                                    <a class="dropdown-divider"></a>
-                                    <a href="#" class="dropdown-item">Separated link</a>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-default btn-sm" data-card-widget="collapse">
-                                    <i class="fas fa-minus"></i>
+            {# Applications #}
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="card-title">Applications</h5>
+
+                        <div class="card-tools">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fas fa-wrench"></i>
                                 </button>
+                                <div class="dropdown-menu dropdown-menu-right" role="menu">
+                                <a href="#" class="dropdown-item">Action</a>
+                                <a href="#" class="dropdown-item">Another action</a>
+                                <a href="#" class="dropdown-item">Something else here</a>
+                                <a class="dropdown-divider"></a>
+                                <a href="#" class="dropdown-item">Separated link</a>
+                                </div>
                             </div>
-                        </div>
-                        </div>
-                        <div class="card-body">
-                        <div class="d-flex">
-                            <p class="d-flex flex-column">
-                            <span class="text-bold text-lg">$18,230.00</span>
-                            <span>Sales Over Time</span>
-                            </p>
-                            <p class="ml-auto d-flex flex-column text-right">
-                            <span class="text-success">
-                                <i class="fas fa-arrow-up"></i> 33.1%
-                            </span>
-                            <span class="text-muted">Since last month</span>
-                            </p>
-                        </div>
-        
-                        <div class="position-relative mb-4">
-                            <canvas id="sales-chart" height="200"></canvas>
-                        </div>
-        
-                        <div class="d-flex flex-row justify-content-end">
-                            <span class="mr-2">
-                                <i class="fas fa-square text-primary"></i> This year
-                            </span>
-        
-                            <span>
-                                <i class="fas fa-square text-gray"></i> Last year
-                            </span>
-                        </div>
+                            <button type="button" class="btn btn-default btn-sm" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card card-outline card-primary">
-                        <div class="card-header">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <h3 class="card-title">Pie Chart</h3>
-                
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-sm btn-default" data-card-widget="collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {# Number of Applications #}
+                        <div class="col-md-8">
+                            <p class="font-weight-bold">Number of Applications</p>
+
+                            <div class="chart">
+                                <canvas id="applicantsLineChart" style="
+                                    min-height: 250px; 
+                                    height: 250px; 
+                                    max-height: 250px; 
+                                "></canvas>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+
+                        {# Application Status #}
+                        <div class="col-md-4">
+                            <p class="font-weight-bold">Application Status Breakdown</p>
+                            <div class="chart">
+                                <canvas id="applicationStatusPieChart" style="
+                                    min-height: 250px; 
+                                    height: 250px; 
+                                    max-height: 250px; 
+                                "></canvas>
+                            </div>
                         </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block border-right">
+                        <span class="description-percentage text-primary">
+                            <i class="fas fa-user-tie"></i>
+                        </span>
+                        <h5 class="description-header text-primary" id="totalACountForFooter">
+                            <div class="spinner-border spinner-border-sm"></div>
+                        </h5>
+                        <span class="description-text">TOTAL APPLICATIONS</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block border-right">
+                        <span class="description-percentage text-warning">
+                            <i class="fas fa-users-cog mr-1"></i>
+                        </span>
+                        <h5 class="description-header text-warning" id="onProcessACountForFooter">
+                            <div class="spinner-border spinner-border-sm"></div>
+                        </h5>
+                        <span class="description-text">ON PROCESS</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block border-right">
+                        <span class="description-percentage text-secondary">
+                            <i class="fas fa-file-signature"></i>
+                        </span>
+                        <h5 class="description-header text-secondary" id="contractSignedACountForFooter">
+                            <div class="spinner-border spinner-border-sm"></div>
+                        </h5>
+                        <span class="description-text">CONTRACT SIGNED</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-6">
+                        <div class="description-block">
+                        <span class="description-percentage text-danger">
+                            <i class="fas fa-times-circle"></i>
+                        </span>
+                        <h5 class="description-header text-danger" id="rejectedACountForFooter">
+                            <div class="spinner-border spinner-border-sm"></div>
+                        </h5>
+                        <span class="description-text">REJECTED</span>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -306,183 +418,4 @@
 
 {% block page_scripts %}
     <script src="{{url_for('static', path='/dist/js/modules/human_resource/recruitment/hiring_manager/dashboard.js')}}"></script>
-
-    <script>
-        
-        //-----------------------
-        // - MONTHLY SALES CHART -
-        //-----------------------
-
-        // Get context with jQuery - using jQuery's .get() method.
-        var salesChartCanvas = $('#salesChart').get(0).getContext('2d')
-
-        var salesChartData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [
-                {
-                    label: 'Digital Goods',
-                    backgroundColor: '#16a34a',
-                    borderColor: '#16a34a',
-                    pointRadius: false,
-                    pointColor: '#3b8bba',
-                    pointStrokeColor: 'rgba(60,141,188,1)',
-                    pointHighlightFill: '#fff',
-                    pointHighlightStroke: 'rgba(60,141,188,1)',
-                    data: [28, 48, 40, 19, 86, 27, 90]
-                }, {
-                    label: 'Electronics',
-                    backgroundColor: 'rgba(210, 214, 222, 1)',
-                    borderColor: 'rgba(210, 214, 222, 1)',
-                    pointRadius: false,
-                    pointColor: 'rgba(210, 214, 222, 1)',
-                    pointStrokeColor: '#c1c7d1',
-                    pointHighlightFill: '#fff',
-                    pointHighlightStroke: 'rgba(220,220,220,1)',
-                    data: [65, 59, 80, 81, 56, 55, 40]
-                }
-            ]
-        }
-
-        var salesChartOptions = {
-            maintainAspectRatio: false,
-            responsive: true,
-            legend: {
-            display: false
-            },
-            scales: {
-            xAxes: [{
-                gridLines: {
-                display: false
-                }
-            }],
-            yAxes: [{
-                gridLines: {
-                display: false
-                }
-            }]
-            }
-        }
-
-        // This will get the first returned node in the jQuery collection.
-        // eslint-disable-next-line no-unused-vars
-        var salesChart = new Chart(salesChartCanvas, {
-            type: 'line',
-            data: salesChartData,
-            options: salesChartOptions
-        }
-        )
-
-        //---------------------------
-        // - END MONTHLY SALES CHART -
-        //---------------------------
-
-        $(function() {
-
-            var ticksStyle = {
-                fontColor: '#495057',
-                fontStyle: 'bold'
-            }
-        
-            var mode = 'index'
-            var intersect = true
-
-            var $salesChart2 = $('#sales-chart')
-            // eslint-disable-next-line no-unused-vars
-            var salesChart2 = new Chart($salesChart2, {
-                type: 'bar',
-                data: {
-                    labels: ['JAN', 'FEB', 'NAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-                    datasets: [
-                        {
-                            backgroundColor: '#ea580c',
-                            borderColor: '#ea580c',
-                            data: [1000, 2000, 3000, 2500, 2700, 2500, 3000, 1000, 2000, 3000, 2500, 2700, 2500, 3000]
-                        }
-                    ]
-                },
-                options: {
-                maintainAspectRatio: false,
-                tooltips: {
-                    mode: mode,
-                    intersect: intersect
-                },
-                hover: {
-                    mode: mode,
-                    intersect: intersect
-                },
-                legend: {
-                    display: false
-                },
-                scales: {
-                    yAxes: [{
-                    // display: false,
-                    gridLines: {
-                        display: true,
-                        lineWidth: '4px',
-                        color: 'rgba(0, 0, 0, .2)',
-                        zeroLineColor: 'transparent'
-                    },
-                    ticks: $.extend({
-                        beginAtZero: true,
-    
-                        // Include a dollar sign in the ticks
-                        callback: function (value) {
-                        if (value >= 1000) {
-                            value /= 1000
-                            value += 'k'
-                        }
-    
-                        return '$' + value
-                        }
-                    }, ticksStyle)
-                    }],
-                    xAxes: [{
-                    display: true,
-                    gridLines: {
-                        display: false
-                    },
-                    ticks: ticksStyle
-                    }]
-                }
-                }
-            })
-        });
-
-        
-        //-------------
-        //- PIE CHART -
-        //-------------
-        var donutData = {
-            labels: [
-            'Chrome',
-                'IE',
-                'FireFox',
-                'Safari',
-                'Opera',
-                'Navigator',
-            ],
-            datasets: [
-                {
-                data: [700,500,400,600,300,100],
-                backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
-                }
-            ]
-        }
-
-        // Get context with jQuery - using jQuery's .get() method.
-        var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
-        var pieData        = donutData;
-        var pieOptions     = {
-            maintainAspectRatio : false,
-            responsive : true,
-        }
-        //Create pie or douhnut chart
-        // You can switch between pie and douhnut using the method below.
-        new Chart(pieChartCanvas, {
-            type: 'pie',
-            data: pieData,
-            options: pieOptions
-        })
-
-    </script>
 {% endblock %}

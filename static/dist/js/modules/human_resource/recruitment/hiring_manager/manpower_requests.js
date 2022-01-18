@@ -121,6 +121,8 @@ initDataTable('#manpowerRequestDT', {
 const manpowerRequestAnalytics = () => {
     GET_ajax(`${ ROUTE.API.H }requisitions/analytics`, {
         success: result => {
+            console.log(result)
+
             setContent({
                 '#totalManpowerRequestsCount':formatNumber(result.total),
                 '#forReviewRequestsCount': () => {
@@ -129,7 +131,7 @@ const manpowerRequestAnalytics = () => {
                         ? TEMPLATE.ICON_LABEL('exclamation-triangle text-warning', formatNumber(forReviewCount))
                         : 0
                 },  
-                '#approvedRequestsCount': formatNumber(result.approved),
+                '#approvedRequestsCount': formatNumber(result.approved.total),
                 '#rejectedRequestsCount': formatNumber(result.rejected)
             });
         },

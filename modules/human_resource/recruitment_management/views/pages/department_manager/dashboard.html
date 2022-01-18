@@ -67,7 +67,7 @@
                         </div>
                         <a href="manpower-requests" class="small-box-footer bg-info">
                             <span>More info</span>
-                            <i class="fas fa-arrow-circle-right ml-1"></i>
+                            <i class="fas fa-long-arrow-alt-right ml-1"></i>
                         </a>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                         </div>
                         <a href="hired-applicants" class="small-box-footer bg-success">
                             <span>More info</span>
-                            <i class="fas fa-arrow-circle-right ml-1"></i>
+                            <i class="fas fa-long-arrow-alt-right ml-1"></i>
                         </a>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                         </div>
                         <a href="onboarding-employees" class="small-box-footer bg-warning">
                             <span>More info</span>
-                            <i class="fas fa-arrow-circle-right ml-1"></i>
+                            <i class="fas fa-long-arrow-alt-right ml-1"></i>
                         </a>
                     </div>
                 </div>
@@ -116,19 +116,8 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center justify-content-between">
                         <h3 class="card-title">Manpower Requests</h5>
+                        
                         <div class="card-tools">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fas fa-wrench"></i>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                <a href="#" class="dropdown-item">Action</a>
-                                <a href="#" class="dropdown-item">Another action</a>
-                                <a href="#" class="dropdown-item">Something else here</a>
-                                <a class="dropdown-divider"></a>
-                                <a href="#" class="dropdown-item">Separated link</a>
-                                </div>
-                            </div>
                             <button type="button" class="btn btn-default btn-sm" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
                             </button>
@@ -208,81 +197,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Bar and Pie Chart -->
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="card card-outline card-primary">
-                        <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h3 class="card-title">Sales</h3>
-                            <div class="card-tools">
-                                <a class="btn btn-default btn-sm" href="javascript:void(0);">View Report</a>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fas fa-wrench"></i>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                    <a href="#" class="dropdown-item">Action</a>
-                                    <a href="#" class="dropdown-item">Another action</a>
-                                    <a href="#" class="dropdown-item">Something else here</a>
-                                    <a class="dropdown-divider"></a>
-                                    <a href="#" class="dropdown-item">Separated link</a>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-default btn-sm" data-card-widget="collapse">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        </div>
-                        <div class="card-body">
-                        <div class="d-flex">
-                            <p class="d-flex flex-column">
-                            <span class="text-bold text-lg">$18,230.00</span>
-                            <span>Sales Over Time</span>
-                            </p>
-                            <p class="ml-auto d-flex flex-column text-right">
-                            <span class="text-success">
-                                <i class="fas fa-arrow-up"></i> 33.1%
-                            </span>
-                            <span class="text-muted">Since last month</span>
-                            </p>
-                        </div>
-        
-                        <div class="position-relative mb-4">
-                            <canvas id="sales-chart" height="200"></canvas>
-                        </div>
-        
-                        <div class="d-flex flex-row justify-content-end">
-                            <span class="mr-2">
-                                <i class="fas fa-square text-primary"></i> This year
-                            </span>
-        
-                            <span>
-                                <i class="fas fa-square text-gray"></i> Last year
-                            </span>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card card-outline card-primary">
-                        <div class="card-header">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <h3 class="card-title">Pie Chart</h3>
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-sm btn-default" data-card-widget="collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 {% endblock %}
@@ -290,83 +204,4 @@
 
 {% block page_scripts %}
     <script src="{{url_for('static', path='/dist/js/modules/human_resource/recruitment/department_manager/dashboard.js')}}"></script>
-
-    <script>
-
-        //---------------------------
-        // - END MONTHLY SALES CHART -
-        //---------------------------
-
-        $(function() {
-
-            var ticksStyle = {
-                fontColor: '#495057',
-                fontStyle: 'bold'
-            }
-        
-            var mode = 'index'
-            var intersect = true
-
-            var $salesChart2 = $('#sales-chart')
-            // eslint-disable-next-line no-unused-vars
-            var salesChart2 = new Chart($salesChart2, {
-                type: 'bar',
-                data: {
-                    labels: ['JAN', 'FEB', 'NAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-                    datasets: [
-                        {
-                            backgroundColor: '#ea580c',
-                            borderColor: '#ea580c',
-                            data: [1000, 2000, 3000, 2500, 2700, 2500, 3000, 1000, 2000, 3000, 2500, 2700, 2500, 3000]
-                        }
-                    ]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    tooltips: {
-                        mode: mode,
-                        intersect: intersect
-                    },
-                    hover: {
-                        mode: mode,
-                        intersect: intersect
-                    },
-                    legend: {
-                        display: false
-                    },
-                    scales: {
-                        yAxes: [{
-                            gridLines: {
-                                display: true,
-                                lineWidth: '4px',
-                                color: 'rgba(0, 0, 0, .2)',
-                                zeroLineColor: 'transparent'
-                            },
-                            ticks: $.extend({
-                                beginAtZero: true,
-            
-                                // Include a dollar sign in the ticks
-                                callback: function (value) {
-                                if (value >= 1000) {
-                                    value /= 1000
-                                    value += 'k'
-                                }
-            
-                                return '$' + value
-                                }
-                            }, ticksStyle)
-                        }],
-                        xAxes: [{
-                            type: 'time',
-                            display: true,
-                            gridLines: {
-                                display: false
-                            },
-                            ticks: ticksStyle
-                        }]
-                    }
-                }
-            })
-        });
-    </script>
 {% endblock %}

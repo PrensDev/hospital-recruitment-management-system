@@ -129,6 +129,7 @@ initDataTable('#jobPostsDT', {
                         </div>
                     </a>
                     ${ applicants }
+                    <div class="dropdown-divider"></div>
                     <a 
                         class="dropdown-item d-flex"
                         href="${ ROUTE.WEB.H }manpower-requests/${ requisitionID }"

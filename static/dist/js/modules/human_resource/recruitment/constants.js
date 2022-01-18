@@ -95,6 +95,14 @@ const DATE_RANGES = {
         moment().subtract(29, 'days').startOf('day'), 
         moment().endOf('day')
     ],
+    'This Week': [
+        moment().startOf('week'),
+        moment().endOf('week')
+    ],
+    'Last Week': [
+        moment().subtract(1, 'week').startOf('week'),
+        moment().subtract(1, 'week').endOf('week')
+    ],
     'This Month': [
         moment().startOf('month'),
         moment().endOf('month')

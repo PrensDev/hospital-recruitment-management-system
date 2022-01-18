@@ -66,6 +66,17 @@ initDataTable('#hiredApplicantsDT', {
                 const onboardingEmployeeID = data.onboarding_employee_id;
 
                 return TEMPLATE.DT.OPTIONS(`
+                    <a 
+                        href="${ ROUTE.WEB.DM }onboard-employee/${ onboardingEmployeeID }"
+                        class="dropdown-item d-flex"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-user-cog mr-1"></i></div>
+                        <div>
+                            <div>Onboard this applicant</div>
+                            <div class="small">Set onboarding tasks for new employee</div>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
                     <div 
                         class="dropdown-item d-flex"
                         role="button"
@@ -83,16 +94,6 @@ initDataTable('#hiredApplicantsDT', {
                         <div>
                             <div>View Contract</div>
                             <div class="small">See employment contract for this applicant</div>
-                        </div>
-                    </a>
-                    <a 
-                        href="${ ROUTE.WEB.DM }onboard-employee/${ onboardingEmployeeID }"
-                        class="dropdown-item d-flex"
-                    >
-                        <div style="width: 2rem"><i class="fas fa-user-cog mr-1"></i></div>
-                        <div>
-                            <div>Onboard this applicant</div>
-                            <div class="small">Set onboarding tasks for new employee</div>
                         </div>
                     </a>
                 `)

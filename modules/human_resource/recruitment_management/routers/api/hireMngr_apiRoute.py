@@ -1,8 +1,8 @@
 # Import Packages
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
-from sqlalchemy import text
+from sqlalchemy import text, and_, cast, func
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, authorized
@@ -82,23 +82,77 @@ def get_all_requisitions(
 
 # Requisition Analytics
 @router.get("/requisitions/analytics")
-def requisition_analytics(
+def requisitions_analytics(
     db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
             query = db.query(Requisition)
-            for_approval = query.filter(Requisition.request_status == "For approval").count()
-            approved = query.filter(Requisition.request_status == "Approved").count()
-            rejected = query.filter(Requisition.request_status == "Rejected for approval").count()
-            total = for_approval + approved + rejected
+
+            for_approval_query = query.filter(Requisition.request_status == "For approval")
+            approved_query = query.filter(Requisition.request_status == "Approved")
+            completed_query = query.filter(Requisition.request_status == "Completed")
+            rejected_query = query.filter(Requisition.request_status == "Rejected for approval")
+            
+            if start and end:
+                date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
+                for_approval = for_approval_query.filter(date_filter).count()
+                approved = approved_query.filter(date_filter).count()
+                completed = completed_query.filter(date_filter).count()
+                rejected = rejected_query.filter(date_filter).count()
+            else:
+                for_approval = for_approval_query.count()
+                approved = approved_query.count()
+                completed = completed_query.count()
+                rejected = rejected_query.count()
+
+            total = for_approval + approved + completed + rejected
+            
             return {
                 "total": total,
                 "for_review": for_approval,
-                "approved": approved,
+                "approved": {
+                    "total": approved + completed,
+                    "approved": approved,
+                    "completed": completed
+                },
                 "rejected": rejected
             }
+    except Exception as e:
+        print(e)
+
+
+# Requisition Data
+@router.get("/requisitions/data")
+def requisitions_data(
+    db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+
+            target_column = cast(Requisition.created_at, Date)
+
+            requisition_query = db.query(
+                target_column.label("created_at"), 
+                func.count(Requisition.requisition_id).label("total")
+            ).filter(or_(
+                Requisition.request_status == "For approval",
+                Requisition.request_status == "Approved",
+                Requisition.request_status == "Rejected for approval",
+                Requisition.request_status == "Completed"
+            )).group_by(target_column)
+
+            if start and end:
+                date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
+                return requisition_query.filter(date_filter).all()
+            else:
+                return requisition_query.all()
     except Exception as e:
         print(e)
 
@@ -188,19 +242,31 @@ def get_all_job_posts(
 @router.get("/job-posts/analytics")
 def job_posts_analytics(
     db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
             query = db.query(JobPost)
 
-            total = query.count()
-            on_going = query.filter(or_(
+            total_query = query
+            on_going_query = query.filter(or_(
                 JobPost.expiration_date >= datetime.today(), 
                 JobPost.expiration_date == None
-            )).count()
-            ended = query.filter(JobPost.expiration_date < datetime.today()).count()
+            ))
+            ended_query = query.filter(JobPost.expiration_date < datetime.today())
             
+            if start and end:
+                date_filter = and_(JobPost.created_at >= start, JobPost.created_at <= end)
+                total = total_query.filter(date_filter).count()
+                on_going = on_going_query.filter(date_filter).count()
+                ended = ended_query.filter(date_filter).count()
+            else:
+                total = total_query.count()
+                on_going = on_going_query.count()
+                ended = ended_query.count()
+
             return {
                 "total": total,
                 "on_going": on_going,
@@ -208,6 +274,33 @@ def job_posts_analytics(
             }
     except Exception as e:
         print(e)   
+
+
+
+# Job Posts Data
+@router.get("/job-posts/data")
+def job_posts_data(
+    db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            job_posts_query = db.query(
+                cast(JobPost.created_at, Date).label("created_at"), 
+                func.count(JobPost.job_post_id).label("total")
+            ).group_by(
+                cast(JobPost.created_at, Date)
+            )
+
+            if start and end:
+                date_filter = and_(JobPost.created_at >= start, JobPost.created_at <= end)
+                return job_posts_query.filter(date_filter).all()
+            else:
+                return job_posts_query.all()
+    except Exception as e:
+        print(e)
 
 
 # Get One Job Posts
@@ -268,21 +361,48 @@ def get_all_applicants(
 @router.get("/applicants/analytics")
 def applicants_analytics(
     db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
             query = db.query(Applicant)
 
-            total = query.count()
-            for_evaluation = query.filter(Applicant.status == "For evaluation").count()
-            for_screening = query.filter(Applicant.status == "For screening").count()
-            for_interview = query.filter(Applicant.status == "For interview").count()
-            hired = query.filter(Applicant.status == "Hired").count()
+            total_query = query
             
-            rejected_from_evaluation = query.filter(Applicant.status == "Rejected from evaluation").count()
-            rejected_from_screening = query.filter(Applicant.status == "Rejected from screening").count()
-            rejected_from_interview = query.filter(Applicant.status == "Rejected from interview").count()
+            for_evaluation_query = query.filter(Applicant.status == "For evaluation")
+            for_screening_query = query.filter(Applicant.status == "For screening")
+            for_interview_query = query.filter(Applicant.status == "For interview")
+            hired_query = query.filter(Applicant.status == "Hired")
+            contract_signed_query = query.filter(Applicant.status == "Contract signed")
+            
+            rejected_from_evaluation_query = query.filter(Applicant.status == "Rejected from evaluation")
+            rejected_from_screening_query = query.filter(Applicant.status == "Rejected from screening")
+            rejected_from_interview_query = query.filter(Applicant.status == "Rejected from interview")
+
+            if start and end:
+                date_filter = and_(Applicant.created_at >= start, Applicant.created_at <= end)
+                total = total_query.filter(date_filter).count()
+                for_evaluation = for_evaluation_query.filter(date_filter).count()
+                for_screening = for_screening_query.filter(date_filter).count()
+                for_interview = for_interview_query.filter(date_filter).count()
+                hired = hired_query.filter(date_filter).count()
+                contract_signed = contract_signed_query.filter(date_filter).count()
+                rejected_from_evaluation = rejected_from_evaluation_query.filter(date_filter).count()
+                rejected_from_screening = rejected_from_screening_query.filter(date_filter).count()
+                rejected_from_interview = rejected_from_interview_query.filter(date_filter).count()
+            else:
+                total = total_query.count()
+                for_evaluation = for_evaluation_query.count()
+                for_screening = for_screening_query.count()
+                for_interview = for_interview_query.count()
+                hired = hired_query.count()
+                contract_signed = contract_signed_query.count()
+                rejected_from_evaluation = rejected_from_evaluation_query.count()
+                rejected_from_screening = rejected_from_screening_query.count()
+                rejected_from_interview = rejected_from_interview_query.count()
+                
             total_rejected = rejected_from_evaluation + rejected_from_screening + rejected_from_interview
             
             return {
@@ -291,6 +411,7 @@ def applicants_analytics(
                 "for_screening": for_screening,
                 "for_interview": for_interview,
                 "hired": hired,
+                "contract_signed": contract_signed,
                 "rejected": {
                     "total": total_rejected,
                     "from_evaluation": rejected_from_evaluation,
@@ -298,6 +419,32 @@ def applicants_analytics(
                     "from_interview": rejected_from_interview
                 }
             }
+    except Exception as e:
+        print(e)
+
+
+# Applicants Data
+@router.get("/applicants/data")
+def applicants_data(
+    db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            applicants_query = db.query(
+                cast(Applicant.created_at, Date).label("created_at"), 
+                func.count(Applicant.applicant_id).label("total")
+            ).group_by(
+                cast(Applicant.created_at, Date)
+            )
+
+            if start and end:
+                date_filter = and_(Applicant.created_at >= start, Applicant.created_at <= end)
+                return applicants_query.filter(date_filter).all()
+            else:
+                return applicants_query.all()
     except Exception as e:
         print(e)
 
@@ -347,6 +494,8 @@ def get_one_applicant(
 @router.get("/job-posts/{job_post_id}/applicants/analytics")
 def applicants_per_job_analytics(
     job_post_id,
+    start: Optional[str] = None,
+    end: Optional[str] = None,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):

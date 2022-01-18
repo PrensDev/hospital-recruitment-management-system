@@ -7,7 +7,7 @@ const setDateRangeFilter = (start, end, label) => {
 }
 
 
-/** Initialize Charts */
+/** INITIALIZE CHARTS */
 
 // Job Posts Status Pie Chart
 const jobPostsStatusPieChart = new Chart($('#jobPostsStatusPieChart').get(0).getContext('2d'), {
@@ -97,9 +97,46 @@ const applicationStatusPieChart = new Chart($('#applicationStatusPieChart').get(
 });
 
 
-/** Render quantitative data and charts */
+/** SET PAGE TO LOADING STATE */
+const setPageToLoadingState = () => {
+    const SPINNER = '<span class="spinner-border"></span>'
+    const SPINNER_SM = '<span class="spinner-border spinner-border-sm"></span>'
+
+
+    /** INFO CARDS */
+
+    setContent({
+        '#jobPostsCount': SPINNER,
+        '#applicationsCount': SPINNER,
+    });
+
+    /** JOB POSTS */
+
+    // Footer
+    setContent({
+        '#totalJobPostsCountForFooter': SPINNER_SM,
+        '#onGoingCountForFooter': SPINNER_SM,
+        '#endedCountForFooter': SPINNER_SM
+    });
+
+    /** APPLICATIONS */
+    setContent({
+        "#totalApplicationsCountForFooter": SPINNER_SM,
+        "#forEvaluationCountForFooter": SPINNER_SM,
+        "#evaluatedCountForFooter": SPINNER_SM,
+        "#rejectedCountForFooter": SPINNER_SM
+    });
+}
+
+
+/** RENDER DATA */
+
 const renderData = (start, end) => {
 
+    // Set Page to loading state
+    setPageToLoadingState();
+
+    // Set date range parameters for API
     const DATE_RANGE = TEMPLATE.URL_QUERY_PARAM.DATE_RANGE(start.format(), end.format());
     
     /** FOR INFO CARDS, PIE CHARTS */
@@ -143,7 +180,6 @@ const renderData = (start, end) => {
     GET_ajax(`${ ROUTE.API.R }applicants/analytics${ DATE_RANGE }`, {
         success: result => {
 
-            
             // Set info card content
             setContent('#applicationsCount', formatNumber(result.total));
             
@@ -183,7 +219,7 @@ const renderData = (start, end) => {
                 "#forEvaluationCountForFooter": formatNumber(result.for_evaluation),
                 "#evaluatedCountForFooter": formatNumber(result.evaluated.total),
                 "#rejectedCountForFooter": formatNumber(result.rejected.total)
-            })
+            });
         },
         error: () => toastr.error('There was an error in getting applicants for evaluation count')
     });
@@ -231,6 +267,8 @@ const renderData = (start, end) => {
     });
 }
 
+
+/** IF DOCUMENT HAS BEEN LOADED */
 
 (() => {
 
