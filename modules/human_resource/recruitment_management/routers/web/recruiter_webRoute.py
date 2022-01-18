@@ -248,27 +248,6 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 
 
 # Applicants Per Job Post
-# @router.get("/job-posts/{job_post_id}/applicants", response_class=HTMLResponse)
-# def render(
-#     job_post_id: str, 
-#     req: Request, 
-#     db: Session = Depends(get_db),
-#     user_data: dict = Depends(get_token)
-# ):
-#     if user_data['user_type'] == AUTHORIZED_USER:
-#         if not job_post_id:
-#             return errTemplate.page_not_found(req)
-#         else:
-#             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
-#             if not job_post:
-#                 return errTemplate.page_not_found(req)
-#             else:
-#                 return RedirectResponse(f"/r/job-posts/{job_post_id}/applicants/for-evaluation")
-#     else:
-#         return errTemplate.page_not_found(req)
-
-
-# Applicants Per Job Post
 @router.get("/job-posts/{job_post_id}/applicants", response_class=HTMLResponse)
 def render(
     job_post_id: str,
@@ -304,86 +283,26 @@ def render(
         "job_post_id": f"{job_post_id}"
     })
 
-# Applicants Per Job Post (For evaluation)
-# @router.get("/job-posts/{job_post_id}/applicants/for-evaluation", response_class=HTMLResponse)
-# def render(
-#     job_post_id: str, 
-#     req: Request, 
-#     db: Session = Depends(get_db),
-#     user_data: dict = Depends(get_token)
-# ):
-#     if user_data['user_type'] == AUTHORIZED_USER:
-#         if not job_post_id:
-#             return errTemplate.page_not_found(req)
-#         else:
-#             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
-#             if not job_post:
-#                 return errTemplate.page_not_found(req)
-#             else:
-#                 return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/for_evaluation.html", {
-#                     "request": req,
-#                     "page_title": "Applicants - For evaluation",
-#                     "sub_title": "Applicants to manage potential candidates",
-#                     "active_navlink": "Applicants",
-#                     "active_menu": "For evaluation",
-#                     "job_post_id": f"{job_post_id}"
-#                 })
-#     else:
-#         return errTemplate.page_not_found(req)
 
+# ====================================================================
+# Job Categories
+# ====================================================================
 
-# Applicants Per Job Post (Evaluated)
-# @router.get("/job-posts/{job_post_id}/applicants/evaluated", response_class=HTMLResponse)
-# def render(
-#     job_post_id: str, 
-#     req: Request, 
-#     db: Session = Depends(get_db),
-#     user_data: dict = Depends(get_token)
-# ):
-#     if user_data['user_type'] == AUTHORIZED_USER:
-#         if not job_post_id:
-#             return errTemplate.page_not_found(req)
-#         else:
-#             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
-#             if not job_post:
-#                 return errTemplate.page_not_found(req)
-#             else:
-#                 return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/evaluated.html", {
-#                     "request": req,
-#                     "page_title": "Applicants - For evaluation",
-#                     "sub_title": "Applicants to manage potential candidates",
-#                     "active_navlink": "Applicants",
-#                     "active_menu": "Evaluated",
-#                     "job_post_id": f"{job_post_id}"
-#                 })
-#     else:
-#         return errTemplate.page_not_found(req)
+# Applicants Per Job Post
+@router.get("/job-categories", response_class=HTMLResponse)
+def render(
+    req: Request, 
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    # Check if not authorized
+    if not user_data['user_type'] == AUTHORIZED_USER:
+        return errTemplate.page_not_found(req)
 
-
-# Applicants Per Job Post (Rejected)
-# @router.get("/job-posts/{job_post_id}/applicants/rejected", response_class=HTMLResponse)
-# def render(
-#     job_post_id: str, 
-#     req: Request, 
-#     db: Session = Depends(get_db),
-#     user_data: dict = Depends(get_token)
-# ):
-#     if user_data['user_type'] == AUTHORIZED_USER:
-#         if not job_post_id:
-#             return errTemplate.page_not_found(req)
-#         else:
-#             job_post = db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first()
-#             if not job_post:
-#                 return errTemplate.page_not_found(req)
-#             else:
-#                 return templates.TemplateResponse(TEMPLATES_PATH + "pages/applicants_per_job/rejected.html", {
-#                     "request": req,
-#                     "page_title": "Applicants - For evaluation",
-#                     "sub_title": "Applicants to manage potential candidates",
-#                     "active_navlink": "Applicants",
-#                     "active_menu": "Rejected",
-#                     "job_post_id": f"{job_post_id}"
-#                 })
-#     else:
-#         return errTemplate.page_not_found(req)
-
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "job_categories.html", {
+        "request": req,
+        "page_title": "Job Categories",
+        "sub_title": "Manage the list of job categories",
+        "active_navlink": "Job Categories",
+    })

@@ -1,6 +1,4 @@
 # Import Packages
-from sqlalchemy.orm.relationships import foreign
-from sqlalchemy.sql.expression import null
 from database import Base
 from sqlalchemy import text
 from sqlalchemy.sql.schema import Column, ForeignKey
@@ -91,6 +89,10 @@ class User(Base):
     job_posts = relationship(
         "JobPost",
         back_populates = "job_posted_by"
+    )
+    job_categories = relationship(
+        "JobCategory",
+        back_populates = "job_category_created_by"
     )
     evaluated_applicants = relationship(
         "Applicant",
@@ -418,6 +420,11 @@ class JobPost(Base):
         DateTime,
         nullable = True
     )
+    job_category_id = Column(
+        String(36),
+        ForeignKey("job_categories.job_category_id"),
+        nullable = False
+    )
     posted_by = Column(
         String(36),
         ForeignKey("users.user_id"),
@@ -455,6 +462,55 @@ class JobPost(Base):
     job_post_interview_schedules = relationship(
         "InterviewSchedule",
         back_populates = "schedule_for"
+    )
+    job_categorized_as = relationship(
+        "JobCategory",
+        back_populates = "job_posts",
+    )
+
+
+# Job Categories
+class JobCategory(Base):
+    __tablename__ = "job_categories"
+
+    # Columns
+    job_category_id = Column(
+        String(36),
+        primary_key = True,
+        default = text('UUID()')
+    )
+    name = Column(
+        String(36),
+        nullable = False
+    )
+    description = Column(
+        Text,
+        nullable = False
+    )
+    created_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = False
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        nullable = False
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationships
+    job_posts = relationship(
+        "JobPost",
+        back_populates = "job_categorized_as"
+    )
+    job_category_created_by = relationship(
+        "User",
+        back_populates = "job_categories",
     )
 
 

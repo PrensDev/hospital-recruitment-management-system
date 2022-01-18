@@ -2,6 +2,11 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+# To create tables
+# from modules.human_resource.recruitment_management import models
+# from database import engine
+# models.Base.metadata.create_all(bind=engine)
+
 
 # App Instance
 app = FastAPI()
