@@ -12,7 +12,9 @@ const setDateRangeFilter = (start, end, label) => {
 // Job Posts Status Pie Chart
 const jobPostsStatusPieChart = new Chart($('#jobPostsStatusPieChart').get(0).getContext('2d'), {
     type: 'pie',
-    data: CHART_CONFIG.NO_DATA
+    data: CHART_CONFIG.NO_DATA,
+    options: CHART_CONFIG.PIE.OPTIONS,
+    plugins: CHART_CONFIG.PIE.PLUGINS
 });
 
 // Job Posts Bar Chart
@@ -93,7 +95,9 @@ const applicantsLineChart = new Chart($('#applicantsLineChart').get(0).getContex
 // Application Status Pie Chart
 const applicationStatusPieChart = new Chart($('#applicationStatusPieChart').get(0).getContext('2d'), {
     type: 'pie',
-    data: CHART_CONFIG.NO_DATA
+    data: CHART_CONFIG.NO_DATA,
+    options: CHART_CONFIG.PIE.OPTIONS,
+    plugins: CHART_CONFIG.PIE.PLUGINS
 });
 
 

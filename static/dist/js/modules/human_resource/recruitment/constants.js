@@ -161,10 +161,48 @@ const CHART_CONFIG = {
     NO_DATA: {
         labels: ['No data'],
         datasets: [{
-            data: [100],
+            data: [-1],
             backgroundColor : [CHART_BG.SECONDARY],
             borderColor: [CHART_BD.SECONDARY],
             borderWidth: CHART_BD.WIDTH
         }]
+    },
+    PIE: {
+        OPTIONS: {
+            plugins: {
+                datalabels: {
+                    font: { weight: 'bold' },
+                    color: 'black',
+                    backgroundColor: (context) => {
+                        return context.active 
+                            ? 'rgba(255, 255, 255, 0.85)'
+                            : 'rgba(255, 255, 255, 0.5)'
+                    },
+                    padding: {
+                        top: 5,
+                        bottom: 4,
+                        left: 5,
+                        right: 5,
+                    },
+                    borderRadius: 3,
+                    formatter: (value, context) => {
+                        if(value == -1)
+                            return "No data"
+                        if(context.active)    
+                            return `${ context.chart.data.labels[context.dataIndex] }: ${value}`;
+                        return value
+                    },
+                    display: (context) => {
+                        var dataset = context.dataset;
+                        var value = dataset.data[context.dataIndex];
+                        return value > 0 || value === -1;
+                    },
+                },
+                tooltip: {
+                    enabled: false,
+                }
+            }
+        },
+        PLUGINS: [ChartDataLabels]
     }
 }

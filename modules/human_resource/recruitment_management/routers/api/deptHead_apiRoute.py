@@ -1,7 +1,6 @@
 # Import Packages
-from os import stat
-from sqlalchemy.sql.expression import or_
-from typing import List
+from sqlalchemy import and_, or_, cast, func
+from typing import List, Optional
 from fastapi import APIRouter, Depends, UploadFile, File
 from fastapi.exceptions import HTTPException
 from sqlalchemy import text
@@ -71,6 +70,8 @@ def get_all_requisitions(
 @router.get("/requisitions/analytics")
 def requisition_analytics(
     db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
     user_data: user.UserData = Depends(get_user)
 ):
     try:
@@ -81,38 +82,44 @@ def requisition_analytics(
             else:
                 query = db.query(Requisition).join(Position).filter(Position.position_id == Requisition.position_id).join(Department).filter(Department.department_id == user_department.department_id)
 
-                # total
-                total = query.count()
+                total_query = query
                 
-                # For signature
-                for_signature = query.filter(Requisition.request_status == "For signature").count()
-
-                # For approval
-                for_approval = query.filter(Requisition.request_status == "For approval").count()
-
-                # Approved
-                approved = query.filter(Requisition.request_status == "Approved").count()
-
-                # Rejected for signing
-                rejected_for_signing = query.filter(Requisition.request_status == "Rejected for signing").count()
-
-                # Rejected for approval
-                rejected_for_approval = query.filter(Requisition.request_status == "Rejected for approval").count()
-
-                # Total Rejected
-                total_rejected = rejected_for_signing + rejected_for_approval
-
-                # Completed
-                completed = query.filter(Requisition.request_status == "Completed").count()
-
+                for_signature_query = query.filter(Requisition.request_status == "For signature")
+                for_approval_query = query.filter(Requisition.request_status == "For approval")
+                approved_query = query.filter(Requisition.request_status == "Approved")
+                completed_query = query.filter(Requisition.request_status == "Completed")
+                rejected_for_signing_query = query.filter(Requisition.request_status == "Rejected for signing")
+                rejected_for_approval_query = query.filter(Requisition.request_status == "Rejected for approval")
+                
+                if start and end:
+                    date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
+                    total = total_query.filter(date_filter).count()
+                    for_signature = for_signature_query.filter(date_filter).count()
+                    for_approval = for_approval_query.filter(date_filter).count()
+                    approved = approved_query.filter(date_filter).count()
+                    completed = completed_query.filter(date_filter).count()
+                    rejected_for_signing = rejected_for_signing_query.filter(date_filter).count()
+                    rejected_for_approval = rejected_for_approval_query.filter(date_filter).count()
+                else:
+                    total = total_query.count()
+                    for_signature = for_signature_query.count()
+                    for_approval = for_approval_query.count()
+                    approved = approved_query.count()
+                    completed = completed_query.count()
+                    rejected_for_signing = rejected_for_signing_query.count()
+                    rejected_for_approval = rejected_for_approval_query.count()
+                
                 return {
                     "total": total,
-                    "for_signature": for_signature,
-                    "for_approval": for_approval,
-                    "approved": approved,
+                    "on_going": {
+                        "total": for_signature + for_approval + approved,
+                        "for_signature": for_signature,
+                        "for_approval": for_approval,
+                        "approved": approved,
+                    },
                     "completed": completed,
                     "rejected": {
-                        "total": total_rejected,
+                        "total": rejected_for_signing + rejected_for_approval,
                         "for_signing": rejected_for_signing,
                         "for_approval": rejected_for_approval
                     }
@@ -120,6 +127,46 @@ def requisition_analytics(
     except Exception as e:
         print(e)
 
+
+
+# Manpower Request Data
+@router.get("/requisitions/data")
+def requisitions_data(
+    db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            user_department = db.query(Department).join(Position).filter(
+                Department.department_id == Position.department_id
+            ).join(User).filter(
+                User.user_id == user_data.user_id, 
+                Position.position_id == User.position_id
+            ).first()
+            
+            if not user_department:
+                return HTTPException(status_code = 404, detail = {"message": "User department not found"})
+            else:
+                target_column = cast(Requisition.created_at, Date)
+
+                requests_query = db.query(
+                    target_column.label("created_at"), 
+                    func.count(Requisition.requisition_id).label("total")
+                ).join(Position).filter(
+                    Position.position_id == Requisition.position_id
+                ).join(Department).filter(
+                    Department.department_id == user_department.department_id
+                ).group_by(target_column)
+
+                if start and end:
+                    date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
+                    return requests_query.filter(date_filter).all()
+                else:
+                    return requests_query.all()
+    except Exception as e:
+        print(e)
 
 
 # Get One Manpower Request

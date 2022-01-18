@@ -7,7 +7,7 @@ const setDateRangeFilter = (start, end, label) => {
 }
 
 
-/** Initialize Charts */
+/** INITIALIZE CHARTS */
 
 // Manpower Requests Bar Chart
 const manpowerRequestBarChart = new Chart($('#manpowerRequestsBarChart').get(0).getContext('2d'), {
@@ -23,6 +23,13 @@ const manpowerRequestBarChart = new Chart($('#manpowerRequestsBarChart').get(0).
     options: {
         scales: {
             x: {
+                title: {
+                    display: true,
+                    text: 'Date Requested',
+                    font: {
+                        weight: 'bold'
+                    }
+                },
                 type: 'time',
                 time: {
                     unit: 'day',
@@ -34,6 +41,13 @@ const manpowerRequestBarChart = new Chart($('#manpowerRequestsBarChart').get(0).
                 max: END_DATE_RANGE.format("YYYY-MM-DD"),
             },
             y: {
+                title: {
+                    display: true,
+                    text: 'Frequency',
+                    font: {
+                        weight: 'bold'
+                    }
+                },
                 ticks: {
                     stepSize: 1
                 }
@@ -49,29 +63,54 @@ const manpowerRequestBarChart = new Chart($('#manpowerRequestsBarChart').get(0).
 // Manpower Request Pie Chart
 const manpowerRequestPieChart = new Chart($('#manpowerRequestsPieChart').get(0).getContext('2d'), {
     type: 'pie',
-    data: CHART_CONFIG.NO_DATA
+    data: CHART_CONFIG.NO_DATA,
+    options: CHART_CONFIG.PIE.OPTIONS,
+    plugins: CHART_CONFIG.PIE.PLUGINS
 });
 
 
-/** Render data content */
+/** SET PAGE TO LOADING STATE */
+
+const setPageToLoadingState = () => {
+    const SPINNER = '<span class="spinner-border"></span>'
+    const SPINNER_SM = '<span class="spinner-border spinner-border-sm"></span>'
+    
+    /** INFO CARDS */
+    setContent({
+        '#manpowerRequestsCountForInfoBox': SPINNER,
+        '#hiredApplicantsCount': SPINNER,
+        '#onboardingEmployeesCount': SPINNER
+    });
+
+    /** MANPOWER REQUEST */
+    setContent({
+        '#totalRequests': SPINNER_SM,
+        '#totalOnGoingRequests': SPINNER_SM,
+        '#totalCompletedRequests': SPINNER_SM,
+        '#totalRejectedRequests': SPINNER_SM,
+    });
+}
+
+
+
+/** RENDER DATA */
+
 const renderData = (start, end) => {
 
+    // Set Page to loading state
+    setPageToLoadingState();
+
+    // Set date range parameters for API
     const DATE_RANGE = TEMPLATE.URL_QUERY_PARAM.DATE_RANGE(start.format(), end.format());
 
-    /** Manpower Requests Count */
+    /** FOR INFO CARDS, PIE CHARTS */
+
+    // Manpower Requests Analytics
     GET_ajax(`${ ROUTE.API.DM }requisitions/analytics${ DATE_RANGE }`, {
         success: result => {
 
             // Update info box
             setContent('#manpowerRequestsCountForInfoBox', formatNumber(result.total));
-            
-            // Update footer manpower request data
-            setContent({
-                '#totalRequests': formatNumber(result.total),
-                '#totalOnGoingRequests': formatNumber(result.on_going.total),
-                '#totalCompletedRequests': formatNumber(result.completed),
-                '#totalRejectedRequests': formatNumber(result.rejected.total),
-            });
 
             // Configure Pie Chart
             const chartConfig = manpowerRequestPieChart.config;
@@ -102,26 +141,32 @@ const renderData = (start, end) => {
             // Commit Update
             manpowerRequestPieChart.update();
 
-            // Hide Chart Loader
-            hideElement('#manpowerRequestsBarChartLoader');
-            showElement('#manpowerRequestsBarChart');
+            // Update footer manpower request data
+            setContent({
+                '#totalRequests': formatNumber(result.total),
+                '#totalOnGoingRequests': formatNumber(result.on_going.total),
+                '#totalCompletedRequests': formatNumber(result.completed),
+                '#totalRejectedRequests': formatNumber(result.rejected.total),
+            });
         },
         error: () => toastr.error('There was an error in getting completed manpower requests count')
     });
     
-    /** Hired Applicants Count */
+    // Hired Applicants Analytics
     GET_ajax(`${ ROUTE.API.DM }hired-applicants/analytics`, {
         success: result => setContent('#hiredApplicantsCount', formatNumber(result.hired_applicants)),
         error: () => toastr.error('There was an error in getting hired applicants count')
     });
     
-    /** Onboarding Employees Count */
+    // Onboarding Employees Count
     GET_ajax(`${ ROUTE.API.DM }onboarding-employees/analytics`, {
         success: result => setContent('#onboardingEmployeesCount', formatNumber(result.total)),
         error: () => toastr.error('There was an error in getting onboarding employees count')
     });
 
-    /** Manpower Requests Data */
+    /** FOR BAR AND LINE GRAPHS */
+
+    // Manpower Requests Data
     GET_ajax(`${ ROUTE.API.DM }requisitions/data${ DATE_RANGE }`, {
         success: result => {
 
@@ -146,27 +191,29 @@ const renderData = (start, end) => {
 }
 
 
+/** AS DOCUMENT HAS BEEN LOADED */
+
 (() => {
 
-/** Initialize DateRange Filter */
-setDateRangeFilter(START_DATE_RANGE, END_DATE_RANGE, DEFAULT_FILTER_RANGE);
+    /** Initialize DateRange Filter */
+    setDateRangeFilter(START_DATE_RANGE, END_DATE_RANGE, DEFAULT_FILTER_RANGE);
 
-/** Initialize DateRangeFilter for Filter Date */
-$('#filterDate').daterangepicker({
-    timePicker: true,
-    startDate: START_DATE_RANGE,
-    endDate: END_DATE_RANGE,
-    ranges: DATE_RANGES
-}, (start, end, label) => {
+    /** Initialize DateRangeFilter for Filter Date */
+    $('#filterDate').daterangepicker({
+        timePicker: true,
+        startDate: START_DATE_RANGE,
+        endDate: END_DATE_RANGE,
+        ranges: DATE_RANGES
+    }, (start, end, label) => {
 
-    // Change DateRange Filter
-    setDateRangeFilter(start, end, label);
+        // Change DateRange Filter
+        setDateRangeFilter(start, end, label);
 
-    // Refresh charts and quantitive data
-    renderData(start, end);
-});
+        // Refresh charts and quantitive data
+        renderData(start, end);
+    });
 
-// Initialize charts and quantitative data
-renderData(START_DATE_RANGE, END_DATE_RANGE);
+    // Initialize charts and quantitative data
+    renderData(START_DATE_RANGE, END_DATE_RANGE);
 
 })();

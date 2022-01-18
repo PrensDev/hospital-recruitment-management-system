@@ -208,10 +208,8 @@ const onboardingEmployeeTasksDoughnutChart = new Chart($('#onboardingEmployeeTas
             backgroundColor : ['#ea580c', '#06b6d4', '#10b981'],
         }]
     },
-    options: {
-        maintainAspectRatio : false,
-        responsive : true,
-    }
+    options: CHART_CONFIG.PIE.OPTIONS,
+    plugins: CHART_CONFIG.PIE.PLUGINS
 });
 
 

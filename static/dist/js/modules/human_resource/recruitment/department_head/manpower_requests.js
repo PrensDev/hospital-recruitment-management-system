@@ -131,8 +131,8 @@ const manpowerRequestAnalytics = () => GET_ajax(`${ ROUTE.API.DH }requisitions/a
 
             // Set Signed Requests
             setContent('#signedRequestsCount', formatNumber(
-                parseInt(result.for_approval) 
-                + parseInt(result.approved) 
+                parseInt(result.on_going.for_approval) 
+                + parseInt(result.on_going.approved) 
                 + parseInt(result.completed)
             ));
 

@@ -121,8 +121,6 @@ initDataTable('#manpowerRequestDT', {
 const manpowerRequestAnalytics = () => {
     GET_ajax(`${ ROUTE.API.H }requisitions/analytics`, {
         success: result => {
-            console.log(result)
-
             setContent({
                 '#totalManpowerRequestsCount':formatNumber(result.total),
                 '#forReviewRequestsCount': () => {
