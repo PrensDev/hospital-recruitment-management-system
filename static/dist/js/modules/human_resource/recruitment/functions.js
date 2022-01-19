@@ -656,14 +656,13 @@ const printContent = (pageTitle, content) => {
 
 /** Pluralize Word */
 const pluralize = (word, count) => {
-    return count > 1 ? word + 's' : word
+    return count > 1 || count === 0 ? word + 's' : word
 }
 
 
 /** Create days labels for chart */
 const daysLabels = (start, end) => {
-    let days = [];
-    let currDate = start.startOf('day');
+    let days = [], currDate = start.startOf('day');
     while(currDate.diff(end.endOf('day')) <= 0) {
         days.push(currDate.format());
         currDate = currDate.add(1, 'days');

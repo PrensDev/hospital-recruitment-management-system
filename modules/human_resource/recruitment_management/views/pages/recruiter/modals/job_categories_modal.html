@@ -15,12 +15,23 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="question">Category Name:</label>
-                    <input class="form-control" name="name" placeholder="Please type category name here" />
+                    <label for="nameForAdd">Category Name:</label>
+                    <input 
+                        class="form-control" 
+                        id="nameForAdd"
+                        name="name" 
+                        placeholder="Please type category name here" 
+                    />
                 </div>
                 <div class="form-group">
-                    <label for="question">Description</label>
-                    <textarea class="form-control" rows="3" id="question" name="question" placeholder="Please type description here"></textarea>
+                    <label for="descriptionForAdd">Description</label>
+                    <textarea 
+                        class="form-control" 
+                        rows="3" 
+                        id="descriptionForAdd" 
+                        name="description" 
+                        placeholder="Please type description here"
+                    ></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -28,11 +39,106 @@
                     type="button" 
                     class="btn btn-default" 
                     data-dismiss="modal" 
-                    id="cancelGeneralInterviewQuestionBtn"
+                    id="cancelAddJobCategoryBtn"
                 >Cancel</button>
-                <button type="submit" id="addGeneralInterviewQuestionBtn" class="btn btn-primary">
+                <button type="submit" id="addJobCategoryBtn" class="btn btn-primary">
                     <span>Add</span>
                     <i class="fas fa-plus ml-1"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{# Job Category Details Modal #}
+<div class="modal fade" id="jobCategoryDetailsModal">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-file-alt text-secondary mr-1"></i>
+                    <span>Job Category Details</span>
+                </div>
+            </div>
+            <div class="modal-body">
+
+                {# Job Category Details #}
+                <table class="table border-bottom">
+                    <tr>
+                        <th>Category Name</th>
+                        <td id="jobCategoryName"></td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td id="jobCategoryDescription"></td>
+                    </tr>
+                    <tr>
+                        <th>Added by</th>
+                        <td id="jobCategoryAddedBy"></td>
+                    </tr>
+                    <tr>
+                        <th>Added at</th>
+                        <td id="jobCategoryAddedAt"></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{# Edit Job Category Modal #}
+<div 
+    class="modal fade" 
+    id="editJobCategoryModal" 
+    data-backdrop="static" 
+    data-keyboard="false"
+>
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="editJobCategoryForm">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-file-alt text-secondary mr-2"></i>
+                    <span>Edit Job Category</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="jobCategoryIDForEdit" name="jobCategoryID">
+                <div class="form-group">
+                    <label for="jobCategoryNameForEdit">Category Name:</label>
+                    <input 
+                        class="form-control" 
+                        id="jobCategoryNameForEdit"
+                        name="name" 
+                        placeholder="Please type category name here" 
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="jobCategoryDescriptionForEdit">Description</label>
+                    <textarea 
+                        class="form-control" 
+                        rows="3" 
+                        id="jobCategoryDescriptionForEdit" 
+                        name="description" 
+                        placeholder="Please type description here"
+                    ></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button 
+                    type="button" 
+                    class="btn btn-default" 
+                    data-dismiss="modal" 
+                    id="cancelEditJobCategoryBtn"
+                >Cancel</button>
+                <button type="submit" id="editJobCategoryBtn" class="btn btn-info">
+                    <span>Save</span>
+                    <i class="fas fa-check ml-1"></i>
                 </button>
             </div>
         </form>

@@ -1,6 +1,6 @@
 # Import Packages
-from re import L
 from typing import List, Optional
+from urllib import response
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy import cast, func, and_
@@ -134,12 +134,98 @@ def get_one_approved_requisitions(
 
 
 # ====================================================================
+# JOB CATEGORIES
+# ====================================================================
+
+
+# Job Category Not Found Response
+JOB_CATEGORY_NOT_FOUND_RESPONSE = {"message": "Job Category not found"}
+
+
+# Add Job Category
+@router.post("/job-categories", status_code = 201)
+def add_job_category(
+    req: recruiter.CreateJobCategory,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            new_job_category = JobCategory(
+                name = req.name,
+                description = req.description,
+                created_by = user_data.user_id
+            )
+            db.add(new_job_category)
+            db.commit()
+            db.refresh(new_job_category)
+            return {"message": "A new job category has been added"}
+    except Exception as e:
+        print(e)
+
+
+# Get All Job Category
+@router.get("/job-categories", response_model = List[recruiter.ShowJobCategory])
+def get_all_job_categories(
+    db: Session = Depends(get_db), 
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(JobCategory).all()
+    except Exception as e:
+        print(e)
+
+
+# Get One Job Category
+@router.get("/job-categories/{job_category_id}", response_model = recruiter.ShowJobCategory)
+def get_one_job_category(
+    job_category_id: str,
+    db: Session = Depends(get_db), 
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            job_category = db.query(JobCategory).filter(JobCategory.job_category_id == job_category_id).first()
+            if not job_category:
+                raise HTTPException(status_code = 401, detail=JOB_CATEGORY_NOT_FOUND_RESPONSE)
+            else:
+                return job_category
+    except Exception as e:
+        print(e)
+
+# ====================================================================
 # JOB POSTS
 # ====================================================================
 
 
 # Job Post Not Found Response
 JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
+
+
+# Post Vacant Job
+@router.post("/job-posts", status_code = 201)
+def post_vacant_job(
+    req: recruiter.CreateJobPost,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            new_job_post = JobPost(
+                requisition_id = req.requisition_id,
+                salary_is_visible = req.salary_is_visible,
+                job_category_id = req.job_category_id,
+                content = req.content,
+                expiration_date = req.expiration_date,
+                posted_by = user_data.user_id
+            )
+            db.add(new_job_post)
+            db.commit()
+            db.refresh(new_job_post)
+            return {"message": "A new job post is successfully added"}
+    except Exception as e:
+        print(e)
 
 
 # Get All Job Posts
@@ -236,30 +322,6 @@ def get_one_job_post(
             raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
         else:
             return job_post
-    except Exception as e:
-        print(e)
-
-
-# Post Vacant Job
-@router.post("/job-posts", status_code = 201)
-def post_vacant_job(
-    req: recruiter.CreateJobPost,
-    db: Session = Depends(get_db),
-    user_data: user.UserData = Depends(get_user)
-):
-    try:
-        if(authorized(user_data, AUTHORIZED_USER)):
-            new_job_post = JobPost(
-                requisition_id = req.requisition_id,
-                salary_is_visible = req.salary_is_visible,
-                content = req.content,
-                expiration_date = req.expiration_date,
-                posted_by = user_data.user_id
-            )
-            db.add(new_job_post)
-            db.commit()
-            db.refresh(new_job_post)
-            return {"message": "A new job post is successfully added"}
     except Exception as e:
         print(e)
 

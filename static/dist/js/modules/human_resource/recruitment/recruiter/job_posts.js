@@ -17,6 +17,27 @@ const jobPostID = window.location.pathname.split('/')[3];
 /** Load Primary Input */
 ifSelectorExist('#createJobPostForm', () => {
     
+    // Get Job Categories
+    GET_ajax(`${ ROUTE.API.R }job-categories`, {
+        success: result => {
+            if(result) {
+                let jobCategory = $('#jobCategory');
+                jobCategory.empty();
+                jobCategory.append(`<option></option>`);
+                
+                result.length > 0
+                    ? result.forEach(c => jobCategory.append(`<option value="${ c.job_category_id }">${ c.name }</option>`))
+                    : jobCategory.append(`<option disabled>No data</option>`)
+
+                /** Employment Type For Add Select2 */
+                $('#jobCategory').select2({
+                    placeholder: "Please select a category",
+                    minimumResultsForSearch: -1,
+                });
+            }
+        }
+    });
+
     /** Job Description For Add Summernote */
     $('#jobDescription').summernote({
         height: 750,
@@ -228,6 +249,7 @@ $('#expirationDate').on('change', () => isChecked('#expirationDate') ? showEleme
 validateForm('#createJobPostForm', {
     rules: {
         requisitionID: { required: true },
+        jobCategory: { required: true },
         jobDescription: { required: true, },
         openUntil: {
             required: true,
@@ -236,6 +258,7 @@ validateForm('#createJobPostForm', {
     },
     messages:{
         requisitionID: { required: 'This field must have value' },
+        jobCategory: { required: 'Please select a category for this job' },
         jobDescription: { required: 'Job Description is required', },
         openUntil: {
             required: 'Please select a date',
@@ -259,6 +282,7 @@ onClick('#confirmPostNewJobPostBtn', () => {
     const data = {
         requisition_id: formData.get('requisitionID'),
         salary_is_visible: isChecked('#salaryRangeIsVisible'),
+        job_category_id: formData.get('jobCategory'),
         content: formData.get('jobDescription'),
         expiration_date: expirationDate,
     }
@@ -302,7 +326,18 @@ initDataTable('#jobPostsDT', {
         { data: 'manpower_request.requisition_no', class: 'text-nowrap' },
 
         // Vacant Position
-        { data: "manpower_request.vacant_position.name" },
+        {
+            data: null,
+            render: data => {
+                const vacant_position = data.manpower_request.vacant_position.name;
+                const job_category = data.job_categorized_as.name;
+
+                return `
+                    <div>${ vacant_position }</div>
+                    ${ TEMPLATE.SUBTEXT(job_category) }
+                `
+            }
+        },
 
         // Applicants
         {

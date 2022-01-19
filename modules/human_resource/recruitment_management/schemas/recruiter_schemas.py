@@ -35,6 +35,38 @@ class ManpowerRequest(BaseModel):
         orm_mode = True
 
 
+# Create Job Category
+class CreateJobCategory(BaseModel):
+    name: str
+    description: str
+
+
+# Job Category
+class JobCategory(BaseModel):
+    job_category_id: str
+    name: str
+    description: str
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+# Update Job Category
+class UpdateJobCategory(BaseModel):
+    name: str
+    description: str
+
+
+# Show Job Category
+class ShowJobCategory(JobCategory):
+    job_category_created_by: ShowUser
+
+    class Config():
+        orm_mode = True
+
+
 # Job Post
 class JobPost(BaseModel):
     job_post_id: str
@@ -68,6 +100,7 @@ class Applicant(BaseModel):
 
 # Show Job Post
 class ShowJobPost(JobPost):
+    job_categorized_as: JobCategory
     manpower_request: ManpowerRequest
     applicants: List[Optional[Applicant]]
 
@@ -87,6 +120,7 @@ class ShowManpowerRequest(ManpowerRequest):
 class CreateJobPost(BaseModel):
     requisition_id: str
     salary_is_visible: bool
+    job_category_id: str
     content: str
     expiration_date: Optional[datetime]
 
