@@ -1,8 +1,7 @@
 # Import Package
-from datetime import datetime, date, time
+from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
-from database import Base
 from modules.human_resource.recruitment_management.schemas.user_schemas import ShowUser, ShowPosition
 
 

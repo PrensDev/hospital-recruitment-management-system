@@ -2,7 +2,6 @@
 from datetime import datetime, date, time
 from typing import List, Optional
 from pydantic import BaseModel
-from modules.human_resource.recruitment_management.schemas.db_schemas import UserInfo
 from modules.human_resource.recruitment_management.schemas.user_schemas import ShowUser, ShowPosition
 
 

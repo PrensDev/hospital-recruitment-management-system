@@ -392,7 +392,7 @@ class Requisition(Base):
     )
 
 
-# Job Post
+# Job Post Model
 class JobPost(Base):
     __tablename__ = "job_posts"
 
@@ -469,7 +469,7 @@ class JobPost(Base):
     )
 
 
-# Job Categories
+# Job Categories Model
 class JobCategory(Base):
     __tablename__ = "job_categories"
 
@@ -514,7 +514,7 @@ class JobCategory(Base):
     )
 
 
-# Applicants
+# Applicants Model
 class Applicant(Base):
     __tablename__ = "applicants"
 
@@ -645,7 +645,7 @@ class Applicant(Base):
     )
 
 
-# Interviewee
+# Interviewee Model
 class Interviewee(Base):
     __tablename__ = "interviewees"
 
@@ -703,7 +703,7 @@ class Interviewee(Base):
     )
 
 
-# Interview Schedule
+# Interview Schedule Model
 class InterviewSchedule(Base):
     __tablename__ = "interview_schedules"
 
@@ -761,7 +761,7 @@ class InterviewSchedule(Base):
     )
 
 
-# Interview Score
+# Interview Score Model
 class InterviewScore(Base):
     __tablename__ = "interview_scores"
 
@@ -815,7 +815,7 @@ class InterviewScore(Base):
     )
 
 
-# Interview Question
+# Interview Question Model
 class InterviewQuestion(Base):
     __tablename__ = "interview_questions"
 
@@ -871,7 +871,7 @@ class InterviewQuestion(Base):
     )
 
 
-# On Boarding Employees
+# Onboarding Employees Model
 class OnboardingEmployee(Base):
     __tablename__ = "onboarding_employees"
 
@@ -965,7 +965,7 @@ class OnboardingEmployee(Base):
     )
 
 
-# Onboarding Tasks
+# Onboarding Tasks Model
 class OnboardingTask(Base):
     __tablename__ = "onboarding_tasks"
 
@@ -1044,7 +1044,7 @@ class OnboardingTask(Base):
     )
 
 
-# Onboarding Employee Task
+# Onboarding Employee Task Model
 class OnboardingEmployeeTask(Base):
     __tablename__ = "onboarding_employee_task"
 
