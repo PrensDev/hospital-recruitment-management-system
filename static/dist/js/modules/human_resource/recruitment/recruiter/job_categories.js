@@ -25,6 +25,7 @@ validateForm('#addJobCategoryForm', {
     }
 });
 
+
 // Add Job Category
 const addJobCategory = () => {
 
@@ -46,10 +47,10 @@ const addJobCategory = () => {
 
                 // Reload Datatable
                 reloadDataTable('#jobCategoriesDT');
-    
+
                 // Hide Job category modal
                 hideModal('#addJobCategoryModal');
-    
+
                 // Set buttons to unload state
                 btnToUnloadState('#addJobCategoryBtn', TEMPLATE.LABEL_ICON('Add', 'plus'));
                 enableElement('#cancelAddJobCategoryBtn');
@@ -103,6 +104,14 @@ initDataTable(`#jobCategoriesDT`, {
                     >
                         <div style="width: 2rem"><i class="fas fa-edit"></i></div>
                         <div>Edit Category</div>
+                    </div>
+                    <div
+                        type="button"
+                        class="dropdown-item d-flex"
+                        onclick="removeJobCategory('${ jobCategoryID }')"
+                    >
+                        <div style="width: 2rem"><i class="fas fa-trash-alt"></i></div>
+                        <div>Remove Category</div>
                     </div>
                 `)
             }
@@ -180,10 +189,10 @@ validateForm('#editJobCategoryForm', {
 
 // Save changes to job category
 const saveChangesToJobCategory = () => {
-    
-    /**
-     * todo: set buttons to loading state
-     */
+
+    // Set buttons to loading state
+    btnToLoadingState('#editJobCategoryBtn');
+    disableElement('#cancelEditJobCategoryBtn');
 
     // Generate data
     const formData = generateFormData('#editJobCategoryForm')
@@ -192,11 +201,53 @@ const saveChangesToJobCategory = () => {
         description: formData.get('description')
     }
 
-    /**
-     * todo: PUT_ajax for saving changes
-     */
+    PUT_ajax(`${ ROUTE.API.R }job-categories/${ formData.get('jobCategoryID') }`, data, {
+        success: result => {
+            if(result) {
+
+                // Reload datatable
+                reloadDataTable('#jobCategoriesDT');
+
+                // Hide Modal
+                hideModal('#editJobCategoryModal');
+
+                // Set buttons to unload state
+                btnToUnloadState('#editJobCategoryBtn', TEMPLATE.LABEL_ICON('Save', 'check'));
+                enableElement('#cancelEditJobCategoryBtn');
+
+                // Show success alert
+                toastr.info('A job category is successfully updated')
+            }
+        },
+        error: () => toastr.error('There was an error in updating job category details')
+    })
 }
 
 
 // Reset form on edit job category modal has been hidden
 onHideModal('#editJobCategoryModal', () => resetForm('#editJobCategoryForm'));
+
+
+// Remove Job Category
+const removeJobCategory = (jobCategoryID) => {
+    setValue('#jobCategoryIDForRemove', jobCategoryID);
+    showModal('#removeJobCategoryModal');
+}
+
+onHideModal('#removeJobCategoryModal', () => resetForm('#removeJobCategoryForm'));
+
+validateForm('#removeJobCategoryForm', {
+    submitHandler: () => {
+        const formData = generateFormData('#removeJobCategoryForm');
+        DELETE_ajax(`${ ROUTE.API.R }job-categories/${ formData.get('jobCategoryID') }`, {
+            success: result => {
+                if(result) {
+                    reloadDataTable('#jobCategoriesDT');
+                    hideModal('#removeJobCategoryModal');
+                    toastr.info('A job category has been removed');
+                }
+            },
+            error: () => toastr.error('There was an error in removing job category')
+        });
+    }
+})

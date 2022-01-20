@@ -121,7 +121,7 @@ validateForm('#addManpowerRequestForm', {
             greaterThan: "#minSalary"
         },
     },
-    messages:{
+    messages: {
         requisitionNo: {
             required: 'Please reload the page to generate requisition number'
         },
@@ -589,7 +589,7 @@ ifSelectorExist('#editManpowerRequestForm', () => {
                     showElement('#deadlineField');
                     setValue('#deadline', deadline);
                 }
-    
+
                 /** Set Salary Range */
                 const minSalary = result.min_monthly_salary;
                 const maxSalary = result.max_monthly_salary;
@@ -599,10 +599,10 @@ ifSelectorExist('#editManpowerRequestForm', () => {
                     setValue('#minSalary', minSalary);
                     setValue('#maxSalary', maxSalary);
                 }
-    
+
                 /** Set Requisition  */
                 $('#requestDescription').summernote('code', result.content);
-    
+
                 /** Set Date Requested */
                 const dateRequested = result.created_at;
                 setContent('#dateRequested', `
@@ -610,7 +610,7 @@ ifSelectorExist('#editManpowerRequestForm', () => {
                     <div>${ formatDateTime(dateRequested, "hh:mm A") }</div>
                 `);
                 setContent('#dateRequestedHumanized', fromNow(dateRequested));
-    
+
                 /** Set Last Updated */
                 const lastUpdated = result.updated_at;
                 setContent('#lastUpdated', `

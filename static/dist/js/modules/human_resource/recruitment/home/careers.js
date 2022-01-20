@@ -8,7 +8,66 @@
 
 const urlParams = new URLSearchParams(window.location.search);
 const query = urlParams.get('query');
+const jobCategoryParam = urlParams.get('jobCategory');
+const employmentTypeParam = urlParams.get('employmentType');
 const page = urlParams.get('page') == null ? 1 : urlParams.get('page');
+
+
+/**
+ * ==============================================================================
+ * FOR SEARCH INPUT SETUP
+ * ==============================================================================
+ */
+
+ifSelectorExist('#searchJobForm', () => {
+
+    // For job categories
+    GET_ajax(`${ BASE_URL_API }home/job-categories`, {
+        success: result => {
+            let jobCategory = $('#jobCategory');
+            jobCategory.empty();
+            jobCategory.append(`<option></option>`);
+            
+            result.length > 0
+                ? result.forEach(c => jobCategory.append(`<option value="${ c.job_category_id }">${ c.name }</option>`))
+                : jobCategory.append(`<option disabled>No data</option>`)
+
+            /** Employment Type For Add Select2 */
+            $('#jobCategory').select2({
+                placeholder: "Please select a category",
+                minimumResultsForSearch: -1,
+            });
+
+            $('#jobCategory').val(jobCategoryParam).trigger('change');
+        },
+        error: () => toastr.error('There was an error in getting job categories')
+    });
+
+
+    const employmentTypes = [
+        {"employement_type_id": '1', "name": "Full Time"},
+        {"employement_type_id": '2', "name": "Part Time"},
+        {"employement_type_id": '3', "name": "Intern/OJT"},
+        {"employement_type_id": '4', "name": "Contract"},
+    ]
+
+    let employmentType = $('#employmentType');
+    employmentType.empty();
+    employmentType.append(`<option></option>`);
+    
+    employmentTypes.length > 0
+        ? employmentTypes.forEach(t => employmentType.append(`<option value="${ t.employement_type_id }">${ t.name }</option>`))
+        : employmentType.append(`<option disabled>No data</option>`)
+
+    /** Job Category Select2 */
+    $('#employmentType').select2({
+        placeholder: "Choose employment type here",
+        minimumResultsForSearch: -1,
+    });
+
+    $('#employmentType').val(employmentTypeParam).trigger('change');
+});
+
 
 /**
  * ==============================================================================
@@ -31,6 +90,16 @@ ifSelectorExist('#availableJobList', () => {
                 result.forEach(r => {
                     const manpowerRequest = r.manpower_request;
 
+                    const jobCategory = () => {
+                        const jobCategorization = r.job_categorized_as;
+                        return `
+                            <div>
+                                <i style="width: 1.25rem" class="fas fa-th-list text-center text-secondary mr-1"></i>
+                                <span>${ jobCategorization.is_removed ? "Others" : jobCategorization.name }</span>
+                            </div>
+                        `
+                    }
+
                     const salaryRange = r.salary_is_visible 
                         ? `<div>
                                 <i style="width: 1.25rem" class="fas fa-handshake text-center text-secondary mr-1"></i>
@@ -45,7 +114,7 @@ ifSelectorExist('#availableJobList', () => {
                             </div>` 
                         : `<div>
                                 <i style="width: 1.25rem" class="fas fa-clock text-center text-danger mr-1"></i>
-                                <span>Open until August 31, 2021</span>
+                                <span>Open until ${ formatDateTime(r.expiration_date, 'Date') }</span>
                             </div>`
 
                     jobList += `
@@ -70,6 +139,7 @@ ifSelectorExist('#availableJobList', () => {
                                         </div>
 
                                         <div class="mb-3">
+                                            ${ jobCategory() }
                                             <div>
                                                 <i style="width: 1.25rem" class="fas fa-briefcase text-center text-secondary mr-1"></i>
                                                 <span>${ manpowerRequest.employment_type }</span>
@@ -95,9 +165,17 @@ ifSelectorExist('#availableJobList', () => {
             } else {
                 jobList = `
                     <div class="col-12">
-                        <div class="py-5 text-center">
-                            <h3>Oops! We are full</h3>
-                            <div>Sorry, but we don't have vacant job for now</div>
+                        <div class="d-flex flex-column justify-content-center align-items-center text-center">
+                            <div class="py-5 d-flex justify-content-center">
+                                <img 
+                                    draggable="false"
+                                    src="${ BASE_URL_WEB }static/dist/img/careers_full.svg" 
+                                    alt="Not found" 
+                                    width="25%"
+                                >
+                            </div>
+                            <h4>Oops! We are full now!</h4>
+                            <p class="text-secondary">We don't have job posts yet. Please come back again soon.</p>
                         </div>
                     </div>
                 `;
@@ -152,8 +230,6 @@ ifSelectorExist('#availableJobDetails', () => {
         url: `${ BASE_URL_API }home/job-posts/${ jobPostID }`,
         type: 'GET',
         success: result => {
-            console.log(result)
-
             const manpowerRequest = result.manpower_request;
 
             // Set Job Post ID for the form
@@ -169,7 +245,8 @@ ifSelectorExist('#availableJobDetails', () => {
                 },
                 '#datePostedHumanized': fromNow(datePosted),
                 '#jobDescription': result.content,
-                '#employmentType': manpowerRequest.employment_type
+                '#employmentType': manpowerRequest.employment_type,
+                '#jobCategory': result.job_categorized_as.name
             });
 
             // Set Salary Range
@@ -432,10 +509,17 @@ onClick('#submitApplicationBtn', () => {
 /** Validate Form Search */
 validateForm('#searchJobForm', {
     submitHandler: () => {
-        const searchQuery = generateFormData('#searchJobForm').get('searchQuery');
-        isEmptyOrNull(searchQuery) 
-            ? location.assign(`${ BASE_URL_WEB }careers`)
-            : location.assign(`${ BASE_URL_WEB }careers/search?query=${ searchQuery }`)
+        const formData = generateFormData('#searchJobForm')
+        const searchQuery = formData.get('searchQuery');
+        const jobCategory = formData.get('jobCategory');
+        const employmentType = formData.get('employmentType');
+
+        if(isEmptyOrNull(searchQuery) && isEmptyOrNull(jobCategory) && isEmptyOrNull(searchQjobCategoryuery)) 
+            location.assign(`${ BASE_URL_WEB }careers`)
+        else {
+            const queryParams = `?query=${ searchQuery }&jobCategory=${ jobCategory }&employmentType=${ employmentType }`
+            location.assign(`${ BASE_URL_WEB }careers/search${ queryParams }`)
+        }
         return false;
     }
 });
@@ -458,6 +542,16 @@ ifSelectorExist('#searchResultList', () => {
             if(result.length > 0) {
                 result.forEach(r => {
                     const manpowerRequest = r.manpower_request;
+
+                    const jobCategory = () => {
+                        const jobCategorization = r.job_categorized_as;
+                        return `
+                            <div>
+                                <i style="width: 1.25rem" class="fas fa-th-list text-center text-secondary mr-1"></i>
+                                <span>${ jobCategorization.is_removed ? "Others" : jobCategorization.name }</span>
+                            </div>
+                        `
+                    }
 
                     const salaryRange = r.salary_is_visible 
                         ? `<div>
@@ -498,6 +592,7 @@ ifSelectorExist('#searchResultList', () => {
                                         </div>
 
                                         <div class="mb-3">
+                                            ${ jobCategory() }
                                             <div>
                                                 <i style="width: 1.25rem" class="fas fa-briefcase text-center text-secondary mr-1"></i>
                                                 <span>${ manpowerRequest.employment_type }</span>

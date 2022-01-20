@@ -127,6 +127,7 @@ class CreateJobPost(BaseModel):
 # Update Job Post(BaseModel):
 class UpdateJobPost(BaseModel):
     salary_is_visible: bool
+    job_category_id: str
     content: str
     expiration_date: Optional[datetime]
 

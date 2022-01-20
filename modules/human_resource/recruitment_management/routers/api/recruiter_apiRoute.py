@@ -1,4 +1,6 @@
 # Import Packages
+from re import L
+from telnetlib import EL
 from typing import List, Optional
 from urllib import response
 from fastapi import APIRouter, Depends
@@ -172,7 +174,7 @@ def get_all_job_categories(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            return db.query(JobCategory).all()
+            return db.query(JobCategory).filter(JobCategory.is_removed == False).all()
     except Exception as e:
         print(e)
 
@@ -186,13 +188,65 @@ def get_one_job_category(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            job_category = db.query(JobCategory).filter(JobCategory.job_category_id == job_category_id).first()
+            job_category = db.query(JobCategory).filter(
+                JobCategory.job_category_id == job_category_id, 
+                JobCategory.is_removed == False
+            ).first()
             if not job_category:
                 raise HTTPException(status_code = 401, detail=JOB_CATEGORY_NOT_FOUND_RESPONSE)
             else:
                 return job_category
     except Exception as e:
         print(e)
+
+
+# Update Job Category
+@router.put("/job-categories/{job_category_id}")
+def update_job_category(
+    job_category_id: str,
+    req: recruiter.UpdateJobCategory,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            job_category = db.query(JobCategory).filter(
+                JobCategory.job_category_id == job_category_id,
+                JobCategory.is_removed == False
+            )
+            if not job_category.first():
+                raise HTTPException(status_code = 404, detail = JOB_POST_NOT_FOUND_RESPONSE)
+            else:
+                job_category.update(req.dict())
+                db.commit()
+                return {"message": "A job categroy is successfully updated"}
+    except Exception as e:
+        print(e)
+
+
+# Remove Job Category
+@router.delete("/job-categories/{job_category_id}")
+def remove_job_category(
+    job_category_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            job_category = db.query(JobCategory).filter(JobCategory.job_category_id == job_category_id)
+            if not job_category.first():
+                raise HTTPException(status_code=404, detail=JOB_CATEGORY_NOT_FOUND_RESPONSE)
+            else:
+                job_posts_count = db.query(JobPost).filter(JobPost.job_category_id == job_category.first().job_category_id).count()
+                if job_posts_count > 0:
+                    job_category.update({"is_removed": True})
+                else:
+                    job_category.delete(synchronize_session = False)
+                db.commit()
+                return "A job category has been removed"
+    except Exception as e:
+        print(e)
+
 
 # ====================================================================
 # JOB POSTS

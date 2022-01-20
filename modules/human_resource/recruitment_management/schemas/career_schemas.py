@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
 from modules.human_resource.recruitment_management.schemas.user_schemas import ShowPosition
-
+from modules.human_resource.recruitment_management.schemas.recruiter_schemas import ShowJobCategory
 
 
 # Manpower Request
@@ -22,6 +22,7 @@ class ManpowerRequest(BaseModel):
 # Show Job Post For Applicants
 class ShowJobPost(BaseModel):
     salary_is_visible: bool
+    job_categorized_as: ShowJobCategory
     content: str
     expiration_date: Optional[datetime]
     job_post_id: str

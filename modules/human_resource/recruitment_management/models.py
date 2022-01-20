@@ -487,6 +487,11 @@ class JobCategory(Base):
         Text,
         nullable = False
     )
+    is_removed = Column(
+        Boolean,
+        nullable = False,
+        default = False
+    )
     created_by = Column(
         String(36),
         ForeignKey("users.user_id"),

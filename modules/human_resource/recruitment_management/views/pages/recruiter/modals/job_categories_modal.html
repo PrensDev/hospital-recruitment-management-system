@@ -144,3 +144,32 @@
         </form>
     </div>
 </div>
+
+{# Remove Job Category Modal #}
+<div class="modal" id="removeJobCategoryModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="removeJobCategoryForm">
+
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-secondary mr-2"></i>
+                    <span>Confirmation</span>
+                </h4>
+            </div>
+
+            <div class="modal-body mb-3">
+                <input type="hidden" id="jobCategoryIDForRemove" name="jobCategoryID">
+                <div>Are you sure you want to remove this category?</div>
+                <div class="small text-danger">NOTE: Your this category will be remove forever and it cannot be undone</div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="submit" class="btn btn-danger">
+                    <span>Yes, remove it.</span>
+                    <i class="fas fa-trash-alt ml-1"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

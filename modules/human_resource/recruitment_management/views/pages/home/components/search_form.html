@@ -1,0 +1,39 @@
+{# Search Component #}
+<div class="container mb-3">
+    <form class="row" id="searchJobForm">
+        <div class="col-md-8 offset-md-2">
+            <div class="form-group">
+                <div class="input-group">
+                    <input 
+                        type="search" 
+                        class="form-control" 
+                        placeholder="Search available job here"
+                        id="searchQuery"
+                        name="searchQuery"
+                    >
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <select class="form-control form-control-sm select2" name="jobCategory" id="jobCategory"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <select class="form-control form-control-sm select2" name="employmentType" id="employmentType"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

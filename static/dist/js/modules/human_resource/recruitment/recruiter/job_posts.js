@@ -498,8 +498,7 @@ const getJobPostDetails = () => {
             
             /** JOB POST DETAILS */
             setJobPostDetails(result);
-
-            const manpowerRequest = result.manpower_request;
+            
             /** Job Post Options */
             setContent('#jobPostOptions', () => {
                 const endRecruiting = `
@@ -524,8 +523,9 @@ const getJobPostDetails = () => {
                 `
             });
 
-
             /** MANPOWER REQUEST SUMMARY */
+
+            const manpowerRequest = result.manpower_request;
 
             // Set Vacant Position
             setContent('#vacantPositionForSummary', manpowerRequest.vacant_position.name);
@@ -719,6 +719,27 @@ const editJobPost = (jobPostID) => location.assign(`${ ROUTE.WEB.R }edit-job-pos
 
 /** If Edit Job Post Form Exists */
 ifSelectorExist('#editJobPostForm', () => {
+
+    // Get Job Categories
+    GET_ajax(`${ ROUTE.API.R }job-categories`, {
+        success: result => {
+            if(result) {
+                let jobCategory = $('#jobCategory');
+                jobCategory.empty();
+                jobCategory.append(`<option></option>`);
+                
+                result.length > 0
+                    ? result.forEach(c => jobCategory.append(`<option value="${ c.job_category_id }">${ c.name }</option>`))
+                    : jobCategory.append(`<option disabled>No data</option>`)
+
+                /** Employment Type For Add Select2 */
+                $('#jobCategory').select2({
+                    placeholder: "Please select a category",
+                    minimumResultsForSearch: -1,
+                });
+            }
+        }
+    });
     
     /** Job Description For Add Summernote */
     $('#jobDescription').summernote({
@@ -901,6 +922,9 @@ ifSelectorExist('#editJobPostForm', () => {
 
 
             /** SET INPUTS */
+
+            /** Set Vacant Position */
+            $('#jobCategory').val(result.job_categorized_as.job_category_id).trigger('change');
             
             // Set Job Description
             $('#jobDescription').summernote('code', result.content);
@@ -941,6 +965,9 @@ validateForm('#editJobPostForm', {
         jobPostID: {
             required: true
         },
+        jobCategory: {
+            required: true
+        },
         jobDescription: {
             required: true
         },
@@ -952,6 +979,9 @@ validateForm('#editJobPostForm', {
     messages: {
         jobPostID: {
             required: "This must have a hidden value"
+        },
+        jobCategory: {
+            required: "This is a required field"
         },
         jobDescription: {
             required: "Job Description is required"
@@ -982,6 +1012,7 @@ onClick('#confirmUpdateJobPostBtn', () => {
 
     // Set Data
     const data = {
+        job_category_id: formData.get('jobCategory'),
         content: formData.get('jobDescription'),
         salary_is_visible: isChecked('#salaryRangeIsVisible'),
         expiration_date: expirationDate
