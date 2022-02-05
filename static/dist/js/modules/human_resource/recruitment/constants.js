@@ -175,7 +175,7 @@ const CHART_CONFIG = {
                     color: 'black',
                     backgroundColor: (context) => {
                         return context.active 
-                            ? 'rgba(255, 255, 255, 0.85)'
+                            ? 'rgba(255, 255, 255, 1)'
                             : 'rgba(255, 255, 255, 0.5)'
                     },
                     padding: {
@@ -187,7 +187,7 @@ const CHART_CONFIG = {
                     borderRadius: 3,
                     formatter: (value, context) => {
                         if(value == -1)
-                            return "No data"
+                            return context.active ? "No data" : 0
                         if(context.active)    
                             return `${ context.chart.data.labels[context.dataIndex] }: ${value}`;
                         return value

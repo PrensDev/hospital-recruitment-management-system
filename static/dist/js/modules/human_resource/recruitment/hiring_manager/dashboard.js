@@ -70,7 +70,7 @@ const manpowerRequestsStatusPieChart = new Chart($('#manpowerRequestsStatusPieCh
 
 // Job Posts Status Pie Chart
 const jobPostsStatusPieChart = new Chart($('#jobPostsStatusPieChart').get(0).getContext('2d'), {
-    type: 'pie',
+    type: 'doughnut',
     data: CHART_CONFIG.NO_DATA,
     options: CHART_CONFIG.PIE.OPTIONS,
     plugins: CHART_CONFIG.PIE.PLUGINS

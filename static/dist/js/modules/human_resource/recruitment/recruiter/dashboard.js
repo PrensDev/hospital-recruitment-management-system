@@ -31,6 +31,13 @@ const jobPostsBarChart = new Chart($('#jobPostsBarChart').get(0).getContext('2d'
     options: {
         scales: {
             x: {
+                title: {
+                    display: true,
+                    text: 'Date Created',
+                    font: {
+                        weight: 'bold'
+                    }
+                },
                 type: 'time',
                 time: {
                     unit: 'day',
@@ -42,6 +49,13 @@ const jobPostsBarChart = new Chart($('#jobPostsBarChart').get(0).getContext('2d'
                 max: END_DATE_RANGE.format("YYYY-MM-DD"),
             },
             y: {
+                title: {
+                    display: true,
+                    text: 'No. of Job Posts',
+                    font: {
+                        weight: 'bold'
+                    }
+                },
                 ticks: {
                     stepSize: 1
                 }
@@ -68,6 +82,13 @@ const applicantsLineChart = new Chart($('#applicantsLineChart').get(0).getContex
     options: {
         scales: {
             x: {
+                title: {
+                    display: true,
+                    text: 'Date Applied',
+                    font: {
+                        weight: 'bold'
+                    }
+                },
                 type: 'time',
                 time: {
                     unit: 'day',
@@ -79,6 +100,13 @@ const applicantsLineChart = new Chart($('#applicantsLineChart').get(0).getContex
                 max: END_DATE_RANGE.format("YYYY-MM-DD"),
             },
             y: {
+                title: {
+                    display: true,
+                    text: 'No. of Applications',
+                    font: {
+                        weight: 'bold'
+                    }
+                },
                 ticks: {
                     stepSize: 1
                 }
@@ -94,7 +122,7 @@ const applicantsLineChart = new Chart($('#applicantsLineChart').get(0).getContex
 
 // Application Status Pie Chart
 const applicationStatusPieChart = new Chart($('#applicationStatusPieChart').get(0).getContext('2d'), {
-    type: 'pie',
+    type: 'doughnut',
     data: CHART_CONFIG.NO_DATA,
     options: CHART_CONFIG.PIE.OPTIONS,
     plugins: CHART_CONFIG.PIE.PLUGINS

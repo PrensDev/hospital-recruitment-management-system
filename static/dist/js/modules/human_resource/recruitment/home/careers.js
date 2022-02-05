@@ -21,7 +21,44 @@ const page = urlParams.get('page') == null ? 1 : urlParams.get('page');
 
 ifSelectorExist('#searchJobForm', () => {
 
-    // For job categories
+    /** Date Posted Select 2 */
+    const datePostedOptions = [
+        {
+            "label": "Last 7 days",
+            "value": "Last 7 days"
+            // "value": moment().subtract(7, 'days')
+        }, {
+            "label": "Last 14 days",
+            "value": "Last 14 days"
+            // "value": moment().subtract(14, 'days')
+        }, {
+            "label": "Last month",
+            "value": "Last month"
+            // "value": moment().subtract(1, 'months')
+        }, {
+            "label": "Last 2 months",
+            "value": "Last 2 months"
+            // "value": moment().subtract(2, 'months')
+        }
+    ]
+
+    let datePosted = $('#datePosted');
+    datePosted.empty();
+    datePosted.append(`<option></option>`);
+    
+    datePostedOptions.length > 0
+        ? datePostedOptions.forEach(o => datePosted.append(`<option value="${ o.value }">${ o.label }</option>`))
+        : employmentType.append(`<option disabled>No data</option>`)
+
+    $('#datePosted').select2({
+        placeholder: "Date Posted",
+        minimumResultsForSearch: -1,
+    });
+
+    // $('#datePosted').val().trigger('change');
+
+
+    /** Job Categories Select 2 */
     GET_ajax(`${ BASE_URL_API }home/job-categories`, {
         success: result => {
             let jobCategory = $('#jobCategory');
@@ -34,7 +71,7 @@ ifSelectorExist('#searchJobForm', () => {
 
             /** Employment Type For Add Select2 */
             $('#jobCategory').select2({
-                placeholder: "Please select a category",
+                placeholder: "Job Category",
                 minimumResultsForSearch: -1,
             });
 
@@ -44,6 +81,7 @@ ifSelectorExist('#searchJobForm', () => {
     });
 
 
+    /** Employment Type Select2 */
     const employmentTypes = [
         {"employement_type_id": '1', "name": "Full Time"},
         {"employement_type_id": '2', "name": "Part Time"},
@@ -59,9 +97,8 @@ ifSelectorExist('#searchJobForm', () => {
         ? employmentTypes.forEach(t => employmentType.append(`<option value="${ t.employement_type_id }">${ t.name }</option>`))
         : employmentType.append(`<option disabled>No data</option>`)
 
-    /** Job Category Select2 */
     $('#employmentType').select2({
-        placeholder: "Choose employment type here",
+        placeholder: "Employment Type",
         minimumResultsForSearch: -1,
     });
 
@@ -78,91 +115,95 @@ ifSelectorExist('#searchJobForm', () => {
 /** Get All Jobs */
 ifSelectorExist('#availableJobList', () => {
 
-    // Get all job post per page
+    const jobCategory = urlParams.get('jobCategory');
+    const employmentType = urlParams.get('employmentType');
+    const page = urlParams.get('page') == null ? 1 : urlParams.get('page');
+
+    // Get all job post filtered by page
     $.ajax({
-        url: `${ BASE_URL_API }home/job-posts?page=${ page }`,
+        url: `${ BASE_URL_API }home/job-posts?jobCategory=${ jobCategory }&employmentType=${ employmentType }&page=${ page }`,
         type: 'GET',
         success: result => {
 
             let jobList = '';
 
-            if(result.length > 0) {
-                result.forEach(r => {
-                    const manpowerRequest = r.manpower_request;
+            const hasJobList = () => result.forEach(r => {
+                const manpowerRequest = r.manpower_request;
 
-                    const jobCategory = () => {
-                        const jobCategorization = r.job_categorized_as;
-                        return `
-                            <div>
-                                <i style="width: 1.25rem" class="fas fa-th-list text-center text-secondary mr-1"></i>
-                                <span>${ jobCategorization.is_removed ? "Others" : jobCategorization.name }</span>
-                            </div>
-                        `
-                    }
+                const jobCategory = () => {
+                    const jobCategory = r.job_categorized_as;
+                    return `
+                        <div>
+                            <i style="width: 1.25rem" class="fas fa-th-list text-center text-secondary mr-1"></i>
+                            <span>${ jobCategory.is_removed ? "Others" : jobCategory.name }</span>
+                        </div>
+                    `
+                }
 
-                    const salaryRange = r.salary_is_visible 
-                        ? `<div>
-                                <i style="width: 1.25rem" class="fas fa-handshake text-center text-secondary mr-1"></i>
-                                <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
-                            </div>`
-                        : '';
+                const salaryRange = r.salary_is_visible 
+                    ? `<div>
+                            <i style="width: 1.25rem" class="fas fa-handshake text-center text-secondary mr-1"></i>
+                            <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
+                        </div>`
+                    : '';
 
-                    const expirationDate = isEmptyOrNull(r.expiration_date) 
-                        ? `<div>
-                                <i style="width: 1.25rem" class="fas fa-clock text-center text-secondary mr-1"></i>
-                                <span>Still open for all applicants</span>
-                            </div>` 
-                        : `<div>
-                                <i style="width: 1.25rem" class="fas fa-clock text-center text-danger mr-1"></i>
-                                <span>Open until ${ formatDateTime(r.expiration_date, 'Date') }</span>
-                            </div>`
+                const expirationDate = isEmptyOrNull(r.expiration_date) 
+                    ? `<div>
+                            <i style="width: 1.25rem" class="fas fa-clock text-center text-secondary mr-1"></i>
+                            <span>Still open for all applicants</span>
+                        </div>` 
+                    : `<div>
+                            <i style="width: 1.25rem" class="fas fa-clock text-center text-danger mr-1"></i>
+                            <span>Open until ${ formatDateTime(r.expiration_date, 'Date') }</span>
+                        </div>`
 
-                    jobList += `
-                        <div class="col-12 col-md-6 d-flex align-items-stretch flex-column">
-                            <div class="card d-flex flex-fill">
-                                <div class="card-body">
+                jobList += `
+                    <div class="col-12 col-md-6 d-flex align-items-stretch flex-column">
+                        <div class="card d-flex flex-fill">
+                            <div class="card-body">
 
-                                    <div>
-                                        <div class="mb-3">
-                                            <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="h5 text-primary mb-0 font-weight-bold">${ manpowerRequest.vacant_position.name }</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="small text-muted">
-                                                    <span>Posted ${ formatDateTime(r.created_at, "Date") }</span>
-                                                    <span class="mx-1">&middot;</span>
-                                                    <span>${ fromNow(r.created_at) }</span>
-                                                </div>
-                                                <div class="small text-muted">
-                                                    <i class="fas fa-eye mr-1"></i>
-                                                    <span>${ r.views }</span>
-                                                </div>
+                                <div>
+                                    <div class="mb-3">
+                                        <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="h5 text-primary mb-0 font-weight-bold">${ manpowerRequest.vacant_position.name }</a>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="small text-muted">
+                                                <span>Posted ${ formatDateTime(r.created_at, "Date") }</span>
+                                                <span class="mx-1">&middot;</span>
+                                                <span>${ fromNow(r.created_at) }</span>
                                             </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            ${ jobCategory() }
-                                            <div>
-                                                <i style="width: 1.25rem" class="fas fa-briefcase text-center text-secondary mr-1"></i>
-                                                <span>${ manpowerRequest.employment_type }</span>
-                                            </div>
-                                            ${ salaryRange }
-                                            ${ expirationDate }
-                                            <div class="pt-3 career-content-preview">
-                                                ${ r.content }
+                                            <div class="small text-muted">
+                                                <i class="fas fa-eye mr-1"></i>
+                                                <span>${ r.views }</span>
                                             </div>
                                         </div>
                                     </div>
-                                    
+
+                                    <div class="mb-3">
+                                        ${ jobCategory() }
+                                        <div>
+                                            <i style="width: 1.25rem" class="fas fa-briefcase text-center text-secondary mr-1"></i>
+                                            <span>${ manpowerRequest.employment_type }</span>
+                                        </div>
+                                        ${ salaryRange }
+                                        ${ expirationDate }
+                                        <div class="pt-3 career-content-preview">
+                                            ${ r.content }
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-footer text-right">
-                                    <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="btn btn-sm btn-primary">
-                                        ${ TEMPLATE.LABEL_ICON('View More', 'caret-right') }
-                                    </a>
-                                </div>
+                                
+                            </div>
+                            <div class="card-footer text-right">
+                                <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="btn btn-sm btn-primary">
+                                    ${ TEMPLATE.LABEL_ICON('View More', 'caret-right') }
+                                </a>
                             </div>
                         </div>
-                    `;
-                });
-            } else {
+                    </div>
+                `;
+            });
+
+            const noJobList = () => {
                 jobList = `
                     <div class="col-12">
                         <div class="d-flex flex-column justify-content-center align-items-center text-center">
@@ -181,6 +222,8 @@ ifSelectorExist('#availableJobList', () => {
                 `;
             }
 
+            result.length > 0 ? hasJobList() : noJobList();
+
             setContent('#availableJobList', jobList);
         },
         error: () => toastr.error('There was an error in getting all job posts')
@@ -193,23 +236,32 @@ ifSelectorExist('#availableJobList', () => {
         success: result => {
             const total = result.total;
 
-            if(total > 0) {
+            // This function will call if has result
+            const hasResult = () => {
                 setContent({
                     '#rowsDisplay': `Showing ${ FETCH_ROWS } out of ${ total }`,
                     '#pageDisplay': `Page ${ page } out of ${ Math.ceil(total/FETCH_ROWS) }`
                 });
+
                 setPagination('#pagination', {
                     query: `${ BASE_URL_WEB }careers?page=[page]`,
                     totalRows: total,
                     currentPage: page
                 });
+
                 showElement('#pagination');
-            } else {
+            }
+
+            // This function will call if no result
+            const noResult = () => {
                 setContent({
                     '#rowsDisplay': `No result`,
                     '#pageDisplay': `No pages to be display`
                 });
             }
+
+            // Call function based on total number of results
+            total > 0 ? hasResult() : noResult();
         }
     });
 });
@@ -509,25 +561,56 @@ onClick('#submitApplicationBtn', () => {
 /** Validate Form Search */
 validateForm('#searchJobForm', {
     submitHandler: () => {
+
+        // Get data from the form
         const formData = generateFormData('#searchJobForm')
         const searchQuery = formData.get('searchQuery');
+        const datePosted = formData.get('datePosted');
         const jobCategory = formData.get('jobCategory');
         const employmentType = formData.get('employmentType');
 
-        if(isEmptyOrNull(searchQuery) && isEmptyOrNull(jobCategory) && isEmptyOrNull(searchQjobCategoryuery)) 
-            location.assign(`${ BASE_URL_WEB }careers`)
-        else {
-            const queryParams = `?query=${ searchQuery }&jobCategory=${ jobCategory }&employmentType=${ employmentType }`
-            location.assign(`${ BASE_URL_WEB }careers/search${ queryParams }`)
+        // Set URL Parameters
+        let urlParams = [];
+        if(!isEmptyOrNull(searchQuery)) urlParams.push("searchQuery=" + searchQuery)
+        if(!isEmptyOrNull(datePosted)) urlParams.push("datePosted=" + datePosted)
+        if(!isEmptyOrNull(jobCategory)) urlParams.push("jobCategory=" + jobCategory)
+        if(!isEmptyOrNull(employmentType)) urlParams.push("employmentType=" + employmentType)
+
+        // Set the URL parameter string
+        let urlParamsString = '';
+        if(urlParams.length) {
+            urlParams.forEach((urlParam, index) => {
+                urlParamsString += index === 0 ? '?' : '&';
+                urlParamsString += urlParam;
+            })
         }
+        
+        // Redirect to correct link (with URL parameter if set)
+        isEmptyOrNull(urlParamsString) 
+            ? location.assign("/careers")
+            : location.assign("/careers" + urlParamsString)
+
         return false;
     }
 });
 
 /** For Search Result */
 ifSelectorExist('#searchResultList', () => {
-    setValue('#searchQuery', query);
-    const data = JSON.stringify({query: query});
+
+    const searchQuery = urlParams.get('searchQuery');
+    const jobCategory = urlParams.get('jobCategory');
+    const datePosted = urlParams.get('datePosted');
+    const employmentType = urlParams.get('employmentType');
+    const page = urlParams.get('page') == null ? 1 : urlParams.get('page');
+
+    setValue('#searchQuery', searchQuery);
+    setValue('#datePosted', datePosted);
+    setValue('#jobCategory', jobCategory);
+    setValue('#employmentType', employmentType);
+
+    $('#datePosted').val(datePosted).trigger('change');
+    
+    const data = JSON.stringify({query: searchQuery});
 
     // Get Search Results
     $.ajax({
@@ -539,83 +622,83 @@ ifSelectorExist('#searchResultList', () => {
         success: result => {
             let jobList = '';
 
-            if(result.length > 0) {
-                result.forEach(r => {
-                    const manpowerRequest = r.manpower_request;
+            const hasJobList = () => result.forEach(r => {
+                const manpowerRequest = r.manpower_request;
 
-                    const jobCategory = () => {
-                        const jobCategorization = r.job_categorized_as;
-                        return `
-                            <div>
-                                <i style="width: 1.25rem" class="fas fa-th-list text-center text-secondary mr-1"></i>
-                                <span>${ jobCategorization.is_removed ? "Others" : jobCategorization.name }</span>
-                            </div>
-                        `
-                    }
+                const jobCategory = () => {
+                    const jobCategorization = r.job_categorized_as;
+                    return `
+                        <div>
+                            <i style="width: 1.25rem" class="fas fa-th-list text-center text-secondary mr-1"></i>
+                            <span>${ jobCategorization.is_removed ? "Others" : jobCategorization.name }</span>
+                        </div>
+                    `
+                }
 
-                    const salaryRange = r.salary_is_visible 
-                        ? `<div>
-                                <i style="width: 1.25rem" class="fas fa-handshake text-center text-secondary mr-1"></i>
-                                <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
-                            </div>`
-                        : '';
+                const salaryRange = r.salary_is_visible 
+                    ? `<div>
+                            <i style="width: 1.25rem" class="fas fa-handshake text-center text-secondary mr-1"></i>
+                            <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
+                        </div>`
+                    : '';
 
-                    const expirationDate = isEmptyOrNull(r.expiration_date) 
-                        ? `<div>
-                                <i style="width: 1.25rem" class="fas fa-clock text-secondary mr-1"></i>
-                                <span>Still open for all applicants</span>
-                            </div>` 
-                        : `<div>
-                                <i style="width: 1.25rem" class="fas fa-clock text-danger mr-1"></i>
-                                <span>Open until August 31, 2021</span>
-                            </div>`
+                const expirationDate = isEmptyOrNull(r.expiration_date) 
+                    ? `<div>
+                            <i style="width: 1.25rem" class="fas fa-clock text-secondary mr-1"></i>
+                            <span>Still open for all applicants</span>
+                        </div>` 
+                    : `<div>
+                            <i style="width: 1.25rem" class="fas fa-clock text-danger mr-1"></i>
+                            <span>Open until August 31, 2021</span>
+                        </div>`
 
-                    jobList += `
-                        <div class="col-12 col-md-6 d-flex align-items-stretch flex-column">
-                            <div class="card d-flex flex-fill">
-                                <div class="card-body">
+                jobList += `
+                    <div class="col-12 col-md-6 d-flex align-items-stretch flex-column">
+                        <div class="card d-flex flex-fill">
+                            <div class="card-body">
 
-                                    <div>
-                                        <div class="mb-3">
-                                            <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="h5 font-weight-bold text-primary mb-0">${ manpowerRequest.vacant_position.name }</a>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="small text-muted">
-                                                    <span>Posted ${ formatDateTime(r.created_at, "Date") }</span>
-                                                    <span class="mx-1">&middot;</span>
-                                                    <span>${ fromNow(r.created_at) }</span>
-                                                </div>
-                                                <div class="small text-muted">
-                                                    <i class="fas fa-eye mr-1"></i>
-                                                    <span>${ r.views }</span>
-                                                </div>
+                                <div>
+                                    <div class="mb-3">
+                                        <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="h5 font-weight-bold text-primary mb-0">${ manpowerRequest.vacant_position.name }</a>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="small text-muted">
+                                                <span>Posted ${ formatDateTime(r.created_at, "Date") }</span>
+                                                <span class="mx-1">&middot;</span>
+                                                <span>${ fromNow(r.created_at) }</span>
                                             </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            ${ jobCategory() }
-                                            <div>
-                                                <i style="width: 1.25rem" class="fas fa-briefcase text-center text-secondary mr-1"></i>
-                                                <span>${ manpowerRequest.employment_type }</span>
-                                            </div>
-                                            ${ salaryRange }
-                                            ${ expirationDate }
-                                            <div class="pt-3 career-content-preview">
-                                                ${ r.content }
+                                            <div class="small text-muted">
+                                                <i class="fas fa-eye mr-1"></i>
+                                                <span>${ r.views }</span>
                                             </div>
                                         </div>
                                     </div>
-                                    
+
+                                    <div class="mb-3">
+                                        ${ jobCategory() }
+                                        <div>
+                                            <i style="width: 1.25rem" class="fas fa-briefcase text-center text-secondary mr-1"></i>
+                                            <span>${ manpowerRequest.employment_type }</span>
+                                        </div>
+                                        ${ salaryRange }
+                                        ${ expirationDate }
+                                        <div class="pt-3 career-content-preview">
+                                            ${ r.content }
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-footer text-right">
-                                    <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="btn btn-sm btn-primary">
-                                        ${ TEMPLATE.LABEL_ICON('View More', 'caret-right') }
-                                    </a>
-                                </div>
+                                
+                            </div>
+                            <div class="card-footer text-right">
+                                <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="btn btn-sm btn-primary">
+                                    ${ TEMPLATE.LABEL_ICON('View More', 'caret-right') }
+                                </a>
                             </div>
                         </div>
-                    `;
-                });
-            } else {
+                    </div>
+                `;
+            });
+
+            const noJobList = () => {
                 jobList = `
                     <div class="d-flex flex-column justify-content-center align-items-center text-center">
                         <div class="py-5 d-flex justify-content-center">
@@ -632,6 +715,8 @@ ifSelectorExist('#searchResultList', () => {
                 `;
             }
 
+            result.length > 0 ? hasJobList() : noJobList();
+
             setContent('#searchResultList', jobList);
         },
         error: () => toastr.error('There was an error in getting search results')
@@ -647,7 +732,7 @@ ifSelectorExist('#searchResultList', () => {
         success: result => {
             const total = result.total;
 
-            if(total > 0) {
+            const hasResult = () => {
                 setContent({
                     '#rowsDisplay': `Showing ${ FETCH_ROWS } out of ${ total }`,
                     '#pageDisplay': `Page ${ page } out of ${ Math.ceil(total/FETCH_ROWS) }`
@@ -658,13 +743,18 @@ ifSelectorExist('#searchResultList', () => {
                     totalRows: total,
                     currentPage: page
                 });
+                
                 showElement('#pagination');
-            } else {
+            }
+
+            const noResult = () => {
                 setContent({
                     '#rowsDisplay': `No result`,
                     '#pageDisplay': `No pages to be displayed`
                 });
             }
+
+            total > 0 ? hasResult() : noResult();
         }
     });
 });

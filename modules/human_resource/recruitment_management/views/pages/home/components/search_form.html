@@ -1,36 +1,52 @@
 {# Search Component #}
 <div class="container mb-3">
-    <form class="row" id="searchJobForm">
-        <div class="col-md-8 offset-md-2">
+    <form class="card" id="searchJobForm">
+        <div class="card-body">
             <div class="form-group">
                 <div class="input-group">
                     <input 
                         type="search" 
-                        class="form-control" 
-                        placeholder="Search available job here"
+                        class="form-control form-control-lg border-2 border-primary" 
+                        placeholder="Type Job Title or Keywords here"
                         id="searchQuery"
                         name="searchQuery"
                     >
                     <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-search"></i>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fa fa-search mr-1"></i>
+                            <span class="font-weight-bold">Search</span>
                         </button>
                     </div>
                 </div>
             </div>
             <div class="form-row">
-                <div class="col-md-6">
-                    <div class="form-group">
+                <div class="col-md-3">
+                    <div class="form-group mb-2 mb-md-1">
+                        <div class="input-group">
+                            <select class="form-control form-control-sm select2" name="datePosted" id="datePosted"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-2 mb-md-1">
                         <div class="input-group">
                             <select class="form-control form-control-sm select2" name="jobCategory" id="jobCategory"></select>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
+                <div class="col-md-3">
+                    <div class="form-group mb-2 mb-md-1">
                         <div class="input-group">
                             <select class="form-control form-control-sm select2" name="employmentType" id="employmentType"></select>
                         </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-2 mb-md-1">
+                        <button class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-sync-alt mr-1"></i>
+                            <span>Reset filters</span>
+                        </button>
                     </div>
                 </div>
             </div>
