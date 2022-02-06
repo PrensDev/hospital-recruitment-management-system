@@ -75,6 +75,7 @@ def home(req: Request, page: Optional[int] = None):
 def careers(
     req: Request, 
     searchQuery: Optional[str] = None,
+    datePosted: Optional[str] = None,
     jobCategory: Optional[str] = None,
     employmentType: Optional[str] = None,
     page: Optional[int] = 1
@@ -86,6 +87,10 @@ def careers(
 
     # If query is declared
     if searchQuery:
+
+        # If date posted is declared
+        if datePosted:
+            print("Date Posted:", datePosted)
 
         # If job category is declared
         if jobCategory:
@@ -109,35 +114,6 @@ def careers(
             "page_subtitle": "Discover job opportunities here",
             "active_navlink": "Careers"
         })
-
-
-# Search Job
-@router.get("/careers/search")
-def search(
-    req: Request, 
-    query: Optional[str] = None, 
-    jobCategory: Optional[str] = None,
-    employmentType: Optional[str] = None,
-    page: Optional[int] = 1
-):  
-    
-    if not query:
-        return RedirectResponse("/careers")
-
-    # If job category is declared
-    if jobCategory:
-        print("Job Category:", jobCategory)
-
-    # If employment type is declared
-    if employmentType:
-        print("Employment Type:", employmentType)
-
-    # If no error, return template response
-    return templates.TemplateResponse("pages/home/search_result.html", {
-        "request": req,
-        "page_title": "Search Result for \"" + query + "\"",
-        "active_navlink": "Careers"
-    })
 
 
 # Available Job Details

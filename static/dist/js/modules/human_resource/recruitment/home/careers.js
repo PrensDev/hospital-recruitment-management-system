@@ -6,16 +6,91 @@
  * ==============================================================================
  */
 
+// Get URL Parameter Values
 const urlParams = new URLSearchParams(window.location.search);
-const query = urlParams.get('query');
-const jobCategoryParam = urlParams.get('jobCategory');
-const employmentTypeParam = urlParams.get('employmentType');
-const page = urlParams.get('page') == null ? 1 : urlParams.get('page');
+let urlParamsObj = {
+    searchQuery: urlParams.get('searchQuery'),
+    datePosted: urlParams.get('datePosted'),
+    jobCategory: urlParams.get('jobCategory'),
+    employmentType: urlParams.get('employmentType'),
+    page: urlParams.get('page'),
+}
+
+/**
+ * ==============================================================================
+ * FUNCTIONS
+ * ==============================================================================
+ */
+
+// Set URL Param String
+const getURLParamString = (urlParams = {}) => {
+    let urlParamStringHolder = [];
+
+    Object.entries(urlParams).forEach(([key, val]) => {
+        if(!isEmptyOrNull(val)) urlParamStringHolder.push(key + '=' + val)
+    });
+    
+    let urlParamString = '';
+
+    urlParamStringHolder.forEach((urlParam, index) => {
+        urlParamString += index === 0 ? '?' : '&';
+        urlParamString += urlParam;
+    })
+
+    return urlParamString;
+}
+
+
+// Set Search Form Values according to URL parameters
+const setSearchFormValues = () => {
+
+    // Reset the form
+    resetForm('#searchJobForm');
+    
+    // Set Search Query Input
+    if(!isEmptyOrNull(urlParamsObj.searchQuery)) 
+        setValue('#searchQuery', urlParamsObj.searchQuery);
+    
+    // Set Date Posted Option
+    // $("#datePosted").select2("val", "");
+    if(!isEmptyOrNull(urlParamsObj.datePosted)) {
+        setValue('#datePosted', urlParamsObj.datePosted);
+        $('#datePosted').val(urlParamsObj.datePosted).trigger('change');
+    }
+
+    // Set Job Category Option
+    // $("#jobCategory").select2("val", "");
+    if(!isEmptyOrNull(urlParamsObj.jobCategory)) {
+        setValue('#jobCategory', urlParamsObj.jobCategory);
+        $('#jobCategory').val(urlParamsObj.jobCategory).trigger('change');
+    }
+    
+    // Set Employment Type Option
+    // $("#employmentType").select2("val", "");
+    if(!isEmptyOrNull(urlParamsObj.employmentType)) {
+        setValue('#employmentType', urlParamsObj.employmentType);
+        $('#employmentType').val(urlParamsObj.employmentType).trigger('change');
+    }
+}
+
+
+// Redirect with URL params
+const redirectWithURLParams = () => {
+
+    // Get URL Params string
+    const urlParamsString = getURLParamString(urlParamsObj);
+
+    // Redirect to correct link (with URL parameter if set)
+    isEmptyOrNull(urlParamsString) 
+        ? location.assign("/careers")
+        : location.assign("/careers" + urlParamsString)
+}
+
 
 
 /**
  * ==============================================================================
- * FOR SEARCH INPUT SETUP
+ * FOR SEARCH FORM INPUT SETUP
  * ==============================================================================
  */
 
@@ -25,20 +100,20 @@ ifSelectorExist('#searchJobForm', () => {
     const datePostedOptions = [
         {
             "label": "Last 7 days",
-            "value": "Last 7 days"
-            // "value": moment().subtract(7, 'days')
+            // "value": "Last 7 days"
+            "value": moment().subtract(7, 'days').format('MM/DD/YYYY')
         }, {
             "label": "Last 14 days",
-            "value": "Last 14 days"
-            // "value": moment().subtract(14, 'days')
+            // "value": "Last 14 days"
+            "value": moment().subtract(14, 'days').format('MM/DD/YYYY')
         }, {
             "label": "Last month",
-            "value": "Last month"
-            // "value": moment().subtract(1, 'months')
+            // "value": "Last month"
+            "value": moment().subtract(1, 'months').format('MM/DD/YYYY')
         }, {
             "label": "Last 2 months",
-            "value": "Last 2 months"
-            // "value": moment().subtract(2, 'months')
+            // "value": "Last 2 months"
+            "value": moment().subtract(2, 'months').format('MM/DD/YYYY')
         }
     ]
 
@@ -50,12 +125,12 @@ ifSelectorExist('#searchJobForm', () => {
         ? datePostedOptions.forEach(o => datePosted.append(`<option value="${ o.value }">${ o.label }</option>`))
         : employmentType.append(`<option disabled>No data</option>`)
 
-    $('#datePosted').select2({
+    datePosted.select2({
         placeholder: "Date Posted",
         minimumResultsForSearch: -1,
     });
 
-    // $('#datePosted').val().trigger('change');
+    datePosted.val(urlParamsObj.datePosted).trigger('change');
 
 
     /** Job Categories Select 2 */
@@ -75,7 +150,7 @@ ifSelectorExist('#searchJobForm', () => {
                 minimumResultsForSearch: -1,
             });
 
-            $('#jobCategory').val(jobCategoryParam).trigger('change');
+            $('#jobCategory').val(urlParamsObj.jobCategory).trigger('change');
         },
         error: () => toastr.error('There was an error in getting job categories')
     });
@@ -97,12 +172,12 @@ ifSelectorExist('#searchJobForm', () => {
         ? employmentTypes.forEach(t => employmentType.append(`<option value="${ t.employement_type_id }">${ t.name }</option>`))
         : employmentType.append(`<option disabled>No data</option>`)
 
-    $('#employmentType').select2({
+    employmentType.select2({
         placeholder: "Employment Type",
         minimumResultsForSearch: -1,
     });
 
-    $('#employmentType').val(employmentTypeParam).trigger('change');
+    employmentType.val(urlParamsObj.employmentType).trigger('change');
 });
 
 
@@ -115,18 +190,14 @@ ifSelectorExist('#searchJobForm', () => {
 /** Get All Jobs */
 ifSelectorExist('#availableJobList', () => {
 
-    const jobCategory = urlParams.get('jobCategory');
-    const employmentType = urlParams.get('employmentType');
-    const page = urlParams.get('page') == null ? 1 : urlParams.get('page');
-
     // Get all job post filtered by page
     $.ajax({
-        url: `${ BASE_URL_API }home/job-posts?jobCategory=${ jobCategory }&employmentType=${ employmentType }&page=${ page }`,
+        url: `${ BASE_URL_API }home/job-posts?jobCategory=${ urlParamsObj.jobCategory }&employmentType=${ urlParamsObj.employmentType }&page=${ 1 }`,
         type: 'GET',
         success: result => {
-
             let jobList = '';
 
+            // This function will be called if has job list result
             const hasJobList = () => result.forEach(r => {
                 const manpowerRequest = r.manpower_request;
 
@@ -203,6 +274,7 @@ ifSelectorExist('#availableJobList', () => {
                 `;
             });
 
+            // This function will be called if no job list result
             const noJobList = () => {
                 jobList = `
                     <div class="col-12">
@@ -222,8 +294,10 @@ ifSelectorExist('#availableJobList', () => {
                 `;
             }
 
+            // Call the function based on result
             result.length > 0 ? hasJobList() : noJobList();
 
+            // Set the content
             setContent('#availableJobList', jobList);
         },
         error: () => toastr.error('There was an error in getting all job posts')
@@ -236,23 +310,23 @@ ifSelectorExist('#availableJobList', () => {
         success: result => {
             const total = result.total;
 
-            // This function will call if has result
+            // This function will be called if has result
             const hasResult = () => {
                 setContent({
                     '#rowsDisplay': `Showing ${ FETCH_ROWS } out of ${ total }`,
-                    '#pageDisplay': `Page ${ page } out of ${ Math.ceil(total/FETCH_ROWS) }`
+                    '#pageDisplay': `Page ${ urlParamsObj.page } out of ${ Math.ceil(total/FETCH_ROWS) }`
                 });
 
                 setPagination('#pagination', {
                     query: `${ BASE_URL_WEB }careers?page=[page]`,
                     totalRows: total,
-                    currentPage: page
+                    currentPage: urlParamsObj.page
                 });
 
                 showElement('#pagination');
             }
 
-            // This function will call if no result
+            // This function will be called if no result
             const noResult = () => {
                 setContent({
                     '#rowsDisplay': `No result`,
@@ -476,6 +550,21 @@ onClick('#submitApplicationBtn', () => {
     const fd = new FormData();
     fd.append('file', resume);
 
+    // Call this function if error occured in calling ajax
+    const ifError = () => {
+
+        // Hide Confirm Application Modal
+        hideModal('#confirmApplicationModal');
+
+        // Set buttons to unload state
+        setContent('#submitApplicationBtn', TEMPLATE.LABEL_ICON('Submit','file-export'));
+        enableElement('#cancelApplicationBtn');
+        enableElement('#confirmReview');
+
+        // Uncheck Confirm Review
+        uncheckElement('#confirmReview');
+    }
+
     // Upload resume
     $.ajax({
         url: `${ BASE_URL_API }home/upload/resume`,
@@ -495,19 +584,6 @@ onClick('#submitApplicationBtn', () => {
                 contact_number: get('contactNumber'),
                 email: get('email'),
                 resume: result.new_file
-            }
-
-            const ifError = () => {
-                // Hide Confirm Application Modal
-                hideModal('#confirmApplicationModal');
-
-                // Set buttons to unload state
-                setContent('#submitApplicationBtn', TEMPLATE.LABEL_ICON('Submit','file-export'));
-                enableElement('#cancelApplicationBtn');
-                enableElement('#confirmReview');
-
-                // Uncheck Confirm Review
-                uncheckElement('#confirmReview');
             }
 
             // Record Applicant's Data
@@ -563,58 +639,32 @@ validateForm('#searchJobForm', {
     submitHandler: () => {
 
         // Get data from the form
-        const formData = generateFormData('#searchJobForm')
-        const searchQuery = formData.get('searchQuery');
-        const datePosted = formData.get('datePosted');
-        const jobCategory = formData.get('jobCategory');
-        const employmentType = formData.get('employmentType');
+        const formData = generateFormData('#searchJobForm');
 
-        // Set URL Parameters
-        let urlParams = [];
-        if(!isEmptyOrNull(searchQuery)) urlParams.push("searchQuery=" + searchQuery)
-        if(!isEmptyOrNull(datePosted)) urlParams.push("datePosted=" + datePosted)
-        if(!isEmptyOrNull(jobCategory)) urlParams.push("jobCategory=" + jobCategory)
-        if(!isEmptyOrNull(employmentType)) urlParams.push("employmentType=" + employmentType)
+        // Set search query
+        urlParamsObj.searchQuery = formData.get('searchQuery');
 
-        // Set the URL parameter string
-        let urlParamsString = '';
-        if(urlParams.length) {
-            urlParams.forEach((urlParam, index) => {
-                urlParamsString += index === 0 ? '?' : '&';
-                urlParamsString += urlParam;
-            })
-        }
-        
-        // Redirect to correct link (with URL parameter if set)
-        isEmptyOrNull(urlParamsString) 
-            ? location.assign("/careers")
-            : location.assign("/careers" + urlParamsString)
+        // Redirect with url parameter
+        redirectWithURLParams();
 
+        // Return false to prevent form from submitting values by default
         return false;
     }
 });
 
+
 /** For Search Result */
 ifSelectorExist('#searchResultList', () => {
-
-    const searchQuery = urlParams.get('searchQuery');
-    const jobCategory = urlParams.get('jobCategory');
-    const datePosted = urlParams.get('datePosted');
-    const employmentType = urlParams.get('employmentType');
-    const page = urlParams.get('page') == null ? 1 : urlParams.get('page');
-
-    setValue('#searchQuery', searchQuery);
-    setValue('#datePosted', datePosted);
-    setValue('#jobCategory', jobCategory);
-    setValue('#employmentType', employmentType);
-
-    $('#datePosted').val(datePosted).trigger('change');
     
-    const data = JSON.stringify({query: searchQuery});
+    // Set Search Form Values
+    setSearchFormValues();
+    
+    // Set data
+    const data = JSON.stringify({query: urlParamsObj.searchQuery});
 
     // Get Search Results
     $.ajax({
-        url: `${ BASE_URL_API }home/job-posts/search?page=${ page }`,
+        url: `${ BASE_URL_API }home/job-posts/search?page=${ 1 }`,
         type: "POST",
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
@@ -757,4 +807,53 @@ ifSelectorExist('#searchResultList', () => {
             total > 0 ? hasResult() : noResult();
         }
     });
+});
+
+
+/**
+ * ==============================================================================
+ * FOR FILTERS
+ * ==============================================================================
+ */
+
+$(() => {
+
+    // Date Posted Option On Change
+    $('#datePosted').on('select2:select', () => {
+        urlParamsObj.datePosted = $("#datePosted").val();
+        redirectWithURLParams();
+    });
+    
+    // Job Category Option On Change
+    $('#jobCategory').on('select2:select', () => {
+        urlParamsObj.jobCategory = $("#jobCategory").val();
+        redirectWithURLParams();
+    });
+    
+    // Employment Type Option On Change
+    $('#employmentType').on('select2:select', () => {
+        urlParamsObj.employmentType = $("#employmentType").val();
+        redirectWithURLParams();
+    });
+});
+
+
+/**
+ * ==============================================================================
+ * RESET FILTERS
+ * ==============================================================================
+ */
+
+// When reset filters button is clicked
+$('#resetFilters').on('click', () => {
+    if(
+        !isEmptyOrNull(urlParamsObj.datePosted) ||
+        !isEmptyOrNull(urlParamsObj.jobCategory) ||
+        !isEmptyOrNull(urlParamsObj.employmentType)
+    ) {
+        urlParamsObj.datePosted = null;
+        urlParamsObj.jobCategory = null;
+        urlParamsObj.employmentType = null;
+        redirectWithURLParams();
+    }
 });
