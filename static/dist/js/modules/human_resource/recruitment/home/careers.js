@@ -126,7 +126,6 @@ ifSelectorExist('#searchJobForm', () => {
 
     datePosted.select2({
         placeholder: "Date Posted",
-        minimumResultsForSearch: -1,
     });
 
     datePosted.val(urlParamsObj.datePosted).trigger('change');
@@ -146,7 +145,6 @@ ifSelectorExist('#searchJobForm', () => {
             /** Employment Type For Add Select2 */
             $('#jobCategory').select2({
                 placeholder: "Job Category",
-                minimumResultsForSearch: -1,
             });
 
             $('#jobCategory').val(urlParamsObj.jobCategory).trigger('change');
@@ -168,7 +166,6 @@ ifSelectorExist('#searchJobForm', () => {
         
             employmentType.select2({
                 placeholder: "Employment Type",
-                minimumResultsForSearch: -1,
             });
         
             employmentType.val(urlParamsObj.employmentType).trigger('change');

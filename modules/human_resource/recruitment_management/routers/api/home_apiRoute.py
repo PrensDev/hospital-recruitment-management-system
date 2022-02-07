@@ -44,7 +44,7 @@ FETCH_ROW = 10
 @router.get("/job-categories", response_model = List[careers.ShowJobCategory])
 def get_all_job_Categories(db: Session = Depends(get_db)):
     try:
-        return db.query(JobCategory).all()
+        return db.query(JobCategory).filter(JobCategory.is_removed == False).all()
     except Exception as e:
         print(e)
 
