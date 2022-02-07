@@ -1,5 +1,5 @@
 # Import Package
-from datetime import datetime, date, time
+from datetime import datetime, date
 from typing import List, Optional
 from pydantic import BaseModel
 from modules.human_resource.recruitment_management.schemas.user_schemas import ShowUser, ShowPosition
@@ -21,7 +21,7 @@ class ShowDepartmentPosition(BaseModel):
 class CreateManpowerRequest(BaseModel):
     requisition_no: str
     position_id: str
-    employment_type: str
+    employment_type_id: str
     request_nature: str
     staffs_needed: int
     min_monthly_salary: Optional[float]
@@ -30,13 +30,26 @@ class CreateManpowerRequest(BaseModel):
     deadline: Optional[datetime]
 
 
+# Employment Type
+class EmploymentType(BaseModel):
+    employment_type_id: str
+    name: str
+    description: str
+
+
+# Show Employment Type
+class ShowEmploymentType(EmploymentType):
+    class Config():
+        orm_mode = True
+
+
 # Show Manpower Request
 class ShowManpowerRequest(BaseModel):
     requisition_id: str
     requisition_no: str
     manpower_request_by: ShowUser
     vacant_position: ShowPosition
-    employment_type: str
+    manpower_request_employment_type: ShowEmploymentType
     request_nature: str
     staffs_needed: int
     min_monthly_salary: Optional[float]
@@ -62,7 +75,7 @@ class ShowManpowerRequest(BaseModel):
 # Update Manpower Request
 class UpdateManpowerRequest(BaseModel):
     position_id: str
-    employment_type: str
+    employment_type_id: str
     request_nature: str   
     staffs_needed: int
     min_monthly_salary: Optional[float]
@@ -178,6 +191,13 @@ class OnboardingEmployee(BaseModel):
     updated_at: Optional[datetime]
 
 
+# Add Onboarding Employee Task
+class CreateOnboardingEmployeeTask(BaseModel):
+    onboarding_task_id: str
+    start_at: datetime
+    end_at: datetime
+
+
 # Show Hired Applicant
 class ShowHiredApplicant(OnboardingEmployee):
     class Config():
@@ -218,4 +238,9 @@ class UpdateOnboardingEmployee(BaseModel):
     contact_number: str
     email: str
     employment_start_date: Optional[date]
+    status: str
+
+
+# Update Onboarding Empployee Task
+class UpdatedOnboardingEmployeeTaskStatus(BaseModel):
     status: str

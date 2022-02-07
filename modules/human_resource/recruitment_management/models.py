@@ -1,6 +1,4 @@
 # Import Packages
-from sqlalchemy.orm.relationships import foreign
-from sqlalchemy.sql.expression import null
 from database import Base
 from sqlalchemy import text
 from sqlalchemy.sql.schema import Column, ForeignKey
@@ -91,6 +89,10 @@ class User(Base):
     job_posts = relationship(
         "JobPost",
         back_populates = "job_posted_by"
+    )
+    job_categories = relationship(
+        "JobCategory",
+        back_populates = "job_category_created_by"
     )
     evaluated_applicants = relationship(
         "Applicant",
@@ -255,6 +257,47 @@ class Department(Base):
     )
 
 
+# Employment Type Model
+class EmploymentType(Base):
+    __tablename__ = "employment_types"
+
+    # Columns
+    employment_type_id = Column(
+        String(36),
+        primary_key=True,
+        default=text('UUID()')
+    )
+    name = Column(
+        String(255),
+        nullable=False
+    )
+    description = Column(
+        Text,
+        nullable=False,
+    )
+    is_active = Column(
+        Boolean,
+        default=True,
+        nullable=False
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        nullable=False
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationships
+    manpower_requests = relationship(
+        "Requisition",
+        back_populates = "manpower_request_employment_type"
+    )
+
+
 # Requisition Model
 class Requisition(Base):
     __tablename__ = "requisitions"
@@ -280,8 +323,9 @@ class Requisition(Base):
         ForeignKey("positions.position_id"),
         nullable = False
     )
-    employment_type = Column(
+    employment_type_id = Column(
         String(255),
+        ForeignKey("employment_types.employment_type_id"),
         nullable = False
     )
     request_nature = Column(
@@ -380,6 +424,10 @@ class Requisition(Base):
         back_populates = "rejected_manpower_requests",
         foreign_keys = "Requisition.rejected_by"
     )
+    manpower_request_employment_type = relationship(
+        "EmploymentType",
+        back_populates="manpower_requests",
+    )
     vacant_position = relationship(
         "Position",
         back_populates = "vacancy_requests"
@@ -390,7 +438,7 @@ class Requisition(Base):
     )
 
 
-# Job Post
+# Job Post Model
 class JobPost(Base):
     __tablename__ = "job_posts"
 
@@ -417,6 +465,11 @@ class JobPost(Base):
     expiration_date = Column(
         DateTime,
         nullable = True
+    )
+    job_category_id = Column(
+        String(36),
+        ForeignKey("job_categories.job_category_id"),
+        nullable = False
     )
     posted_by = Column(
         String(36),
@@ -456,9 +509,63 @@ class JobPost(Base):
         "InterviewSchedule",
         back_populates = "schedule_for"
     )
+    job_categorized_as = relationship(
+        "JobCategory",
+        back_populates = "job_posts",
+    )
 
 
-# Applicants
+# Job Categories Model
+class JobCategory(Base):
+    __tablename__ = "job_categories"
+
+    # Columns
+    job_category_id = Column(
+        String(36),
+        primary_key = True,
+        default = text('UUID()')
+    )
+    name = Column(
+        String(36),
+        nullable = False
+    )
+    description = Column(
+        Text,
+        nullable = False
+    )
+    is_removed = Column(
+        Boolean,
+        nullable = False,
+        default = False
+    )
+    created_by = Column(
+        String(36),
+        ForeignKey("users.user_id"),
+        nullable = False
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        nullable = False
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationships
+    job_posts = relationship(
+        "JobPost",
+        back_populates = "job_categorized_as"
+    )
+    job_category_created_by = relationship(
+        "User",
+        back_populates = "job_categories",
+    )
+
+
+# Applicants Model
 class Applicant(Base):
     __tablename__ = "applicants"
 
@@ -589,7 +696,7 @@ class Applicant(Base):
     )
 
 
-# Interviewee
+# Interviewee Model
 class Interviewee(Base):
     __tablename__ = "interviewees"
 
@@ -647,7 +754,7 @@ class Interviewee(Base):
     )
 
 
-# Interview Schedule
+# Interview Schedule Model
 class InterviewSchedule(Base):
     __tablename__ = "interview_schedules"
 
@@ -705,7 +812,7 @@ class InterviewSchedule(Base):
     )
 
 
-# Interview Score
+# Interview Score Model
 class InterviewScore(Base):
     __tablename__ = "interview_scores"
 
@@ -759,7 +866,7 @@ class InterviewScore(Base):
     )
 
 
-# Interview Question
+# Interview Question Model
 class InterviewQuestion(Base):
     __tablename__ = "interview_questions"
 
@@ -815,7 +922,7 @@ class InterviewQuestion(Base):
     )
 
 
-# On Boarding Employees
+# Onboarding Employees Model
 class OnboardingEmployee(Base):
     __tablename__ = "onboarding_employees"
 
@@ -909,7 +1016,7 @@ class OnboardingEmployee(Base):
     )
 
 
-# Onboarding Tasks
+# Onboarding Tasks Model
 class OnboardingTask(Base):
     __tablename__ = "onboarding_tasks"
 
@@ -988,7 +1095,7 @@ class OnboardingTask(Base):
     )
 
 
-# Onboarding Employee Task
+# Onboarding Employee Task Model
 class OnboardingEmployeeTask(Base):
     __tablename__ = "onboarding_employee_task"
 

@@ -72,29 +72,26 @@ def home(req: Request, page: Optional[int] = None):
 
 # Careers
 @router.get("/careers")
-def careers(req: Request, page: Optional[int] = None):
+def careers(
+    req: Request, 
+    searchQuery: Optional[str] = None,
+    datePosted: Optional[str] = None,
+    jobCategory: Optional[str] = None,
+    employmentType: Optional[str] = None,
+    page: Optional[int] = 1
+):
+
+    # Check if page is not valid
+    if not page or page <= 0:
+        return errTemplate.page_not_found(req)
+
+    # If query is not declared
     return templates.TemplateResponse("pages/home/careers.html", {
         "request": req,
         "page_title": "Careers",
         "page_subtitle": "Discover job opportunities here",
         "active_navlink": "Careers"
     })
-
-
-# Search Job
-@router.get("/careers/search")
-def search(req: Request, query: str, page: Optional[int] = 1):
-    
-    # If query is not declared
-    if not query:
-        return errTemplate.page_not_found(req)
-    
-    # If no error, return template response
-    return templates.TemplateResponse("pages/home/search_result.html", {
-        "request": req,
-        "page_title": "Search Result for \"" + query + "\"",
-        "active_navlink": "Careers"
-        })
 
 
 # Available Job Details

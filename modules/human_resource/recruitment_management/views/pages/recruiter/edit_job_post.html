@@ -145,23 +145,30 @@
                     
                     <div class="card-body">
                         <input type="hidden" id="jobPostID" name="jobPostID">
+
+                        {# Job Category #}
+                        <div class="form-group">
+                            <label for="jobCategory">Job Category</label>
+                            <select
+                                name="jobCategory" 
+                                id="jobCategory"
+                                class="form-control select2"
+                                style="width: 100%"
+                            ></select>
+                        </div>
     
                         {# Job Description #}
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="jobDescription">Job Description <span class="text-danger">*</span></label>
-                                    <div>
-                                        <textarea
-                                            name="jobDescription" 
-                                            id="jobDescription" 
-                                            class="form-control"
-                                            placeholder="Enter job description here..."
-                                        ></textarea>
-                                    </div>
-                                    <div class="small text-danger" id="jobDescriptionInvalidFeedback" style="display: none">Job description is required</div>
-                                </div>
+                        <div class="form-group">
+                            <label for="jobDescription">Job Description <span class="text-danger">*</span></label>
+                            <div>
+                                <textarea
+                                    name="jobDescription" 
+                                    id="jobDescription" 
+                                    class="form-control"
+                                    placeholder="Enter job description here..."
+                                ></textarea>
                             </div>
+                            <div class="small text-danger" id="jobDescriptionInvalidFeedback" style="display: none">Job description is required</div>
                         </div>
 
                         <div class="form-row">

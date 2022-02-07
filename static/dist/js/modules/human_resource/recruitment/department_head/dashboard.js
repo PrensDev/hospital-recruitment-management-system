@@ -194,6 +194,13 @@ const renderData = (start, end) => {
 /** AS DOCUMENT HAS BEEN LOADED */
 
 (() => {
+
+    if(isEmptyOrNull(DATE_RANGE_PARAM)) {
+        // Set URL dateRange
+        URL_QUERY_PARAMS.set('dateRange', DEFAULT_FILTER_RANGE)
+        history.replaceState(null, null, "?" + URL_QUERY_PARAMS.toString());
+    }
+    
     /** Initialize DateRange Filter */
     setDateRangeFilter(START_DATE_RANGE, END_DATE_RANGE, DEFAULT_FILTER_RANGE);
 
@@ -207,6 +214,10 @@ const renderData = (start, end) => {
 
         // Change DateRange Filter
         setDateRangeFilter(start, end, label);
+    
+        // Replace URL dateRange
+        URL_QUERY_PARAMS.set('dateRange', label)
+        history.replaceState(null, null, "?"+URL_QUERY_PARAMS.toString());
 
         // Refresh charts and quantitive data
         renderData(start, end);

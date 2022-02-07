@@ -1,15 +1,16 @@
 # Import Package
-from datetime import datetime, date, time
-from typing import List, Optional
+from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel
-from modules.human_resource.recruitment_management.schemas.user_schemas import ShowUser, ShowPosition
-
+from modules.human_resource.recruitment_management.schemas.user_schemas import ShowPosition
+from modules.human_resource.recruitment_management.schemas.recruiter_schemas import ShowJobCategory
+from modules.human_resource.recruitment_management.schemas.deptMngr_schemas import ShowEmploymentType
 
 
 # Manpower Request
 class ManpowerRequest(BaseModel):
     vacant_position: ShowPosition
-    employment_type: str
+    manpower_request_employment_type: ShowEmploymentType
     request_nature: str
     staffs_needed: int
     min_monthly_salary: Optional[float]
@@ -19,9 +20,20 @@ class ManpowerRequest(BaseModel):
         orm_mode = True
 
 
+# Show Job Category
+class ShowEmploymentType(BaseModel):
+    employment_type_id: str
+    name: str
+    description: str
+
+    class Config():
+        orm_mode = True
+
+
 # Show Job Post For Applicants
 class ShowJobPost(BaseModel):
     salary_is_visible: bool
+    job_categorized_as: ShowJobCategory
     content: str
     expiration_date: Optional[datetime]
     job_post_id: str

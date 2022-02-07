@@ -421,7 +421,7 @@ const setManpowerRequestDocument = (data) => {
     });
 
     // Set Employment Type
-    setContent('#employmentType', data.employment_type);
+    setContent('#employmentType', data.manpower_request_employment_type.name);
     
     // Set Request Nature
     setContent('#requestNature', data.request_nature);
@@ -581,14 +581,15 @@ const setJobPostDetails = (data) => {
     else
         setContent('#jobPostStatus', TEMPLATE.BADGE('warning', 'Last Day Today'))
 
-    // Set Posted At, Vacant Position, Employment Type
+    // Set Posted At, Vacant Position, Employment Type, Job Category
     const manpowerRequest = data.manpower_request;
     setContent({
         '#postedAt': `Posted ${ formatDateTime(data.created_at, 'Date') }`,
         '#postedAtHumanized': fromNow(data.created_at),
         '#jobPostViews': formatNumber(data.views) + pluralize(' view', data.views),
         '#vacantPosition': manpowerRequest.vacant_position.name,
-        '#employmentTypeForJobPost': manpowerRequest.employment_type
+        '#employmentTypeForJobPost': manpowerRequest.employment_type,
+        '#jobCategory': data.job_categorized_as.name,
     });
 
     // Set Salary Range

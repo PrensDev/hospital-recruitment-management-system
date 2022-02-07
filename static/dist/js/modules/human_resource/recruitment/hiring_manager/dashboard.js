@@ -70,7 +70,7 @@ const manpowerRequestsStatusPieChart = new Chart($('#manpowerRequestsStatusPieCh
 
 // Job Posts Status Pie Chart
 const jobPostsStatusPieChart = new Chart($('#jobPostsStatusPieChart').get(0).getContext('2d'), {
-    type: 'pie',
+    type: 'doughnut',
     data: CHART_CONFIG.NO_DATA,
     options: CHART_CONFIG.PIE.OPTIONS,
     plugins: CHART_CONFIG.PIE.PLUGINS
@@ -457,6 +457,13 @@ const renderData = (start, end) => {
 /** AS DOCUMENT HAS BEEN LOADED */
 
 (() => {
+
+    if(isEmptyOrNull(DATE_RANGE_PARAM)) {
+        // Set URL dateRange
+        URL_QUERY_PARAMS.set('dateRange', DEFAULT_FILTER_RANGE)
+        history.replaceState(null, null, "?" + URL_QUERY_PARAMS.toString());
+    }
+    
     /** Initialize DateRange Filter */
     setDateRangeFilter(START_DATE_RANGE, END_DATE_RANGE, DEFAULT_FILTER_RANGE);
 
@@ -470,6 +477,10 @@ const renderData = (start, end) => {
 
         // Change DateRange Filter
         setDateRangeFilter(start, end, label);
+    
+        // Replace URL dateRange
+        URL_QUERY_PARAMS.set('dateRange', label)
+        history.replaceState(null, null, "?"+URL_QUERY_PARAMS.toString());
 
         // Refresh charts and quantitive data
         renderData(start, end);

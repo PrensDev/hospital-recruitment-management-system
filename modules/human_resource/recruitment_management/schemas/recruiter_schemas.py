@@ -1,9 +1,10 @@
 # Import Package
-from datetime import datetime, date, time
+from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
-from database import Base
+
 from modules.human_resource.recruitment_management.schemas.user_schemas import ShowUser, ShowPosition
+from modules.human_resource.recruitment_management.schemas.deptMngr_schemas import ShowEmploymentType
 
 
 # Manpower Request
@@ -12,7 +13,7 @@ class ManpowerRequest(BaseModel):
     requisition_no: str
     manpower_request_by: ShowUser
     vacant_position: ShowPosition
-    employment_type: str
+    manpower_request_employment_type: ShowEmploymentType
     request_nature: str
     staffs_needed: int
     min_monthly_salary: Optional[float]
@@ -30,6 +31,38 @@ class ManpowerRequest(BaseModel):
     remarks: Optional[str]
     created_at: datetime
     updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+# Create Job Category
+class CreateJobCategory(BaseModel):
+    name: str
+    description: str
+
+
+# Job Category
+class JobCategory(BaseModel):
+    job_category_id: str
+    name: str
+    description: str
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+# Update Job Category
+class UpdateJobCategory(BaseModel):
+    name: str
+    description: str
+
+
+# Show Job Category
+class ShowJobCategory(JobCategory):
+    job_category_created_by: ShowUser
 
     class Config():
         orm_mode = True
@@ -68,6 +101,7 @@ class Applicant(BaseModel):
 
 # Show Job Post
 class ShowJobPost(JobPost):
+    job_categorized_as: JobCategory
     manpower_request: ManpowerRequest
     applicants: List[Optional[Applicant]]
 
@@ -87,6 +121,7 @@ class ShowManpowerRequest(ManpowerRequest):
 class CreateJobPost(BaseModel):
     requisition_id: str
     salary_is_visible: bool
+    job_category_id: str
     content: str
     expiration_date: Optional[datetime]
 
@@ -94,6 +129,7 @@ class CreateJobPost(BaseModel):
 # Update Job Post(BaseModel):
 class UpdateJobPost(BaseModel):
     salary_is_visible: bool
+    job_category_id: str
     content: str
     expiration_date: Optional[datetime]
 

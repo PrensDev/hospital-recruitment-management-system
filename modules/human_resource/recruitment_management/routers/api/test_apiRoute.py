@@ -5,8 +5,9 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from hashing import Hash
 from database import get_db
-from modules.human_resource.recruitment_management.schemas import db_schemas, user_schemas as user
-from modules.human_resource.recruitment_management.models import Department, Position, User
+
+from modules.human_resource.recruitment_management.schemas import test_schemas, user_schemas as user
+from modules.human_resource.recruitment_management.models import Department, EmploymentType, Position, User
 
 
 # Router Instance
@@ -89,7 +90,7 @@ def create_position(department_id, req: user.CreatePosition, db: Session = Depen
 
 
 # Get All Department Position
-@router.get("/departments/{department_id}/positions", response_model = db_schemas.ShowDepartmentPosition)
+@router.get("/departments/{department_id}/positions", response_model = test_schemas.ShowDepartmentPosition)
 def get_all_department_positions(department_id: str, db: Session = Depends(get_db)):
     try:
         return db.query(Department).filter(Department.department_id == department_id).first()
@@ -107,13 +108,37 @@ def get_all_positions(db: Session = Depends(get_db)):
 
 
 # =========================================================================
+# EMPLOYMENT TYPE
+# =========================================================================
+
+@router.post("/employment-types")
+def create_employment_type(req: test_schemas.CreateEmploymentType, db: Session = Depends(get_db)):
+    try:
+        new_employment_type = EmploymentType(**req.dict())
+        db.add(new_employment_type)
+        db.commit()
+        db.refresh(new_employment_type)
+        return {"data": new_employment_type, "msg": "A new employment type has been added"}
+    except Exception as e:
+        print(e)
+
+
+@router.get("/employment-types")
+def get_employment_types(db: Session = Depends(get_db)):
+    try:
+        return db.query(EmploymentType).all()
+    except Exception as e:
+        print(e)
+
+
+# =========================================================================
 # USER
 # =========================================================================
 
 
 # Create User
 @router.post("/users", status_code = 201)
-def create_user(req: db_schemas.User, db: Session = Depends(get_db)):
+def create_user(req: test_schemas.User, db: Session = Depends(get_db)):
     try:
         req.password = Hash.encrypt(req.password)
         new_user = User(**req.dict())
