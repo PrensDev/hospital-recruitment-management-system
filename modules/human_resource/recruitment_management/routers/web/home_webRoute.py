@@ -85,35 +85,13 @@ def careers(
     if not page or page <= 0:
         return errTemplate.page_not_found(req)
 
-    # If query is declared
-    if searchQuery:
-
-        # If date posted is declared
-        if datePosted:
-            print("Date Posted:", datePosted)
-
-        # If job category is declared
-        if jobCategory:
-            print("Job Category:", jobCategory)
-
-        # If employment type is declared
-        if employmentType:
-            print("Employment Type:", employmentType)
-
-        return templates.TemplateResponse("pages/home/search_result.html", {
-            "request": req,
-            "page_title": "Search Result for \"" + searchQuery + "\"",
-            "active_navlink": "Careers"
-        })
-
     # If query is not declared
-    else:
-        return templates.TemplateResponse("pages/home/careers.html", {
-            "request": req,
-            "page_title": "Careers",
-            "page_subtitle": "Discover job opportunities here",
-            "active_navlink": "Careers"
-        })
+    return templates.TemplateResponse("pages/home/careers.html", {
+        "request": req,
+        "page_title": "Careers",
+        "page_subtitle": "Discover job opportunities here",
+        "active_navlink": "Careers"
+    })
 
 
 # Available Job Details

@@ -2,20 +2,26 @@
 <div class="container mb-3">
     <form class="card" id="searchJobForm">
         <div class="card-body">
-            <div class="form-group">
-                <div class="input-group">
-                    <input 
-                        type="search" 
-                        class="form-control form-control-lg border-2 border-primary" 
-                        placeholder="Type Job Title or Keywords here"
-                        id="searchQuery"
-                        name="searchQuery"
-                    >
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="fa fa-search mr-1"></i>
-                            <span class="font-weight-bold">Search</span>
-                        </button>
+            <div class="form-row">
+                <div class="col-md-10">
+                    <div class="form-group">
+                        <input 
+                            type="search" 
+                            class="form-control border-2 border-primary" 
+                            placeholder="Type Job Title or Keywords here"
+                            id="searchQuery"
+                            name="searchQuery"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fa fa-search mr-1"></i>
+                                <span class="font-weight-bold">Find jobs!</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

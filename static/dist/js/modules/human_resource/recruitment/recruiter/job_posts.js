@@ -68,7 +68,7 @@ ifSelectorExist('#createJobPostForm', () => {
             });
 
             // Set Employment Type
-            setContent('#employmentTypeForSummary', result.employment_type);
+            setContent('#employmentTypeForSummary', result.manpower_request_employment_type.name);
 
             // Set Salary Range
             setContent('#salaryRangeForSummary', () => {
@@ -136,7 +136,7 @@ ifSelectorExist('#createJobPostForm', () => {
             });
 
             // Set Employment Type
-            setContent('#employmentType', result.employment_type);
+            setContent('#employmentType', result.manpower_request_employment_type.name);
 
             // Set Request Nature
             setContent('#requestNature', result.request_nature);
@@ -273,22 +273,33 @@ validateForm('#createJobPostForm', {
 
 /** Submit Job Post */
 onClick('#confirmPostNewJobPostBtn', () => {
+
+    // Set buttons to loading state
+    btnToLoadingState('#confirmPostNewJobPostBtn');
+    disableElement('#cancelPostNewJobPostBtn');
+
     const formData = generateFormData('#createJobPostForm');
+    const get = (name) => { return formData.get(name) }
 
     const expirationDate = isChecked('#expirationDate') 
-        ? formatDateTime(formData.get('openUntil')) 
+        ? formatDateTime(get('openUntil')) 
         : null
 
     const data = {
-        requisition_id: formData.get('requisitionID'),
+        requisition_id: get('requisitionID'),
         salary_is_visible: isChecked('#salaryRangeIsVisible'),
-        job_category_id: formData.get('jobCategory'),
-        content: formData.get('jobDescription'),
+        job_category_id: get('jobCategory'),
+        content: get('jobDescription'),
         expiration_date: expirationDate,
     }
 
     const ifError = () => {
         hideModal('#confirmPostNewJobModal');
+        
+        // Set buttons to unload state
+        btnToUnloadState('#confirmPostNewJobPostBtn', TEMPLATE.LABEL_ICON('Yes, post it', 'check'));
+        enableElement('#cancelPostNewJobPostBtn');
+        
         toastr.error('There was an error in posting new job')
     } 
 
@@ -776,7 +787,7 @@ ifSelectorExist('#editJobPostForm', () => {
             });
 
             // Set Employment Type
-            setContent('#employmentTypeForSummary', manpowerRequest.employment_type);
+            setContent('#employmentTypeForSummary', manpowerRequest.manpower_request_employment_type.name);
 
             // Set Salary Range
             setContent('#salaryRangeForSummary', () => {
@@ -833,7 +844,7 @@ ifSelectorExist('#editJobPostForm', () => {
             });
 
             // Set Employment Type
-            setContent('#employmentType', manpowerRequest.employment_type);
+            setContent('#employmentType', manpowerRequest.manpower_request_employment_type.name);
 
             // Set Request Nature
             setContent('#requestNature', manpowerRequest.request_nature);

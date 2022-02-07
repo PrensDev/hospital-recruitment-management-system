@@ -124,8 +124,7 @@ const DATE_RANGES = {
 // Default Filter Range
 let DATE_RANGE_PARAM = URL_QUERY_PARAMS.get('dateRange')
 const DEFAULT_FILTER_RANGE = DATE_RANGE_PARAM && DATE_RANGE_PARAM in DATE_RANGES 
-    ? DATE_RANGE_PARAM 
-    : "This Month"
+    ? DATE_RANGE_PARAM : "This Month"
 
 
 // Start and End Date Range

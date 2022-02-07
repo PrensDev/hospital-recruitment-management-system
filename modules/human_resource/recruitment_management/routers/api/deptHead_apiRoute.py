@@ -93,35 +93,30 @@ def requisition_analytics(
                 
                 if start and end:
                     date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
-                    total = total_query.filter(date_filter).count()
-                    for_signature = for_signature_query.filter(date_filter).count()
-                    for_approval = for_approval_query.filter(date_filter).count()
-                    approved = approved_query.filter(date_filter).count()
-                    completed = completed_query.filter(date_filter).count()
-                    rejected_for_signing = rejected_for_signing_query.filter(date_filter).count()
-                    rejected_for_approval = rejected_for_approval_query.filter(date_filter).count()
-                else:
-                    total = total_query.count()
-                    for_signature = for_signature_query.count()
-                    for_approval = for_approval_query.count()
-                    approved = approved_query.count()
-                    completed = completed_query.count()
-                    rejected_for_signing = rejected_for_signing_query.count()
-                    rejected_for_approval = rejected_for_approval_query.count()
+                    total_query = total_query.filter(date_filter)
+                    for_signature_query = for_signature_query.filter(date_filter)
+                    for_approval_query = for_approval_query.filter(date_filter)
+                    approved_query = approved_query.filter(date_filter)
+                    completed_query = completed_query.filter(date_filter)
+                    rejected_for_signing_query = rejected_for_signing_query.filter(date_filter)
+                    rejected_for_approval_query = rejected_for_approval_query.filter(date_filter)
                 
+                total_ongoing = for_signature_query.count() + for_approval_query.count() + approved_query.count()
+                total_rejected = rejected_for_signing_query.count() + rejected_for_approval_query.count()
+
                 return {
-                    "total": total,
+                    "total": total_query.count(),
                     "on_going": {
-                        "total": for_signature + for_approval + approved,
-                        "for_signature": for_signature,
-                        "for_approval": for_approval,
-                        "approved": approved,
+                        "total": total_ongoing,
+                        "for_signature": for_signature_query.count(),
+                        "for_approval": for_approval_query.count(),
+                        "approved": approved_query.count(),
                     },
-                    "completed": completed,
+                    "completed": completed_query.count(),
                     "rejected": {
-                        "total": rejected_for_signing + rejected_for_approval,
-                        "for_signing": rejected_for_signing,
-                        "for_approval": rejected_for_approval
+                        "total": total_rejected,
+                        "for_signing": rejected_for_signing_query.count(),
+                        "for_approval": rejected_for_approval_query.count()
                     }
                 }
     except Exception as e:
@@ -151,7 +146,7 @@ def requisitions_data(
             else:
                 target_column = cast(Requisition.created_at, Date)
 
-                requests_query = db.query(
+                query = db.query(
                     target_column.label("created_at"), 
                     func.count(Requisition.requisition_id).label("total")
                 ).join(Position).filter(
@@ -161,10 +156,12 @@ def requisitions_data(
                 ).group_by(target_column)
 
                 if start and end:
-                    date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
-                    return requests_query.filter(date_filter).all()
-                else:
-                    return requests_query.all()
+                    query = query.filter(and_(
+                        Requisition.created_at >= start, 
+                        Requisition.created_at <= end
+                    )).all()
+
+                return query.all()
     except Exception as e:
         print(e)
 

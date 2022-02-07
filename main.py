@@ -1,4 +1,6 @@
+# =================================================================
 # Import Packages
+# =================================================================
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
@@ -16,9 +18,14 @@ app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
 
 
-
+# =================================================================
 # Import Submodules
+# =================================================================
+
+# Human Resource
 from modules.human_resource.recruitment_management.app import app as recruitment_management
+
+
 
 # Mount Submodules
 app.mount('/', recruitment_management)

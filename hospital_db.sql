@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 20, 2022 at 07:58 AM
+-- Generation Time: Feb 07, 2022 at 10:31 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -74,6 +74,31 @@ INSERT INTO `departments` (`department_id`, `name`, `description`, `created_at`,
 ('1ba3a3a6-785f-11ec-ba80-6c626d3a5d34', 'Human Resource (HR) Department', 'Human Resource (HR) Department', '2022-01-18 21:04:01', '2022-01-18 21:04:01'),
 ('edd3166b-785e-11ec-ba80-6c626d3a5d34', 'Information Technology (IT) Department', 'Information Technology (IT) Department', '2022-01-18 21:02:45', '2022-01-18 21:02:45'),
 ('fe6ec3ab-785e-11ec-ba80-6c626d3a5d34', 'Intensive Care Unit (ICU) Department', 'Intensive Care Unit (ICU) Department', '2022-01-18 21:03:12', '2022-01-18 21:03:12');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employment_types`
+--
+
+CREATE TABLE `employment_types` (
+  `employment_type_id` varchar(36) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `employment_types`
+--
+
+INSERT INTO `employment_types` (`employment_type_id`, `name`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
+('1723904f-87dc-11ec-ab13-6c626d3a5d34', 'Full Time', 'Full Time', 1, '2022-02-07 14:06:29', '2022-02-07 14:06:29'),
+('2ca4f8ca-87dc-11ec-ab13-6c626d3a5d34', 'Part Time', 'Part Time', 1, '2022-02-07 14:07:05', '2022-02-07 14:07:05'),
+('37f58173-87dc-11ec-ab13-6c626d3a5d34', 'Intern/OJT', 'Intern/OJT', 1, '2022-02-07 14:07:24', '2022-02-07 14:07:24'),
+('4414a253-87dc-11ec-ab13-6c626d3a5d34', 'Contract', 'Contract', 1, '2022-02-07 14:07:44', '2022-02-07 14:07:44');
 
 -- --------------------------------------------------------
 
@@ -151,7 +176,7 @@ CREATE TABLE `job_categories` (
   `job_category_id` varchar(36) NOT NULL,
   `name` varchar(36) NOT NULL,
   `description` text NOT NULL,
-  `is_removed` tinyint(1) NOT NULL DEFAULT 0,
+  `is_removed` tinyint(1) NOT NULL,
   `created_by` varchar(36) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL
@@ -162,10 +187,8 @@ CREATE TABLE `job_categories` (
 --
 
 INSERT INTO `job_categories` (`job_category_id`, `name`, `description`, `is_removed`, `created_by`, `created_at`, `updated_at`) VALUES
-('4a1f4464-78e9-11ec-a2f8-6c626d3a5d34', 'Registered Nurse', 'Registered Nurse category is a list of nurse careers correlated to nursing program and approaching the requirements outlined by a country, state, province, or similar government-authorized licensing body to obtain a nursing license', 0, '74366c72-7866-11ec-ba80-6c626d3a5d34', '2022-01-19 13:33:10', '2022-01-20 11:26:39'),
-('64668f24-78e8-11ec-a2f8-6c626d3a5d34', 'Finance and Accounting', 'Finance and Accounting category refers to careers correlated to the field of finance and accounting', 0, '74366c72-7866-11ec-ba80-6c626d3a5d34', '2022-01-19 13:26:44', '2022-01-20 11:31:11'),
-('7a4e72d0-78e8-11ec-a2f8-6c626d3a5d34', 'Equipment Maintenance and Facilities', 'Equipment Maintenance and Facilities category refers to a list of careers correlated to the maintenance of equipment and facilities in different areas', 0, '74366c72-7866-11ec-ba80-6c626d3a5d34', '2022-01-19 13:27:21', '2022-01-20 11:27:59'),
-('bc942407-78e6-11ec-a2f8-6c626d3a5d34', 'Information Technology', 'Information Technology category refers to careers correlated to information and communication technology', 0, '74366c72-7866-11ec-ba80-6c626d3a5d34', '2022-01-19 13:14:53', '2022-01-20 12:59:43');
+('0240ac3a-87d8-11ec-ab13-6c626d3a5d34', 'Information Technology', 'This category refers to group of job posts that are related to Information Technology', 0, '74366c72-7866-11ec-ba80-6c626d3a5d34', '2022-02-07 13:37:16', '2022-02-07 13:37:16'),
+('2c081990-87f3-11ec-ab13-6c626d3a5d34', 'test', 'test', 0, '74366c72-7866-11ec-ba80-6c626d3a5d34', '2022-02-07 16:51:42', '2022-02-07 16:51:42');
 
 -- --------------------------------------------------------
 
@@ -191,7 +214,8 @@ CREATE TABLE `job_posts` (
 --
 
 INSERT INTO `job_posts` (`job_post_id`, `requisition_id`, `salary_is_visible`, `content`, `expiration_date`, `job_category_id`, `posted_by`, `views`, `created_at`, `updated_at`) VALUES
-('f3ffb2bf-79b6-11ec-9d89-6c626d3a5d34', '6ba2400f-78f5-11ec-a2f8-6c626d3a5d34', 0, '<p>sdf</p>', NULL, 'bc942407-78e6-11ec-a2f8-6c626d3a5d34', '74366c72-7866-11ec-ba80-6c626d3a5d34', 1, '2022-01-20 14:05:22', '2022-01-20 14:09:07');
+('02444d4a-87ec-11ec-ab13-6c626d3a5d34', '3a2db6c8-87e9-11ec-ab13-6c626d3a5d34', 0, '<p>sef</p>', NULL, '0240ac3a-87d8-11ec-ab13-6c626d3a5d34', '74366c72-7866-11ec-ba80-6c626d3a5d34', 1, '2022-02-07 16:00:26', '2022-02-07 16:14:29'),
+('d64c0b50-87ec-11ec-ab13-6c626d3a5d34', '0fa875ac-87e5-11ec-ab13-6c626d3a5d34', 0, '<p>sadfdfasdf</p>', NULL, '2c081990-87f3-11ec-ab13-6c626d3a5d34', '74366c72-7866-11ec-ba80-6c626d3a5d34', 2, '2022-02-07 16:06:21', '2022-02-07 16:51:51');
 
 -- --------------------------------------------------------
 
@@ -308,7 +332,7 @@ CREATE TABLE `requisitions` (
   `requisition_no` varchar(255) NOT NULL,
   `requested_by` varchar(36) NOT NULL,
   `position_id` varchar(36) NOT NULL,
-  `employment_type` varchar(255) NOT NULL,
+  `employment_type_id` varchar(255) NOT NULL,
   `request_nature` varchar(255) NOT NULL,
   `staffs_needed` int(11) NOT NULL,
   `min_monthly_salary` float DEFAULT NULL,
@@ -332,8 +356,9 @@ CREATE TABLE `requisitions` (
 -- Dumping data for table `requisitions`
 --
 
-INSERT INTO `requisitions` (`requisition_id`, `requisition_no`, `requested_by`, `position_id`, `employment_type`, `request_nature`, `staffs_needed`, `min_monthly_salary`, `max_monthly_salary`, `content`, `request_status`, `deadline`, `signed_by`, `signed_at`, `reviewed_by`, `reviewed_at`, `completed_at`, `rejected_by`, `rejected_at`, `remarks`, `created_at`, `updated_at`) VALUES
-('6ba2400f-78f5-11ec-a2f8-6c626d3a5d34', 'REQ-KYL732G6-5CYBCK', '9fa5dc93-7865-11ec-ba80-6c626d3a5d34', '294f4cf1-7860-11ec-ba80-6c626d3a5d34', 'Full Time', 'New/Addition', 12, NULL, NULL, '<p>Requesting Application Analyst</p>', 'Approved', NULL, 'ec5f7346-7865-11ec-ba80-6c626d3a5d34', '2022-01-19 15:00:29', '21c485c1-7866-11ec-ba80-6c626d3a5d34', '2022-01-19 15:01:05', NULL, NULL, NULL, NULL, '2022-01-19 15:00:00', '2022-01-19 15:01:05');
+INSERT INTO `requisitions` (`requisition_id`, `requisition_no`, `requested_by`, `position_id`, `employment_type_id`, `request_nature`, `staffs_needed`, `min_monthly_salary`, `max_monthly_salary`, `content`, `request_status`, `deadline`, `signed_by`, `signed_at`, `reviewed_by`, `reviewed_at`, `completed_at`, `rejected_by`, `rejected_at`, `remarks`, `created_at`, `updated_at`) VALUES
+('0fa875ac-87e5-11ec-ab13-6c626d3a5d34', 'REQ-KZCCUCLD-0U9WH9', '9fa5dc93-7865-11ec-ba80-6c626d3a5d34', '09ee6d56-7860-11ec-ba80-6c626d3a5d34', '1723904f-87dc-11ec-ab13-6c626d3a5d34', 'Replacement', 5, NULL, NULL, '<p>sdf</p>', 'Approved', NULL, 'ec5f7346-7865-11ec-ba80-6c626d3a5d34', '2022-02-07 16:02:29', '21c485c1-7866-11ec-ba80-6c626d3a5d34', '2022-02-07 16:03:01', NULL, NULL, NULL, NULL, '2022-02-07 15:10:42', '2022-02-07 16:03:01'),
+('3a2db6c8-87e9-11ec-ab13-6c626d3a5d34', 'REQ-KZCDWQKP-WL7WLV', '9fa5dc93-7865-11ec-ba80-6c626d3a5d34', '3f8fa73d-7860-11ec-ba80-6c626d3a5d34', '2ca4f8ca-87dc-11ec-ab13-6c626d3a5d34', 'New/Addition', 2, NULL, NULL, '<p>asd</p>', 'Approved', NULL, 'ec5f7346-7865-11ec-ba80-6c626d3a5d34', '2022-02-07 15:53:21', '21c485c1-7866-11ec-ba80-6c626d3a5d34', '2022-02-07 15:54:32', NULL, NULL, NULL, NULL, '2022-02-07 15:40:31', '2022-02-07 15:54:32');
 
 -- --------------------------------------------------------
 
@@ -392,6 +417,12 @@ ALTER TABLE `departments`
   ADD PRIMARY KEY (`department_id`);
 
 --
+-- Indexes for table `employment_types`
+--
+ALTER TABLE `employment_types`
+  ADD PRIMARY KEY (`employment_type_id`);
+
+--
 -- Indexes for table `interviewees`
 --
 ALTER TABLE `interviewees`
@@ -437,7 +468,7 @@ ALTER TABLE `job_categories`
 ALTER TABLE `job_posts`
   ADD PRIMARY KEY (`job_post_id`),
   ADD KEY `requisition_id` (`requisition_id`),
-  ADD KEY `job_category` (`job_category_id`),
+  ADD KEY `job_category_id` (`job_category_id`),
   ADD KEY `posted_by` (`posted_by`);
 
 --
@@ -484,6 +515,7 @@ ALTER TABLE `requisitions`
   ADD UNIQUE KEY `requisition_no` (`requisition_no`),
   ADD KEY `requested_by` (`requested_by`),
   ADD KEY `position_id` (`position_id`),
+  ADD KEY `employment_type_id` (`employment_type_id`),
   ADD KEY `signed_by` (`signed_by`),
   ADD KEY `reviewed_by` (`reviewed_by`),
   ADD KEY `rejected_by` (`rejected_by`);
@@ -590,9 +622,10 @@ ALTER TABLE `positions`
 ALTER TABLE `requisitions`
   ADD CONSTRAINT `requisitions_ibfk_1` FOREIGN KEY (`requested_by`) REFERENCES `users` (`user_id`),
   ADD CONSTRAINT `requisitions_ibfk_2` FOREIGN KEY (`position_id`) REFERENCES `positions` (`position_id`),
-  ADD CONSTRAINT `requisitions_ibfk_3` FOREIGN KEY (`signed_by`) REFERENCES `users` (`user_id`),
-  ADD CONSTRAINT `requisitions_ibfk_4` FOREIGN KEY (`reviewed_by`) REFERENCES `users` (`user_id`),
-  ADD CONSTRAINT `requisitions_ibfk_5` FOREIGN KEY (`rejected_by`) REFERENCES `users` (`user_id`);
+  ADD CONSTRAINT `requisitions_ibfk_3` FOREIGN KEY (`employment_type_id`) REFERENCES `employment_types` (`employment_type_id`),
+  ADD CONSTRAINT `requisitions_ibfk_4` FOREIGN KEY (`signed_by`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `requisitions_ibfk_5` FOREIGN KEY (`reviewed_by`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `requisitions_ibfk_6` FOREIGN KEY (`rejected_by`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `users`

@@ -2,7 +2,9 @@
 from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
+
 from modules.human_resource.recruitment_management.schemas.user_schemas import ShowUser, ShowPosition
+from modules.human_resource.recruitment_management.schemas.deptMngr_schemas import ShowEmploymentType
 
 
 # Manpower Request
@@ -11,7 +13,7 @@ class ManpowerRequest(BaseModel):
     requisition_no: str
     manpower_request_by: ShowUser
     vacant_position: ShowPosition
-    employment_type: str
+    manpower_request_employment_type: ShowEmploymentType
     request_nature: str
     staffs_needed: int
     min_monthly_salary: Optional[float]

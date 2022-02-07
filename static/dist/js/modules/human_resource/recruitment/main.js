@@ -421,7 +421,7 @@ const setManpowerRequestDocument = (data) => {
     });
 
     // Set Employment Type
-    setContent('#employmentType', data.employment_type);
+    setContent('#employmentType', data.manpower_request_employment_type.name);
     
     // Set Request Nature
     setContent('#requestNature', data.request_nature);

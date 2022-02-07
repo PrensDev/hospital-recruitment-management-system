@@ -1,5 +1,4 @@
 # Import Packages
-from email.quoprimime import quote
 from sqlalchemy import func, and_, cast, Date
 from typing import List, Optional
 from fastapi import APIRouter, Depends
@@ -7,7 +6,7 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import authorized, get_user
-from modules.human_resource.recruitment_management.schemas import db_schemas, user_schemas as user, deptMngr_schemas as deptMngr
+from modules.human_resource.recruitment_management.schemas import user_schemas as user, deptMngr_schemas as deptMngr
 from modules.human_resource.recruitment_management.models import *
 
 
@@ -188,20 +187,20 @@ def requisition_data(
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
 
-            owner_filter = Requisition.requested_by == user_data.user_id
+            target_column = cast(Requisition.created_at, Date)
 
             requests_query = db.query(
-                cast(Requisition.created_at, Date).label("created_at"), 
+                target_column.label("created_at"), 
                 func.count(Requisition.requisition_id).label("total")
-            ).filter(owner_filter).group_by(
-                cast(Requisition.created_at, Date)
-            )
+            ).filter(Requisition.requested_by == user_data.user_id).group_by(target_column)
 
             if start and end:
-                date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
-                return requests_query.filter(date_filter).all()
-            else:
-                return requests_query.all()
+                requests_query = requests_query.filter(and_(
+                    Requisition.created_at >= start, 
+                    Requisition.created_at <= end
+                ))
+            
+            return requests_query.all()
     except Exception as e:
         print(e)
 
@@ -318,6 +317,27 @@ def department_positions(
                 return db.query(Position).join(Department).filter(Department.department_id == user_department.department_id).all()
     except Exception as e:
         print(e)
+
+
+# ====================================================================
+# EMPLOYMENT TYPES
+# ====================================================================
+
+# Employment Type Not Found Response
+EMPLOYMENT_TYPE_NOT_FOUND_RESPONSE = {"message": "Employment Type not found"}
+
+# Get all employment types
+@router.get("/employment-types", response_model = List[deptMngr.ShowEmploymentType])
+def get_all_employment_types(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(EmploymentType).all()
+    except Exception as e:
+        print(e)
+
 
 
 # ====================================================================
@@ -784,7 +804,7 @@ ONBOARDING_EMPLOYEE_TASK_NOT_FOUND = {"message": "Onboarding Employee Task not f
 @router.post("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks")
 def add_employee_onboarding_task(
     onboarding_employee_id: str,
-    req: db_schemas.CreateOnboardingEmployeeTask,
+    req: deptMngr.CreateOnboardingEmployeeTask,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
@@ -853,7 +873,7 @@ def get_one_onboarding_employee_tasks(
 @router.put("/onboarding-employee-tasks/{onboarding_employee_task_id}", status_code=202)
 def update_onboarding_employee_task_status(
     onboarding_employee_task_id: str,
-    req: db_schemas.UpdatedOnboardingEmployeeTaskStatus,
+    req: deptMngr.UpdatedOnboardingEmployeeTaskStatus,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):

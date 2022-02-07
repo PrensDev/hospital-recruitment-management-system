@@ -99,27 +99,26 @@ def requisitions_analytics(
             
             if start and end:
                 date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
-                for_approval = for_approval_query.filter(date_filter).count()
-                approved = approved_query.filter(date_filter).count()
-                completed = completed_query.filter(date_filter).count()
-                rejected = rejected_query.filter(date_filter).count()
-            else:
-                for_approval = for_approval_query.count()
-                approved = approved_query.count()
-                completed = completed_query.count()
-                rejected = rejected_query.count()
+                for_approval_query = for_approval_query.filter(date_filter)
+                approved_query = approved_query.filter(date_filter)
+                completed_query = completed_query.filter(date_filter)
+                rejected_query = rejected_query.filter(date_filter)
 
-            total = for_approval + approved + completed + rejected
+            total = \
+                for_approval_query.count() + approved_query.count() + completed_query.count() + rejected_query.count()
             
+            total_approved = \
+                approved_query.count() + completed_query.count()
+
             return {
                 "total": total,
-                "for_review": for_approval,
+                "for_review": for_approval_query.count(),
                 "approved": {
-                    "total": approved + completed,
-                    "approved": approved,
-                    "completed": completed
+                    "total": total_approved,
+                    "approved": approved_query.count(),
+                    "completed": completed_query.count()
                 },
-                "rejected": rejected
+                "rejected": rejected_query.count()
             }
     except Exception as e:
         print(e)
@@ -138,7 +137,7 @@ def requisitions_data(
 
             target_column = cast(Requisition.created_at, Date)
 
-            requisition_query = db.query(
+            query = db.query(
                 target_column.label("created_at"), 
                 func.count(Requisition.requisition_id).label("total")
             ).filter(or_(
@@ -149,10 +148,12 @@ def requisitions_data(
             )).group_by(target_column)
 
             if start and end:
-                date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
-                return requisition_query.filter(date_filter).all()
-            else:
-                return requisition_query.all()
+                query = query.filter(and_(
+                    Requisition.created_at >= start, 
+                    Requisition.created_at <= end
+                ))
+            
+            return query.all()
     except Exception as e:
         print(e)
 
@@ -259,18 +260,14 @@ def job_posts_analytics(
             
             if start and end:
                 date_filter = and_(JobPost.created_at >= start, JobPost.created_at <= end)
-                total = total_query.filter(date_filter).count()
-                on_going = on_going_query.filter(date_filter).count()
-                ended = ended_query.filter(date_filter).count()
-            else:
-                total = total_query.count()
-                on_going = on_going_query.count()
-                ended = ended_query.count()
+                total_query = total_query.filter(date_filter)
+                on_going_query = on_going_query.filter(date_filter)
+                ended_query = ended_query.filter(date_filter)
 
             return {
-                "total": total,
-                "on_going": on_going,
-                "ended": ended
+                "total": total_query.count(),
+                "on_going": on_going_query.count(),
+                "ended": ended_query.count()
             }
     except Exception as e:
         print(e)   
@@ -383,40 +380,31 @@ def applicants_analytics(
 
             if start and end:
                 date_filter = and_(Applicant.created_at >= start, Applicant.created_at <= end)
-                total = total_query.filter(date_filter).count()
-                for_evaluation = for_evaluation_query.filter(date_filter).count()
-                for_screening = for_screening_query.filter(date_filter).count()
-                for_interview = for_interview_query.filter(date_filter).count()
-                hired = hired_query.filter(date_filter).count()
-                contract_signed = contract_signed_query.filter(date_filter).count()
-                rejected_from_evaluation = rejected_from_evaluation_query.filter(date_filter).count()
-                rejected_from_screening = rejected_from_screening_query.filter(date_filter).count()
-                rejected_from_interview = rejected_from_interview_query.filter(date_filter).count()
-            else:
-                total = total_query.count()
-                for_evaluation = for_evaluation_query.count()
-                for_screening = for_screening_query.count()
-                for_interview = for_interview_query.count()
-                hired = hired_query.count()
-                contract_signed = contract_signed_query.count()
-                rejected_from_evaluation = rejected_from_evaluation_query.count()
-                rejected_from_screening = rejected_from_screening_query.count()
-                rejected_from_interview = rejected_from_interview_query.count()
-                
-            total_rejected = rejected_from_evaluation + rejected_from_screening + rejected_from_interview
+                total_query = total_query.filter(date_filter)
+                for_evaluation_query = for_evaluation_query.filter(date_filter)
+                for_screening_query = for_screening_query.filter(date_filter)
+                for_interview_query = for_interview_query.filter(date_filter)
+                hired_query = hired_query.filter(date_filter)
+                contract_signed_query = contract_signed_query.filter(date_filter)
+                rejected_from_evaluation_query = rejected_from_evaluation_query.filter(date_filter)
+                rejected_from_screening_query = rejected_from_screening_query.filter(date_filter)
+                rejected_from_interview_query = rejected_from_interview_query.filter(date_filter)
+            
+            total_rejected = \
+                rejected_from_evaluation_query.count() + rejected_from_screening_query.count() + rejected_from_interview_query.count()
             
             return {
-                "total": total,
-                "for_evaluation": for_evaluation,
-                "for_screening": for_screening,
-                "for_interview": for_interview,
-                "hired": hired,
-                "contract_signed": contract_signed,
+                "total": total_query.count(),
+                "for_evaluation": for_evaluation_query.count(),
+                "for_screening": for_screening_query.count(),
+                "for_interview": for_interview_query.count(),
+                "hired": hired_query.count(),
+                "contract_signed": contract_signed_query.count(),
                 "rejected": {
                     "total": total_rejected,
-                    "from_evaluation": rejected_from_evaluation,
-                    "from_screening": rejected_from_screening,
-                    "from_interview": rejected_from_interview
+                    "from_evaluation": rejected_from_evaluation_query.count(),
+                    "from_screening": rejected_from_screening_query.count(),
+                    "from_interview": rejected_from_interview_query.count()
                 }
             }
     except Exception as e:

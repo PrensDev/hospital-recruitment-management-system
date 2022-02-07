@@ -304,25 +304,35 @@ const renderData = (start, end) => {
 
 (() => {
 
-/** Initialize DateRange Filter */
-setDateRangeFilter(START_DATE_RANGE, END_DATE_RANGE, DEFAULT_FILTER_RANGE);
+    if(isEmptyOrNull(DATE_RANGE_PARAM)) {
+        // Set URL dateRange
+        URL_QUERY_PARAMS.set('dateRange', DEFAULT_FILTER_RANGE)
+        history.replaceState(null, null, "?" + URL_QUERY_PARAMS.toString());
+    }
 
-/** Initialize DateRangeFilter for Filter Date */
-$('#filterDate').daterangepicker({
-    timePicker: true,
-    startDate: START_DATE_RANGE,
-    endDate: END_DATE_RANGE,
-    ranges: DATE_RANGES
-}, (start, end, label) => {
+    /** Initialize DateRange Filter */
+    setDateRangeFilter(START_DATE_RANGE, END_DATE_RANGE, DEFAULT_FILTER_RANGE);
 
-    // Change DateRange Filter
-    setDateRangeFilter(start, end, label);
+    /** Initialize DateRangeFilter for Filter Date */
+    $('#filterDate').daterangepicker({
+        timePicker: true,
+        startDate: START_DATE_RANGE,
+        endDate: END_DATE_RANGE,
+        ranges: DATE_RANGES
+    }, (start, end, label) => {
 
-    // Refresh charts and quantitive data
-    renderData(start, end);
-});
+        // Change DateRange Filter
+        setDateRangeFilter(start, end, label);
 
-// Initialize charts and quantitative data
-renderData(START_DATE_RANGE, END_DATE_RANGE);
+        // Replace URL dateRange
+        URL_QUERY_PARAMS.set('dateRange', label)
+        history.replaceState(null, null, "?"+URL_QUERY_PARAMS.toString());
+
+        // Refresh charts and quantitive data
+        renderData(start, end);
+    });
+
+    // Initialize charts and quantitative data
+    renderData(START_DATE_RANGE, END_DATE_RANGE);
 
 })();

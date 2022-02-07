@@ -35,7 +35,7 @@ const getURLParamString = (urlParams = {}) => {
     urlParamStringHolder.forEach((urlParam, index) => {
         urlParamString += index === 0 ? '?' : '&';
         urlParamString += urlParam;
-    })
+    });
 
     return urlParamString;
 }
@@ -46,27 +46,27 @@ const setSearchFormValues = () => {
 
     // Reset the form
     resetForm('#searchJobForm');
+    $("#datePosted").val(null).trigger('change');
+    $("#jobCategory").val(null).trigger('change');
+    $("#employmentType").val(null).trigger('change');
     
     // Set Search Query Input
     if(!isEmptyOrNull(urlParamsObj.searchQuery)) 
         setValue('#searchQuery', urlParamsObj.searchQuery);
     
     // Set Date Posted Option
-    // $("#datePosted").select2("val", "");
     if(!isEmptyOrNull(urlParamsObj.datePosted)) {
         setValue('#datePosted', urlParamsObj.datePosted);
         $('#datePosted').val(urlParamsObj.datePosted).trigger('change');
     }
 
     // Set Job Category Option
-    // $("#jobCategory").select2("val", "");
     if(!isEmptyOrNull(urlParamsObj.jobCategory)) {
         setValue('#jobCategory', urlParamsObj.jobCategory);
         $('#jobCategory').val(urlParamsObj.jobCategory).trigger('change');
     }
     
     // Set Employment Type Option
-    // $("#employmentType").select2("val", "");
     if(!isEmptyOrNull(urlParamsObj.employmentType)) {
         setValue('#employmentType', urlParamsObj.employmentType);
         $('#employmentType').val(urlParamsObj.employmentType).trigger('change');
@@ -100,20 +100,19 @@ ifSelectorExist('#searchJobForm', () => {
     const datePostedOptions = [
         {
             "label": "Last 7 days",
-            // "value": "Last 7 days"
-            "value": moment().subtract(7, 'days').format('MM/DD/YYYY')
+            "value": moment().subtract(7, 'days').format('YYYY-MM-DD')
         }, {
             "label": "Last 14 days",
-            // "value": "Last 14 days"
-            "value": moment().subtract(14, 'days').format('MM/DD/YYYY')
+            "value": moment().subtract(14, 'days').format('YYYY-MM-DD')
         }, {
             "label": "Last month",
-            // "value": "Last month"
-            "value": moment().subtract(1, 'months').format('MM/DD/YYYY')
+            "value": moment().subtract(1, 'months').format('YYYY-MM-DD')
         }, {
             "label": "Last 2 months",
-            // "value": "Last 2 months"
-            "value": moment().subtract(2, 'months').format('MM/DD/YYYY')
+            "value": moment().subtract(2, 'months').format('YYYY-MM-DD')
+        }, {
+            "label": "Last 6 months",
+            "value": moment().subtract(6, 'months').format('YYYY-MM-DD')
         }
     ]
 
@@ -157,27 +156,24 @@ ifSelectorExist('#searchJobForm', () => {
 
 
     /** Employment Type Select2 */
-    const employmentTypes = [
-        {"employement_type_id": '1', "name": "Full Time"},
-        {"employement_type_id": '2', "name": "Part Time"},
-        {"employement_type_id": '3', "name": "Intern/OJT"},
-        {"employement_type_id": '4', "name": "Contract"},
-    ]
-
-    let employmentType = $('#employmentType');
-    employmentType.empty();
-    employmentType.append(`<option></option>`);
-    
-    employmentTypes.length > 0
-        ? employmentTypes.forEach(t => employmentType.append(`<option value="${ t.employement_type_id }">${ t.name }</option>`))
-        : employmentType.append(`<option disabled>No data</option>`)
-
-    employmentType.select2({
-        placeholder: "Employment Type",
-        minimumResultsForSearch: -1,
-    });
-
-    employmentType.val(urlParamsObj.employmentType).trigger('change');
+    GET_ajax(`${ BASE_URL_API }home/employment-types`, {
+        success: result => {
+            let employmentType = $('#employmentType');
+            employmentType.empty();
+            employmentType.append(`<option></option>`);
+            
+            result.length > 0
+                ? result.forEach(t => employmentType.append(`<option value="${ t.employment_type_id }">${ t.name }</option>`))
+                : employmentType.append(`<option disabled>No data</option>`)
+        
+            employmentType.select2({
+                placeholder: "Employment Type",
+                minimumResultsForSearch: -1,
+            });
+        
+            employmentType.val(urlParamsObj.employmentType).trigger('change');
+        }
+    })
 });
 
 
@@ -190,9 +186,15 @@ ifSelectorExist('#searchJobForm', () => {
 /** Get All Jobs */
 ifSelectorExist('#availableJobList', () => {
 
+    // Set Search Form Values
+    setSearchFormValues();
+
+    // Get URL Param String
+    const urlParamsString = getURLParamString(urlParamsObj);
+
     // Get all job post filtered by page
     $.ajax({
-        url: `${ BASE_URL_API }home/job-posts?jobCategory=${ urlParamsObj.jobCategory }&employmentType=${ urlParamsObj.employmentType }&page=${ 1 }`,
+        url: `${ BASE_URL_API }home/job-posts${ urlParamsString }`,
         type: 'GET',
         success: result => {
             let jobList = '';
@@ -253,7 +255,7 @@ ifSelectorExist('#availableJobList', () => {
                                         ${ jobCategory() }
                                         <div>
                                             <i style="width: 1.25rem" class="fas fa-briefcase text-center text-secondary mr-1"></i>
-                                            <span>${ manpowerRequest.employment_type }</span>
+                                            <span>${ manpowerRequest.manpower_request_employment_type.name }</span>
                                         </div>
                                         ${ salaryRange }
                                         ${ expirationDate }
@@ -287,8 +289,8 @@ ifSelectorExist('#availableJobList', () => {
                                     width="25%"
                                 >
                             </div>
-                            <h4>Oops! We are full now!</h4>
-                            <p class="text-secondary">We don't have job posts yet. Please come back again soon.</p>
+                            <h4>Oops! There is no result!</h4>
+                            <p class="text-secondary">We find nothing based on your request. Please try other keywords.</p>
                         </div>
                     </div>
                 `;
@@ -305,22 +307,24 @@ ifSelectorExist('#availableJobList', () => {
 
     // Get job post analytics
     $.ajax({
-        url: `${ BASE_URL_API }home/job-posts/analytics`,
+        url: `${ BASE_URL_API }home/job-posts/analytics${ urlParamsString }`,
         type: 'GET',
         success: result => {
             const total = result.total;
+            const currentPage = urlParamsObj.page ? urlParamsObj.page : 1;
 
             // This function will be called if has result
             const hasResult = () => {
+
                 setContent({
-                    '#rowsDisplay': `Showing ${ FETCH_ROWS } out of ${ total }`,
-                    '#pageDisplay': `Page ${ urlParamsObj.page } out of ${ Math.ceil(total/FETCH_ROWS) }`
+                    '#pageDisplay': `Showing page ${ currentPage } out of ${ Math.ceil(total/FETCH_ROWS) }`,
+                    '#totalResultDisplay': `${ total } ${ pluralize('result', total) } are found`
                 });
 
                 setPagination('#pagination', {
                     query: `${ BASE_URL_WEB }careers?page=[page]`,
                     totalRows: total,
-                    currentPage: urlParamsObj.page
+                    currentPage: currentPage
                 });
 
                 showElement('#pagination');
@@ -329,9 +333,19 @@ ifSelectorExist('#availableJobList', () => {
             // This function will be called if no result
             const noResult = () => {
                 setContent({
-                    '#rowsDisplay': `No result`,
-                    '#pageDisplay': `No pages to be display`
+                    '#pageDisplay': `No page was dislayed`,
+                    '#totalResultDisplay': `0 results were found`
                 });
+            }
+
+            // If search query is set then show the label
+            if(!isEmptyOrNull(urlParamsObj.searchQuery)) {
+                if(total > 0)
+                    setContent('#searchLabel', `Search result for <b>"${ urlParamsObj.searchQuery }"</b>`)
+                else
+                    setContent('#searchLabel', `The search <b>"${ urlParamsObj.searchQuery }"</b> did not found any result`)
+            } else {
+                $('#searchLabel').remove()
             }
 
             // Call function based on total number of results
@@ -371,7 +385,7 @@ ifSelectorExist('#availableJobDetails', () => {
                 },
                 '#datePostedHumanized': fromNow(datePosted),
                 '#jobDescription': result.content,
-                '#employmentType': manpowerRequest.employment_type,
+                '#employmentType': manpowerRequest.manpower_request_employment_type.name,
                 '#jobCategory': result.job_categorized_as.name
             });
 
@@ -638,11 +652,25 @@ onClick('#submitApplicationBtn', () => {
 validateForm('#searchJobForm', {
     submitHandler: () => {
 
-        // Get data from the form
+        // Generate form data
         const formData = generateFormData('#searchJobForm');
+        const searchQuery = formData.get('searchQuery');
+        
+        // Set content into loading screen
+        if(!isEmptyOrNull(searchQuery)) {
+            setContent('#availableJobList', `
+                <div class="col-12">
+                    <div class="text-center my-5 py-5 wait">
+                        <div class="spinner-border text-primary mb-2" style="width: 2.5rem; height: 2.5rem"></div>
+                        <div>Please wait while loading the list ...</div>
+                    </div>
+                </div>
+            `);
+            hideElement('#pagination');
+        }
 
-        // Set search query
-        urlParamsObj.searchQuery = formData.get('searchQuery');
+        // Change search query parameter with the form data
+        urlParamsObj.searchQuery = searchQuery;
 
         // Redirect with url parameter
         redirectWithURLParams();
@@ -653,188 +681,44 @@ validateForm('#searchJobForm', {
 });
 
 
-/** For Search Result */
-ifSelectorExist('#searchResultList', () => {
-    
-    // Set Search Form Values
-    setSearchFormValues();
-    
-    // Set data
-    const data = JSON.stringify({query: urlParamsObj.searchQuery});
-
-    // Get Search Results
-    $.ajax({
-        url: `${ BASE_URL_API }home/job-posts/search?page=${ 1 }`,
-        type: "POST",
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        data: data,
-        success: result => {
-            let jobList = '';
-
-            const hasJobList = () => result.forEach(r => {
-                const manpowerRequest = r.manpower_request;
-
-                const jobCategory = () => {
-                    const jobCategorization = r.job_categorized_as;
-                    return `
-                        <div>
-                            <i style="width: 1.25rem" class="fas fa-th-list text-center text-secondary mr-1"></i>
-                            <span>${ jobCategorization.is_removed ? "Others" : jobCategorization.name }</span>
-                        </div>
-                    `
-                }
-
-                const salaryRange = r.salary_is_visible 
-                    ? `<div>
-                            <i style="width: 1.25rem" class="fas fa-handshake text-center text-secondary mr-1"></i>
-                            <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
-                        </div>`
-                    : '';
-
-                const expirationDate = isEmptyOrNull(r.expiration_date) 
-                    ? `<div>
-                            <i style="width: 1.25rem" class="fas fa-clock text-secondary mr-1"></i>
-                            <span>Still open for all applicants</span>
-                        </div>` 
-                    : `<div>
-                            <i style="width: 1.25rem" class="fas fa-clock text-danger mr-1"></i>
-                            <span>Open until August 31, 2021</span>
-                        </div>`
-
-                jobList += `
-                    <div class="col-12 col-md-6 d-flex align-items-stretch flex-column">
-                        <div class="card d-flex flex-fill">
-                            <div class="card-body">
-
-                                <div>
-                                    <div class="mb-3">
-                                        <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="h5 font-weight-bold text-primary mb-0">${ manpowerRequest.vacant_position.name }</a>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="small text-muted">
-                                                <span>Posted ${ formatDateTime(r.created_at, "Date") }</span>
-                                                <span class="mx-1">&middot;</span>
-                                                <span>${ fromNow(r.created_at) }</span>
-                                            </div>
-                                            <div class="small text-muted">
-                                                <i class="fas fa-eye mr-1"></i>
-                                                <span>${ r.views }</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        ${ jobCategory() }
-                                        <div>
-                                            <i style="width: 1.25rem" class="fas fa-briefcase text-center text-secondary mr-1"></i>
-                                            <span>${ manpowerRequest.employment_type }</span>
-                                        </div>
-                                        ${ salaryRange }
-                                        ${ expirationDate }
-                                        <div class="pt-3 career-content-preview">
-                                            ${ r.content }
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <div class="card-footer text-right">
-                                <a href="${ BASE_URL_WEB }careers/${ r.job_post_id }" class="btn btn-sm btn-primary">
-                                    ${ TEMPLATE.LABEL_ICON('View More', 'caret-right') }
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            const noJobList = () => {
-                jobList = `
-                    <div class="d-flex flex-column justify-content-center align-items-center text-center">
-                        <div class="py-5 d-flex justify-content-center">
-                            <img 
-                                draggable="false"
-                                src="${ BASE_URL_WEB }static/dist/img/not_found.svg" 
-                                alt="Not found" 
-                                width="25%"
-                            >
-                        </div>
-                        <h4>Oops! We cannot find your request.</h4>
-                        <p class="text-secondary">Please check if spelling is correct or try other keywords.</p>
-                    </div>
-                `;
-            }
-
-            result.length > 0 ? hasJobList() : noJobList();
-
-            setContent('#searchResultList', jobList);
-        },
-        error: () => toastr.error('There was an error in getting search results')
-    });
-
-    // Get Search Result Analytics
-    $.ajax({
-        url: `${ BASE_URL_API }home/job-posts/search/analytics`,
-        type: "POST",
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        data: data,
-        success: result => {
-            const total = result.total;
-
-            const hasResult = () => {
-                setContent({
-                    '#rowsDisplay': `Showing ${ FETCH_ROWS } out of ${ total }`,
-                    '#pageDisplay': `Page ${ page } out of ${ Math.ceil(total/FETCH_ROWS) }`
-                });
-
-                setPagination('#pagination', {
-                    query: `${ BASE_URL_WEB }careers/search?query=${ query }&page=[page]`,
-                    totalRows: total,
-                    currentPage: page
-                });
-                
-                showElement('#pagination');
-            }
-
-            const noResult = () => {
-                setContent({
-                    '#rowsDisplay': `No result`,
-                    '#pageDisplay': `No pages to be displayed`
-                });
-            }
-
-            total > 0 ? hasResult() : noResult();
-        }
-    });
-});
-
-
 /**
  * ==============================================================================
  * FOR FILTERS
  * ==============================================================================
  */
 
-$(() => {
+// Date Posted Option On Change
+$('#datePosted').on('select2:select', () => {
+    urlParamsObj.searchQuery = $("#searchQuery").val();
+    urlParamsObj.datePosted = $("#datePosted").val();
+    redirectWithURLParams();
+});
 
-    // Date Posted Option On Change
-    $('#datePosted').on('select2:select', () => {
-        urlParamsObj.datePosted = $("#datePosted").val();
-        redirectWithURLParams();
-    });
-    
-    // Job Category Option On Change
-    $('#jobCategory').on('select2:select', () => {
-        urlParamsObj.jobCategory = $("#jobCategory").val();
-        redirectWithURLParams();
-    });
-    
-    // Employment Type Option On Change
-    $('#employmentType').on('select2:select', () => {
-        urlParamsObj.employmentType = $("#employmentType").val();
-        redirectWithURLParams();
-    });
+// Job Category Option On Change
+$('#jobCategory').on('select2:select', () => {
+    urlParamsObj.searchQuery = $("#searchQuery").val();
+    urlParamsObj.jobCategory = $("#jobCategory").val();
+    redirectWithURLParams();
+});
+
+// Employment Type Option On Change
+$('#employmentType').on('select2:select', () => {
+    urlParamsObj.searchQuery = $("#searchQuery").val();
+    urlParamsObj.employmentType = $("#employmentType").val();
+    redirectWithURLParams();
+});
+
+// Change the content into loading if options is selected
+$('#datePosted, #jobCategory, #employmentType').on('select2:select', () => {
+    setContent('#availableJobList', `
+        <div class="col-12">
+            <div class="text-center my-5 py-5 wait">
+                <div class="spinner-border text-primary mb-2" style="width: 2.5rem; height: 2.5rem"></div>
+                <div>Please wait while loading the list ...</div>
+            </div>
+        </div>
+    `);
+    hideElement('#pagination');
 });
 
 

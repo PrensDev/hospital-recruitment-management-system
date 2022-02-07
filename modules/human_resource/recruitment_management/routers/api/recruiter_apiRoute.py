@@ -307,6 +307,8 @@ def job_posts_analytics(
         if(authorized(user_data, AUTHORIZED_USER)):
             query = db.query(JobPost)
 
+            total_query = query
+
             # On Going Query
             on_going_query = query.filter(or_(
                 JobPost.expiration_date >= datetime.today(), 
@@ -316,20 +318,17 @@ def job_posts_analytics(
             # Ended Query
             ended_query = query.filter(JobPost.expiration_date <= datetime.today())
 
+            # Filters
             if start and end:
                 date_filter = and_(JobPost.created_at >= start, JobPost.created_at <= end)
-                total = query.filter(date_filter).count()
-                on_going = on_going_query.filter(date_filter).count()
-                ended = ended_query.filter(date_filter).count()
-            else:
-                total = query.count()
-                on_going = on_going_query.count()
-                ended = ended_query.count()
+                total_query = query.filter(date_filter)
+                on_going_query = on_going_query.filter(date_filter)
+                ended_query = ended_query.filter(date_filter)
             
             return {
-                "total": total,
-                "on_going": on_going,
-                "ended": ended
+                "total": total_query.count(),
+                "on_going": on_going_query.count(),
+                "ended": ended_query.count()
             }
     except Exception as e:
         print(e)   
@@ -346,18 +345,20 @@ def get_job_posts_data(
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
             
-            job_posts = db.query(
-                cast(JobPost.created_at, Date).label("created_at"), 
+            target_column = cast(JobPost.created_at, Date)
+
+            query = db.query(
+                target_column.label("created_at"), 
                 func.count(JobPost.job_post_id).label("total")
-            ).group_by(
-                cast(JobPost.created_at, Date)
-            )
+            ).group_by(target_column)
 
             if start and end:
-                date_filter = and_(JobPost.created_at >= start, JobPost.created_at <= end)
-                return job_posts.filter(date_filter).all()
-            else:
-                return job_posts.all()
+                query = query.filter(and_(
+                    JobPost.created_at >= start, 
+                    JobPost.created_at <= end
+                ))
+            
+            return query.all()
     except Exception as e:
         print(e)
 
@@ -467,38 +468,37 @@ def applicants_analytics(
 
             if start and end:
                 date_filter = and_(Applicant.created_at >= start, Applicant.created_at <= end)
-                total = query.filter(date_filter).count()
-                for_evaluation = for_evaluation_query.filter(date_filter).count()
-                for_screening = for_screening_query.filter(date_filter).count()
-                for_interview = for_interview_query.filter(date_filter).count()
-                hired = hired_query.filter(date_filter).count()
-                rejected_from_evaluation = rejected_from_evaluation_query.filter(date_filter).count()
-                rejected_from_screening = rejected_from_screening_query.filter(date_filter).count()
-                rejected_from_interview = rejected_from_interview_query.filter(date_filter).count()
-            else:
-                total = query.count()
-                for_evaluation = for_evaluation_query.count()
-                for_screening = for_screening_query.count()
-                for_interview = for_interview_query.count()
-                hired = hired_query.count()
-                rejected_from_evaluation = rejected_from_evaluation_query.count()
-                rejected_from_screening = rejected_from_screening_query.count()
-                rejected_from_interview = rejected_from_interview_query.count()
+                total_query = query.filter(date_filter)
+                for_evaluation_query = for_evaluation_query.filter(date_filter)
+                for_screening_query = for_screening_query.filter(date_filter)
+                for_interview_query = for_interview_query.filter(date_filter)
+                hired_query = hired_query.filter(date_filter)
+                rejected_from_evaluation_query = rejected_from_evaluation_query.filter(date_filter)
+                rejected_from_screening_query = rejected_from_screening_query.filter(date_filter)
+                rejected_from_interview_query = rejected_from_interview_query.filter(date_filter)
             
+            # Get total evaluated count
+            total_evaluated = \
+                for_screening_query.count() + for_interview_query.count() + hired_query.count()
+            
+            # Get total rejected count
+            total_rejected = \
+                rejected_from_evaluation_query.count() + rejected_from_screening_query.count() + rejected_from_interview_query.count()
+
             return {
-                "total": total,
-                "for_evaluation": for_evaluation,
+                "total": total_query.count(),
+                "for_evaluation": for_evaluation_query.count(),
                 "evaluated": {
-                    "total": for_screening + for_interview + hired,
-                    "for_screening": for_screening,
-                    "for_interview": for_interview,
-                    "hired": hired,
+                    "total": total_evaluated,
+                    "for_screening": for_screening_query.count(),
+                    "for_interview": for_interview_query.count(),
+                    "hired": hired_query.count(),
                 },
                 "rejected": {
-                    "total": rejected_from_evaluation + rejected_from_screening + rejected_from_interview,
-                    "from_evaluation": rejected_from_evaluation,
-                    "from_screening": rejected_from_screening,
-                    "from_interview": rejected_from_interview
+                    "total": total_rejected,
+                    "from_evaluation": rejected_from_evaluation_query.count(),
+                    "from_screening": rejected_from_screening_query.count(),
+                    "from_interview": rejected_from_screening_query.count()
                 }
             }
     except Exception as e:
@@ -515,16 +515,21 @@ def get_applicants_data(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            applicants_query = db.query(
-                cast(Applicant.created_at, Date).label("created_at"), 
+
+            target_column = cast(Applicant.created_at, Date)
+
+            query = db.query(
+                target_column.label("created_at"), 
                 func.count(Applicant.applicant_id).label("total")
-            ).group_by(cast(Applicant.created_at, Date))
+            ).group_by(target_column)
 
             if start and end:
-                date_filter = and_(Applicant.created_at >= start, Applicant.created_at <= end)
-                return applicants_query.filter(date_filter).all()
-            else:
-                return applicants_query.all()
+                query = query.filter(and_(
+                    Applicant.created_at >= start, 
+                    Applicant.created_at <= end
+                ))
+            
+            return query.all()
     except Exception as e:
         print(e)
 

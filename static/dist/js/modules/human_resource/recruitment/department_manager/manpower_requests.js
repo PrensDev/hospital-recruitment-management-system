@@ -30,7 +30,7 @@ ifSelectorExist('#addManpowerRequestForm', () => {
                     ? result.forEach(p => vacantPosition.append(`<option value="${ p.position_id }">${ p.name }</option>`))
                     : vacantPosition.append(`<option disabled>No data</option>`)
 
-                $('#vacantPosition').select2({
+                vacantPosition.select2({
                     placeholder: "Please select a vacant position",
                 });
             } else toastr.error('There was an error in getting positions')
@@ -45,9 +45,20 @@ ifSelectorExist('#addManpowerRequestForm', () => {
     });
     
     /** Employment Type For Add Select2 */
-    $('#employmentType').select2({
-        placeholder: "Please select an employment type",
-        minimumResultsForSearch: -1,
+    GET_ajax(`${ ROUTE.API.DM }employment-types`, {
+        success: result => {
+            let employmentType = $('#employmentType');
+            employmentType.empty();
+            employmentType.append(`<option></option>`);
+                
+            result.length > 0
+                ? result.forEach(t => employmentType.append(`<option value="${ t.employment_type_id }">${ t.name }</option>`))
+                : employmentType.append(`<option disabled>No data</option>`)
+
+            employmentType.select2({
+                placeholder: "Please select an employment type",
+            });
+        }
     });
     
     /** Request Description For Add Summernote */
@@ -177,7 +188,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
     const data = {
         requisition_no: get('requisitionNo'),
         position_id: get('vacantPosition'),
-        employment_type: get("employmentType"),
+        employment_type_id: get("employmentType"),
         request_nature: get("requestNature"),
         staffs_needed: parseInt(get("staffsNeeded")),
         min_monthly_salary: isChecked('#setSalaryRange') ? parseFloat(get("minSalary")) : null,
@@ -538,9 +549,20 @@ ifSelectorExist('#editManpowerRequestForm', () => {
     });
     
     /** Employment Type For Add Select2 */
-    $('#employmentType').select2({
-        placeholder: "Please select an employment type",
-        minimumResultsForSearch: -1,
+    GET_ajax(`${ ROUTE.API.DM }employment-types`, {
+        success: result => {
+            let employmentType = $('#employmentType');
+            employmentType.empty();
+            employmentType.append(`<option></option>`);
+                
+            result.length > 0
+                ? result.forEach(t => employmentType.append(`<option value="${ t.employment_type_id }">${ t.name }</option>`))
+                : employmentType.append(`<option disabled>No data</option>`)
+
+            employmentType.select2({
+                placeholder: "Please select an employment type",
+            });
+        }
     });
     
     /** Request Description For Add Summernote */
@@ -580,7 +602,7 @@ ifSelectorExist('#editManpowerRequestForm', () => {
                 setValue('#staffsNeeded', result.staffs_needed);
 
                 /** Set Employment Type */
-                $('#employmentType').val(result.employment_type).trigger('change');
+                $('#employmentType').val(result.manpower_request_employment_type.employment_type_id).trigger('change');
 
                 /** Set Deadline */
                 const deadline = result.deadline;
@@ -725,17 +747,18 @@ validateForm('#editManpowerRequestForm', {
 
 /** Submit Manpower Request */
 onClick('#confirmEditManpowerRequestBtn', () => {
-    const get = (name) => { return generateFormData('#editManpowerRequestForm').get(name) }
+    const formData = generateFormData('#editManpowerRequestForm')
+    const get = (name) => { return formData.get(name) }
     
     const data = {
         position_id: get('vacantPosition'),
-        employment_type: get("employmentType"),
+        employment_type_id: get("employmentType"),
         request_nature: get("requestNature"),
         staffs_needed: parseInt(get("staffsNeeded")),
         min_monthly_salary: isChecked('#setSalary') ? null : parseFloat(get("minSalary")),
         max_monthly_salary: isChecked('#setSalary') ? null : parseFloat(get("maxSalary")),
         content: get("requestDescription"),
-        deadline: isChecked('#setDeadlline') ? null : formatDateTime(get("deadline"))
+        deadline: isChecked('#setDeadlline') ? formatDateTime(get("deadline")) : null
     }
 
     PUT_ajax(`${ ROUTE.API.DM }requisitions/${ get('requisitionID') }`, data, {

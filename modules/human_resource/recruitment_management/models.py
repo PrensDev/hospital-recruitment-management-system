@@ -257,6 +257,47 @@ class Department(Base):
     )
 
 
+# Employment Type Model
+class EmploymentType(Base):
+    __tablename__ = "employment_types"
+
+    # Columns
+    employment_type_id = Column(
+        String(36),
+        primary_key=True,
+        default=text('UUID()')
+    )
+    name = Column(
+        String(255),
+        nullable=False
+    )
+    description = Column(
+        Text,
+        nullable=False,
+    )
+    is_active = Column(
+        Boolean,
+        default=True,
+        nullable=False
+    )
+    created_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        nullable=False
+    )
+    updated_at = Column(
+        DateTime,
+        default = text('NOW()'),
+        onupdate = text('NOW()')
+    )
+
+    # Relationships
+    manpower_requests = relationship(
+        "Requisition",
+        back_populates = "manpower_request_employment_type"
+    )
+
+
 # Requisition Model
 class Requisition(Base):
     __tablename__ = "requisitions"
@@ -282,8 +323,9 @@ class Requisition(Base):
         ForeignKey("positions.position_id"),
         nullable = False
     )
-    employment_type = Column(
+    employment_type_id = Column(
         String(255),
+        ForeignKey("employment_types.employment_type_id"),
         nullable = False
     )
     request_nature = Column(
@@ -381,6 +423,10 @@ class Requisition(Base):
         "User",
         back_populates = "rejected_manpower_requests",
         foreign_keys = "Requisition.rejected_by"
+    )
+    manpower_request_employment_type = relationship(
+        "EmploymentType",
+        back_populates="manpower_requests",
     )
     vacant_position = relationship(
         "Position",

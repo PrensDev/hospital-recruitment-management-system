@@ -42,13 +42,26 @@ FETCH_ROW = 10
 
 # Get all job category
 @router.get("/job-categories", response_model = List[careers.ShowJobCategory])
-def get_all_job_Categories(
-    db: Session = Depends(get_db)
-):
+def get_all_job_Categories(db: Session = Depends(get_db)):
     try:
         return db.query(JobCategory).all()
     except Exception as e:
         print(e)
+
+
+# ====================================================================
+# EMPLOYMENT TYPE
+# ====================================================================
+
+
+# Get All Employment Type
+@router.get("/employment-types", response_model = List[careers.ShowEmploymentType])
+def get_all_employment_types(db: Session = Depends(get_db)):
+    try:
+        return db.query(EmploymentType).all()
+    except Exception as e:
+        print(e)
+
 
 
 # ====================================================================
@@ -62,49 +75,70 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
 
 # Get All Job Posts
 @router.get("/job-posts", response_model = List[careers.ShowJobPost])
-def get_all_job_posts(page: Optional[int] = None, db: Session = Depends(get_db)):
+def get_all_job_posts(
+    searchQuery: Optional[str] = None,
+    datePosted: Optional[str] = None,
+    jobCategory: Optional[str] = None,
+    employmentType: Optional[str] = None,
+    page: Optional[int] = None, 
+    db: Session = Depends(get_db)
+):
     try:
         query = db.query(JobPost).filter(or_(
             JobPost.expiration_date > datetime.today(), 
             JobPost.expiration_date == None
         )).order_by(JobPost.created_at.desc())
 
-        return query.limit(FETCH_ROW).offset(FETCH_ROW * (page - 1)).all()
+        # With filters
+        if searchQuery or employmentType:
+            query = query.join(Requisition)
+            if employmentType:
+                query = query.filter(Requisition.employment_type_id == employmentType)
+            if searchQuery:
+                query = query.join(Position).filter(Position.name.contains(searchQuery))
+        if datePosted:
+            query = query.filter(JobPost.created_at >= datePosted)
+        if jobCategory:
+            query = query.filter(JobPost.job_category_id == jobCategory)
+        if page:
+            query = query.limit(FETCH_ROW).offset(FETCH_ROW * (page - 1))
+
+        return query.all()
     except Exception as e:
-        print(e)
+        print("Error details:", e)
 
 
 # Job Post Analytics
 @router.get("/job-posts/analytics")
-def job_posts_analytics(db: Session = Depends(get_db)):
+def job_posts_analytics(
+    searchQuery: Optional[str] = None,
+    datePosted: Optional[str] = None,
+    jobCategory: Optional[str] = None,
+    employmentType: Optional[str] = None,
+    page: Optional[int] = None, 
+    db: Session = Depends(get_db)
+):
     try:
-        total = db.query(JobPost).filter(or_(
+        query = db.query(JobPost).filter(or_(
             JobPost.expiration_date > datetime.today(), 
             JobPost.expiration_date == None
-        )).order_by(JobPost.created_at.desc()).count()
+        )).order_by(JobPost.created_at.desc())
 
-        return {"total": total}
-    except Exception as e:
-        print(e)
+        # With filters
+        if searchQuery or employmentType:
+            query = query.join(Requisition)
+            if employmentType:
+                query = query.filter(Requisition.employment_type_id == employmentType)
+            if searchQuery:
+                query = query.join(Position).filter(Position.name.contains(searchQuery))
+        if datePosted:
+            query = query.filter(JobPost.created_at >= datePosted)
+        if jobCategory:
+            query = query.filter(JobPost.job_category_id == jobCategory)
+        if page:
+            query = query.limit(FETCH_ROW).offset(FETCH_ROW * (page - 1))
 
-
-# Search Job Post
-@router.post("/job-posts/search", status_code=202, response_model=List[careers.ShowJobPost])
-def search_job_post(page: Optional[int], req: careers.Search, db: Session = Depends(get_db)):
-    try:
-        return db.query(JobPost).join(Requisition).join(Position).filter(
-                Position.name.contains(req.query)
-            ).limit(FETCH_ROW).offset(FETCH_ROW * (page - 1)).all()
-    except Exception as e:
-        print(e)
-
-
-# Search Job Post Analytics
-@router.post("/job-posts/search/analytics", status_code=202)
-def search_job_post_analytics(req: careers.Search, db: Session = Depends(get_db)):
-    try:
-        total = db.query(JobPost).join(Requisition).join(Position).filter(Position.name.contains(req.query)).count()
-        return {"total": total}
+        return {"total": query.count()}
     except Exception as e:
         print(e)
 
