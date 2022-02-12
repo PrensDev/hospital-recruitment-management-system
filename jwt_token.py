@@ -1,7 +1,7 @@
 # Import Packages
 from fastapi import Cookie, HTTPException
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import List, Optional
 from jose import JWTError, jwt
 from pydantic import BaseModel
 
@@ -9,7 +9,8 @@ from pydantic import BaseModel
 # Token Data
 class TokenData(BaseModel):
     user_id: str
-    user_type: str
+    employee_id: str
+    roles: List[str]
 
 
 # Constants
@@ -39,15 +40,17 @@ def verify_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("user_id")
-        user_type: str = payload.get("user_type")
-        if user_id == None and user_type == None:
+        employee_id: str = payload.get("employee_id")
+        roles: str = payload.get("roles")
+        if not user_id or not employee_id or not roles:
             raise credentials_exception
-        else:
-            return TokenData(
-                user_id = user_id,
-                user_type = user_type
-            )
+        return TokenData(
+            user_id = user_id,
+            employee_id = employee_id,
+            roles = roles
+        )
     except JWTError:
+        print(JWTError)
         raise credentials_exception
 
 

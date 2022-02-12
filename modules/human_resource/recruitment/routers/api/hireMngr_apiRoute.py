@@ -37,7 +37,7 @@ env = dotenv_values(".env")
 
 
 # User Information
-@router.get("/info", response_model = user.ShowUser)
+@router.get("/info", response_model = user.ShowUserInfo)
 def get_user_info(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)

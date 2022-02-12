@@ -1,5 +1,6 @@
 # Import Package
 from datetime import datetime
+from re import S
 from typing import List, Optional
 from pydantic import BaseModel
 
@@ -43,6 +44,86 @@ class ShowSubDepartment(SubDeparment):
 
 class ShowDepartment(Department):
     sub_departments: List[Optional[ShowSubDepartment]]
+
+    class Config():
+        orm_mode = True
+
+
+class ShowRole(BaseModel):
+    role_id: str
+    name: str
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+class ShowEmploymentType(BaseModel):
+    employment_type_id: str
+    name: str
+    description: str
+    is_active: bool
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+class Employee(BaseModel):
+    first_name: str
+    middle_name: Optional[str]
+    last_name: str
+    extension_name: Optional[str]
+    contact_number: str
+    status: str
+
+
+class ShowEmployee(Employee):
+    employee_id: str
+    position: ShowPosition
+    employment_type: ShowEmploymentType
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+class User(BaseModel):
+    email: str
+    password: str
+
+
+class ShowUser(BaseModel):
+    user_id: str
+    email: str
+    employee_info: ShowEmployee
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+class ShowUserRole(BaseModel):
+    user_role_id: str
+    user_id: str
+    role_id: str
+    account_info: ShowUser
+    role_info: ShowRole
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config():
+        orm_mode = True
+
+
+class UserCredentials(BaseModel):
+    user_id: str
+    employee_info: ShowEmployee
+    user_roles: List[ShowUserRole]
 
     class Config():
         orm_mode = True

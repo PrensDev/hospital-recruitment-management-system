@@ -2,7 +2,7 @@
 from datetime import datetime, date
 from typing import List, Optional
 from pydantic import BaseModel
-from modules.human_resource.recruitment.schemas.user_schemas import ShowUser, ShowPosition
+from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo, ShowPosition
 
 
 # Show Department Positions Schema
@@ -47,7 +47,7 @@ class ShowEmploymentType(EmploymentType):
 class ShowManpowerRequest(BaseModel):
     requisition_id: str
     requisition_no: str
-    manpower_request_by: ShowUser
+    manpower_request_by: ShowUserInfo
     vacant_position: ShowPosition
     manpower_request_employment_type: ShowEmploymentType
     request_nature: str
@@ -57,9 +57,9 @@ class ShowManpowerRequest(BaseModel):
     content: str
     request_status: str
     deadline: Optional[datetime]
-    manpower_request_signed_by: Optional[ShowUser]
-    manpower_request_reviewed_by: Optional[ShowUser]
-    manpower_request_rejected_by: Optional[ShowUser]
+    manpower_request_signed_by: Optional[ShowUserInfo]
+    manpower_request_reviewed_by: Optional[ShowUserInfo]
+    manpower_request_rejected_by: Optional[ShowUserInfo]
     signed_at: Optional[datetime]
     reviewed_at: Optional[datetime]
     completed_at: Optional[datetime]
@@ -88,7 +88,7 @@ class UpdateManpowerRequest(BaseModel):
 class ShowJobPostForApplicantInfo(BaseModel):
     job_post_id: str
     manpower_request: ShowManpowerRequest
-    job_posted_by: ShowUser
+    job_posted_by: ShowUserInfo
     created_at: datetime
     updated_at: Optional[datetime]
 
@@ -114,13 +114,13 @@ class Applicant(BaseModel):
 # Show Applicant
 class ShowApplicant(Applicant):
     status: str
-    evaluation_done_by: Optional[ShowUser]
+    evaluation_done_by: Optional[ShowUserInfo]
     evaluated_at: Optional[datetime]
-    screening_done_by: Optional[ShowUser]
+    screening_done_by: Optional[ShowUserInfo]
     screened_at: Optional[datetime]
     hired_at: Optional[datetime]
-    hiring_done_by: Optional[ShowUser]
-    rejection_done_by: Optional[ShowUser]
+    hiring_done_by: Optional[ShowUserInfo]
+    rejection_done_by: Optional[ShowUserInfo]
     rejected_at: Optional[datetime]
     created_at: datetime
     updated_at: Optional[datetime]
@@ -165,8 +165,8 @@ class OnboardingTask(BaseModel):
 # Show Onboarding Tasks
 class ShowOnboardingTask(OnboardingTask):
     onboarding_task_for_department: ShowDepartment
-    onboarding_task_added_by: ShowUser
-    onboarding_task_updated_by: Optional[ShowUser]
+    onboarding_task_added_by: ShowUserInfo
+    onboarding_task_updated_by: Optional[ShowUserInfo]
     created_at: datetime
     updated_at: Optional[datetime]
 
@@ -186,7 +186,7 @@ class OnboardingEmployee(BaseModel):
     email: str
     employment_contract: str
     employment_start_date: Optional[date]
-    onboarding_employee_signed_by: ShowUser
+    onboarding_employee_signed_by: ShowUserInfo
     created_at: datetime
     updated_at: Optional[datetime]
 
@@ -211,8 +211,8 @@ class ShowOnboardingEmployeeTask(BaseModel):
     start_at: datetime
     end_at: datetime
     onboarding_task: OnboardingTask
-    onboarding_employee_task_assigned_by: ShowUser
-    onboarding_employee_task_completed_by: Optional[ShowUser]
+    onboarding_employee_task_assigned_by: ShowUserInfo
+    onboarding_employee_task_completed_by: Optional[ShowUserInfo]
     completed_at: Optional[datetime]
     created_at: datetime
     updated_at: Optional[datetime]

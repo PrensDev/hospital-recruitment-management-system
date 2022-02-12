@@ -75,8 +75,8 @@ class Employee(Base):
         back_populates = "employees"
     )
 
-    # From EmployeeType
-    employee_type = relationship(
+    # From EmploymentType
+    employment_type = relationship(
         "EmploymentType",
         back_populates = "employees"
     )

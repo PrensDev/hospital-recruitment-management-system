@@ -2,7 +2,7 @@
 from datetime import datetime, date, time
 from typing import List, Optional
 from pydantic import BaseModel
-from modules.human_resource.recruitment.schemas.user_schemas import ShowUser, ShowPosition
+from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo, ShowPosition
 from modules.human_resource.recruitment.schemas.recruiter_schemas import ShowJobCategory
 from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType
 
@@ -11,7 +11,7 @@ from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmpl
 class ShowManpowerRequest(BaseModel):
     requisition_id: str
     requisition_no: str
-    manpower_request_by: ShowUser
+    manpower_request_by: ShowUserInfo
     vacant_position: ShowPosition
     manpower_request_employment_type: ShowEmploymentType
     request_nature: str
@@ -21,9 +21,9 @@ class ShowManpowerRequest(BaseModel):
     content: str
     request_status: str
     deadline: Optional[datetime]
-    manpower_request_signed_by: Optional[ShowUser]
-    manpower_request_reviewed_by: Optional[ShowUser]
-    manpower_request_rejected_by: Optional[ShowUser]
+    manpower_request_signed_by: Optional[ShowUserInfo]
+    manpower_request_reviewed_by: Optional[ShowUserInfo]
+    manpower_request_rejected_by: Optional[ShowUserInfo]
     signed_at: Optional[datetime]
     reviewed_at: Optional[datetime]
     completed_at: Optional[datetime]
@@ -67,7 +67,7 @@ class ShowJobPost(BaseModel):
     job_categorized_as: ShowJobCategory
     expiration_date: Optional[datetime]
     applicants: Optional[List[Applicant]]
-    job_posted_by: ShowUser
+    job_posted_by: ShowUserInfo
     views: int
     created_at: datetime
     updated_at: Optional[datetime]
@@ -81,13 +81,13 @@ class ShowApplicant(Applicant):
     applicant_id: str
     applied_job: ShowJobPost
     status: str
-    evaluation_done_by: Optional[ShowUser]
+    evaluation_done_by: Optional[ShowUserInfo]
     evaluated_at: Optional[datetime]
-    screening_done_by: Optional[ShowUser]
+    screening_done_by: Optional[ShowUserInfo]
     screened_at: Optional[datetime]
     hired_at: Optional[datetime]
-    hiring_done_by: Optional[ShowUser]
-    rejection_done_by: Optional[ShowUser]
+    hiring_done_by: Optional[ShowUserInfo]
+    rejection_done_by: Optional[ShowUserInfo]
     rejected_at: Optional[datetime]
     created_at: datetime
     updated_at: Optional[datetime]
@@ -137,7 +137,7 @@ class InterviewQuestion(BaseModel):
 class IntervieweeScore(BaseModel):
     interview_question: InterviewQuestion
     score: float
-    scored_by_hiring_manager: ShowUser
+    scored_by_hiring_manager: ShowUserInfo
 
     class Config():
         orm_mode = True
@@ -187,8 +187,8 @@ class ShowInterviewQuestion(BaseModel):
     interview_question_id: str
     question: str
     type: str
-    interview_question_added_by: ShowUser
-    interview_question_updated_by: ShowUser
+    interview_question_added_by: ShowUserInfo
+    interview_question_updated_by: ShowUserInfo
     created_at: datetime
     updated_at: datetime
 

@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
 
-from modules.human_resource.recruitment.schemas.user_schemas import ShowUser, ShowPosition
+from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo, ShowPosition
 from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType
 
 
@@ -11,7 +11,7 @@ from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmpl
 class ManpowerRequest(BaseModel):
     requisition_id: str
     requisition_no: str
-    manpower_request_by: ShowUser
+    manpower_request_by: ShowUserInfo
     vacant_position: ShowPosition
     manpower_request_employment_type: ShowEmploymentType
     request_nature: str
@@ -21,9 +21,9 @@ class ManpowerRequest(BaseModel):
     content: str
     request_status: str
     deadline: Optional[datetime]
-    manpower_request_signed_by: Optional[ShowUser]
-    manpower_request_reviewed_by: Optional[ShowUser]
-    manpower_request_rejected_by: Optional[ShowUser]
+    manpower_request_signed_by: Optional[ShowUserInfo]
+    manpower_request_reviewed_by: Optional[ShowUserInfo]
+    manpower_request_rejected_by: Optional[ShowUserInfo]
     signed_at: Optional[datetime]
     reviewed_at: Optional[datetime]
     completed_at: Optional[datetime]
@@ -62,7 +62,7 @@ class UpdateJobCategory(BaseModel):
 
 # Show Job Category
 class ShowJobCategory(JobCategory):
-    job_category_created_by: ShowUser
+    job_category_created_by: ShowUserInfo
 
     class Config():
         orm_mode = True
@@ -71,7 +71,7 @@ class ShowJobCategory(JobCategory):
 # Job Post
 class JobPost(BaseModel):
     job_post_id: str
-    job_posted_by: ShowUser
+    job_posted_by: ShowUserInfo
     content: str
     salary_is_visible: bool
     expiration_date: Optional[datetime]
@@ -139,13 +139,13 @@ class ShowApplicant(Applicant):
     applicant_id: str
     applied_job: ShowJobPost
     status: str
-    evaluation_done_by: Optional[ShowUser]
+    evaluation_done_by: Optional[ShowUserInfo]
     evaluated_at: Optional[datetime]
-    screening_done_by: Optional[ShowUser]
+    screening_done_by: Optional[ShowUserInfo]
     screened_at: Optional[datetime]
     hired_at: Optional[datetime]
-    hiring_done_by: Optional[ShowUser]
-    rejection_done_by: Optional[ShowUser]
+    hiring_done_by: Optional[ShowUserInfo]
+    rejection_done_by: Optional[ShowUserInfo]
     rejected_at: Optional[datetime]
     remarks: Optional[str]
 

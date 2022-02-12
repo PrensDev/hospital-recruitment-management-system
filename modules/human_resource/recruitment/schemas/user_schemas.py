@@ -1,7 +1,12 @@
 # Import Package
 from typing import Optional
 from pydantic import BaseModel
+from modules.human_resource.recruitment.schemas.main_schemas import ShowEmployee
 
+
+class ShowUserInfo(ShowEmployee):
+    class Config():
+        orm_mode = True
 
 # Create Department Schema
 class CreateDepartment(BaseModel):

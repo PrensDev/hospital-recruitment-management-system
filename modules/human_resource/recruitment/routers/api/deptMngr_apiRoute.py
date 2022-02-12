@@ -10,7 +10,7 @@ from oauth2 import authorized, get_user
 # Import Models and Schemas
 from modules.human_resource.recruitment.models._base import *
 from modules.human_resource.recruitment.schemas \
-    import user_schemas as user, deptMngr_schemas as deptMngr
+    import main_schemas as main, user_schemas as user, deptMngr_schemas as deptMngr
 
 
 # Router Instance
@@ -25,7 +25,7 @@ AUTHORIZED_USER = "Department Manager"
 
 
 # User Information
-@router.get("/info", response_model = user.ShowUser)
+@router.get("/info", response_model = user.ShowUserInfo)
 def get_user_info(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
