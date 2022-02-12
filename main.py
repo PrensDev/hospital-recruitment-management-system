@@ -5,9 +5,9 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 # To create tables
-# from modules.human_resource.recruitment_management import models
+# from modules.human_resource.recruitment.models import _base
 # from database import engine
-# models.Base.metadata.create_all(bind=engine)
+# _base.Base.metadata.create_all(bind=engine)
 
 
 # App Instance
@@ -23,9 +23,9 @@ app.mount('/static', StaticFiles(directory='static'), name='static')
 # =================================================================
 
 # Human Resource
-from modules.human_resource.recruitment_management.app import app as recruitment_management
+from modules.human_resource.recruitment.app import app as recruitment
 
 
 
 # Mount Submodules
-app.mount('/', recruitment_management)
+app.mount('/', recruitment)
