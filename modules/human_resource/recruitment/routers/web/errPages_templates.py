@@ -1,7 +1,7 @@
 # Import Packagaes
 from fastapi import Request
 
-# Import Submodule Files
+# Import Templates
 from modules.human_resource.recruitment.routers.web._template import templates
 
 

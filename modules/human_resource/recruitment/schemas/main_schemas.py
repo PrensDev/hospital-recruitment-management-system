@@ -80,9 +80,29 @@ class Employee(BaseModel):
     status: str
 
 
+class ShowDepartmentForEmployee(Department):
+    class Config():
+        orm_mode = True
+
+
+class ShowSubDepartmentForEmployee(SubDeparment):
+    main_department: ShowDepartmentForEmployee
+
+    class Config():
+        orm_mode = True
+
+
+class ShowEmployeePosition(ShowPosition):
+    sub_department: ShowSubDepartmentForEmployee
+    
+    class Config():
+        orm_mode = True
+
+
+
 class ShowEmployee(Employee):
     employee_id: str
-    position: ShowPosition
+    position: ShowEmployeePosition
     employment_type: ShowEmploymentType
     created_at: datetime
     updated_at: Optional[datetime]

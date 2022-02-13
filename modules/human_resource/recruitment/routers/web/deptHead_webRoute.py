@@ -1,12 +1,12 @@
 # Import Packages
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from jwt_token import get_token
 from sqlalchemy.orm import Session
 from database import get_db
 
 # Import Submodule files
-from modules.human_resource.recruitment.models import *
+from modules.human_resource.recruitment.models._base import *
 from modules.human_resource.recruitment.routers.web \
     import errPages_templates as errTemplate
 from modules.human_resource.recruitment.routers.web._template import templates
@@ -37,10 +37,8 @@ AUTHORIZED_USER = "Department Head"
 def render(req: Request, user_data: dict = Depends(get_token)):
 
     # Check if user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
-
-    # If no error, return template response
     return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
         "request": req,
         "page_title": "Main Dashboard",
@@ -54,7 +52,7 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 def render(req: Request, user_data: dict = Depends(get_token)):
 
     # Check if user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
     # If nno error, return template response
@@ -76,7 +74,7 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 def render(req: Request, user_data: dict = Depends(get_token)):
 
     # If user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
 
     # If no error, return template response
@@ -89,15 +87,15 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 
 
 # Manpower Request Details
-@router.get("/manpower-requests/{requisition_id}", response_class=HTMLResponse)
+@router.get("/manpower-requests/{manpower_request_id}", response_class=HTMLResponse)
 def render(
-    requisition_id: str,
+    manpower_request_id: str,
     req: Request, 
     db: Session = Depends(get_db), 
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
+    if AUTHORIZED_USER not in user_data['roles']:
+        requisition = db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id).first()
         if not requisition:
             return errTemplate.page_not_found(req)
         else:

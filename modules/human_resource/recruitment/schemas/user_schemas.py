@@ -4,9 +4,11 @@ from pydantic import BaseModel
 from modules.human_resource.recruitment.schemas.main_schemas import ShowEmployee
 
 
+# Show User Info Schema
 class ShowUserInfo(ShowEmployee):
     class Config():
         orm_mode = True
+
 
 # Create Department Schema
 class CreateDepartment(BaseModel):

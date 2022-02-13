@@ -30,10 +30,10 @@
                             firstName  : result.first_name,
                             middleName : result.middle_name,
                             lastName   : result.last_name,
-                            suffixName : result.suffix_name
+                            suffixName : result.extension_name
                         }),
                         "position": result.position.name,
-                        "department": result.position.department.name
+                        "department": result.position.sub_department.name
                     }));
                     setUserInfo()
                 } else toastr.error('There was an error while getting your information');

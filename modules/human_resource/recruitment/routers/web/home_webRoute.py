@@ -7,11 +7,14 @@ from jwt_token import get_token
 from sqlalchemy.orm import Session
 from database import get_db
 
+
 # Import submodule files
-from modules.human_resource.recruitment.models import *
-from modules.human_resource.recruitment.routers.api.home_apiRoute import JobPost
-from modules.human_resource.recruitment.routers.web import errPages_templates as errTemplate
+from modules.human_resource.recruitment.models._base import *
+
+
+# Import Templates
 from modules.human_resource.recruitment.routers.web._template import templates
+from modules.human_resource.recruitment.routers.web import errPages_templates as errTemplate
 
 
 # Router
@@ -38,17 +41,22 @@ def index(req: Request):
 # User Redirect
 @router.get("/redirect")
 def redirect(req: Request, user_data: dict = Depends(get_token)):
+
+    # If
+    if not user_data:
+        return errTemplate.page_not_found(req)
+    
     paths = {
-        "Department Head": "/dh",
-        "Department Manager": "/dm",
-        "Hiring Manager": "/h",
-        "Recruiter": "/r"
+        "Department Head"    : "/dh",
+        "Department Manager" : "/dm",
+        "Hiring Manager"     : "/h",
+        "Talent Recruiter"   : "/r"
     }
 
-    if not user_data["user_type"] in paths:
-        return errTemplate.page_not_found(req)
-
-    return RedirectResponse(paths[user_data["user_type"]])
+    for role in user_data["roles"]:
+        if role in paths.keys():
+            return RedirectResponse(paths[role])
+    return errTemplate.page_not_found(req)
 
 
 # ===========================================================
@@ -59,6 +67,8 @@ def redirect(req: Request, user_data: dict = Depends(get_token)):
 # Home Page
 @router.get("/")
 def home(req: Request, page: Optional[int] = None):
+    # if user_data:
+    #     return RedirectResponse("/recruitment/redirect")
     return templates.TemplateResponse("pages/home/index.html", {
         "request": req,
         "page_title": "HoMIES - Hospital Management System"

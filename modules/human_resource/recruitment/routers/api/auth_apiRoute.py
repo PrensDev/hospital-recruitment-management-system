@@ -5,11 +5,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database import get_db
 from hashing import Hash
-from pydantic import BaseModel
 
 # Import Models
 from modules.human_resource.recruitment.models._base import *
-from modules.human_resource.recruitment.schemas.main_schemas import UserCredentials
 
 # Router Instance
 router = APIRouter(
@@ -26,27 +24,18 @@ def login(res: Response, req: OAuth2PasswordRequestForm = Depends(), db: Session
 
     # For Inavlid Login Details
     ACCESS_DENIED_MESSAGE = {
-        "access": "Denied",
+        "authorized": False,
         "message": "Incorrect credentials"
     }
 
     # Check if user is existing in database
     if not user_credentials:
-        raise HTTPException(
-            status_code=401,
-            detail=ACCESS_DENIED_MESSAGE,
-            headers={"WWW-Authenticate": "Basic"},
-        )
-
+        return ACCESS_DENIED_MESSAGE
 
     # Check is user password is matched in database
     matched = Hash.verify(req.password, user_credentials.password)
     if not matched:
-        raise HTTPException(
-            status_code=401,
-            detail=ACCESS_DENIED_MESSAGE,
-            headers={"WWW-Authenticate": "Basic"},
-        )
+        return ACCESS_DENIED_MESSAGE
 
     # If no error, setup cookies and access tokens for giving user previledge
     
@@ -79,6 +68,7 @@ def login(res: Response, req: OAuth2PasswordRequestForm = Depends(), db: Session
         httponly = True
     )
     return { 
+        "authorized": True, 
         "access_token": access_token, 
         "token_type": "bearer" 
     }
@@ -88,7 +78,7 @@ def login(res: Response, req: OAuth2PasswordRequestForm = Depends(), db: Session
 @router.get("/logout")
 def logout(res: Response):
     res.delete_cookie("access_token")
-    res.delete_cookie("user_type")
+    res.delete_cookie("roles")
     return {
         "logout_status": "Success", 
         "message": "Log out is successful"

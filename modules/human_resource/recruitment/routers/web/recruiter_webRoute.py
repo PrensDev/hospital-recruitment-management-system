@@ -7,11 +7,12 @@ from sqlalchemy.orm import Session
 from jwt_token import get_token
 
 
-# Import Submodule Files
-from modules.human_resource.recruitment.models import *
-from modules.human_resource.recruitment.routers.web \
-    import errPages_templates as errTemplate
+# Import Models
+from modules.human_resource.recruitment.models._base import *
+
+# Import Template
 from modules.human_resource.recruitment.routers.web._template import templates
+from modules.human_resource.recruitment.routers.web import errPages_templates as errTemplate
 
 
 # Router

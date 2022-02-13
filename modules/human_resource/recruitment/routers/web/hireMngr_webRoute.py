@@ -5,8 +5,10 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 from jwt_token import get_token
 
-# Import Submodules files
-from modules.human_resource.recruitment.models import *
+# Import Models
+from modules.human_resource.recruitment.models._base import *
+
+# Import Templates
 from modules.human_resource.recruitment.routers.web import errPages_templates as errTemplate
 from modules.human_resource.recruitment.routers.web._template import templates
 

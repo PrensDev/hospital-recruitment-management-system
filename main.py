@@ -23,9 +23,5 @@ app.mount('/static', StaticFiles(directory='static'), name='static')
 # =================================================================
 
 # Human Resource
-from modules.human_resource.recruitment.app import app as recruitment
-
-
-
-# Mount Submodules
-app.mount('/', recruitment)
+from modules.human_resource.recruitment.app import recruitment_app
+app.mount('/', recruitment_app)

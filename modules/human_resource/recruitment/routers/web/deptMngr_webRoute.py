@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 
 # Import Submodule Files
-from modules.human_resource.recruitment.models import *
+from modules.human_resource.recruitment.models._base import *
 from modules.human_resource.recruitment.routers.web \
     import errPages_templates as errTemplate
 from modules.human_resource.recruitment.routers.web._template import templates
@@ -37,15 +37,14 @@ AUTHORIZED_USER = "Department Manager"
 # Department Head Dashboard
 @router.get("", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
-            "request": req,
-            "page_title": "Main Dashboard",
-            "sub_title": "Manage your tasks and activities here using this dashboard",
-            "active_navlink": "Main Dashboard"
-        })
-    else:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
+    return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
+        "request": req,
+        "page_title": "Main Dashboard",
+        "sub_title": "Manage your tasks and activities here using this dashboard",
+        "active_navlink": "Main Dashboard"
+    })
 
 
 # Department Head Dashboard
@@ -53,7 +52,7 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 def render(req: Request, user_data: dict = Depends(get_token)):
 
     # Check if user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
 
     # If no error, return template response
@@ -75,7 +74,7 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 def render(req: Request, user_data: dict = Depends(get_token)):
 
     # Check if user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
 
     # If no error, return template response
@@ -88,7 +87,7 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 
 
 # Manpower Request Details
-@router.get("/manpower-requests/{requisition_id}", response_class=HTMLResponse)
+@router.get("/manpower-requests/{manpower_request_id}", response_class=HTMLResponse)
 def render(
     requisition_id: str,
     req: Request, 
@@ -96,11 +95,11 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
     # Check if manpower request is not existing in database
-    if not db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first():
+    if not db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id).first():
         return errTemplate.page_not_found(req)
     
     # If no error, return template response
@@ -121,7 +120,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
 
     # Check if manpower request is not existing in databse
@@ -146,7 +145,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
     # Check if manpower request is not existing in the database
@@ -167,7 +166,7 @@ def render(
 def render(req: Request, user_data: dict = Depends(get_token)):
 
     # Check if user is not athorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
 
     # If no error, return template response

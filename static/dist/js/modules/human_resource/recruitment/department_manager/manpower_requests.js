@@ -19,8 +19,9 @@ ifSelectorExist('#addManpowerRequestForm', () => {
     });
 
     /** Vacant Position For Add Select2 */
-    GET_ajax(`${ ROUTE.API.DM }department/positions`, {
+    GET_ajax(`${ ROUTE.API.DM }positions`, {
         success: result => {
+            console.log(result)
             if(result) {
                 let vacantPosition = $('#vacantPosition');
                 vacantPosition.empty();
@@ -210,7 +211,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
     }
 
     // Request create new manpower request
-    POST_ajax(`${ ROUTE.API.DM }requisitions`, data, {
+    POST_ajax(`${ ROUTE.API.DM }manpower-requests`, data, {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({

@@ -11,22 +11,22 @@ from modules.human_resource.recruitment.routers.web \
 
 
 # App Instance
-app = FastAPI()
+recruitment_app = FastAPI()
 
 
 # API Routers
-app.include_router(test_apiRoute.router)
-# app.include_router(home_apiRoute.router)
-app.include_router(auth_apiRoute.router)
-# app.include_router(deptMngr_apiRoute.router)
-app.include_router(deptHead_apiRoute.router)
-# app.include_router(hireMngr_apiRoute.router)
-# app.include_router(recruiter_apiRoute.router)
+recruitment_app.include_router(test_apiRoute.router)
+recruitment_app.include_router(home_apiRoute.router)
+recruitment_app.include_router(auth_apiRoute.router)
+recruitment_app.include_router(deptMngr_apiRoute.router)
+recruitment_app.include_router(deptHead_apiRoute.router)
+recruitment_app.include_router(hireMngr_apiRoute.router)
+recruitment_app.include_router(recruiter_apiRoute.router)
 
 
 # Web Routers
-app.include_router(home_webRoute.router)
-# app.include_router(deptMngr_webRoute.router)
-# app.include_router(deptHead_webRoute.router)
-# app.include_router(hireMngr_webRoute.router)
-# app.include_router(recruiter_webRoute.router)
+recruitment_app.include_router(home_webRoute.router)
+recruitment_app.include_router(deptMngr_webRoute.router)
+recruitment_app.include_router(deptHead_webRoute.router)
+recruitment_app.include_router(hireMngr_webRoute.router)
+recruitment_app.include_router(recruiter_webRoute.router)
