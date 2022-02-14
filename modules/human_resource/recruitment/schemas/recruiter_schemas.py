@@ -4,7 +4,8 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo
-from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType, ShowPositionForManpowerRequest
+from modules.human_resource.recruitment.schemas.deptMngr_schemas \
+    import ShowEmploymentType, ShowPositionForManpowerRequest
 
 
 # Manpower Request
@@ -47,6 +48,7 @@ class JobCategory(BaseModel):
     job_category_id: str
     name: str
     description: str
+    is_removed: bool
     created_at: datetime
     updated_at: Optional[datetime]
 
@@ -128,7 +130,7 @@ class CreateJobPost(BaseModel):
 
 # Update Job Post(BaseModel):
 class UpdateJobPost(BaseModel):
-    salary_is_visible: bool
+    is_salary_visible: bool
     job_category_id: str
     content: str
     expiration_date: Optional[datetime]
@@ -140,12 +142,12 @@ class ShowApplicant(Applicant):
     applied_job: ShowJobPost
     status: str
     evaluation_done_by: Optional[ShowUserInfo]
-    evaluated_at: Optional[datetime]
     screening_done_by: Optional[ShowUserInfo]
-    screened_at: Optional[datetime]
-    hired_at: Optional[datetime]
     hiring_done_by: Optional[ShowUserInfo]
     rejection_done_by: Optional[ShowUserInfo]
+    evaluated_at: Optional[datetime]
+    screened_at: Optional[datetime]
+    hired_at: Optional[datetime]
     rejected_at: Optional[datetime]
     remarks: Optional[str]
 

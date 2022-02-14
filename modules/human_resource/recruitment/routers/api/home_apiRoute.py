@@ -74,7 +74,7 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
 
 
 # Get All Job Posts
-@router.get("/job-posts", response_model = List[careers.ShowJobPost])
+@router.get("/job-posts", response_model=List[careers.ShowJobPost])
 def get_all_job_posts(
     searchQuery: Optional[str] = None,
     datePosted: Optional[str] = None,
@@ -91,9 +91,9 @@ def get_all_job_posts(
 
         # With filters
         if searchQuery or employmentType:
-            query = query.join(Requisition)
+            query = query.join(ManpowerRequest)
             if employmentType:
-                query = query.filter(Requisition.employment_type_id == employmentType)
+                query = query.filter(ManpowerRequest.employment_type_id == employmentType)
             if searchQuery:
                 query = query.join(Position).filter(Position.name.contains(searchQuery))
         if datePosted:
@@ -126,9 +126,9 @@ def job_posts_analytics(
 
         # With filters
         if searchQuery or employmentType:
-            query = query.join(Requisition)
+            query = query.join(ManpowerRequest)
             if employmentType:
-                query = query.filter(Requisition.employment_type_id == employmentType)
+                query = query.filter(ManpowerRequest.employment_type_id == employmentType)
             if searchQuery:
                 query = query.join(Position).filter(Position.name.contains(searchQuery))
         if datePosted:
@@ -164,8 +164,7 @@ def update_page_views(job_post_id: str, db: Session = Depends(get_db)):
         if not job_post.first():
             return HTTPException(status_code=404, detail=JOB_POST_NOT_FOUND_RESPONSE)
         else:
-            views = job_post.first().views
-            views = views + 1
+            views = job_post.first().views + 1
             job_post.update({"views": views})
             db.commit()
             return views

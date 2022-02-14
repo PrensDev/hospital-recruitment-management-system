@@ -274,12 +274,12 @@ const setJobPostTimeline = (selector, data) => {
     let timelineData = [];
     
     // Created
-    const jobPostedBy = data.job_posted_by;
+    const jobPostedBy = data.job_post_posted_by;
     const jobPostedByFullName = formatName('F M. L, S', {
         firstName  : jobPostedBy.first_name,
         middleName : jobPostedBy.middle_name,
         lastName   : jobPostedBy.last_name,
-        suffixName : jobPostedBy.suffix_name
+        suffixName : jobPostedBy.extension_name
     });
     const createdAt = data.created_at;
     timelineData.push({
@@ -326,7 +326,7 @@ const setOnboardingEmployeeTaskTimeline = (selector, data) => {
         firstName  : assignedBy.first_name,
         middleName : assignedBy.middle_name,
         lastName   : assignedBy.last_name,
-        suffixName : assignedBy.suffix_name
+        suffixName : assignedBy.extension_name
     });
     timelineData.push({
         icon: "clipboard",
@@ -347,7 +347,7 @@ const setOnboardingEmployeeTaskTimeline = (selector, data) => {
             firstName  : completedBy.first_name,
             middleName : completedBy.middle_name,
             lastName   : completedBy.last_name,
-            suffixName : completedBy.suffix_name
+            suffixName : completedBy.extension_name
         });
         timelineData.push({
             icon: "check",
@@ -589,12 +589,12 @@ const setJobPostDetails = (data) => {
         '#jobPostViews': formatNumber(data.views) + pluralize(' view', data.views),
         '#vacantPosition': manpowerRequest.vacant_position.name,
         '#employmentTypeForJobPost': manpowerRequest.employment_type,
-        '#jobCategory': data.job_categorized_as.name,
+        '#jobCategory': data.job_category.name,
     });
 
     // Set Salary Range
     const minSalary = manpowerRequest.min_monthly_salary, maxSalary = manpowerRequest.max_monthly_salary;
-    if((isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary)) || !data.salary_is_visible) {
+    if((isEmptyOrNull(minSalary) && isEmptyOrNull(maxSalary)) || !data.is_salary_visible) {
         hideElement('#salaryRangeDisplay');
         setContent('#salaryRange', '');
     } else {

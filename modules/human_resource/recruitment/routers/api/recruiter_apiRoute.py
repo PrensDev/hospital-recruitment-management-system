@@ -1,11 +1,9 @@
 # Import Packages
-from re import L
-from telnetlib import EL
 from typing import List, Optional
 from urllib import response
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
-from sqlalchemy import cast, func, and_
+from sqlalchemy import cast, func, and_, text
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, authorized

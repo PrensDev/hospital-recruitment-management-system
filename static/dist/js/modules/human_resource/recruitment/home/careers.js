@@ -201,7 +201,7 @@ ifSelectorExist('#availableJobList', () => {
                 const manpowerRequest = r.manpower_request;
 
                 const jobCategory = () => {
-                    const jobCategory = r.job_categorized_as;
+                    const jobCategory = r.job_category;
                     return `
                         <div>
                             <i style="width: 1.25rem" class="fas fa-th-list text-center text-secondary mr-1"></i>
@@ -210,7 +210,7 @@ ifSelectorExist('#availableJobList', () => {
                     `
                 }
 
-                const salaryRange = r.salary_is_visible 
+                const salaryRange = r.is_salary_visible 
                     ? `<div>
                             <i style="width: 1.25rem" class="fas fa-handshake text-center text-secondary mr-1"></i>
                             <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
@@ -252,7 +252,7 @@ ifSelectorExist('#availableJobList', () => {
                                         ${ jobCategory() }
                                         <div>
                                             <i style="width: 1.25rem" class="fas fa-briefcase text-center text-secondary mr-1"></i>
-                                            <span>${ manpowerRequest.manpower_request_employment_type.name }</span>
+                                            <span>${ manpowerRequest.employment_type.name }</span>
                                         </div>
                                         ${ salaryRange }
                                         ${ expirationDate }
@@ -382,12 +382,12 @@ ifSelectorExist('#availableJobDetails', () => {
                 },
                 '#datePostedHumanized': fromNow(datePosted),
                 '#jobDescription': result.content,
-                '#employmentType': manpowerRequest.manpower_request_employment_type.name,
-                '#jobCategory': result.job_categorized_as.name
+                '#employmentType': manpowerRequest.employment_type.name,
+                '#jobCategory': result.job_category.name
             });
 
             // Set Salary Range
-            result.salary_is_visible
+            result.is_salary_visible
                 ? setContent('#salaryRange', `${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }`)
                 : hideElement('#salaryRangeDisplay')
 

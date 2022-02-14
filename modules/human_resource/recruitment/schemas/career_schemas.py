@@ -2,14 +2,13 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
-from modules.human_resource.recruitment.schemas.user_schemas import ShowPosition
 from modules.human_resource.recruitment.schemas.recruiter_schemas import ShowJobCategory
-from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType
+from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType, ShowPositionForManpowerRequest
 
 
 # Manpower Request
 class ManpowerRequest(BaseModel):
-    vacant_position: ShowPosition
+    vacant_position: ShowPositionForManpowerRequest
     employment_type: ShowEmploymentType
     request_nature: str
     staffs_needed: int

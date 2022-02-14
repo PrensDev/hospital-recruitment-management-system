@@ -576,7 +576,7 @@ const getJobPostDetails = () => {
 
             /** SET MANPOWER REQUEST CONTENTS */
 
-            const requestedBy = manpowerRequest.manpower_request_by;
+            const requestedBy = manpowerRequest.manpower_request_requested_by;
 
             // Set Manpower Request ID
             setValue('#manpowerRequestID', manpowerRequest.manpower_request_id);
@@ -593,7 +593,7 @@ const getJobPostDetails = () => {
             }));
             
             // Set Requestor Department
-            setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
+            setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.sub_department.name }`);
             
             // Set Date Requested
             setContent('#dateRequested', formatDateTime(manpowerRequest.created_at, "DateTime"));
@@ -649,7 +649,7 @@ const getJobPostDetails = () => {
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
-                                ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.department.name) }
+                                ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.sub_department.name) }
                             `
                         }
                     }
@@ -672,7 +672,7 @@ const getJobPostDetails = () => {
                     });
                     return `
                         <div>${ signedByFullName }</div>
-                        ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.department.name) }
+                        ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.sub_department.name) }
                     `
                 }
             });
@@ -787,7 +787,7 @@ ifSelectorExist('#editJobPostForm', () => {
             });
 
             // Set Employment Type
-            setContent('#employmentTypeForSummary', manpowerRequest.manpower_request_employment_type.name);
+            setContent('#employmentTypeForSummary', manpowerRequest.employment_type.name);
 
             // Set Salary Range
             setContent('#salaryRangeForSummary', () => {
@@ -812,14 +812,14 @@ ifSelectorExist('#editJobPostForm', () => {
 
             /** FOR MANPOWER REQUEST MODAL */
 
-            const requestedBy = manpowerRequest.manpower_request_by;
+            const requestedBy = manpowerRequest.manpower_request_requested_by;
 
             // Set Requestor Name
             setContent('#requestorName', formatName('F M. L, S', {
                 firstName  : requestedBy.first_name,
                 middleName : requestedBy.middle_name,
                 lastName   : requestedBy.last_name,
-                suffixName : requestedBy.suffix_name
+                suffixName : requestedBy.extension_name
             }));
 
             // Set Requestor Department
@@ -844,7 +844,7 @@ ifSelectorExist('#editJobPostForm', () => {
             });
 
             // Set Employment Type
-            setContent('#employmentType', manpowerRequest.manpower_request_employment_type.name);
+            setContent('#employmentType', manpowerRequest.employment_type.name);
 
             // Set Request Nature
             setContent('#requestNature', manpowerRequest.request_nature);
@@ -873,11 +873,11 @@ ifSelectorExist('#editJobPostForm', () => {
                         firstName  : signedBy.first_name,
                         middleName : signedBy.middle_name,
                         lastName   : signedBy.last_name,
-                        suffixName : signedBy.suffix_name
+                        suffixName : signedBy.extension_name
                     });
                     return `
                         <div>${ signedByFullName }</div>
-                        ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.department.name) }
+                        ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.sub_department.name) }
                     `
                 }
             });
@@ -906,11 +906,11 @@ ifSelectorExist('#editJobPostForm', () => {
                                 firstName  : approvedBy.first_name,
                                 middleName : approvedBy.middle_name,
                                 lastName   : approvedBy.last_name,
-                                suffixName : approvedBy.suffix_name
+                                suffixName : approvedBy.extension_name
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
-                                ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.department.name) }
+                                ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.sub_department.name) }
                             `
                         }
                     }
@@ -935,12 +935,12 @@ ifSelectorExist('#editJobPostForm', () => {
             /** SET INPUTS */
 
             /** Set Vacant Position */
-            $('#jobCategory').val(result.job_categorized_as.job_category_id).trigger('change');
+            $('#jobCategory').val(result.job_category.job_category_id).trigger('change');
             
             // Set Job Description
             $('#jobDescription').summernote('code', result.content);
 
-            if(result.salary_is_visible) checkElement('#salaryRangeIsVisible');
+            if(result.is_salary_visible) checkElement('#salaryRangeIsVisible');
 
             // Set Expiration Date
             if(!isEmptyOrNull(result.expiration_date)) {
@@ -1025,7 +1025,7 @@ onClick('#confirmUpdateJobPostBtn', () => {
     const data = {
         job_category_id: formData.get('jobCategory'),
         content: formData.get('jobDescription'),
-        salary_is_visible: isChecked('#salaryRangeIsVisible'),
+        is_salary_visible: isChecked('#salaryRangeIsVisible'),
         expiration_date: expirationDate
     }
 
