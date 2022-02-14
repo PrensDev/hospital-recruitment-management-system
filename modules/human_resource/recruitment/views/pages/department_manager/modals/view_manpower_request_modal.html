@@ -11,14 +11,14 @@
             </div>
 
             <div class="modal-body mb-3">
-                <input type="hidden" id="requisitionIDForCancel" name="requisitionID">
+                <input type="hidden" id="manpowerRequestIDForCancel" name="manpowerRequestID">
                 <div>Are you sure you want to cancel your request?</div>
                 <div class="small text-danger">NOTE: Your request will be remove and it cannot be undone</div>
             </div>
             
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                <button type="submit" class="btn btn-warning">
+                <button type="button" class="btn btn-default" id="cancelCancelRequestManpowerRequestBtn" data-dismiss="modal">No</button>
+                <button type="submit" class="btn btn-warning" id="cancelRequestManpowerRequestBtn">
                     <span>Yes, cancel it.</span>
                     <i class="fas fa-times-circle ml-1"></i>
                 </button>

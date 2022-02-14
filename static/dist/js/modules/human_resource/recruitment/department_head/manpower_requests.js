@@ -8,7 +8,7 @@
 
 /** ManPower Requests DataTable */
 initDataTable('#manpowerRequestDT', {
-    url: `${ ROUTE.API.DH }requisitions`,
+    url: `${ ROUTE.API.DH }manpower-requests`,
     enableButtons: true,
     columns: [
 
@@ -89,12 +89,12 @@ initDataTable('#manpowerRequestDT', {
         { 
             data: null,
             render: data => {
-                const requisitionID = data.requisition_id;
+                const manpowerRequestID = data.manpower_request_id;
 
                 return TEMPLATE.DT.OPTIONS(`
                     <a 
                         class="dropdown-item d-flex"
-                        href="${ ROUTE.WEB.DH }manpower-requests/${ requisitionID }"
+                        href="${ ROUTE.WEB.DH }manpower-requests/${ manpowerRequestID }"
                     >
                         <div style="width: 2rem"><i class="fas fa-eye mr-1"></i></div>
                         <span>View Request</span>
@@ -114,7 +114,7 @@ initDataTable('#manpowerRequestDT', {
  */
 
 /** Manpower Requests Analytics */
-const manpowerRequestAnalytics = () => GET_ajax(`${ ROUTE.API.DH }requisitions/analytics`, {
+const manpowerRequestAnalytics = () => GET_ajax(`${ ROUTE.API.DH }manpower-requests/analytics`, {
     success: result => {
         if(result) {
 
@@ -156,8 +156,8 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
 
 /** View Manpower Request */
 ifSelectorExist('#manpowerRequestFormDocument', () => {
-    const requisitionID = window.location.pathname.split('/')[3];
-    GET_ajax(`${ ROUTE.API.DH }requisitions/${ requisitionID }`, {
+    const manpowerRequestID = window.location.pathname.split('/')[3];
+    GET_ajax(`${ ROUTE.API.DH }manpower-requests/${ manpowerRequestID }`, {
         success: result => {
 
             /** SET MANPOWER REQUEST DOCUMENT */
@@ -255,7 +255,7 @@ onHideModal('#rejectRequestModal', () => resetForm('#rejectRequestForm'));
 
 /** Sign Request */
 const signRequest = (data) => {
-    const requisitionID = window.location.pathname.split('/')[3];
+    const manpowerRequestID = window.location.pathname.split('/')[3];
 
     const ifError = () => {
         if(data.request_status == "For approval") {
@@ -277,7 +277,7 @@ const signRequest = (data) => {
         }
     }
 
-    PUT_ajax(`${ ROUTE.API.DH }requisitions/${ requisitionID }/sign`, data, {
+    PUT_ajax(`${ ROUTE.API.DH }manpower-requests/${ manpowerRequestID }/sign`, data, {
         success: result => {
             if(result) {
                 if(data.request_status == "For approval")

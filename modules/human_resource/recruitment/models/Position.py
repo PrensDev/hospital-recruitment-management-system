@@ -65,7 +65,7 @@ class Position(Base):
     # To ManpowerRequest
     manpower_requests = relationship(
         "ManpowerRequest",
-        back_populates = "position"
+        back_populates = "vacant_position"
     )
 
     # To OnboardingEmployee

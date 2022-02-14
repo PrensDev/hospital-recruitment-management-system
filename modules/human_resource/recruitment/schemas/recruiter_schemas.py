@@ -3,17 +3,16 @@ from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
 
-from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo, ShowPosition
-from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType
+from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo
+from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType, ShowPositionForManpowerRequest
 
 
 # Manpower Request
 class ManpowerRequest(BaseModel):
-    requisition_id: str
+    manpower_request_id: str
     requisition_no: str
-    manpower_request_by: ShowUserInfo
-    vacant_position: ShowPosition
-    manpower_request_employment_type: ShowEmploymentType
+    vacant_position: ShowPositionForManpowerRequest
+    employment_type: ShowEmploymentType
     request_nature: str
     staffs_needed: int
     min_monthly_salary: Optional[float]
@@ -21,6 +20,7 @@ class ManpowerRequest(BaseModel):
     content: str
     request_status: str
     deadline: Optional[datetime]
+    manpower_request_requested_by: ShowUserInfo
     manpower_request_signed_by: Optional[ShowUserInfo]
     manpower_request_reviewed_by: Optional[ShowUserInfo]
     manpower_request_rejected_by: Optional[ShowUserInfo]
@@ -71,9 +71,9 @@ class ShowJobCategory(JobCategory):
 # Job Post
 class JobPost(BaseModel):
     job_post_id: str
-    job_posted_by: ShowUserInfo
+    job_post_posted_by: ShowUserInfo
     content: str
-    salary_is_visible: bool
+    is_salary_visible: bool
     expiration_date: Optional[datetime]
     views: int
     created_at: datetime
@@ -101,7 +101,7 @@ class Applicant(BaseModel):
 
 # Show Job Post
 class ShowJobPost(JobPost):
-    job_categorized_as: JobCategory
+    job_category: JobCategory
     manpower_request: ManpowerRequest
     applicants: List[Optional[Applicant]]
 
@@ -111,7 +111,7 @@ class ShowJobPost(JobPost):
 
 # Show Manpower Request
 class ShowManpowerRequest(ManpowerRequest):
-    job_post: List[Optional[JobPost]]
+    job_post: Optional[JobPost]
 
     class Config():
         orm_mode = True
@@ -119,8 +119,8 @@ class ShowManpowerRequest(ManpowerRequest):
 
 # Create Job Post
 class CreateJobPost(BaseModel):
-    requisition_id: str
-    salary_is_visible: bool
+    manpower_request_id: str
+    is_salary_visible: bool
     job_category_id: str
     content: str
     expiration_date: Optional[datetime]

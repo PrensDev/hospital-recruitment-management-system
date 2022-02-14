@@ -2,7 +2,7 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
-from sqlalchemy import text, and_, cast, func
+from sqlalchemy import text, and_, cast, func, Date
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, authorized
@@ -12,7 +12,8 @@ from sqlalchemy import or_
 
 # Import Models and Schemas
 from modules.human_resource.recruitment.models._base import *
-from modules.human_resource.recruitment.schemas import user_schemas as user, hireMngr_schemas as hireMngr
+from modules.human_resource.recruitment.schemas \
+    import user_schemas as user, hireMngr_schemas as hireMngr, deptMngr_schemas as deptMngr
 
 
 # From email sending
@@ -44,9 +45,9 @@ def get_user_info(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+            user_info = db.query(Employee).filter(Employee.employee_id == user_data.employee_id).first()
             if not user_info:
-                raise HTTPException(status_code = 404, detail = {"message": "User does not exists"})
+                raise HTTPException(status_code = 404, detail = {"message": "Employee does not exists"})
             else:
                 return user_info
     except Exception as e:
@@ -59,30 +60,30 @@ def get_user_info(
 
 
 # Requisition Not Found Response
-REQUISITION_NOT_FOUND_RESPONSE = {"message": "Requisition not found"}
+MANPOWER_REQUEST_NOT_FOUND_RESPONSE = {"message": "Requisition not found"}
 
 
-# Get All Requisitions
-@router.get("/requisitions", response_model = List[hireMngr.ShowManpowerRequest])
-def get_all_requisitions(
+# Get All Manpower Requests
+@router.get("/manpower-requests", response_model = List[deptMngr.ShowManpowerRequest])
+def get_all_manpower_requests(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            return db.query(Requisition).filter(or_(
-                Requisition.request_status == "For approval",
-                Requisition.request_status == "Approved",
-                Requisition.request_status == "Rejected for approval",
-                Requisition.request_status == "Completed"
+            return db.query(ManpowerRequest).filter(or_(
+                ManpowerRequest.request_status == "For approval",
+                ManpowerRequest.request_status == "Approved",
+                ManpowerRequest.request_status == "Rejected for approval",
+                ManpowerRequest.request_status == "Completed"
             )).all()
     except Exception as e:
         print(e)
 
 
 # Requisition Analytics
-@router.get("/requisitions/analytics")
-def requisitions_analytics(
+@router.get("/manpower-requests/analytics")
+def manpower_requests_analytics(
     db: Session = Depends(get_db),
     start: Optional[str] = None,
     end: Optional[str] = None,
@@ -90,15 +91,15 @@ def requisitions_analytics(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            query = db.query(Requisition)
+            query = db.query(ManpowerRequest)
 
-            for_approval_query = query.filter(Requisition.request_status == "For approval")
-            approved_query = query.filter(Requisition.request_status == "Approved")
-            completed_query = query.filter(Requisition.request_status == "Completed")
-            rejected_query = query.filter(Requisition.request_status == "Rejected for approval")
+            for_approval_query = query.filter(ManpowerRequest.request_status == "For approval")
+            approved_query = query.filter(ManpowerRequest.request_status == "Approved")
+            completed_query = query.filter(ManpowerRequest.request_status == "Completed")
+            rejected_query = query.filter(ManpowerRequest.request_status == "Rejected for approval")
             
             if start and end:
-                date_filter = and_(Requisition.created_at >= start, Requisition.created_at <= end)
+                date_filter = and_(ManpowerRequest.created_at >= start, ManpowerRequest.created_at <= end)
                 for_approval_query = for_approval_query.filter(date_filter)
                 approved_query = approved_query.filter(date_filter)
                 completed_query = completed_query.filter(date_filter)
@@ -124,9 +125,9 @@ def requisitions_analytics(
         print(e)
 
 
-# Requisition Data
-@router.get("/requisitions/data")
-def requisitions_data(
+# Manpower Request Data
+@router.get("/manpower-requests/data")
+def manpower_requests_data(
     db: Session = Depends(get_db),
     start: Optional[str] = None,
     end: Optional[str] = None,
@@ -135,22 +136,22 @@ def requisitions_data(
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
 
-            target_column = cast(Requisition.created_at, Date)
+            target_column = cast(ManpowerRequest.created_at, Date)
 
             query = db.query(
                 target_column.label("created_at"), 
-                func.count(Requisition.requisition_id).label("total")
+                func.count(ManpowerRequest.manpower_request_id).label("total")
             ).filter(or_(
-                Requisition.request_status == "For approval",
-                Requisition.request_status == "Approved",
-                Requisition.request_status == "Rejected for approval",
-                Requisition.request_status == "Completed"
+                ManpowerRequest.request_status == "For approval",
+                ManpowerRequest.request_status == "Approved",
+                ManpowerRequest.request_status == "Rejected for approval",
+                ManpowerRequest.request_status == "Completed"
             )).group_by(target_column)
 
             if start and end:
                 query = query.filter(and_(
-                    Requisition.created_at >= start, 
-                    Requisition.created_at <= end
+                    ManpowerRequest.created_at >= start, 
+                    ManpowerRequest.created_at <= end
                 ))
             
             return query.all()
@@ -158,26 +159,26 @@ def requisitions_data(
         print(e)
 
 
-# Get One Requisition
-@router.get("/requisitions/{requisition_id}", response_model = hireMngr.ShowManpowerRequest)
+# Get One Manpower Request
+@router.get("/manpower-requests/{manpower_request_id}", response_model=deptMngr.ShowManpowerRequest)
 def get_one_requisition(
-    requisition_id: str, 
+    manpower_request_id: str, 
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            requisition = db.query(Requisition).filter(
-                Requisition.requisition_id == requisition_id,
+            requisition = db.query(ManpowerRequest).filter(
+                ManpowerRequest.manpower_request_id == manpower_request_id,
                 or_(
-                    Requisition.request_status == "For approval",
-                    Requisition.request_status == "Approved",
-                    Requisition.request_status == "Rejected for approval",
-                    Requisition.request_status == "Completed"
+                    ManpowerRequest.request_status == "For approval",
+                    ManpowerRequest.request_status == "Approved",
+                    ManpowerRequest.request_status == "Rejected for approval",
+                    ManpowerRequest.request_status == "Completed"
                 )
             ).first()
             if not requisition:
-                raise HTTPException(status_code=404, detail=REQUISITION_NOT_FOUND_RESPONSE)
+                raise HTTPException(status_code=404, detail=MANPOWER_REQUEST_NOT_FOUND_RESPONSE)
             else:
                 return requisition
     except Exception as e:
@@ -185,30 +186,30 @@ def get_one_requisition(
 
 
 # Requisition Approval
-@router.put("/requisitions/{requisition_id}")
-def requisition_approval(
-    requisition_id: str, 
+@router.put("/manpower-requests/{manpower_request_id}")
+def manpower_request_approval(
+    manpower_request_id: str, 
     req: hireMngr.ManpowerRequestApproval,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id)
-            if not requisition.first():
-                raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE)
+            manpower_request = db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id)
+            if not manpower_request.first():
+                raise HTTPException(status_code=404, detail=MANPOWER_REQUEST_NOT_FOUND_RESPONSE)
             else:
                 if req.request_status == "Approved":
-                    requisition.update({
+                    manpower_request.update({
                         "request_status": req.request_status,
-                        "reviewed_by": user_data.user_id,
+                        "reviewed_by": user_data.employee_id,
                         "reviewed_at": text('NOW()')
                     })
                 elif req.request_status == "Rejected for approval":
-                    requisition.update({
+                    manpower_request.update({
                         "request_status": req.request_status,
                         "remarks": req.remarks,
-                        "rejected_by": user_data.user_id,
+                        "rejected_by": user_data.employee_id,
                         "rejected_at": text('NOW()')
                     })
                 db.commit()

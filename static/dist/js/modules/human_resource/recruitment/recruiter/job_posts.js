@@ -21,7 +21,7 @@ ifSelectorExist('#createJobPostForm', () => {
     GET_ajax(`${ ROUTE.API.R }job-categories`, {
         success: result => {
             if(result) {
-                let jobCategory = $('#jobCategory');
+                const jobCategory = $('#jobCategory');
                 jobCategory.empty();
                 jobCategory.append(`<option></option>`);
                 
@@ -46,17 +46,17 @@ ifSelectorExist('#createJobPostForm', () => {
     });
 
     // Get the requisition ID from the URL
-    const requisitionID = window.location.pathname.split('/')[3];
+    const manpowerRequestID = window.location.pathname.split('/')[3];
 
     /** Get Manpower Request Information */
-    GET_ajax(`${ ROUTE.API.R }requisitions/${ requisitionID }`, {
+    GET_ajax(`${ ROUTE.API.R }manpower-requests/${ manpowerRequestID }`, {
         success: result => {
             const minSalary = result.min_monthly_salary, maxSalary = result.max_monthly_salary;
 
             /** MANPOWER REQUEST SUMMARY */
 
             // Set Value for Requisition ID
-            setValue('#requisitionID', result.requisition_id);
+            setValue('#manpowerRequestID', result.manpower_request_id);
 
             // Set Content
             setContent('#vacantPositionForSummary', result.vacant_position.name);
@@ -68,7 +68,7 @@ ifSelectorExist('#createJobPostForm', () => {
             });
 
             // Set Employment Type
-            setContent('#employmentTypeForSummary', result.manpower_request_employment_type.name);
+            setContent('#employmentTypeForSummary', result.employment_type.name);
 
             // Set Salary Range
             setContent('#salaryRangeForSummary', () => {
@@ -96,24 +96,24 @@ ifSelectorExist('#createJobPostForm', () => {
 
             /** SET MANPOWER REQUEST CONTENTS */
 
-            const requestedBy = result.manpower_request_by;
+            const requestedBy = result.manpower_request_requested_by;
+
+            // Set Requisition ID
+            setValue('#manpowerRequestID', result.manpower_request_id)
 
             // Set Requisition No
             setContent('#requisitionNo', result.requisition_no);
-
-            // Set Requisition ID
-            setValue('#requisitionID', result.requisition_id)
             
             // Set Requestor Name
             setContent('#requestorName', formatName("F M. L, S", {
                 firstName  : requestedBy.first_name,
                 middleName : requestedBy.middle_name,
                 lastName   : requestedBy.last_name,
-                suffixName : requestedBy.suffix_name
+                suffixName : requestedBy.extension_name
             }));
             
             // Set Requestor Department
-            setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.department.name }`);
+            setContent('#requestorDepartment', `${ requestedBy.position.name }, ${ requestedBy.position.sub_department.name }`);
             
             // Set Date Requested
             setContent('#dateRequested', formatDateTime(result.created_at, "DateTime"));
@@ -136,7 +136,7 @@ ifSelectorExist('#createJobPostForm', () => {
             });
 
             // Set Employment Type
-            setContent('#employmentType', result.manpower_request_employment_type.name);
+            setContent('#employmentType', result.employment_type.name);
 
             // Set Request Nature
             setContent('#requestNature', result.request_nature);
@@ -170,7 +170,7 @@ ifSelectorExist('#createJobPostForm', () => {
                             });
                             return `
                                 <div>${ approvedByFullName }</div>
-                                ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.department.name) }
+                                ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.sub_department.name) }
                             `
                         }
                     }
@@ -193,7 +193,7 @@ ifSelectorExist('#createJobPostForm', () => {
                     });
                     return `
                         <div>${ signedByFullName }</div>
-                        ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.department.name) }
+                        ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.sub_department.name) }
                     `
                 }
             });
@@ -248,7 +248,7 @@ $('#expirationDate').on('change', () => isChecked('#expirationDate') ? showEleme
 /** Validate Add Job Post Form */
 validateForm('#createJobPostForm', {
     rules: {
-        requisitionID: { required: true },
+        manpowerRequestID: { required: true },
         jobCategory: { required: true },
         jobDescription: { required: true, },
         openUntil: {
@@ -257,7 +257,7 @@ validateForm('#createJobPostForm', {
         }
     },
     messages:{
-        requisitionID: { required: 'This field must have value' },
+        manpowerRequestID: { required: 'This field must have value' },
         jobCategory: { required: 'Please select a category for this job' },
         jobDescription: { required: 'Job Description is required', },
         openUntil: {
@@ -286,8 +286,8 @@ onClick('#confirmPostNewJobPostBtn', () => {
         : null
 
     const data = {
-        requisition_id: get('requisitionID'),
-        salary_is_visible: isChecked('#salaryRangeIsVisible'),
+        manpower_request_id: get('manpowerRequestID'),
+        is_salary_visible: isChecked('#salaryRangeIsVisible'),
         job_category_id: get('jobCategory'),
         content: get('jobDescription'),
         expiration_date: expirationDate,
@@ -313,7 +313,7 @@ onClick('#confirmPostNewJobPostBtn', () => {
             else ifError()
         },
         error: () => ifError()
-    })
+    });
 });
 
 
@@ -341,7 +341,7 @@ initDataTable('#jobPostsDT', {
             data: null,
             render: data => {
                 const vacant_position = data.manpower_request.vacant_position.name;
-                const job_category = data.job_categorized_as.name;
+                const job_category = data.job_category.name;
 
                 return `
                     <div>${ vacant_position }</div>
@@ -397,7 +397,7 @@ initDataTable('#jobPostsDT', {
             data: null,
             render: data => {
                 const jobPostID = data.job_post_id;
-                const requisitionID = data.manpower_request.requisition_id;
+                const manpowerRequestID = data.manpower_request.manpower_request_id;
 
                 const applicants = data.applicants.length > 0
                     ? `
@@ -457,7 +457,7 @@ initDataTable('#jobPostsDT', {
                     <div class="dropdown-divider"></div>
                     <a
                         class="dropdown-item d-flex"
-                        href="${ ROUTE.WEB.R }manpower-requests/${ requisitionID }"
+                        href="${ ROUTE.WEB.R }manpower-requests/${ manpowerRequestID }"
                     >
                         <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
                         <div>
@@ -578,11 +578,11 @@ const getJobPostDetails = () => {
 
             const requestedBy = manpowerRequest.manpower_request_by;
 
+            // Set Manpower Request ID
+            setValue('#manpowerRequestID', manpowerRequest.manpower_request_id);
+            
             // Set Requisition No
             setContent('#requisitionNo', manpowerRequest.requisition_no);
-
-            // Set Requisition ID
-            setValue('#requisitionID', manpowerRequest.requisition_id)
             
             // Set Requestor Name
             setContent('#requestorName', formatName("F M. L, S", {

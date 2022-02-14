@@ -1,5 +1,5 @@
 # Import Packages
-from sqlalchemy import and_, or_, cast, func
+from sqlalchemy import and_, or_, cast, func, Date
 from typing import List, Optional
 from fastapi import APIRouter, Depends, UploadFile, File
 from fastapi.exceptions import HTTPException
@@ -11,7 +11,7 @@ from oauth2 import authorized, get_user
 # Import Models and Schemas
 from modules.human_resource.recruitment.models._base import *
 from modules.human_resource.recruitment.schemas \
-    import main_schemas as main, user_schemas as user, deptHead_schemas as deptHead
+    import main_schemas as main, user_schemas as user, deptHead_schemas as deptHead, deptMngr_schemas as deptMngr
 
 
 # For file handling
@@ -39,7 +39,7 @@ def get_user_info(
         if(authorized(user_data, AUTHORIZED_USER)):
             user_info = db.query(Employee).filter(Employee.employee_id == user_data.employee_id).first()
             if not user_info:
-                raise HTTPException(status_code = 404, detail = {"message": "User does not exist"})
+                raise HTTPException(status_code = 404, detail = {"message": "Employee does not exist"})
             return user_info
     except Exception as e:
         print(e)
@@ -50,180 +50,213 @@ def get_user_info(
 
 
 # # Manpower Request Not Found Response
-# REQUISITION_NOT_FOUND_RESPONSE = {"message": "Manpower request was not found"}
+MANPOWER_REQUEST_NOT_FOUND_RESPONSE = {"message": "Manpower request was not found"}
 
 
-# # Get All Manpower Request
-# @router.get("/manpower-requests", response_model = List[deptHead.ShowManpowerRequest])
-# def get_all_requisitions(
-#     db: Session = Depends(get_db), 
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, Position.position_id == User.position_id).first()
-#             if not user_department:
-#                 return HTTPException(status_code = 404, detail = {"message": "User department not found"})
-#             else:
-#                 return db.query(ManpowerRequest).join(Position).filter(Position.position_id == ManpowerRequest.position_id).join(Department).filter(Department.department_id == user_department.department_id).all()
-#     except Exception as e:
-#         print(e)
+# Get All Manpower Request
+@router.get("/manpower-requests", response_model=List[deptMngr.ShowManpowerRequest])
+def get_all_manpower_requests(
+    db: Session = Depends(get_db), 
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            user_department = db.query(Department).join(SubDepartment).filter(
+                Department.department_id == SubDepartment.department_id
+            ).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Employee.employee_id == user_data.employee_id, 
+                Position.position_id == Employee.position_id
+            ).first()
+
+            if not user_department:
+                raise HTTPException(status_code = 404, detail = {"message": "User department not found"})
+            else:
+                return db.query(ManpowerRequest).join(Position).filter(
+                    Position.position_id == ManpowerRequest.position_id
+                ).join(SubDepartment).filter(
+                    SubDepartment.sub_department_id == Position.sub_department_id,
+                ).join(Department).filter(
+                    Department.department_id == user_department.department_id,
+                ).all()
+    except Exception as e:
+        print(e)
 
 
-# # Manpower Request Analytics
-# @router.get("/manpower-requests/analytics")
-# def requisition_analytics(
-#     db: Session = Depends(get_db),
-#     start: Optional[str] = None,
-#     end: Optional[str] = None,
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, Position.position_id == User.position_id).first()
-#             if not user_department:
-#                 return HTTPException(status_code = 404, detail = {"message": "User department not found"})
-#             else:
-#                 query = db.query(ManpowerRequest).join(Position).filter(Position.position_id == ManpowerRequest.position_id).join(Department).filter(Department.department_id == user_department.department_id)
+# Manpower Request Analytics
+@router.get("/manpower-requests/analytics")
+def manpower_requests_analytics(
+    db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            user_department = db.query(Department).join(SubDepartment).filter(
+                Department.department_id == SubDepartment.department_id
+            ).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Employee.employee_id == user_data.employee_id, 
+                Position.position_id == Employee.position_id
+            ).first()
 
-#                 total_query = query
+            if not user_department:
+                return HTTPException(status_code=404, detail={"message": "User department not found"})
+            else:
+                query = db.query(ManpowerRequest).join(Position).filter(
+                    Position.position_id == ManpowerRequest.position_id
+                ).join(SubDepartment).filter(
+                    SubDepartment.sub_department_id == Position.sub_department_id,
+                ).join(Department).filter(
+                    Department.department_id == user_department.department_id,
+                )
+
+                total_query = query
                 
-#                 for_signature_query = query.filter(ManpowerRequest.request_status == "For signature")
-#                 for_approval_query = query.filter(ManpowerRequest.request_status == "For approval")
-#                 approved_query = query.filter(ManpowerRequest.request_status == "Approved")
-#                 completed_query = query.filter(ManpowerRequest.request_status == "Completed")
-#                 rejected_for_signing_query = query.filter(ManpowerRequest.request_status == "Rejected for signing")
-#                 rejected_for_approval_query = query.filter(ManpowerRequest.request_status == "Rejected for approval")
+                for_signature_query = query.filter(ManpowerRequest.request_status == "For signature")
+                for_approval_query = query.filter(ManpowerRequest.request_status == "For approval")
+                approved_query = query.filter(ManpowerRequest.request_status == "Approved")
+                completed_query = query.filter(ManpowerRequest.request_status == "Completed")
+                rejected_for_signing_query = query.filter(ManpowerRequest.request_status == "Rejected for signing")
+                rejected_for_approval_query = query.filter(ManpowerRequest.request_status == "Rejected for approval")
                 
-#                 if start and end:
-#                     date_filter = and_(ManpowerRequest.created_at >= start, ManpowerRequest.created_at <= end)
-#                     total_query = total_query.filter(date_filter)
-#                     for_signature_query = for_signature_query.filter(date_filter)
-#                     for_approval_query = for_approval_query.filter(date_filter)
-#                     approved_query = approved_query.filter(date_filter)
-#                     completed_query = completed_query.filter(date_filter)
-#                     rejected_for_signing_query = rejected_for_signing_query.filter(date_filter)
-#                     rejected_for_approval_query = rejected_for_approval_query.filter(date_filter)
+                if start and end:
+                    date_filter = and_(ManpowerRequest.created_at >= start, ManpowerRequest.created_at <= end)
+                    total_query = total_query.filter(date_filter)
+                    for_signature_query = for_signature_query.filter(date_filter)
+                    for_approval_query = for_approval_query.filter(date_filter)
+                    approved_query = approved_query.filter(date_filter)
+                    completed_query = completed_query.filter(date_filter)
+                    rejected_for_signing_query = rejected_for_signing_query.filter(date_filter)
+                    rejected_for_approval_query = rejected_for_approval_query.filter(date_filter)
                 
-#                 total_ongoing = for_signature_query.count() + for_approval_query.count() + approved_query.count()
-#                 total_rejected = rejected_for_signing_query.count() + rejected_for_approval_query.count()
+                total_ongoing = for_signature_query.count() + for_approval_query.count() + approved_query.count()
+                total_rejected = rejected_for_signing_query.count() + rejected_for_approval_query.count()
 
-#                 return {
-#                     "total": total_query.count(),
-#                     "on_going": {
-#                         "total": total_ongoing,
-#                         "for_signature": for_signature_query.count(),
-#                         "for_approval": for_approval_query.count(),
-#                         "approved": approved_query.count(),
-#                     },
-#                     "completed": completed_query.count(),
-#                     "rejected": {
-#                         "total": total_rejected,
-#                         "for_signing": rejected_for_signing_query.count(),
-#                         "for_approval": rejected_for_approval_query.count()
-#                     }
-#                 }
-#     except Exception as e:
-#         print(e)
+                return {
+                    "total": total_query.count(),
+                    "on_going": {
+                        "total": total_ongoing,
+                        "for_signature": for_signature_query.count(),
+                        "for_approval": for_approval_query.count(),
+                        "approved": approved_query.count(),
+                    },
+                    "completed": completed_query.count(),
+                    "rejected": {
+                        "total": total_rejected,
+                        "for_signing": rejected_for_signing_query.count(),
+                        "for_approval": rejected_for_approval_query.count()
+                    }
+                }
+    except Exception as e:
+        print(e)
 
 
-
-# # Manpower Request Data
-# @router.get("/manpower-requests/data")
-# def requisitions_data(
-#     db: Session = Depends(get_db),
-#     start: Optional[str] = None,
-#     end: Optional[str] = None,
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             user_department = db.query(Department).join(Position).filter(
-#                 Department.department_id == Position.department_id
-#             ).join(User).filter(
-#                 User.user_id == user_data.user_id, 
-#                 Position.position_id == User.position_id
-#             ).first()
+# Manpower Request Data
+@router.get("/manpower-requests/data")
+def manpower_requests_data(
+    db: Session = Depends(get_db),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            user_department = db.query(Department).join(SubDepartment).filter(
+                    Department.department_id == SubDepartment.department_id
+                ).join(Position).filter(
+                    SubDepartment.sub_department_id == Position.sub_department_id
+                ).join(Employee).filter(
+                    Employee.employee_id == user_data.employee_id, 
+                    Position.position_id == Employee.position_id
+                ).first()
             
-#             if not user_department:
-#                 return HTTPException(status_code = 404, detail = {"message": "User department not found"})
-#             else:
-#                 target_column = cast(ManpowerRequest.created_at, Date)
+            if not user_department:
+                return HTTPException(status_code = 404, detail = {"message": "User department not found"})
+            else:
+                target_column = cast(ManpowerRequest.created_at, Date)
 
-#                 query = db.query(
-#                     target_column.label("created_at"), 
-#                     func.count(ManpowerRequest.requisition_id).label("total")
-#                 ).join(Position).filter(
-#                     Position.position_id == ManpowerRequest.position_id
-#                 ).join(Department).filter(
-#                     Department.department_id == user_department.department_id
-#                 ).group_by(target_column)
+                query = db.query(
+                    target_column.label("created_at"), 
+                    func.count(ManpowerRequest.manpower_request_id).label("total")
+                ).join(Position).filter(
+                    Position.position_id == ManpowerRequest.position_id
+                ).join(SubDepartment).filter(
+                    SubDepartment.sub_department_id == Position.sub_department_id,
+                ).join(Department).filter(
+                    Department.department_id == user_department.department_id,
+                ).group_by(target_column)
 
-#                 if start and end:
-#                     query = query.filter(and_(
-#                         ManpowerRequest.created_at >= start, 
-#                         ManpowerRequest.created_at <= end
-#                     )).all()
+                if start and end:
+                    query = query.filter(and_(
+                        ManpowerRequest.created_at >= start, 
+                        ManpowerRequest.created_at <= end
+                    ))
 
-#                 return query.all()
-#     except Exception as e:
-#         print(e)
-
-
-# # Get One Manpower Request
-# @router.get("/manpower-requests/{requisition_id}", response_model = deptHead.ShowManpowerRequest)
-# def get_one_requisition(
-#     requisition_id: str,
-#     db: Session = Depends(get_db), 
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             requisition = db.query(ManpowerRequest).filter(ManpowerRequest.requisition_id == requisition_id).first()
-#             if not requisition:
-#                 return REQUISITION_NOT_FOUND_RESPONSE
-#             else:
-#                 return requisition
-#     except Exception as e:
-#         print(e)
+                return query.all()
+    except Exception as e:
+        print(e)
 
 
-# # Sign Manpower Request
-# @router.put("/manpower-requests/{requisition_id}/sign", status_code = 202)
-# def sign_requisition(
-#     requisition_id: str,
-#     req: deptHead.SignManpowerRequest,
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             requisition = db.query(ManpowerRequest).filter(ManpowerRequest.requisition_id == requisition_id)
-#             if not requisition.first():
-#                 return HTTPException(status_code=404, detail=REQUISITION_NOT_FOUND_RESPONSE)
-#             else:
-#                 if req.request_status == "For approval":
-#                     requisition.update({
-#                         "request_status": req.request_status,
-#                         "signed_by": user_data.user_id,
-#                         "signed_at": text('NOW()')
-#                     })
-#                 elif req.request_status == "Rejected for signing":
-#                     requisition.update({
-#                         "request_status": req.request_status,
-#                         "remarks": req.remarks,
-#                         "rejected_by": user_data.user_id,
-#                         "rejected_at": text('NOW()')
-#                     })
-#                 db.commit()
-#                 return {"message": "A manpower request has been signed"}
-#     except Exception as e:
-#         print(e)
+# Get One Manpower Request
+@router.get("/manpower-requests/{manpower_request_id}", response_model=deptMngr.ShowManpowerRequest)
+def get_one_requisition(
+    manpower_request_id: str,
+    db: Session = Depends(get_db), 
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            manpower_request = db.query(ManpowerRequest).filter(
+                ManpowerRequest.manpower_request_id == manpower_request_id
+            ).first()
+            if not manpower_request:
+                raise HTTPException(status=404, detail=MANPOWER_REQUEST_NOT_FOUND_RESPONSE) 
+            else:
+                return manpower_request
+    except Exception as e:
+        print(e)
 
 
-# # ====================================================================
-# # HIRED APPLICANTS
-# # ====================================================================
+# Sign Manpower Request
+@router.put("/manpower-requests/{manpower_request_id}/sign", status_code=202)
+def sign_manpower_request(
+    manpower_request_id: str,
+    req: deptHead.SignManpowerRequest,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            manpower_request = db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id)
+            if not manpower_request.first():
+                return HTTPException(status_code=404, detail=MANPOWER_REQUEST_NOT_FOUND_RESPONSE)
+            else:
+                if req.request_status == "For approval":
+                    manpower_request.update({
+                        "request_status": req.request_status,
+                        "signed_by": user_data.employee_id,
+                        "signed_at": text('NOW()')
+                    })
+                elif req.request_status == "Rejected for signing":
+                    manpower_request.update({
+                        "request_status": req.request_status,
+                        "remarks": req.remarks,
+                        "rejected_by": user_data.employee_id,
+                        "rejected_at": text('NOW()')
+                    })
+                db.commit()
+                return {"message": "A manpower request has been signed"}
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# HIRED APPLICANTS
+# ====================================================================
 
 
 # # Applicant Not Found Response

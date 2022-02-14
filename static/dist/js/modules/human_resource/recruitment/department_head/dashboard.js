@@ -106,7 +106,7 @@ const renderData = (start, end) => {
     /** FOR INFO CARDS, PIE CHARTS */
 
     // Manpower Requests Analytics
-    GET_ajax(`${ ROUTE.API.DH }requisitions/analytics${ DATE_RANGE }`, {
+    GET_ajax(`${ ROUTE.API.DH }manpower-requests/analytics${ DATE_RANGE }`, {
         success: result => {
 
             // Update info box
@@ -167,7 +167,7 @@ const renderData = (start, end) => {
     /** FOR BAR AND LINE GRAPHS */
 
     // Manpower Requests Data
-    GET_ajax(`${ ROUTE.API.DH }requisitions/data${ DATE_RANGE }`, {
+    GET_ajax(`${ ROUTE.API.DH }manpower-requests/data${ DATE_RANGE }`, {
         success: result => {
 
             // Configure Bar Chart

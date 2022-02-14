@@ -14,12 +14,13 @@
             </div>
 
             <div class="modal-body">
+                <input type="hidden" id="confirmEditManpowerRequestMode" value="0">
                 <p>Are you sure you want to update your request now?</p>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button class="btn btn-info" id="confirmEditManpowerRequestBtn">
+                <button type="button" class="btn btn-default" id="cancelEditManpowerRequestBtn" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-info" id="confirmEditManpowerRequestBtn">
                     <span>Yes, update it!</span>
                     <i class="fas fa-check ml-1"></i>
                 </button>

@@ -2,16 +2,27 @@
 from datetime import datetime, date
 from typing import List, Optional
 from pydantic import BaseModel
-from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo, ShowPosition
+from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo
+from modules.human_resource.recruitment.schemas.main_schemas \
+    import Position, SubDeparment, Department, ShowEmploymentType, ShowPosition
 
 
-# Show Department Positions Schema
-class ShowDepartmentPosition(BaseModel):
-    position_id: str
-    name: str
-    description: str
-    created_at: datetime
-    updated_at: Optional[datetime]
+# Show Department For Manpower Request
+class ShowDepartmentForManpowerRequest(Department):
+    class Config():
+        orm_mode = True
+
+
+# Show SubDepartment For ManpowerRequest
+class ShowSubDepartmentForManpowerRequest(SubDeparment):
+    main_department: ShowDepartmentForManpowerRequest
+
+    class Config():
+        orm_mode = True
+
+# Show Manpower Request Positions Schema
+class ShowPositionForManpowerRequest(Position):
+    sub_department: ShowSubDepartmentForManpowerRequest
 
     class Config():
         orm_mode = True
@@ -37,19 +48,12 @@ class EmploymentType(BaseModel):
     description: str
 
 
-# Show Employment Type
-class ShowEmploymentType(EmploymentType):
-    class Config():
-        orm_mode = True
-
-
 # Show Manpower Request
 class ShowManpowerRequest(BaseModel):
-    requisition_id: str
+    manpower_request_id: str
     requisition_no: str
-    manpower_request_by: ShowUserInfo
-    vacant_position: ShowPosition
-    manpower_request_employment_type: ShowEmploymentType
+    vacant_position: ShowPositionForManpowerRequest
+    employment_type: ShowEmploymentType
     request_nature: str
     staffs_needed: int
     min_monthly_salary: Optional[float]
@@ -57,6 +61,7 @@ class ShowManpowerRequest(BaseModel):
     content: str
     request_status: str
     deadline: Optional[datetime]
+    manpower_request_requested_by: ShowUserInfo
     manpower_request_signed_by: Optional[ShowUserInfo]
     manpower_request_reviewed_by: Optional[ShowUserInfo]
     manpower_request_rejected_by: Optional[ShowUserInfo]

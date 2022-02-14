@@ -36,29 +36,27 @@ AUTHORIZED_USER = "Hiring Manager"
 # Department Head Dashboard
 @router.get("", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
-            "request": req,
-            "page_title": "Main Dashboard",
-            "sub_title": "Hiring Manager manages all selected applicants",
-            "active_navlink": "Main Dashboard"
-        })
-    else:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
+    return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
+        "request": req,
+        "page_title": "Main Dashboard",
+        "sub_title": "Hiring Manager manages all selected applicants",
+        "active_navlink": "Main Dashboard"
+    })
 
 
 # Department Head Dashboard
 @router.get("/dashboard", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
-            "request": req,
-            "page_title": "Dashboard",
-            "sub_title": "Hiring Manager manages all selected applicants",
-            "active_navlink": "Dashboard"
-        })
-    else:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
+    return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
+        "request": req,
+        "page_title": "Dashboard",
+        "sub_title": "Hiring Manager manages all selected applicants",
+        "active_navlink": "Dashboard"
+    })
 
 
 # ===========================================================
@@ -69,38 +67,38 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
-            "request": req,
-            "page_title": "Manpower Requests",
-            "sub_title": "Manpower Requests to manage requests for employees",
-            "active_navlink": "Manpower Requests"
-        })
-    else:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
+    return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
+        "request": req,
+        "page_title": "Manpower Requests",
+        "sub_title": "Manpower Requests to manage requests for employees",
+        "active_navlink": "Manpower Requests"
+    })
 
 
 # View Manpower Requests
-@router.get("/manpower-requests/{requisition_id}", response_class=HTMLResponse)
+@router.get("/manpower-requests/{manpower_request_id}", response_class=HTMLResponse)
 def render(
-    requisition_id: str,
+    manpower_request_id: str,
     req: Request, 
     db: Session = Depends(get_db), 
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        requisition = db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first()
-        if not requisition:
-            return errTemplate.page_not_found(req)
-        else:
-            return templates.TemplateResponse(TEMPLATES_PATH  + "view_manpower_request.html", {
-                "request": req,
-                "page_title": "Manpower Request Details",
-                "sub_title": "View the details of manpower request here",
-                "active_navlink": "Manpower Requests"
-            })
-    else:
+    # Check if user is not authorized
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
+    
+    manpower_request = db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id).first()
+    if not manpower_request:
+        return errTemplate.page_not_found(req)
+    else:
+        return templates.TemplateResponse(TEMPLATES_PATH  + "view_manpower_request.html", {
+            "request": req,
+            "page_title": "Manpower Request Details",
+            "sub_title": "View the details of manpower request here",
+            "active_navlink": "Manpower Requests"
+        })
 
 
 

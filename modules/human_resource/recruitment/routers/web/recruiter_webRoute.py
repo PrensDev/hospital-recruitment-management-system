@@ -27,7 +27,7 @@ TEMPLATES_PATH = "/pages/recruiter/"
 
 
 # Authorized User
-AUTHORIZED_USER = "Recruiter"
+AUTHORIZED_USER = "Talent Recruiter"
 
 
 # ===========================================================
@@ -40,7 +40,7 @@ AUTHORIZED_USER = "Recruiter"
 def dashboard(req: Request, user_data: dict = Depends(get_token)):
     
     # Check if user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
     # If no error, return template response
@@ -57,7 +57,7 @@ def dashboard(req: Request, user_data: dict = Depends(get_token)):
 def dashboard(req: Request, user_data: dict = Depends(get_token)):
 
     # Check if user is not authorzed
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
     # If no error, return template response
@@ -79,7 +79,7 @@ def dashboard(req: Request, user_data: dict = Depends(get_token)):
 def render(req: Request, user_data: dict = Depends(get_token)):
     
     # Check if user is nt authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
     # If no error, return template response
@@ -92,23 +92,23 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 
 
 # Manpower Request Details
-@router.get("/manpower-requests/{requisition_id}", response_class=HTMLResponse)
+@router.get("/manpower-requests/{manpower_request_id}", response_class=HTMLResponse)
 def render(
-    requisition_id: str,
+    manpower_request_id: str,
     req: Request, 
     db: Session = Depends(get_db),
     user_data: dict = Depends(get_token)
 ):
     # If user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
     # Check if requisition_id is not declared
-    if not requisition_id:
+    if not manpower_request_id:
         return errTemplate.page_not_found(req)
     
-    # Check if requisition_id is not existing in the database
-    if not db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first():
+    # Check if manpower_request_id is not existing in the database
+    if not db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id).first():
         return errTemplate.page_not_found(req)
 
     # If no error, return template response
@@ -131,7 +131,7 @@ def render(
 def render(req: Request, user_data: dict = Depends(get_token)):
     
     # Check if user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
     # If no error, return template response
@@ -152,7 +152,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if use is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
 
     # Check if job_post_id is existing in database
@@ -170,23 +170,23 @@ def render(
 
 
 # Create Job Post
-@router.get("/add-job-post/{requisition_id}", response_class=HTMLResponse)
+@router.get("/add-job-post/{manpower_request_id}", response_class=HTMLResponse)
 def render(
-    requisition_id: str, 
+    manpower_request_id: str, 
     req: Request, 
     db: Session = Depends(get_db),
     user_data: dict = Depends(get_token)
 ):
-    # Check if use is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    # Check if use is not authorized    
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
     # Check if requisision_id is declared
-    if not requisition_id:
+    if not manpower_request_id:
         return errTemplate.page_not_found(req)
     
-    # Check if requisition_id is existing in database
-    if not db.query(Requisition).filter(Requisition.requisition_id == requisition_id).first():
+    # Check if manpower_request_id is existing in database
+    if not db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id).first():
         return errTemplate.page_not_found(req)
     
     # If no error, return template response
@@ -207,7 +207,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
     # Check if job_post_id is not declared
@@ -237,7 +237,7 @@ def render(
 def render(req: Request, user_data: dict = Depends(get_token)):
     
     # Check if use is not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
 
     # If no error return template response
@@ -259,7 +259,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
     # Check if job post is not declared
@@ -292,13 +292,9 @@ def render(
 
 # Applicants Per Job Post
 @router.get("/job-categories", response_class=HTMLResponse)
-def render(
-    req: Request, 
-    db: Session = Depends(get_db),
-    user_data: dict = Depends(get_token)
-):
+def render(req: Request, user_data: dict = Depends(get_token)):
     # Check if not authorized
-    if not user_data['user_type'] == AUTHORIZED_USER:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
 
     # If no error, return template response

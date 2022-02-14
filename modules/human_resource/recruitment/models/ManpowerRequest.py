@@ -152,7 +152,7 @@ class ManpowerRequest(Base):
     )
 
     # From Position
-    position = relationship(
+    vacant_position = relationship(
         "Position",
         back_populates = "manpower_requests"
     )

@@ -20,12 +20,12 @@ const setManpowerRequestTimeline = (selector, data) => {
     const requestStatus = data.request_status, rejectedAt = data.rejected_at;
 
     // Created
-    const createdAt = data.created_at, createdBy = data.manpower_request_by;
+    const createdAt = data.created_at, createdBy = data.manpower_request_requested_by;
     const createdByFullName = formatName('F M. L, S', {
         firstName  : createdBy.first_name,
         middleName : createdBy.middle_name,
         lastName   : createdBy.last_name,
-        suffixName : createdBy.suffix_name
+        suffixName : createdBy.extension_name
     });
     timelineData.push({
         icon: "edit",
@@ -378,7 +378,7 @@ const setOnboardingEmployeeTaskTimeline = (selector, data) => {
 
 /** Set Manpower Request Document */
 const setManpowerRequestDocument = (data) => {
-    const requestedBy = data.manpower_request_by, requestStatus = data.request_status;
+    const requestedBy = data.manpower_request_requested_by, requestStatus = data.request_status;
 
     // Set Requisition No
     setContent('#requisitionNo', data.requisition_no);
@@ -388,11 +388,11 @@ const setManpowerRequestDocument = (data) => {
         firstName  : requestedBy.first_name,
         middleName : requestedBy.middle_name,
         lastName   : requestedBy.last_name,
-        suffixName : requestedBy.suffix_name
+        suffixName : requestedBy.extension_name
     }));
     
     // Set Requestor Department
-    setContent('#requestorDepartment', requestedBy.position.name + ', ' + requestedBy.position.department.name);
+    setContent('#requestorDepartment', requestedBy.position.name + ', ' + requestedBy.position.sub_department.name);
     
     // Set Date Requested
     setContent('#dateRequested', `
@@ -421,7 +421,7 @@ const setManpowerRequestDocument = (data) => {
     });
 
     // Set Employment Type
-    setContent('#employmentType', data.manpower_request_employment_type.name);
+    setContent('#employmentType', data.employment_type.name);
     
     // Set Request Nature
     setContent('#requestNature', data.request_nature);
@@ -454,7 +454,7 @@ const setManpowerRequestDocument = (data) => {
             });
             return `
                 <div>${ signedByFullName }</div>
-                ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.department.name )}
+                ${ TEMPLATE.SUBTEXT(signedBy.position.name + ', ' + signedBy.position.sub_department.name )}
             `
         }
     });
@@ -492,7 +492,7 @@ const setManpowerRequestDocument = (data) => {
                     });
                     return `
                         <div>${ approvedByFullName }</div>
-                        ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.department.name) }
+                        ${ TEMPLATE.SUBTEXT(approvedBy.position.name + ', ' + approvedBy.position.sub_department.name) }
                     `
                 }
             }

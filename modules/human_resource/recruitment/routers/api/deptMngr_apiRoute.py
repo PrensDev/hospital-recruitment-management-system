@@ -1,5 +1,5 @@
 # Import Packages
-from sqlalchemy import func, and_, cast, Date
+from sqlalchemy import func, and_, cast, text, Date
 from typing import List, Optional
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
@@ -34,7 +34,7 @@ def get_user_info(
         if(authorized(user_data, AUTHORIZED_USER)):
             user_info = db.query(Employee).filter(Employee.employee_id == user_data.employee_id).first()
             if not user_info:
-                raise HTTPException(status_code = 404, detail = {"message": "User does not exist"})
+                raise HTTPException(status_code = 404, detail = {"message": "Employee does not exist"})
             else:
                 return user_info
     except Exception as e:
@@ -42,12 +42,12 @@ def get_user_info(
 
 
 # ====================================================================
-# REQUISITIONS/MANPOWER REQUESTS
+# MANPOWER REQUESTS
 # ====================================================================
 
 
 # ManpowerRequest/Manpower Request Not Found Response
-REQUISITION_NOT_FOUND_RESPONSE = {"message": "Manpower request was not found"}
+MANPOWER_REQUEST_NOT_FOUND_RESPONSE = {"message": "Manpower request was not found"}
 
 
 # Create Manpower Request
@@ -59,23 +59,23 @@ def create_manpower_request(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            new_requisition = ManpowerRequest(
+            new_manpower_request = ManpowerRequest(
                 **req.dict(),
                 requested_by = user_data.employee_id, 
                 request_status = "For signature"
             )
-            db.add(new_requisition)
+            db.add(new_manpower_request)
             db.commit()
-            db.refresh(new_requisition)
+            db.refresh(new_manpower_request)
             return {
-                "data": new_requisition,
+                "data": new_manpower_request,
                 "message": "A manpower request has been submitted successfully"
             }
     except Exception as e:
         print(e)
 
 
-# Get All Manpower Request
+# Get All Manpower Requests
 @router.get("/manpower-requests", response_model = List[deptMngr.ShowManpowerRequest])
 def get_all_requisitions(
     db: Session = Depends(get_db), 
@@ -99,81 +99,74 @@ def requisition_analytics(
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
             query = db.query(ManpowerRequest)
+            requested_by_filter = ManpowerRequest.requested_by == user_data.employee_id
             
             # Total Query
-            total_query = query.filter(ManpowerRequest.requested_by == user_data.user_id)
+            total_query = query.filter(requested_by_filter)
 
             # For signature Query
             for_signature_query = query.filter(
                 ManpowerRequest.request_status == "For signature",
-                ManpowerRequest.requested_by == user_data.user_id
+                requested_by_filter
             )
             
             # For Review Query
             for_approval_query = query.filter(
                 ManpowerRequest.request_status == "For approval",
-                ManpowerRequest.requested_by == user_data.user_id
+                requested_by_filter
             )
             
             # Approved Query
             approved_query = query.filter(
                 ManpowerRequest.request_status == "Approved",
-                ManpowerRequest.requested_by == user_data.user_id
+                requested_by_filter
             )
             
             # Rejected Query
             rejected_for_signing_query = query.filter(
                 ManpowerRequest.request_status == "Rejected for signing",
-                ManpowerRequest.requested_by == user_data.user_id
+                requested_by_filter
             )
 
             # Rejected for approval Query
             rejected_for_approval_query = query.filter(
                 ManpowerRequest.request_status == "Rejected for approval",
-                ManpowerRequest.requested_by == user_data.user_id
+                requested_by_filter
             )
 
             # Completed Query
             completed_query = query.filter(
                 ManpowerRequest.request_status == "Completed",
-                ManpowerRequest.requested_by == user_data.user_id
+                requested_by_filter
             )
 
             if start and end:
                 date_filter = and_(ManpowerRequest.created_at >= start, ManpowerRequest.created_at <= end)
-                total = total_query.filter(date_filter)
-                for_signature = for_signature_query.filter(date_filter)
-                for_approval = for_approval_query.filter(date_filter)
-                approved = approved_query.filter(date_filter)
-                rejected_for_signing = rejected_for_signing_query.filter(date_filter)
-                rejected_for_approval = rejected_for_approval_query.filter(date_filter)
-                completed = completed_query.filter(date_filter)
-            else:
-                total = total_query
-                for_signature = for_signature_query
-                for_approval = for_approval_query
-                approved = approved_query
-                rejected_for_signing = rejected_for_signing_query
-                rejected_for_approval = rejected_for_approval_query
-                completed = completed_query
+                total_query = total_query.filter(date_filter)
+                for_signature_query = for_signature_query.filter(date_filter)
+                for_approval_query = for_approval_query.filter(date_filter)
+                approved_query = approved_query.filter(date_filter)
+                rejected_for_signing_query = rejected_for_signing_query.filter(date_filter)
+                rejected_for_approval_query = rejected_for_approval_query.filter(date_filter)
+                completed_query = completed_query.filter(date_filter)
 
-            total_on_going = for_signature.count() + for_approval.count() + approved.count()
-            total_rejected = rejected_for_signing.count() + rejected_for_approval.count()
+            total_on_going = for_signature_query.count() + for_approval_query.count() + approved_query.count()
+            total_rejected = rejected_for_signing_query.count() + rejected_for_approval_query.count()
             
             return {
-                "total": total.count(),
+                "total": total_query.count(),
                 "on_going": {
                     "total": total_on_going,
-                    "for_signature": for_signature.count(),
-                    "for_approval": for_approval.count(),
-                    "approved": approved.count(),
+                    "for_signature": for_signature_query.count(),
+                    "for_approval": for_approval_query.count(),
+                    "approved": approved_query.count(),
                 },
                 "rejected": {
                     "total": total_rejected,
-                    "for_signing": rejected_for_signing.count(),
-                    "for_approval": rejected_for_approval.count()
+                    "for_signing": rejected_for_signing_query.count(),
+                    "for_approval": rejected_for_approval_query.count()
                 },
-                "completed": completed.count()
+                "completed": completed_query.count()
             }
     except Exception as e:
         print(e)
@@ -190,12 +183,14 @@ def requisition_data(
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
 
+            # Set the target column
             target_column = cast(ManpowerRequest.created_at, Date)
 
+            # Set the query
             requests_query = db.query(
                 target_column.label("created_at"), 
-                func.count(ManpowerRequest.requisition_id).label("total")
-            ).filter(ManpowerRequest.requested_by == user_data.user_id).group_by(target_column)
+                func.count(ManpowerRequest.manpower_request_id).label("total")
+            ).filter(ManpowerRequest.requested_by == user_data.employee_id).group_by(target_column)
 
             if start and end:
                 requests_query = requests_query.filter(and_(
@@ -209,82 +204,81 @@ def requisition_data(
 
 
 # Get One Manpower Request
-@router.get("/manpower-requests/{requisition_id}", response_model = deptMngr.ShowManpowerRequest)
+@router.get("/manpower-requests/{manpower_request_id}", response_model = deptMngr.ShowManpowerRequest)
 def get_one_requisition(
-    requisition_id: str,
+    manpower_request_id: str,
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            requisition = db.query(ManpowerRequest).filter(ManpowerRequest.requisition_id == requisition_id).first()
-            if not requisition:
-                return REQUISITION_NOT_FOUND_RESPONSE
-            else:
-                return requisition
+            manpower_request = db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id).first()
+            if not manpower_request:
+                return MANPOWER_REQUEST_NOT_FOUND_RESPONSE
+            return manpower_request
     except Exception as e:
         print(e)
 
 
 # Update Manpower Request
-@router.put("/manpower-requests/{requisition_id}", status_code=202)
+@router.put("/manpower-requests/{manpower_request_id}", status_code=202)
 def update_requisition(
-    requisition_id: str,
+    manpower_request_id: str,
     req: deptMngr.UpdateManpowerRequest,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            requisition = db.query(ManpowerRequest).filter(ManpowerRequest.requisition_id == requisition_id)
-            if not requisition.first():
-                raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
+            manpower_request = db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id)
+            if not manpower_request.first():
+                raise HTTPException(status_code=404, detail=MANPOWER_REQUEST_NOT_FOUND_RESPONSE) 
             else:
-                requisition.update(req.dict())
+                manpower_request.update(req.dict())
                 db.commit()
-                return {"message": "A requisition has been updated"}
+                return {"message": "A manpower request has been updated"}
     except Exception as e:
         print(e)
 
 
 # Delete Manpower Request
-@router.delete("/requisitions/{requisition_id}")
+@router.delete("/manpower-requests/{manpower_request_id}")
 def delete_requisition(
-    requisition_id: str,
+    manpower_request_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            requisition = db.query(ManpowerRequest).filter(
-                ManpowerRequest.requisition_id == requisition_id,
-                ManpowerRequest.requested_by == user_data.user_id
+            manpower_request = db.query(ManpowerRequest).filter(
+                ManpowerRequest.manpower_request_id == manpower_request_id,
+                ManpowerRequest.requested_by == user_data.employee_id
             )
-            if not requisition.first():
-                raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE) 
+            if not manpower_request.first():
+                raise HTTPException(status_code=404, detail=MANPOWER_REQUEST_NOT_FOUND_RESPONSE) 
             else:
-                requisition.delete(synchronize_session = False)
+                manpower_request.delete(synchronize_session = False)
                 db.commit()
-                return {"message": "A requisition is successfully deleted"}
+                return {"message": "A manpower request is successfully deleted"}
     except Exception as e:
         print(e) 
 
 
 # Mark as completed
-@router.put("/requisitions/{requisition_id}/complete", status_code=202)
+@router.put("/manpower-requests/{manpower_request_id}/complete", status_code=202)
 def mark_requisition_as_completed(
-    requisition_id: str,
+    manpower_request_id: str,
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
             requisition = db.query(ManpowerRequest).filter(
-                ManpowerRequest.requisition_id == requisition_id,
-                ManpowerRequest.requested_by == user_data.user_id
+                ManpowerRequest.manpower_request_id == manpower_request_id,
+                ManpowerRequest.requested_by == user_data.employee_id
             )
             if not requisition.first():
-                raise HTTPException(status_code=404, detail=REQUISITION_NOT_FOUND_RESPONSE)
+                raise HTTPException(status_code=404, detail=MANPOWER_REQUEST_NOT_FOUND_RESPONSE)
             else:
                 requisition.update({
                     "request_status": 'Completed',
@@ -306,7 +300,7 @@ SUB_DEPARTMENT_NOT_FOUND_RESPONSE = {"message": "Sub-department not found"}
 
 
 # Department Positions
-@router.get("/positions", response_model = List[deptMngr.ShowDepartmentPosition])
+@router.get("/positions", response_model = List[main.ShowPosition])
 def department_positions(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
@@ -331,8 +325,10 @@ def department_positions(
 # EMPLOYMENT TYPES
 # ====================================================================
 
+
 # Employment Type Not Found Response
 EMPLOYMENT_TYPE_NOT_FOUND_RESPONSE = {"message": "Employment Type not found"}
+
 
 # Get all employment types
 @router.get("/employment-types", response_model = List[deptMngr.ShowEmploymentType])
@@ -347,10 +343,9 @@ def get_all_employment_types(
         print(e)
 
 
-
-# # ====================================================================
-# # ONBOARDING TASKS
-# # ====================================================================
+# ====================================================================
+# ONBOARDING TASKS
+# ====================================================================
 
 
 # # Onboarding Task Not Found Response

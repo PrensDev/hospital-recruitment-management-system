@@ -39,6 +39,8 @@ def render(req: Request, user_data: dict = Depends(get_token)):
     # Check if user is not authorized
     if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
+    
+    # If authorized, return template response
     return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
         "request": req,
         "page_title": "Main Dashboard",
@@ -55,7 +57,7 @@ def render(req: Request, user_data: dict = Depends(get_token)):
     if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
     
-    # If nno error, return template response
+    # If authorized, return template response
     return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
         "request": req,
         "page_title": "Dashboard",
@@ -77,7 +79,7 @@ def render(req: Request, user_data: dict = Depends(get_token)):
     if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
 
-    # If no error, return template response
+    # If authorized, return template response
     return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
         "request": req,
         "page_title": "Manpower Requests",
@@ -94,19 +96,22 @@ def render(
     db: Session = Depends(get_db), 
     user_data: dict = Depends(get_token)
 ):
+    # If user is not authorized
     if AUTHORIZED_USER not in user_data['roles']:
-        requisition = db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id).first()
-        if not requisition:
-            return errTemplate.page_not_found(req)
-        else:
-            return templates.TemplateResponse(TEMPLATES_PATH  + "view_manpower_request.html", {
-                "request": req,
-                "page_title": "Manpower Request Details",
-                "sub_title": "View the details of manpower request here",
-                "active_navlink": "Manpower Requests"
-            })
-    else:
         return errTemplate.page_not_found(req)
+    
+    # If manpower request not exist in database
+    manpower_request = db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id).first()
+    if not manpower_request:
+        return errTemplate.page_not_found(req)
+    
+    # If authorized and manpower request exist in database
+    return templates.TemplateResponse(TEMPLATES_PATH  + "view_manpower_request.html", {
+        "request": req,
+        "page_title": "Manpower Request Details",
+        "sub_title": "View the details of manpower request here",
+        "active_navlink": "Manpower Requests"
+    })
 
 
 # ===========================================================

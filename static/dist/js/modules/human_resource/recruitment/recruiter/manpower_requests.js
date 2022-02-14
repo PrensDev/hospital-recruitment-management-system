@@ -8,7 +8,7 @@
 
 /** Initialize Manpower Request DataTable */
 initDataTable('#manpowerRequestDT', {
-    url: `${ ROUTE.API.R }requisitions`,
+    url: `${ ROUTE.API.R }manpower-requests`,
     columns: [
 
         // Created At (For Default Sorting)
@@ -22,18 +22,18 @@ initDataTable('#manpowerRequestDT', {
             data: null,
             class: 'text-nowrap',
             render: data => {
-                const requestedBy = data.manpower_request_by;
+                const requestedBy = data.manpower_request_requested_by;
 
                 const requestedByFullName = formatName("F M. L, S", {
                     firstName  : requestedBy.first_name,
                     middleName : requestedBy.middle_name,
                     lastName   : requestedBy.last_name,
-                    suffixName : requestedBy.suffix_name
+                    suffixName : requestedBy.extension_name
                 });
 
                 return `
                     <div>${ requestedByFullName }</div>
-                    ${ TEMPLATE.SUBTEXT(requestedBy.position.department.name) }
+                    ${ TEMPLATE.SUBTEXT(requestedBy.position.sub_department.name) }
                 `
             }
         },
@@ -55,7 +55,7 @@ initDataTable('#manpowerRequestDT', {
             render: data => {
                 if(data.request_status === "Completed")
                     return TEMPLATE.DT.BADGE('info', TEMPLATE.ICON_LABEL('check', 'Completed'))
-                else if(data.job_post.length == 1)
+                else if(data.job_post)
                     return TEMPLATE.DT.BADGE('success', TEMPLATE.ICON_LABEL('briefcase', 'Job post is created'))
                 else {
                     return TEMPLATE.DT.BADGE('warning', TEMPLATE.ICON_LABEL('exclamation-triangle', 'No job post yet'))
@@ -82,15 +82,15 @@ initDataTable('#manpowerRequestDT', {
         {
             data: null,
             render: data => {
-                const requisitionID = data.requisition_id, jobPost = data.job_post;
+                const manpowerRequestID = data.manpower_request_id, jobPost = data.job_post;
 
-                const createJobPostBtn = jobPost.length == 1 
+                const createJobPostBtn = jobPost 
                     ? "" 
                     : `
                         <div 
                             class="dropdown-item d-flex" 
                             role="button"
-                            onclick="createJobPost('${ requisitionID }')"
+                            onclick="createJobPost('${ manpowerRequestID }')"
                         >
                             <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
                             <div>
@@ -103,7 +103,7 @@ initDataTable('#manpowerRequestDT', {
                 return TEMPLATE.DT.OPTIONS(`
                     <a 
                         class="dropdown-item d-flex" 
-                        href="${ROUTE.WEB.R}manpower-requests/${ requisitionID }"
+                        href="${ROUTE.WEB.R}manpower-requests/${ manpowerRequestID }"
                     >
                         <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
                         <div>
@@ -128,7 +128,7 @@ initDataTable('#manpowerRequestDT', {
 
 // Set Content for Manpower Request Analytics
 const manpowerRequestAnalytics = () => {
-    GET_ajax(`${ ROUTE.API.R }requisitions/analytics`, {
+    GET_ajax(`${ ROUTE.API.R }manpower-requests/analytics`, {
         success: result => {
             setContent({
                 '#approvedRequestsCount': formatNumber(result.approved_requests),
@@ -151,8 +151,8 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
 
 /** View Manpower Request */
 ifSelectorExist('#manpowerRequestDocumentContainer', () => {
-    const requisitionID = window.location.pathname.split('/')[3];
-    GET_ajax(`${ ROUTE.API.R }requisitions/${ requisitionID }`, {
+    const manpowerRequestID = window.location.pathname.split('/')[3];
+    GET_ajax(`${ ROUTE.API.R }manpower-requests/${ manpowerRequestID }`, {
         success: result => {
             
             /** SET MANPOWER REQUEST CONTENTS */

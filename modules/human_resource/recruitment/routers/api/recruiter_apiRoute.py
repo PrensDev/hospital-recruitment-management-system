@@ -16,7 +16,7 @@ from dotenv import dotenv_values
 # Import Models and Schemas
 from modules.human_resource.recruitment.models._base import *
 from modules.human_resource.recruitment.schemas \
-    import user_schemas as user, recruiter_schemas as recruiter
+    import user_schemas as user, recruiter_schemas as recruiter, deptMngr_schemas as deptMngr
 
 # From email sending
 import smtplib
@@ -36,7 +36,7 @@ router = APIRouter(
 
 
 # Priviledge User
-AUTHORIZED_USER = "Recruiter"
+AUTHORIZED_USER = "Talent Recruiter"
 
 
 # User Information
@@ -47,9 +47,9 @@ def get_user_info(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
+            user_info = db.query(Employee).filter(Employee.employee_id == user_data.employee_id).first()
             if not user_info:
-                raise HTTPException(status_code = 404, detail = {"message": "User does not exists"})
+                raise HTTPException(status_code = 404, detail = {"message": "Employee does not exists"})
             else:
                 return user_info
     except Exception as e:
@@ -62,46 +62,46 @@ def get_user_info(
 
 
 # Requisition Not Found Response
-REQUISITION_NOT_FOUND_RESPONSE = {"message": "Requisition not found"}
+MANPOWER_REQUEST_NOT_FOUND_RESPONSE = {"message": "Requisition not found"}
 
 
-# Get All Approved Requisitions
-@router.get("/requisitions", response_model = List[recruiter.ShowManpowerRequest])
-def get_all_approved_requisitions(
+# Get All Approved Man
+@router.get("/manpower-requests", response_model=List[recruiter.ShowManpowerRequest])
+def get_all_approved_manpower_requests(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        if(authorized(user_data, AUTHORIZED_USER)):
-            return db.query(Requisition).filter(or_(
-                Requisition.request_status == "Approved",
-                Requisition.request_status == "Completed"
+        if authorized(user_data, AUTHORIZED_USER):
+            return db.query(ManpowerRequest).filter(or_(
+                ManpowerRequest.request_status == "Approved",
+                ManpowerRequest.request_status == "Completed"
             )).all()
     except Exception as e:
         print(e)
 
 
 # Requisition Analytics
-@router.get("/requisitions/analytics")
-def requisition_analytics(
+@router.get("/manpower-requests/analytics")
+def manpower_request_analytics(
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        if(authorized(user_data, AUTHORIZED_USER)):
-            query = db.query(Requisition)
+        if authorized(user_data, AUTHORIZED_USER):
+            query = db.query(ManpowerRequest)
             
             # Approved Request
             approved_request = query.filter(or_(
-                Requisition.request_status == "Approved",
-                Requisition.request_status == "Completed"
+                ManpowerRequest.request_status == "Approved",
+                ManpowerRequest.request_status == "Completed"
             )).count()
             
             # With Job Post
             with_job_post = query.join(JobPost).filter(or_(
-                Requisition.request_status == "Approved",
-                Requisition.request_status == "Completed"
-            )).filter(JobPost.requisition_id == Requisition.requisition_id).count()
+                ManpowerRequest.request_status == "Approved",
+                ManpowerRequest.request_status == "Completed"
+            )).filter(JobPost.manpower_request_id == ManpowerRequest.manpower_request_id).count()
             
             return {
                 "approved_requests": approved_request,
@@ -111,26 +111,26 @@ def requisition_analytics(
         print(e)
 
 
-# Get One Approved Requisition
-@router.get("/requisitions/{requisition_id}", response_model = recruiter.ShowManpowerRequest)
-def get_one_approved_requisitions(
-    requisition_id,
+# Get One Approved Manpower Request
+@router.get("/manpower-requests/{manpower_request_id}", response_model=recruiter.ShowManpowerRequest)
+def get_one_approved_manpower_requests(
+    manpower_request_id,
     db: Session = Depends(get_db), 
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            requisition = db.query(Requisition).filter(
-                Requisition.requisition_id == requisition_id,
+            manpower_request = db.query(ManpowerRequest).filter(
+                ManpowerRequest.manpower_request_id == manpower_request_id,
                 or_(
-                    Requisition.request_status == "Approved",
-                    Requisition.request_status == "Completed"
+                    ManpowerRequest.request_status == "Approved",
+                    ManpowerRequest.request_status == "Completed"
                 )
             ).first()
-            if not requisition:
-                raise HTTPException(status_code = 404, detail = REQUISITION_NOT_FOUND_RESPONSE)
+            if not manpower_request:
+                raise HTTPException(status_code = 404, detail = MANPOWER_REQUEST_NOT_FOUND_RESPONSE)
             else:
-                return requisition
+                return manpower_request
     except Exception as e:
         print(e)
 
@@ -152,11 +152,10 @@ def add_job_category(
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        if(authorized(user_data, AUTHORIZED_USER)):
+        if authorized(user_data, AUTHORIZED_USER):
             new_job_category = JobCategory(
-                name = req.name,
-                description = req.description,
-                created_by = user_data.user_id
+                **req.dict(),
+                created_by = user_data.employee_id
             )
             db.add(new_job_category)
             db.commit()
@@ -173,14 +172,14 @@ def get_all_job_categories(
     user_data: user.UserData = Depends(get_user)
 ):
     try:
-        if(authorized(user_data, AUTHORIZED_USER)):
+        if authorized(user_data, AUTHORIZED_USER):
             return db.query(JobCategory).filter(JobCategory.is_removed == False).all()
     except Exception as e:
         print(e)
 
 
 # Get One Job Category
-@router.get("/job-categories/{job_category_id}", response_model = recruiter.ShowJobCategory)
+@router.get("/job-categories/{job_category_id}", response_model=recruiter.ShowJobCategory)
 def get_one_job_category(
     job_category_id: str,
     db: Session = Depends(get_db), 
@@ -258,7 +257,7 @@ JOB_POST_NOT_FOUND_RESPONSE = {"message": "Job Post not found"}
 
 
 # Post Vacant Job
-@router.post("/job-posts", status_code = 201)
+@router.post("/job-posts", status_code=201)
 def post_vacant_job(
     req: recruiter.CreateJobPost,
     db: Session = Depends(get_db),
@@ -267,12 +266,8 @@ def post_vacant_job(
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
             new_job_post = JobPost(
-                requisition_id = req.requisition_id,
-                salary_is_visible = req.salary_is_visible,
-                job_category_id = req.job_category_id,
-                content = req.content,
-                expiration_date = req.expiration_date,
-                posted_by = user_data.user_id
+                **req.dict(),
+                posted_by = user_data.employee_id
             )
             db.add(new_job_post)
             db.commit()
@@ -283,14 +278,14 @@ def post_vacant_job(
 
 
 # Get All Job Posts
-@router.get("/job-posts", response_model = List[recruiter.ShowJobPost])
+@router.get("/job-posts", response_model=List[recruiter.ShowJobPost])
 def get_all_job_posts(
     db: Session = Depends(get_db),
     user_data: user.UserData = Depends(get_user)
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            return db.query(JobPost).filter(JobPost.posted_by == user_data.user_id).all()
+            return db.query(JobPost).all()
     except Exception as e:
         print(e)
 
@@ -587,10 +582,10 @@ def evaluate_applicant(
                     })
                     db.commit()
 
-                    position = db.query(Position).join(Requisition).filter(
-                            Requisition.position_id == Position.position_id
+                    position = db.query(Position).join(ManpowerRequest).filter(
+                            ManpowerRequest.position_id == Position.position_id
                         ).join(JobPost).filter(
-                            JobPost.requisition_id == Requisition.requisition_id,
+                            JobPost.manpower_request_id == ManpowerRequest.manpower_request_id,
                             JobPost.job_post_id == applicant.first().job_post_id
                         ).first()
 
