@@ -256,8 +256,8 @@ const applicantsPerJobAnalytics = () => {
                 if(obj[key] > 0) {
                     setContent(key, formatNumber(obj[key]));
                     showElement(key);
-                }
-            })
+                } else hideElement(key);
+            });
 
             c({
                 '#totalApplicantsCount': result.total,
@@ -357,7 +357,7 @@ const viewForInterviewApplicantDetails = (applicantID) => {
 const viewInterviewedApplicantDetails = (applicantID) => {
     GET_ajax(`${ ROUTE.API.H }applicants/${ applicantID }/interviewee-info`, {
         success: result => {
-            
+
             // Set Applicant ID
             setValue('#applicantID', result.applicant_id);
 
@@ -366,7 +366,7 @@ const viewInterviewedApplicantDetails = (applicantID) => {
 
             // Set ScoreSheet
             setContent('#applicantScoresheet', '');
-            const scores = result.interviewee_info[0].interviewee_score;
+            const scores = result.interviewee_info.interview_scores;
             let sum = 0;
 
             const interviewQuestionTypeBadge = {
@@ -535,7 +535,10 @@ validateForm('#applicantScreeningForm', {
         applicantStatus: { required: "Please select a status for this applicant" },
         remarks: { required: "You must insert remarks here for rejected this applicant from screening" }
     },
-    submitHandler: () => screenApplicant()
+    submitHandler: () => {
+        screenApplicant();
+        return false;
+    }
 });
 
 /** Screen Applicant */
@@ -549,9 +552,11 @@ const screenApplicant = () => {
     const formData = generateFormData('#applicantScreeningForm');
     const get = (name) => { return formData.get(name) }
 
+    const applicantStatus = get('applicantStatus')
+
     // Set Data
     const data = {
-        status: get('applicantStatus'),
+        status: applicantStatus,
         remarks: applicantStatus === 'Rejected from screening' ? get('remarks') : null
     }
 
@@ -632,7 +637,7 @@ initDataTable('#applicantsForInterviewDT', {
                 const intervieweeInfo = data.interviewee_info;
                 if(isEmptyOrNull(intervieweeInfo))
                     return TEMPLATE.DT.BADGE('warning', 'No schedule yet')
-                if(intervieweeInfo[0].interviewee_schedule != [] && isEmptyOrNull(intervieweeInfo[0].is_interviewed))
+                else if(intervieweeInfo.interviewee_schedule != [] && isEmptyOrNull(intervieweeInfo.is_interviewed))
                     return TEMPLATE.DT.BADGE('info', 'Schedule is set')
             }
         },
@@ -1045,9 +1050,9 @@ initDataTable('#interviewedApplicantsDT', {
         {
             data: null,
             render: data => {
-                const scores = data.interviewee_info[0].interviewee_score;
+                const scores = data.interviewee_info.interview_scores;
                 let sum = 0;
-                scores.forEach(s => sum += s.score);
+                scores.forEach(score => sum += score.score);
                 const ave = sum/scores.length;
                 return `<div class="text-right">${ formatNumber(ave) }%</div>`;
             }

@@ -387,6 +387,7 @@ initDataTable('#intervieweesDT', {
             data: null,
             class: 'w-100',
             render: data => {
+                console.log(data)
                 const applicant = data.applicant_info;
                 const applicantFullName = formatName('F M. L, S', {
                     firstName  : applicant.first_name,

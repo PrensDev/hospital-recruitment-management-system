@@ -58,7 +58,8 @@ class Interviewee(Base):
     # From Applicant
     applicant_info = relationship(
         "Applicant",
-        back_populates = "interviewee_info"
+        back_populates = "interviewee_info",
+        uselist = False
     )
 
     # From InterviewSchedule

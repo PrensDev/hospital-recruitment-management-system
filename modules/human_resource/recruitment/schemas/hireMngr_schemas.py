@@ -2,18 +2,17 @@
 from datetime import datetime, date, time
 from typing import List, Optional
 from pydantic import BaseModel
-from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo, ShowPosition
+from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo
 from modules.human_resource.recruitment.schemas.recruiter_schemas import ShowJobCategory
-from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType
+from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType, ShowPositionForManpowerRequest
 
 
 # Show Manpower Request
 class ShowManpowerRequest(BaseModel):
-    requisition_id: str
+    manpower_request_id: str
     requisition_no: str
-    manpower_request_by: ShowUserInfo
-    vacant_position: ShowPosition
-    manpower_request_employment_type: ShowEmploymentType
+    vacant_position: ShowPositionForManpowerRequest
+    employment_type: ShowEmploymentType
     request_nature: str
     staffs_needed: int
     min_monthly_salary: Optional[float]
@@ -21,6 +20,7 @@ class ShowManpowerRequest(BaseModel):
     content: str
     request_status: str
     deadline: Optional[datetime]
+    manpower_request_requested_by: ShowUserInfo
     manpower_request_signed_by: Optional[ShowUserInfo]
     manpower_request_reviewed_by: Optional[ShowUserInfo]
     manpower_request_rejected_by: Optional[ShowUserInfo]
@@ -62,12 +62,12 @@ class Applicant(BaseModel):
 class ShowJobPost(BaseModel):
     job_post_id: str
     manpower_request: ShowManpowerRequest
-    salary_is_visible: bool
+    is_salary_visible: bool
     content: str
-    job_categorized_as: ShowJobCategory
+    job_category: ShowJobCategory
     expiration_date: Optional[datetime]
     applicants: Optional[List[Applicant]]
-    job_posted_by: ShowUserInfo
+    job_post_posted_by: ShowUserInfo
     views: int
     created_at: datetime
     updated_at: Optional[datetime]
@@ -137,7 +137,7 @@ class InterviewQuestion(BaseModel):
 class IntervieweeScore(BaseModel):
     interview_question: InterviewQuestion
     score: float
-    scored_by_hiring_manager: ShowUserInfo
+    interview_scored_by: ShowUserInfo
 
     class Config():
         orm_mode = True
@@ -154,7 +154,7 @@ class IntervieweeInfo(BaseModel):
     interviewee_id: str
     applicant_info: ShowApplicant
     interviewee_schedule: Optional[InterviewScheduleInfo]
-    interviewee_score: List[Optional[IntervieweeScore]]
+    interview_scores: List[Optional[IntervieweeScore]]
     is_interviewed: Optional[bool]
     interviewed_at: Optional[datetime]
     remarks: Optional[str]
@@ -167,7 +167,7 @@ class IntervieweeInfo(BaseModel):
 
 # Show Interviewee Info
 class ShowIntervieweeInfo(ShowApplicant):
-    interviewee_info: List[IntervieweeInfo]
+    interviewee_info: Optional[IntervieweeInfo]
 
     class Config():
         orm_mod =  True

@@ -1,9 +1,8 @@
 # Import Packages
 from typing import List, Optional
-from urllib import response
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
-from sqlalchemy import cast, func, and_, text
+from sqlalchemy import cast, func, and_, text, Date
 from sqlalchemy.orm import Session
 from database import get_db
 from oauth2 import get_user, authorized
@@ -563,7 +562,7 @@ def evaluate_applicant(
                 # For Screening
                 if req.status == "For screening":
                     applicant.update({
-                        "evaluated_by": user_data.user_id,
+                        "evaluated_by": user_data.employee_id,
                         "evaluated_at": text('NOW()'),
                         "status": req.status
                     })
@@ -573,7 +572,7 @@ def evaluate_applicant(
                 # Rejected from Evaluation
                 elif req.status == "Rejected from evaluation":
                     applicant.update({
-                        "rejected_by": user_data.user_id,
+                        "rejected_by": user_data.emplpyee_id,
                         "rejected_at": text('NOW()'),
                         "status": req.status,
                         "remarks": req.remarks
