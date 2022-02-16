@@ -330,7 +330,7 @@ ifSelectorExist('#availableJobList', () => {
             // This function will be called if no result
             const noResult = () => {
                 setContent({
-                    '#pageDisplay': `No page was dislayed`,
+                    '#pageDisplay': `No page was displayed`,
                     '#totalResultDisplay': `0 results were found`
                 });
             }
@@ -732,9 +732,23 @@ $('#resetFilters').on('click', () => {
         !isEmptyOrNull(urlParamsObj.jobCategory) ||
         !isEmptyOrNull(urlParamsObj.employmentType)
     ) {
+        // Reset form
         urlParamsObj.datePosted = null;
         urlParamsObj.jobCategory = null;
         urlParamsObj.employmentType = null;
+        
+        // Show loading status
+        setContent('#availableJobList', `
+            <div class="col-12">
+                <div class="text-center my-5 py-5 wait">
+                    <div class="spinner-border text-primary mb-2" style="width: 2.5rem; height: 2.5rem"></div>
+                    <div>Please wait while loading the list ...</div>
+                </div>
+            </div>
+        `);
+        hideElement('#pagination');
+        
+        // Redirect without URL Parameters
         redirectWithURLParams();
     }
 });

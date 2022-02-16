@@ -122,15 +122,14 @@ def render(
 # Hired Applicants
 @router.get("/hired-applicants", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH  + "hired_applicants.html", {
-            "request": req,
-            "page_title": "Hired Applicants",
-            "sub_title": "Hired Applicants",
-            "active_navlink": "Hired Applicants"
-        })
-    else:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
+    return templates.TemplateResponse(TEMPLATES_PATH  + "hired_applicants.html", {
+        "request": req,
+        "page_title": "Hired Applicants",
+        "sub_title": "Hired Applicants",
+        "active_navlink": "Hired Applicants"
+    })
 
 
 # ===========================================================
@@ -141,15 +140,14 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 # Onboarding Employees
 @router.get("/onboarding-employees", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employees.html", {
-            "request": req,
-            "page_title": "Onboarding Employees",
-            "sub_title": "Onboarding Employees to manage new employees on board",
-            "active_navlink": "Onboarding Employees"
-        })
-    else:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
+    return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employees.html", {
+        "request": req,
+        "page_title": "Onboarding Employees",
+        "sub_title": "Onboarding Employees to manage new employees on board",
+        "active_navlink": "Onboarding Employees"
+    })
 
 
 # ===========================================================
@@ -165,30 +163,36 @@ def render(
     db: Session = Depends(get_db), 
     user_data: dict = Depends(get_token)
 ):
-    if user_data['user_type'] == AUTHORIZED_USER:
-        user_department = db.query(Department).join(Position).filter(
-                Department.department_id == Position.department_id
-            ).join(User).filter(
-                User.user_id == user_data['user_id'], 
-                User.position_id == Position.position_id
-            ).first()
-        onboarding_employee = db.query(OnboardingEmployee).filter(
-                OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
-                OnboardingEmployee.status == "Onboarding",
-            ).join(Position).filter(
-                OnboardingEmployee.position_id == Position.position_id
-            ).join(Department).filter(
-                Position.department_id == Department.department_id, 
-                Department.department_id ==  user_department.department_id
-            ).first()
-        if not onboarding_employee:
-            return errTemplate.page_not_found(req)
-        else:
-            return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
-                "request": req,
-                "page_title": "Onboarding Tasks",
-                "sub_title": "Manage employee tasks and monitor performance",
-                "active_navlink": "Onboarding Employees"
-            })
-    else:
+    if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
+
+    user_department = db.query(Department).join(SubDepartment).filter(
+        Department.department_id == SubDepartment.department_id
+    ).join(Position).filter(
+        SubDepartment.sub_department_id == Position.sub_department_id
+    ).join(Employee).filter(
+        Employee.employee_id == user_data['employee_id'], 
+        Employee.position_id == Position.position_id
+    ).first()
+    
+    onboarding_employee = db.query(OnboardingEmployee).filter(
+        OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
+        OnboardingEmployee.status == "Onboarding",
+    ).join(Position).filter(
+        OnboardingEmployee.position_id == Position.position_id
+    ).join(SubDepartment).filter(
+        SubDepartment.sub_department_id == Position.sub_department_id
+    ).join(Department).filter(
+        SubDepartment.department_id == Department.department_id, 
+        Department.department_id ==  user_department.department_id
+    ).first()
+
+    if not onboarding_employee:
+        return errTemplate.page_not_found(req)
+    else:
+        return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employee_tasks.html", {
+            "request": req,
+            "page_title": "Onboarding Tasks",
+            "sub_title": "Manage employee tasks and monitor performance",
+            "active_navlink": "Onboarding Employees"
+        })

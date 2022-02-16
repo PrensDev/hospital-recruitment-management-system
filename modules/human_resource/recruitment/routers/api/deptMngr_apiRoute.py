@@ -361,16 +361,27 @@ def add_onboarding_task(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            sub_department = db.query()
+            
+            # Get User Sub-department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
+
+            # Create Onboarding Task
             new_onboarding_task = OnboardingTask(
                 **req.dict(),
-                sub_department_id = sub_department.sub_department_id,
+                sub_department_id = user_sub_department.sub_department_id,
                 added_by = user_data.employee_id,
                 updated_by = user_data.employee_id
             )
             db.add(new_onboarding_task)
             db.commit()
             db.refresh(new_onboarding_task)
+
+            # Return Success Message
             return {
                 "data": new_onboarding_task,
                 "message": "New onboarding task has been added"
@@ -387,25 +398,25 @@ def get_all_general_onboarding_tasks(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
-            if not user_info:
-                raise HTTPException(status_code=404, detail="User does not exist")
-            else:
-                position_id = user_info.position_id
-                user_position = db.query(Position).filter(Position.position_id == position_id).first()
-                if not user_position:
-                    raise HTTPException(status_code=404, detail="Position does not exist")
-                else:
-                    department_id = user_position.department_id
-                    user_department = db.query(Department).filter(Department.department_id == department_id).first()
-                    if not user_department:
-                        raise HTTPException(status_code=404, detail=MANPOWER_REQUEST_NOT_FOUND_RESPONSE)
-                    else:
-                        return db.query(OnboardingTask).filter(
-                            OnboardingTask.department_id == department_id,
-                            OnboardingTask.is_general == True,
-                            OnboardingTask.is_deleted == False
-                        ).all()
+
+            # Get User Sub-department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
+
+            # Check if user sub department is not exist in database
+            if not user_sub_department:
+                raise HTTPException(status=404, detail=SUB_DEPARTMENT_NOT_FOUND_RESPONSE)
+
+            # If no error, return all onboarding task for that sub-department
+            return db.query(OnboardingTask).filter(
+                OnboardingTask.sub_department_id == user_sub_department.sub_department_id,
+                OnboardingTask.is_general == True,
+                OnboardingTask.is_deleted == False
+            ).all()
     except Exception as e:
         print(e)
 
@@ -418,26 +429,25 @@ def get_all_general_onboarding_tasks(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
-            if not user_info:
-                raise HTTPException(status_code=404, detail="User does not exist")
-            else:
-                position_id = user_info.position_id
-                user_position = db.query(Position).filter(Position.position_id == position_id).first()
-                if not user_position:
-                    raise HTTPException(status_code=404, detail="Position does not exist")
-                else:
-                    department_id = user_position.department_id
-                    user_department = db.query(Department).filter(Department.department_id == department_id).first()
-                    if not user_department:
-                        raise HTTPException(status_code=404, detail=MANPOWER_REQUEST_NOT_FOUND_RESPONSE)
-                    else:
-                        return db.query(OnboardingTask).filter(
-                            OnboardingTask.department_id == department_id, 
-                            OnboardingTask.task_type == "For new employees",
-                            OnboardingTask.is_general == True,
-                            OnboardingTask.is_deleted == False
-                        ).all()
+            
+            # Get User Sub-department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
+
+            # Check if user sub department is not exist in database
+            if not user_sub_department:
+                raise HTTPException(status=404, detail=SUB_DEPARTMENT_NOT_FOUND_RESPONSE)
+
+            return db.query(OnboardingTask).filter(
+                OnboardingTask.sub_department_id == user_sub_department.sub_department_id, 
+                OnboardingTask.task_type == "For new employees",
+                OnboardingTask.is_general == True,
+                OnboardingTask.is_deleted == False
+            ).all()
     except Exception as e:
         print(e)
 
@@ -450,440 +460,485 @@ def get_all_general_onboarding_tasks(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
-            if not user_info:
-                raise HTTPException(status_code=404, detail="User does not exist")
-            else:
-                user_position = db.query(Position).filter(Position.position_id == user_info.position_id).first()
-                if not user_position:
-                    raise HTTPException(status_code=404, detail="Position does not exist")
-                else:
-                    department_id = user_position.department_id
-                    user_department = db.query(Department).filter(Department.department_id == department_id).first()
-                    if not user_department:
-                        raise HTTPException(status_code=404, detail=MANPOWER_REQUEST_NOT_FOUND_RESPONSE)
-                    else:
-                        return db.query(OnboardingTask).filter(
-                            OnboardingTask.department_id == department_id, 
-                            OnboardingTask.task_type == "For the team",
-                            OnboardingTask.is_general == True,
-                            OnboardingTask.is_deleted == False
-                        ).all()
+            
+            # Get User Sub-department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
+
+            # Check if user sub department is not exist in database
+            if not user_sub_department:
+                raise HTTPException(status=404, detail=SUB_DEPARTMENT_NOT_FOUND_RESPONSE)
+
+            return db.query(OnboardingTask).filter(
+                OnboardingTask.sub_department_id == user_sub_department.sub_department_id, 
+                OnboardingTask.task_type == "For the team",
+                OnboardingTask.is_general == True,
+                OnboardingTask.is_deleted == False
+            ).all()
     except Exception as e:
         print(e)
 
 
-# # Get All General Onboarding Tasks for Department Manager
-# @router.get("/onboarding-tasks/general/my-tasks", response_model=List[deptMngr.ShowOnboardingTask])
-# def get_all_general_onboarding_tasks(
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
-#             if not user_info:
-#                 raise HTTPException(status_code=404, detail="User does not exist")
-#             else:
-#                 position_id = user_info.position_id
-#                 user_position = db.query(Position).filter(Position.position_id == position_id).first()
-#                 if not user_position:
-#                     raise HTTPException(status_code=404, detail="Position does not exist")
-#                 else:
-#                     department_id = user_position.department_id
-#                     user_department = db.query(Department).filter(Department.department_id == department_id).first()
-#                     if not user_department:
-#                         raise HTTPException(status_code=404, detail=DEPARTMENT_NOT_FOUND_RESPONSE)
-#                     else:
-#                         return db.query(OnboardingTask).filter(
-#                             OnboardingTask.department_id == department_id, 
-#                             OnboardingTask.task_type == "For department manager",
-#                             OnboardingTask.is_general == True,
-#                             OnboardingTask.is_deleted == False
-#                         ).all()
-#     except Exception as e:
-#         print(e)
-
-
-# # Get One General Onboarding Task
-# @router.get("/onboarding-tasks/{onboarding_task_id}", response_model=deptMngr.ShowOnboardingTask)
-# def get_one_onboarding_task(
-#     onboarding_task_id: str,
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
-#             if not user_info:
-#                 raise HTTPException(status_code=404, detail="User does not exist")
-#             else:
-#                 position_id = user_info.position_id
-#                 user_position = db.query(Position).filter(Position.position_id == position_id).first()
-#                 if not user_position:
-#                     raise HTTPException(status_code=404, detail="Position does not exist")
-#                 else:
-#                     department_id = user_position.department_id
-#                     user_department = db.query(Department).filter(Department.department_id == department_id).first()
-#                     if not user_department:
-#                         raise HTTPException(status_code=404, detail="Deparment does not exist")
-#                     else:
-#                         onboarding_task = db.query(OnboardingTask).filter(
-#                             OnboardingTask.department_id == department_id, 
-#                             OnboardingTask.onboarding_task_id == onboarding_task_id,
-#                             OnboardingTask.is_general == True, 
-#                             OnboardingTask.is_deleted == False
-#                         ).first()
-#                         if not onboarding_task:
-#                             raise HTTPException(status_code=404, detail=ONBOARDING_TASK_NOT_FOUND)
-#                         else:
-#                             return onboarding_task
-#     except Exception as e:
-#         print(e)
-
-
-# # Remove General Onboarding Task
-# @router.delete("/onboarding-tasks/{onboarding_task_id}/remove")
-# def remove_general_onboarding_task(
-#     onboarding_task_id: str,
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
-#             if not user_info:
-#                 raise HTTPException(status_code=404, detail="User does not exist")
-#             else:
-#                 position_id = user_info.position_id
-#                 user_position = db.query(Position).filter(Position.position_id == position_id).first()
-#                 if not user_position:
-#                     raise HTTPException(status_code=404, detail="Position does not exist")
-#                 else:
-#                     department_id = user_position.department_id
-#                     user_department = db.query(Department).filter(Department.department_id == department_id).first()
-#                     if not user_department:
-#                         raise HTTPException(status_code=404, detail="Deparment does not exist")
-#                     else:
-#                         onboarding_task = db.query(OnboardingTask).filter(
-#                             OnboardingTask.department_id == department_id, 
-#                             OnboardingTask.onboarding_task_id == onboarding_task_id,
-#                             OnboardingTask.is_general == True, 
-#                             OnboardingTask.is_deleted == False
-#                         )
-#                         if not onboarding_task.first():
-#                             raise HTTPException(status_code=404, detail=ONBOARDING_TASK_NOT_FOUND)
-#                         else:
-#                             onboarding_tasks_count = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_task_id == onboarding_task_id).count()
-#                             if onboarding_tasks_count > 0:
-#                                 onboarding_task.update({"is_deleted": True})
-#                             else:
-#                                 onboarding_task.delete(synchronize_session = False)
-#                             db.commit()
-#                             return "Onboarding Task is successfully removed"
-#     except Exception as e:
-#         print(e)
-
-
-# # ====================================================================
-# # HIRED APPLICANTS
-# # ====================================================================
-
-
-# # Applicant not found response
-# APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
-
-
-# # Get all hired applicants
-# @router.get("/hired-applicants", response_model=List[deptMngr.ShowHiredApplicant])
-# def get_all_hired_applicants(
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             user_department = db.query(Department).join(Position).filter(
-#                 Department.department_id == Position.department_id
-#             ).join(User).filter(
-#                 User.user_id == user_data.user_id, 
-#                 User.position_id == Position.position_id
-#             ).first()
+# Get All General Onboarding Tasks for Department Manager
+@router.get("/onboarding-tasks/general/my-tasks", response_model=List[deptMngr.ShowOnboardingTask])
+def get_all_general_onboarding_tasks(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
             
-#             return db.query(OnboardingEmployee).filter(
-#                 OnboardingEmployee.status == "Pending"
-#             ).join(Position).filter(
-#                 OnboardingEmployee.position_id == Position.position_id
-#             ).join(Department).filter(
-#                 Position.department_id == Department.department_id, 
-#                 Department.department_id ==  user_department.department_id
-#             ).all()
-#     except Exception as e:
-#         print(e)
+            # Get User Sub-department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
+
+            # Check if user sub department is not exist in database
+            if not user_sub_department:
+                raise HTTPException(status=404, detail=SUB_DEPARTMENT_NOT_FOUND_RESPONSE)
+
+            return db.query(OnboardingTask).filter(
+                OnboardingTask.sub_department_id == user_sub_department.sub_department_id,  
+                OnboardingTask.task_type == "For department manager",
+                OnboardingTask.is_general == True,
+                OnboardingTask.is_deleted == False
+            ).all()
+    except Exception as e:
+        print(e)
 
 
-# # Hired applicants ccount
-# @router.get("/hired-applicants/analytics")
-# def hired_applicants_count(
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             user_department = db.query(Department).join(Position).filter(
-#                 Department.department_id == Position.department_id
-#             ).join(User).filter(
-#                 User.user_id == user_data.user_id, 
-#                 User.position_id == Position.position_id
-#             ).first()
+# Get One General Onboarding Task
+@router.get("/onboarding-tasks/{onboarding_task_id}", response_model=deptMngr.ShowOnboardingTask)
+def get_one_onboarding_task(
+    onboarding_task_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
             
-#             hired_applicants_count = db.query(OnboardingEmployee).filter(
-#                 OnboardingEmployee.status == "Pending"
-#             ).join(Position).filter(
-#                 OnboardingEmployee.position_id == Position.position_id
-#             ).join(Department).filter(
-#                 Position.department_id == Department.department_id, 
-#                 Department.department_id ==  user_department.department_id
-#             ).count()
+            # Get User Sub-department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
 
-#             return {"hired_applicants": hired_applicants_count}
-#     except Exception as e:
-#         print(e)
+            # Check if user sub department is not exist in database
+            if not user_sub_department:
+                raise HTTPException(status=404, detail=SUB_DEPARTMENT_NOT_FOUND_RESPONSE)
 
+            # Get the onboarding task
+            onboarding_task = db.query(OnboardingTask).filter(
+                OnboardingTask.sub_department_id == user_sub_department.sub_department_id, 
+                OnboardingTask.onboarding_task_id == onboarding_task_id,
+                OnboardingTask.is_general == True, 
+                OnboardingTask.is_deleted == False
+            ).first()
 
-# # Get one hired applicant
-# @router.get("/hired-applicants/{onboarding_employee_id}", response_model=deptMngr.ShowHiredApplicant)
-# def get_all_hired_applicants(
-#     onboarding_employee_id: str,
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, User.position_id == Position.position_id).first()
-#             onboarding_employee = db.query(OnboardingEmployee).filter(
-#                 OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
-#                 OnboardingEmployee.status == "Pending"
-#             ).join(Position).filter(
-#                 OnboardingEmployee.position_id == Position.position_id
-#             ).join(Department).filter(
-#                 Position.department_id == Department.department_id, 
-#                 Department.department_id ==  user_department.department_id
-#             ).first()
-#             if not onboarding_employee: 
-#                 raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
-#             else:
-#                 return onboarding_employee
-#     except Exception as e:
-#         print(e)
+            # Check if onboarding task does not exist in database
+            if not onboarding_task:
+                raise HTTPException(status_code=404, detail=ONBOARDING_TASK_NOT_FOUND)
+
+            # Else return it
+            return onboarding_task
+    except Exception as e:
+        print(e)
 
 
-# # ====================================================================
-# # ONBOARDING EMPLOYEE
-# # ====================================================================
+# Remove General Onboarding Task
+@router.delete("/onboarding-tasks/{onboarding_task_id}/remove")
+def remove_general_onboarding_task(
+    onboarding_task_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            
+            # Get User Sub-department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
+
+            # Check if user sub department is not exist in database
+            if not user_sub_department:
+                raise HTTPException(status=404, detail=SUB_DEPARTMENT_NOT_FOUND_RESPONSE)
+
+            # Get the onboarding task
+            onboarding_task = db.query(OnboardingTask).filter(
+                OnboardingTask.sub_department_id == user_sub_department.sub_department_id, 
+                OnboardingTask.onboarding_task_id == onboarding_task_id,
+                OnboardingTask.is_general == True, 
+                OnboardingTask.is_deleted == False
+            )
+            
+            # If onboarding task not exists in database
+            if not onboarding_task.first():
+                raise HTTPException(status_code=404, detail=ONBOARDING_TASK_NOT_FOUND)
+
+            # Check if onboarding task is already linked to other tables
+            onboarding_tasks_count = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_task_id == onboarding_task_id).count()
+            
+            # Soft delete if yes, permanently delete if not
+            if onboarding_tasks_count > 0:
+                onboarding_task.update({"is_deleted": True})
+            else:
+                onboarding_task.delete(synchronize_session = False)
+            
+            # Commit changes and return message
+            db.commit()
+            return "Onboarding Task is successfully removed"
+    except Exception as e:
+        print(e)
 
 
-# # Onboarding employee not found
-# ONBOARDING_EMPLOYEE_NOT_FOUND = {"message": "Onboarding employee not found"}
+# ====================================================================
+# HIRED APPLICANTS
+# ====================================================================
 
 
-# # Get All Onboarding Employees
-# @router.get("/onboarding-employees", response_model=List[deptMngr.ShowOnboardingEmployee])
-# def get_all_onboarding_employees(
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
-#             if not user_info:
-#                 raise HTTPException(status_code=404, detail="User does not exist")
-#             else:
-#                 position_id = user_info.position_id
-#                 user_position = db.query(Position).filter(Position.position_id == position_id).first()
-#                 if not user_position:
-#                     raise HTTPException(status_code=404, detail="Position does not exist")
-#                 else:
-#                     department_id = user_position.department_id
-#                     user_department = db.query(Department).filter(Department.department_id == department_id).first()
-#                     if not user_department:
-#                         raise HTTPException(status_code=404, detail=DEPARTMENT_NOT_FOUND_RESPONSE)
-#                     else:
-#                         return db.query(OnboardingEmployee).filter(OnboardingEmployee.status == "Onboarding").join(Position).filter(Position.position_id == OnboardingEmployee.position_id).join(Department).filter(Department.department_id == user_department.department_id).all()
-#     except Exception as e:
-#         print(e)
+# Applicant not found response
+APPLICANT_NOT_FOUND_RESPONSE = {"message": "Applicant not found"}
 
 
-# # Onboarding Employees Analytics
-# @router.get("/onboarding-employees/analytics")
-# def onboarding_employees_analytics(
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             user_info = db.query(User).filter(User.user_id == user_data.user_id).first()
-#             if not user_info:
-#                 raise HTTPException(status_code=404, detail="User does not exist")
-#             else:
-#                 position_id = user_info.position_id
-#                 user_position = db.query(Position).filter(Position.position_id == position_id).first()
-#                 if not user_position:
-#                     raise HTTPException(status_code=404, detail="Position does not exist")
-#                 else:
-#                     department_id = user_position.department_id
-#                     user_department = db.query(Department).filter(Department.department_id == department_id).first()
-#                     if not user_department:
-#                         raise HTTPException(status_code=404, detail="Deparment does not exist")
-#                     else:
-#                         total = db.query(OnboardingEmployee).filter(OnboardingEmployee.status == "Onboarding").join(Position).filter(Position.position_id == OnboardingEmployee.position_id).join(Department).filter(Department.department_id == user_department.department_id).count()
-#                         return {"total": total}
-#     except Exception as e:
-#         print(e)
+# Get all hired applicants
+@router.get("/hired-applicants", response_model=List[deptMngr.ShowHiredApplicant])
+def get_all_hired_applicants(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            
+            # Get User Sub-department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
+
+            # Check if user sub department is not exist in database
+            if not user_sub_department:
+                raise HTTPException(status=404, detail=SUB_DEPARTMENT_NOT_FOUND_RESPONSE)
+
+            return db.query(OnboardingEmployee).filter(
+                OnboardingEmployee.status == "Pending"
+            ).join(Position).filter(
+                OnboardingEmployee.position_id == Position.position_id
+            ).join(SubDepartment).filter(
+                Position.sub_department_id == SubDepartment.sub_department_id, 
+                SubDepartment.sub_department_id ==  user_sub_department.sub_department_id
+            ).all()
+    except Exception as e:
+        print(e)
 
 
-# # Get One Onboarding Employees
-# @router.get("/onboarding-employees/{onboarding_employee_id}", response_model=deptMngr.ShowOnboardingEmployee)
-# def get_one_onboarding_employee(
-#     onboarding_employee_id: str,
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
-#             if not onboarding_employee:
-#                 raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
-#             else:
-#                 return onboarding_employee
-#     except Exception as e:
-#         print(e)
+# Hired applicants ccount
+@router.get("/hired-applicants/analytics")
+def hired_applicants_count(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            
+            # Get User Sub-department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
+            
+            hired_applicants_count = db.query(OnboardingEmployee).filter(
+                OnboardingEmployee.status == "Pending"
+            ).join(Position).filter(
+                OnboardingEmployee.position_id == Position.position_id
+            ).join(SubDepartment).filter(
+                Position.sub_department_id == SubDepartment.sub_department_id, 
+                SubDepartment.sub_department_id ==  user_sub_department.sub_department_id
+            ).count()
+
+            return {"hired_applicants": hired_applicants_count}
+    except Exception as e:
+        print(e)
 
 
-# # Update Onboarding Employee
-# @router.put("/onboarding-employees/{onboarding_employee_id}", status_code=202)
-# def update_onboarding_employee(
-#     onboarding_employee_id: str,
-#     req: deptMngr.UpdateOnboardingEmployee,
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id)
-#             if not onboarding_employee.first():
-#                 raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
-#             else:
-#                 onboarding_employee.update(req.dict())
-#                 db.commit()
-#                 return {"An onboarding employee record is succesfully updated"}
-#     except Exception as e:
-#         print(e)
+# Get one hired applicant
+@router.get("/hired-applicants/{onboarding_employee_id}", response_model=deptMngr.ShowHiredApplicant)
+def get_all_hired_applicants(
+    onboarding_employee_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, User.position_id == Position.position_id).first()
+            onboarding_employee = db.query(OnboardingEmployee).filter(
+                OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
+                OnboardingEmployee.status == "Pending"
+            ).join(Position).filter(
+                OnboardingEmployee.position_id == Position.position_id
+            ).join(Department).filter(
+                Position.department_id == Department.department_id, 
+                Department.department_id ==  user_department.department_id
+            ).first()
+            if not onboarding_employee: 
+                raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
+            else:
+                return onboarding_employee
+    except Exception as e:
+        print(e)
 
 
-# # ====================================================================
-# # ONBOARDING EMPLOYEE TASKS
-# # ====================================================================
+# ====================================================================
+# ONBOARDING EMPLOYEE
+# ====================================================================
 
 
-# # Onboarding Employee Task not found
-# ONBOARDING_EMPLOYEE_TASK_NOT_FOUND = {"message": "Onboarding Employee Task not found"}
+# Onboarding employee not found
+ONBOARDING_EMPLOYEE_NOT_FOUND = {"message": "Onboarding employee not found"}
 
 
-# # Add Onboarding Employee Task
-# @router.post("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks")
-# def add_employee_onboarding_task(
-#     onboarding_employee_id: str,
-#     req: deptMngr.CreateOnboardingEmployeeTask,
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
-#             if not onboarding_employee:
-#                 raise HTTPException(status_code = 404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
-#             else:
-#                 new_onboarding_employee_task = OnboardingEmployeeTask(
-#                     onboarding_employee_id = onboarding_employee_id,
-#                     onboarding_task_id = req.onboarding_task_id,
-#                     start_at = req.start_at,
-#                     end_at = req.end_at,
-#                     assigned_by = user_data.user_id,
-#                     status = "Pending"
-#                 )
-#                 db.add(new_onboarding_employee_task)
-#                 db.commit()
-#                 db.refresh(new_onboarding_employee_task)
-#                 return {
-#                     "data": new_onboarding_employee_task,
-#                     "message": "New onboarding employee task is added"
-#                 }
-#     except Exception as e:
-#         print(e)
+# Get All Onboarding Employees
+@router.get("/onboarding-employees", response_model=List[deptMngr.ShowOnboardingEmployee])
+def get_all_onboarding_employees(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+
+            # Get User Department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
+
+            # Check if user is not 
+            if not user_sub_department:
+                raise HTTPException(status_code=404, detail=SUB_DEPARTMENT_NOT_FOUND_RESPONSE)
+            else:
+                return db.query(OnboardingEmployee).filter(
+                    OnboardingEmployee.status == "Onboarding"
+                ).join(Position).filter(
+                    Position.position_id == OnboardingEmployee.position_id
+                ).join(SubDepartment).filter(
+                    SubDepartment.sub_department_id == user_sub_department.sub_department_id
+                ).all()
+    except Exception as e:
+        print(e)
 
 
-# # Get All Onboarding Employee Task
-# @router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_model=List[deptMngr.ShowOnboardingEmployeeTask])
-# def get_all_onboarding_employee_tasks(
-#     onboarding_employee_id: str,
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id).first()
-#             if not onboarding_employee:
-#                 raise HTTPException(status_code = 404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
-#             else:
-#                 return db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_id == onboarding_employee_id).all()
-#     except Exception as e:
-#         print(e)
+# Onboarding Employees Analytics
+@router.get("/onboarding-employees/analytics")
+def onboarding_employees_analytics(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            
+            # Get User Department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
+
+            if not user_sub_department:
+                raise HTTPException(status_code=404, detail="Deparment does not exist")
+            else:
+                total = db.query(OnboardingEmployee).filter(
+                    OnboardingEmployee.status == "Onboarding"
+                ).join(Position).filter(
+                    Position.position_id == OnboardingEmployee.position_id
+                ).join(SubDepartment).filter(
+                    SubDepartment.sub_department_id == user_sub_department.sub_department_id
+                ).count()
+                
+                # Return the total number of onboarding employees
+                return {"total": total}
+    except Exception as e:
+        print(e)
 
 
-# # Get One Onboarding Employee Task
-# @router.get("/onboarding-employee-tasks/{onboarding_employee_task_id}", response_model=deptMngr.ShowOnboardingEmployeeTask)
-# def get_one_onboarding_employee_tasks(
-#     onboarding_employee_task_id: str,
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             onboarding_employee_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id).first()
-#             if not onboarding_employee_task:
-#                 raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
-#             else:
-#                 return onboarding_employee_task
-#     except Exception as e:
-#         print(e)
+# Get One Onboarding Employees
+@router.get("/onboarding-employees/{onboarding_employee_id}", response_model=deptMngr.ShowOnboardingEmployee)
+def get_one_onboarding_employee(
+    onboarding_employee_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee = db.query(OnboardingEmployee).filter(
+                OnboardingEmployee.onboarding_employee_id == onboarding_employee_id
+            ).first()
+
+            if not onboarding_employee:
+                raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
+            else:
+                return onboarding_employee
+    except Exception as e:
+        print(e)
 
 
-# # Update Onboarding Employee Task Status
-# @router.put("/onboarding-employee-tasks/{onboarding_employee_task_id}", status_code=202)
-# def update_onboarding_employee_task_status(
-#     onboarding_employee_task_id: str,
-#     req: deptMngr.UpdatedOnboardingEmployeeTaskStatus,
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             onboarding_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id)
-#             if not onboarding_task.first():
-#                 raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
-#             else:
-#                 if(req.status == "Completed"):
-#                     onboarding_task.update({
-#                         "status": req.status,
-#                         "completed_at": text('NOW()'),
-#                         "completed_by": user_data.user_id
-#                     })
-#                 else:
-#                     onboarding_task.update(req.dict())
-#                 db.commit()
-#                 return {"message": "An onboarding employee task has been updated"}
-#     except Exception as e:
-#         print(e)
+# Update Onboarding Employee
+@router.put("/onboarding-employees/{onboarding_employee_id}", status_code=202)
+def update_onboarding_employee(
+    onboarding_employee_id: str,
+    req: deptMngr.UpdateOnboardingEmployee,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee = db.query(OnboardingEmployee).filter(OnboardingEmployee.onboarding_employee_id == onboarding_employee_id)
+            if not onboarding_employee.first():
+                raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
+            else:
+                onboarding_employee.update(req.dict())
+                db.commit()
+                return {"An onboarding employee record is succesfully updated"}
+    except Exception as e:
+        print(e)
+
+
+# ====================================================================
+# ONBOARDING EMPLOYEE TASKS
+# ====================================================================
+
+
+# Onboarding Employee Task not found
+ONBOARDING_EMPLOYEE_TASK_NOT_FOUND = {"message": "Onboarding Employee Task not found"}
+
+
+# Add Onboarding Employee Task
+@router.post("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks")
+def add_employee_onboarding_task(
+    onboarding_employee_id: str,
+    req: deptMngr.CreateOnboardingEmployeeTask,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee = db.query(OnboardingEmployee).filter(
+                OnboardingEmployee.onboarding_employee_id == onboarding_employee_id
+            ).first()
+            
+            if not onboarding_employee:
+                raise HTTPException(status_code = 404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
+            else:
+                new_onboarding_employee_task = OnboardingEmployeeTask(
+                    onboarding_employee_id = onboarding_employee_id,
+                    onboarding_task_id = req.onboarding_task_id,
+                    start_at = req.start_at,
+                    end_at = req.end_at,
+                    assigned_by = user_data.employee_id,
+                    status = "Pending"
+                )
+                db.add(new_onboarding_employee_task)
+                db.commit()
+                db.refresh(new_onboarding_employee_task)
+                return {
+                    "data": new_onboarding_employee_task,
+                    "message": "New onboarding employee task is added"
+                }
+    except Exception as e:
+        print(e)
+
+
+# Get All Onboarding Employee Task
+@router.get("/onboarding-employees/{onboarding_employee_id}/onboarding-tasks", response_model=List[deptMngr.ShowOnboardingEmployeeTask])
+def get_all_onboarding_employee_tasks(
+    onboarding_employee_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee = db.query(OnboardingEmployee).filter(
+                OnboardingEmployee.onboarding_employee_id == onboarding_employee_id
+            ).first()
+            
+            if not onboarding_employee:
+                raise HTTPException(status_code = 404, detail=ONBOARDING_EMPLOYEE_NOT_FOUND)
+            else:
+                return db.query(OnboardingEmployeeTask).filter(
+                    OnboardingEmployeeTask.onboarding_employee_id == onboarding_employee_id
+                ).all()
+    except Exception as e:
+        print(e)
+
+
+# Get One Onboarding Employee Task
+@router.get("/onboarding-employee-tasks/{onboarding_employee_task_id}", response_model=deptMngr.ShowOnboardingEmployeeTask)
+def get_one_onboarding_employee_tasks(
+    onboarding_employee_task_id: str,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee_task = db.query(OnboardingEmployeeTask).filter(
+                OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id
+            ).first()
+
+            if not onboarding_employee_task:
+                raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
+            else:
+                return onboarding_employee_task
+    except Exception as e:
+        print(e)
+
+
+# Update Onboarding Employee Task Status
+@router.put("/onboarding-employee-tasks/{onboarding_employee_task_id}", status_code=202)
+def update_onboarding_employee_task_status(
+    onboarding_employee_task_id: str,
+    req: deptMngr.UpdatedOnboardingEmployeeTaskStatus,
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_task = db.query(OnboardingEmployeeTask).filter(
+                OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id
+            )
+            
+            if not onboarding_task.first():
+                raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
+            else:
+                if(req.status == "Completed"):
+                    onboarding_task.update({
+                        "status": req.status,
+                        "completed_at": text('NOW()'),
+                        "completed_by": user_data.employee_id
+                    })
+                else:
+                    onboarding_task.update(req.dict())
+                db.commit()
+                return {"message": "An onboarding employee task has been updated"}
+    except Exception as e:
+        print(e)
 
 
 # # Delete Onboarding Employee Task

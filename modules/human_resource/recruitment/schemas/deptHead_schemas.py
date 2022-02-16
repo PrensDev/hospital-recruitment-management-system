@@ -2,17 +2,16 @@
 from datetime import datetime, date
 from typing import List, Optional
 from pydantic import BaseModel
-from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo, ShowPosition
+from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo
 from modules.human_resource.recruitment.schemas.recruiter_schemas import JobPost
-from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType
+from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType, ShowPositionForManpowerRequest
 
 
 # Show Manpower Request
 class ShowManpowerRequest(BaseModel):
     manpower_request_id: str
     requisition_no: str
-    requested_by: ShowUserInfo
-    vacant_position: ShowPosition
+    vacant_position: ShowPositionForManpowerRequest
     employment_type: ShowEmploymentType
     request_nature: str
     staffs_needed: int
@@ -21,9 +20,10 @@ class ShowManpowerRequest(BaseModel):
     content: str
     request_status: str
     deadline: Optional[datetime]
-    signed_by: Optional[ShowUserInfo]
-    reviewed_by: Optional[ShowUserInfo]
-    rejected_by: Optional[ShowUserInfo]
+    manpower_request_requested_by: ShowUserInfo
+    manpower_request_signed_by: Optional[ShowUserInfo]
+    manpower_request_reviewed_by: Optional[ShowUserInfo]
+    manpower_request_rejected_by: Optional[ShowUserInfo]
     signed_at: Optional[datetime]
     reviewed_at: Optional[datetime]
     completed_at: Optional[datetime]
@@ -90,7 +90,7 @@ class OnboardingEmployee(BaseModel):
     middle_name: Optional[str]
     last_name: str
     suffix_name: Optional[str]
-    onboarding_employee_position: ShowPosition
+    onboarding_employee_position: ShowPositionForManpowerRequest
     contact_number: str
     email: str
     employment_contract: str

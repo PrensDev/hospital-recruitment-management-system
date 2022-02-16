@@ -119,8 +119,6 @@ initDataTable('#hiredApplicantsDT', {
 const getHiredApplicantDetails = (applicantID) => {
     GET_ajax(`${ ROUTE.API.DH }hired-applicants/${ applicantID }`, {
         success: result => {
-
-            console.log(result)
             
             /** APPLICANT DETAILS */
             setContent({
@@ -163,13 +161,33 @@ onHideModal('#applicantDetailsModal', () => {
 
 /** Mark Contract as Signed */
 const markContractAsSigned = (applicantID) => {
-    setValue('#applicantID', applicantID);
-    showModal('#uploadSignedContractModal');
+    GET_ajax(`${ ROUTE.API.DH }hired-applicants/${ applicantID }`, {
+        success: result => {
+            setValue('#applicantID', result.applicant_id);
+
+            /** APPLICANT DETAILS */
+            setContent({
+                '#uploadContractFor': formatName('F M. L, S', {
+                    firstName  : result.first_name,
+                    middleName : result.middle_name,
+                    lastName   : result.last_name,
+                    suffixName : result.suffixName
+                })
+            });
+
+            /** Show Modal */
+            showModal('#uploadSignedContractModal');
+        },
+        error: () => toastr.error('There was an error in getting applicant details')
+    });
 }
 
 
 /** On Upload Signed Contract Modal is going to be hidden */
-onHideModal('#uploadSignedContractModal', () => resetForm('#signedContractForm'));
+onHideModal('#uploadSignedContractModal', () => {
+    setContent('#uploadContractFor', '');
+    resetForm('#signedContractForm');
+});
 
 
 /** Validate Signed Contract Form on submit */
@@ -201,6 +219,17 @@ validateForm('#signedContractForm', {
         const fd = new FormData();
         fd.append('file', resume);
 
+        // If error
+        const ifError = () => {
+            
+            // Set button to unload state
+            btnToUnloadState('#submitContractBtn', TEMPLATE.ICON_LABEL('file-export', 'Submit'));
+            enableElement('#cancelSubmitContractBtn');
+
+            // Show toaster alert
+            toastr.error('There was an error in uploading signed contract')
+        }
+
         // Upload resume
         $.ajax({
             url: `${ ROUTE.API.DH }upload/employment-contract`,
@@ -210,35 +239,36 @@ validateForm('#signedContractForm', {
             contentType: false,
             data: fd,
             success: result => {
+                if(result) {
+                    const data = {
+                        applicant_id: get('applicantID'),
+                        employment_contract: result.new_file
+                    }
+                    
+                    // Add applicant as onboarding employee
+                    POST_ajax(`${ ROUTE.API.DH }onboarding-employees`, data, {
+                        success: result2 => {
+                            if(result2) {
 
-                const data = {
-                    applicant_id: get('applicantID'),
-                    employment_contract: result.new_file
-                }
-                
-                // Add applicant as onboarding employee
-                POST_ajax(`${ ROUTE.API.DH }onboarding-employees`, data, {
-                    success: result => {
-                        if(result) {
+                                // Reload DataTable
+                                reloadDataTable('#hiredApplicantsDT');
 
-                            // Reload DataTable
-                            reloadDataTable('#hiredApplicantsDT');
+                                // Hide Modal
+                                hideModal('#uploadSignedContractModal');
 
-                            // Hide Modal
-                            hideModal('#uploadSignedContractModal');
+                                // Set buttons to unload state
+                                btnToUnloadState('#submitContractBtn', TEMPLATE.ICON_LABEL('file-export', 'Submit'));
+                                enableElement('#cancelSubmitContractBtn');
 
-                            // Set buttons to unload state
-                            btnToUnloadState('#submitContractBtn', TEMPLATE.ICON_LABEL('file-export', 'Submit'));
-                            enableElement('#cancelSubmitContractBtn');
-
-                            // Show alert
-                            toastr.success('Employment Contact is successfully uploaded')
-                        }
-                    },
-                    error: () => toastr.error('There was an error in uploading signed contract')
-                })
+                                // Show alert
+                                toastr.success('Employment Contact is successfully uploaded')
+                            } else ifError()
+                        },
+                        error: () => ifError()
+                    });
+                } else ifError()
             },
-            error: () => toastr.error('There was an error in uploading employment contract')
+            error: () => ifError()
         });
         return false;
     }

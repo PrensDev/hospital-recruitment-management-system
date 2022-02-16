@@ -157,7 +157,9 @@ const renderData = (start, end) => {
     
     // Hired Applicants Analytics
     GET_ajax(`${ ROUTE.API.DM }hired-applicants/analytics`, {
-        success: result => setContent('#hiredApplicantsCount', formatNumber(result.hired_applicants)),
+        success: result => {
+            setContent('#hiredApplicantsCount', formatNumber(result.hired_applicants))
+        },
         error: () => toastr.error('There was an error in getting hired applicants count')
     });
     

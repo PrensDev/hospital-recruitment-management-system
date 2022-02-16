@@ -213,22 +213,47 @@ const getOnboardingEmployeeDetails = () => {
         success: result => {
 
             const getTaskProgress = () => {
-                let pending = 0, onGoing = 0, completed = 0; 
+                let pending = 0, onGoing = 0, completed = 0, sum = 0; 
 
-                const taskProgress = {
+                const taskProgressIterator = {
                     'Pending': () => pending++,
                     'On Going': () => onGoing++,
                     'Completed': () => completed++
                 }
 
-                result.onboarding_employee_tasks.forEach(t => taskProgress[t.status]());
+                result.onboarding_employee_tasks.forEach(t => {
+                    taskProgressIterator[t.status]();
+                    sum++;
+                });
 
                 // Configure Onboarding Employee Task Doughnut Chart
                 const chartConfig = onboardingEmployeeTasksDoughnutChart.config;
-                chartConfig.data.datasets[0].data = [pending, onGoing, completed];
+                chartConfig.data = {
+                    labels: ['Pending','On Going','Completed',],
+                    datasets: [{
+                        data: [pending, onGoing, completed],
+                        backgroundColor : [
+                            CHART_BG.WARNING,
+                            CHART_BG.INFO,
+                            CHART_BG.SUCCESS
+                        ],
+                        borderColor:  [
+                            CHART_BD.WARNING,
+                            CHART_BD.INFO,
+                            CHART_BD.SUCCESS
+                        ],
+                        borderWidth: 2
+                    }]
+                }
 
                 // Update Onboarding Employee Task Doughnut Chart
                 onboardingEmployeeTasksDoughnutChart.update();
+
+                // Task Progress
+                const taskProgress = ((completed/sum)*100).toFixed(2);
+                return taskProgress === 100 
+                    ? `All tasks are completed` 
+                    : `${ taskProgress }% tasks are completed`
             }
 
             setContent({

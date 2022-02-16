@@ -169,7 +169,7 @@ class OnboardingTask(BaseModel):
 
 # Show Onboarding Tasks
 class ShowOnboardingTask(OnboardingTask):
-    onboarding_task_for_department: ShowDepartment
+    for_sub_department: ShowSubDepartmentForManpowerRequest
     onboarding_task_added_by: ShowUserInfo
     onboarding_task_updated_by: Optional[ShowUserInfo]
     created_at: datetime

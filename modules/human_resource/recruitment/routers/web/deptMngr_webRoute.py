@@ -274,21 +274,22 @@ def render(
     if not onboarding_employee_id:
         return errTemplate.page_not_found(req)
     
-    # Check if onboarding employee is existing in database
-    user_department = db.query(Department).join(Position).filter(
-        Department.department_id == Position.department_id
-    ).join(User).filter(
-        User.user_id == user_data['user_id'], 
-        User.position_id == Position.position_id
+    # Get user sub department for filtering
+    user_sub_department = db.query(SubDepartment).join(Position).filter(
+        SubDepartment.sub_department_id == Position.sub_department_id
+    ).join(Employee).filter(
+        Employee.employee_id == user_data["employee_id"], 
+        Employee.position_id == Position.position_id
     ).first()
     
+    # Check if onboarding employee is existing in database
     onboarding_employee = db.query(OnboardingEmployee).filter(
         OnboardingEmployee.onboarding_employee_id == onboarding_employee_id
     ).join(Position).filter(
         OnboardingEmployee.position_id == Position.position_id
-    ).join(Department).filter(
-        Position.department_id == Department.department_id, 
-        Department.department_id ==  user_department.department_id
+    ).join(SubDepartment).filter(
+        Position.sub_department_id == SubDepartment.sub_department_id, 
+        SubDepartment.sub_department_id ==  user_sub_department.sub_department_id
     ).first()
     
     if not onboarding_employee:
@@ -351,22 +352,23 @@ def render(
     if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)
 
-    # Check if onboarding employee is existing in database
-    user_department = db.query(Department).join(Position).filter(
-        Department.department_id == Position.department_id
-    ).join(User).filter(
-        User.user_id == user_data['user_id'], 
-        User.position_id == Position.position_id
+    # Get the user sub department for filtering
+    user_sub_department = db.query(SubDepartment).join(Position).filter(
+        SubDepartment.sub_department_id == Position.sub_department_id
+    ).join(Employee).filter(
+        Employee.employee_id == user_data['employee_id'], 
+        Employee.position_id == Position.position_id
     ).first()
 
+    # Check if onboarding employee is existing in database
     onboarding_employee = db.query(OnboardingEmployee).filter(
         OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
         OnboardingEmployee.status == "Onboarding",
     ).join(Position).filter(
         OnboardingEmployee.position_id == Position.position_id
-    ).join(Department).filter(
-        Position.department_id == Department.department_id, 
-        Department.department_id ==  user_department.department_id
+    ).join(SubDepartment).filter(
+        Position.sub_department_id == SubDepartment.sub_department_id, 
+        SubDepartment.sub_department_id ==  user_sub_department.sub_department_id
     ).first()
 
     if not onboarding_employee:
