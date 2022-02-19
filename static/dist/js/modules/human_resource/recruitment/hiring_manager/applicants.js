@@ -102,7 +102,7 @@ initDataTable('#applicantsDT', {
         { data: 'applied_job.manpower_request.vacant_position.name' },
 
         // Employment Type
-        { data: 'applied_job.manpower_request.employment_type' },
+        { data: 'applied_job.manpower_request.employment_type.name' },
 
         // Date Applied
         {

@@ -332,6 +332,8 @@ const renderData = (start, end) => {
     GET_ajax(`${ ROUTE.API.H }applicants/analytics${ DATE_RANGE }`, {
         success: result => {
 
+            console.log(result)
+
             // Set info card content
             setContent('#applicationsCountForInfoCard', result.total)
 
@@ -350,6 +352,7 @@ const renderData = (start, end) => {
                 ],
                 datasets: [{
                     data: [
+                        result.for_evaluation,
                         result.for_screening,
                         result.for_interview,
                         result.hired,
@@ -358,16 +361,18 @@ const renderData = (start, end) => {
                     ],
                     backgroundColor : [
                         CHART_BG.WARNING, 
+                        CHART_BG.SECONDARY, 
                         CHART_BG.INFO, 
                         CHART_BG.SUCCESS, 
-                        CHART_BG.SECONDARY, 
+                        CHART_BG.PRIMARY, 
                         CHART_BG.DANGER
                     ],
                     borderColor:[
                         CHART_BD.WARNING, 
+                        CHART_BD.SECONDARY, 
                         CHART_BD.INFO, 
                         CHART_BD.SUCCESS, 
-                        CHART_BD.SECONDARY, 
+                        CHART_BD.PRIMARY, 
                         CHART_BD.DANGER
                     ],
                     borderWidth: CHART_BD.WIDTH

@@ -188,6 +188,10 @@ def render(
     # Check if manpower_request_id is existing in database
     if not db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id).first():
         return errTemplate.page_not_found(req)
+
+    # Check if manpower request has already job post
+    if db.query(ManpowerRequest).join(JobPost).filter(JobPost.manpower_request_id == manpower_request_id).count() > 0:
+        return errTemplate.page_not_found(req)
     
     # If no error, return template response
     return templates.TemplateResponse(TEMPLATES_PATH + "add_job_post.html", {

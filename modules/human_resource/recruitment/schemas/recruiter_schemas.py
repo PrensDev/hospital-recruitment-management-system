@@ -141,10 +141,10 @@ class ShowApplicant(Applicant):
     applicant_id: str
     applied_job: ShowJobPost
     status: str
-    evaluation_done_by: Optional[ShowUserInfo]
-    screening_done_by: Optional[ShowUserInfo]
-    hiring_done_by: Optional[ShowUserInfo]
-    rejection_done_by: Optional[ShowUserInfo]
+    applicant_evaluated_by: Optional[ShowUserInfo]
+    applicant_screened_by: Optional[ShowUserInfo]
+    applicant_hired_by: Optional[ShowUserInfo]
+    applicant_rejected_by: Optional[ShowUserInfo]
     evaluated_at: Optional[datetime]
     screened_at: Optional[datetime]
     hired_at: Optional[datetime]

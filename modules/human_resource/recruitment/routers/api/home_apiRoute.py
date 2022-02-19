@@ -80,7 +80,7 @@ def get_all_job_posts(
     datePosted: Optional[str] = None,
     jobCategory: Optional[str] = None,
     employmentType: Optional[str] = None,
-    page: Optional[int] = None, 
+    page: Optional[int] = 1, 
     db: Session = Depends(get_db)
 ):
     try:
@@ -115,7 +115,6 @@ def job_posts_analytics(
     datePosted: Optional[str] = None,
     jobCategory: Optional[str] = None,
     employmentType: Optional[str] = None,
-    page: Optional[int] = None, 
     db: Session = Depends(get_db)
 ):
     try:
@@ -135,10 +134,10 @@ def job_posts_analytics(
             query = query.filter(JobPost.created_at >= datePosted)
         if jobCategory:
             query = query.filter(JobPost.job_category_id == jobCategory)
-        if page:
-            query = query.limit(FETCH_ROW).offset(FETCH_ROW * (page - 1))
 
-        return {"total": query.count()}
+        total = query.count()
+
+        return {"total": total}
     except Exception as e:
         print(e)
 

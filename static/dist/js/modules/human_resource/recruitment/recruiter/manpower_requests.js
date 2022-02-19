@@ -12,7 +12,7 @@ initDataTable('#manpowerRequestDT', {
     columns: [
 
         // Created At (For Default Sorting)
-        { data: 'created_at', visible: false },
+        { data: 'reviewed_at', visible: false },
 
         // Requisition No.
         { data: 'requisition_no', class: 'text-nowrap'},
@@ -196,7 +196,7 @@ ifSelectorExist('#manpowerRequestDocumentContainer', () => {
             showElement('#manpowerRequestTimeline');
 
             // Remobe Manpower Request Options Loader
-            if(result.job_post.length == 1) {
+            if(result.job_post) {
                 $('#optionsLoader').remove();
                 $('#optionsContainer').remove();
             } else {

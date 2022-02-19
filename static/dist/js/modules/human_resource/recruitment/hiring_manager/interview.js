@@ -168,21 +168,21 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
                     });
 
                     const position = addedBy.position;
-
                     return `
                         <div>${ fullName }</div>
-                        ${ TEMPLATE.SUBTEXT(position.name + ', ' + position.department.name) }
+                        ${ TEMPLATE.SUBTEXT(position.name) }
+                        ${ TEMPLATE.SUBTEXT(position.sub_department.name) }
                     `
-                })
-                
+                });
+
                 // Set Added At
                 setContent('#interviewQuestionAddedAt', () => {
-                    const addedAt = result.added_at;
+                    const addedAt = result.created_at;
 
                     return `
                         <div>${ formatDateTime(addedAt, 'Full Date') }</div>
                         <div>${ formatDateTime(addedAt, 'Time') }</div>
-                        ${ TEMPLATE.SUBTEXT(romNow(addedAt)) }
+                        ${ TEMPLATE.SUBTEXT(fromNow(addedAt)) }
                     `
                 })
                 
@@ -201,7 +201,8 @@ const viewGenInterviewQuestionDetails = (interviewQuestionID) => {
 
                     return `
                         <div>${ fullName }</div>
-                        ${ TEMPLATE.SUBTEXT(position.name + ', ' + position.department.name) }
+                        ${ TEMPLATE.SUBTEXT(position.name) }
+                        ${ TEMPLATE.SUBTEXT(position.sub_department.name) }
                     `
                 })
                 
@@ -387,7 +388,6 @@ initDataTable('#intervieweesDT', {
             data: null,
             class: 'w-100',
             render: data => {
-                console.log(data)
                 const applicant = data.applicant_info;
                 const applicantFullName = formatName('F M. L, S', {
                     firstName  : applicant.first_name,
@@ -434,11 +434,12 @@ initDataTable('#intervieweesDT', {
         {
             data: null,
             render: data => {
+                const intervieweeID = data.interviewee_id
                 if(isEmptyOrNull(data.is_interviewed)) {
                     return TEMPLATE.DT.OPTIONS(`
                         <a 
                             class="dropdown-item d-flex"
-                            href="${ ROUTE.WEB.H }interview/${ data.interviewee_id }"                                  
+                            href="${ ROUTE.WEB.H }interview/${ intervieweeID }"                                  
                         >
                             <div style="width: 2rem"><i class="fas fa-tasks mr-1"></i></div>
                             <div>Interview this applicant</div>
@@ -446,7 +447,7 @@ initDataTable('#intervieweesDT', {
                         <div 
                             class="dropdown-item d-flex"
                             role="button"
-                            onclick="markAsNotInterviewed()"
+                            onclick="markAsNotInterviewed('${ intervieweeID }')"
                         >
                             <div style="width: 2rem"><i class="fas fa-times mr-1"></i></div>
                             <div>Mark as Not Interviewed</div>
@@ -456,7 +457,8 @@ initDataTable('#intervieweesDT', {
                     return TEMPLATE.DT.OPTIONS(`
                         <div 
                             class="dropdown-item d-flex"
-                            role="button"                            
+                            role="button"
+                            onclick="viewIntervieweeDetails('${ intervieweeID }')"                  
                         >
                             <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
                             <div>View Details</div>
@@ -467,6 +469,16 @@ initDataTable('#intervieweesDT', {
         }
     ]
 });
+
+
+const viewIntervieweeDetails = (intervieweeID) => {
+    alert(intervieweeID)
+}
+
+
+const markAsNotInterviewed = (intervieweeID) => {
+    alert(intervieweeID)
+}
 
 
 /**
@@ -497,7 +509,7 @@ ifSelectorExist('#applicantDetails', () => {
                 '#applicantContactNumber': applicant.contact_number,
                 '#appliedDate': formatDateTime(applicant.created_at, 'Full Date'),
                 '#appliedTime': formatDateTime(applicant.created_at, 'Time'),
-                '#appliedAtHumanized': fromNow(applicant.created_at),
+                '#appliedAtHumanized': TEMPLATE.SUBTEXT(fromNow(applicant.created_at)),
             });
 
             // Set Resume
@@ -701,7 +713,6 @@ onClick('#saveScoresheetBtn', () => {
                     }
 
                     POST_ajax(`${ ROUTE.API.H }interview-scores/${ intervieweeID }`, data, {
-                        success: result => console.log(result),
                         error: () => toastr.error('There was an error in saving interviewee score for added questions')
                     });
                 },

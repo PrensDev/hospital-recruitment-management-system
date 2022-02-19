@@ -1,6 +1,6 @@
 {# Sidebar #}
 <div class="sidebar">
-    
+
     {# Sidebar user #}
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
 
@@ -34,7 +34,8 @@
 
             <li class="nav-header">CORE</li>
             <li class="nav-item">
-                <a href="{{ DM_WEB_ROUTE }}dashboard" class="nav-link{% if active_navlink == "Dashboard" %} active{% endif %}">
+                <a href="{{ DM_WEB_ROUTE }}dashboard" class="nav-link{% if active_navlink == "Dashboard" %} active{%
+                    endif %}">
                     <i class="nav-icon fas fa-chart-pie"></i>
                     <p>Dashboard</p>
                 </a>
@@ -42,15 +43,31 @@
 
             <li class="nav-header">RECRUITMENT</li>
             <li class="nav-item">
-                <a href="{{ DM_WEB_ROUTE }}manpower-requests" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
+                <a href="#" class="nav-link{% if active_navlink == "Manpower Requests" %} active{% endif %}">
                     <i class="nav-icon fas fa-copy"></i>
                     <p>Manpower Requests</p>
+                    <i class="fas fa-angle-left right"></i>
                 </a>
+                <ul class="nav nav-treeview" style="display: none;">
+                    <li class="nav-item">
+                        <a href="{{ DM_WEB_ROUTE }}add-manpower-request" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Create request</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ DM_WEB_ROUTE }}manpower-requests" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>View all requests</p>
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li class="nav-item">
-                <a href="{{DM_WEB_ROUTE}}hired-applicants" class="nav-link{% if active_navlink == "Hired Applicants" %} active{% endif %}">
-                <i class="nav-icon fas fa-handshake"></i>
-                <p>New Hired</p>
+                <a href="{{DM_WEB_ROUTE}}hired-applicants" class="nav-link{% if active_navlink == "Hired Applicants" %}
+                    active{% endif %}">
+                    <i class="nav-icon fas fa-handshake"></i>
+                    <p>New Hired</p>
                 </a>
             </li>
 
@@ -61,9 +78,10 @@
                     <p>Onboarding Employees</p>
                 </a>
             </li>
-            
+
             <li class="nav-item">
-                <a href="{{DM_WEB_ROUTE}}general-tasks" class="nav-link{% if active_navlink == "General Tasks" %} active{% endif %}">
+                <a href="{{DM_WEB_ROUTE}}general-tasks" class="nav-link{% if active_navlink == "General Tasks" %}
+                    active{% endif %}">
                     <i class="fas fa-tasks nav-icon"></i>
                     <p>General Tasks</p>
                 </a>
@@ -75,11 +93,7 @@
 {# Sidebar Custom #}
 <div class="sidebar-custom">
     <a href="#" class="btn btn-sm btn-light"><i class="fas fa-cogs"></i></a>
-    <button
-        class="btn btn-sm btn-danger hide-on-collapse pos-right"
-        data-toggle="modal"
-        data-target="#logoutModal"
-    >
+    <button class="btn btn-sm btn-danger hide-on-collapse pos-right" data-toggle="modal" data-target="#logoutModal">
         <span>Log out</span>
         <i class="fas fa-sign-out-alt ml-1"></i>
     </button>

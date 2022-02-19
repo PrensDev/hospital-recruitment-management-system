@@ -432,6 +432,10 @@ def render(
     if not db.query(Interviewee).filter(Interviewee.interviewee_id == interviewee_id).first():
         return errTemplate.page_not_found(req)
 
+    # Check if interviewee has already interviewed
+    if db.query(InterviewScore).filter(InterviewScore.interviewee_id == interviewee_id).count() > 0:
+        return errTemplate.page_not_found(req)
+
     # If no error, return template response
     return templates.TemplateResponse(TEMPLATES_PATH + "interview_scoresheet.html", {
         "request": req,

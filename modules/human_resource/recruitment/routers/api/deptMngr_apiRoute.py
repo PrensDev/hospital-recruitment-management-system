@@ -941,21 +941,38 @@ def update_onboarding_employee_task_status(
         print(e)
 
 
-# # Delete Onboarding Employee Task
-# @router.delete("/onboarding-employee-tasks/{onboarding_employee_task_id}")
-# def delete_onboarding_employee_task(
-#     onboarding_employee_task_id: str, 
-#     db: Session = Depends(get_db),
-#     user_data: user.UserData = Depends(get_user)
-# ):
-#     try:
-#         if(authorized(user_data, AUTHORIZED_USER)):
-#             onboarding_task = db.query(OnboardingEmployeeTask).filter(OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id)
-#             if not onboarding_task.first():
-#                 raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
-#             else:
-#                 onboarding_task.delete(synchronize_session = False)
-#                 db.commit()
-#                 return {"message": "An onboarding employee task is successfully deleted"}
-#     except Exception as e:
-#         print(e)
+# Delete Onboarding Employee Task
+@router.delete("/onboarding-employee-tasks/{onboarding_employee_task_id}")
+def delete_onboarding_employee_task(
+    onboarding_employee_task_id: str, 
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            onboarding_employee_task = db.query(OnboardingEmployeeTask).filter(
+                OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_employee_task_id
+            )
+            if not onboarding_employee_task.first():
+                raise HTTPException(status_code=404, detail=ONBOARDING_EMPLOYEE_TASK_NOT_FOUND)
+            else:
+                # Get the onboarding task id for deleting it later
+                onboarding_task_id = onboarding_employee_task.first().onboarding_task_id
+
+                # Delete the onboarding employee task
+                onboarding_employee_task.delete(synchronize_session = False)
+                db.commit()
+
+                # Delete the onboarding task if it doesn't have relationship to other tables
+                onboarding_employee_tasks_count = db.query(OnboardingEmployeeTask).filter(
+                    OnboardingEmployeeTask.onboarding_employee_task_id == onboarding_task_id
+                ).count()
+
+                if onboarding_employee_tasks_count == 0:
+                    onboarding_task = db.query(OnboardingTask).filter(OnboardingTask.onboarding_task_id == onboarding_task_id)
+                    onboarding_task.delete(synchronize_session = False)
+                    db.commit()
+
+                return {"message": "An onboarding employee task is successfully deleted"}
+    except Exception as e:
+        print(e)

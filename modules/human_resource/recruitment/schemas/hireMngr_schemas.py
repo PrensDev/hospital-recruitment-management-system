@@ -3,7 +3,7 @@ from datetime import datetime, date, time
 from typing import List, Optional
 from pydantic import BaseModel
 from modules.human_resource.recruitment.schemas.user_schemas import ShowUserInfo
-from modules.human_resource.recruitment.schemas.recruiter_schemas import ShowJobCategory
+from modules.human_resource.recruitment.schemas.recruiter_schemas import ShowJobCategory, ShowApplicant
 from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType, ShowPositionForManpowerRequest
 
 
@@ -42,22 +42,6 @@ class ManpowerRequestApproval(BaseModel):
     remarks: Optional[str]
 
 
-# Applicant
-class Applicant(BaseModel):
-    applicant_id: str
-    first_name: str
-    middle_name: Optional[str]
-    last_name: str
-    suffix_name: Optional[str]
-    contact_number: str
-    email: str
-    resume: str
-    status: str
-
-    class Config():
-        orm_mode = True
-
-
 # Show Job Post
 class ShowJobPost(BaseModel):
     job_post_id: str
@@ -66,32 +50,11 @@ class ShowJobPost(BaseModel):
     content: str
     job_category: ShowJobCategory
     expiration_date: Optional[datetime]
-    applicants: Optional[List[Applicant]]
+    applicants: Optional[List[ShowApplicant]]
     job_post_posted_by: ShowUserInfo
     views: int
     created_at: datetime
     updated_at: Optional[datetime]
-
-    class Config():
-        orm_mode = True
-
-
-# Show Applicant
-class ShowApplicant(Applicant):
-    applicant_id: str
-    applied_job: ShowJobPost
-    status: str
-    evaluation_done_by: Optional[ShowUserInfo]
-    evaluated_at: Optional[datetime]
-    screening_done_by: Optional[ShowUserInfo]
-    screened_at: Optional[datetime]
-    hired_at: Optional[datetime]
-    hiring_done_by: Optional[ShowUserInfo]
-    rejection_done_by: Optional[ShowUserInfo]
-    rejected_at: Optional[datetime]
-    created_at: datetime
-    updated_at: Optional[datetime]
-    remarks: Optional[str]
 
     class Config():
         orm_mode = True

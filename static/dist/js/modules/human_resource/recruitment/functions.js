@@ -312,8 +312,8 @@ const hideModal = (selector) => ifSelectorExist(selector, () => $(selector).moda
 
 
 /** On modal was showned/hidden */
-const onHideModal = (selector, handler = () => { }) => { ifSelectorExist(selector, () => $(selector).on('hide.bs.modal', () => handler())) }
-const onShowModal = (selector, handler = () => { }) => { ifSelectorExist(selector, () => $(selector).on('show.bs.modal', () => handler())) }
+const onHideModal = (selector, handler = () => {}) => { ifSelectorExist(selector, () => $(selector).on('hide.bs.modal', () => handler())) }
+const onShowModal = (selector, handler = () => {}) => { ifSelectorExist(selector, () => $(selector).on('show.bs.modal', () => handler())) }
 
 
 /** Set Content */
@@ -360,20 +360,18 @@ const checkOrUncheckElement = (selector, condition) => ifSelectorExist(selector,
 /** Show/Hide Element */
 const showElement = (selector) => ifSelectorExist(selector, () => $(selector).show());
 const hideElement = (selector) => ifSelectorExist(selector, () => $(selector).hide());
-const showOrHideElement = (selector, condition) => ifSelectorExist(selector, () => {
-	condition ? $(selector).show() : $(selector).hide()
-});
+const showOrHideElement = (selector, condition) => ifSelectorExist(selector, () => condition ? $(selector).show() : $(selector).hide());
 
 /** On Event */
-const onEvent = (selector, event, handler = () => { }) => ifSelectorExist(selector, () => $(selector).on(event, () => handler()))
+const onEvent = (selector, event, handler = () => {}) => ifSelectorExist(selector, () => $(selector).on(event, () => handler()))
 
 
 /** On Click */
-const onClick = (selector, handler = () => { }) => onEvent(selector, 'click', () => handler());
+const onClick = (selector, handler = () => {}) => onEvent(selector, 'click', () => handler());
 
 
 /** On Change */
-const onChange = (selector, handler = () => { }) => onEvent(selector, 'change', () => handler());
+const onChange = (selector, handler = () => {}) => onEvent(selector, 'change', () => handler());
 
 
 /** Is checked */
@@ -576,10 +574,49 @@ const setTimeline = (selector, attr = { title: "", timelineData: [] }) => {
 }
 
 
+/** Get URL Query Object */
+const getURLQueryObj = () => {
+	const queryString = window.location.search;
+	const queryParams = queryString === '' ? null : queryString.replace('?', '').split('&');
+	let queryObj = {}
+	if(queryParams) {
+		queryParams.forEach(q => {
+			const queryParts = q.split("=");
+			queryObj[queryParts[0]] = queryParts[1]
+		});
+	}
+	return queryObj
+}
+
+
+/** Get URL Query String */
+const getURLQueryString = (queryObj = {}) => {
+	let queryStringHolder = [];
+
+    Object.entries(queryObj).forEach(([key, val]) => {
+        if(!isEmptyOrNull(val)) queryStringHolder.push(key + '=' + val)
+    });
+    
+    let queryString = '';
+
+    queryStringHolder.forEach((urlParam, index) => {
+        queryString += index === 0 ? '?' : '&';
+        queryString += urlParam;
+    });
+
+    return queryString;
+}
+
+
+
 /** Set Pagination */
 const setPagination = (selector, attr = { query: '', totalRows: 0, currentPage: 0 }) => {
 	const totalRows = parseInt(attr.totalRows), currentPage = parseInt(attr.currentPage);
-	const getLink = (pageNumber) => { return attr.query.replace('[page]', pageNumber); }
+	const getLink = (pageNumber) => { 
+		let queries = getURLQueryObj();
+		queries["page"] = pageNumber;
+		return window.location.href.split('?')[0] + getURLQueryString(queries);
+	}
 	const totalPages = Math.ceil(totalRows / FETCH_ROWS);
 
 	let paginationItems = '';
@@ -665,7 +702,7 @@ const pluralize = (word, count) => {
 /** Create days labels for chart */
 const daysLabels = (start, end) => {
 	let days = [], currDate = start.startOf('day');
-	while (currDate.diff(end.endOf('day')) <= 0) {
+	while(currDate.diff(end.endOf('day')) <= 0) {
 		days.push(currDate.format());
 		currDate = currDate.add(1, 'days');
 	}

@@ -33,7 +33,13 @@ const setManpowerRequestTimeline = (selector, data) => {
         dateTime: createdAt,
         timelineTitle: 'Created',
         timelineBody: `
-            <div class="small mb-3">This request has been created by <b>${ createdByFullName }</b></div>
+            <div class="small mb-3">
+                <div>This request has been created by:</div>
+                <div class="ml-3">
+                    <div><b>${ createdByFullName }</b></div>
+                    <div>${ createdBy.position.name + ', ' + createdBy.position.sub_department.name }</div>
+                </div>
+            </div>
             ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Full Date")) }
             ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Time")) }
         `
@@ -55,7 +61,13 @@ const setManpowerRequestTimeline = (selector, data) => {
             dateTime: signedAt,
             timelineTitle: 'Signed',
             timelineBody: `
-                <div class="small mb-3">This request has been signed by <b>${ signedByFullName }</b></div>
+                <div class="small mb-3">
+                    <div>This request has been signed by:</div>
+                    <div class="ml-3">
+                        <div><b>${ signedByFullName }</b></div>
+                        <div>${ signedBy.position.name + ', ' + signedBy.position.sub_department.name }</div>
+                    </div>
+                </div>
                 ${ TEMPLATE.SUBTEXT(formatDateTime(signedAt, "Full Date")) }
                 ${ TEMPLATE.SUBTEXT(formatDateTime(signedAt, "Time")) }
             `
@@ -74,7 +86,13 @@ const setManpowerRequestTimeline = (selector, data) => {
             dateTime: rejectedAt,
             timelineTitle: 'Rejected',
             timelineBody: `
-                <div class="small mb-3">This request has been rejected for signing by <b>${ rejectedByFullName }</b></div>
+                <div class="small mb-3">
+                    <div>This request has been rejected for signing by:</div>
+                    <div class="ml-3">
+                        <div><b>${ rejectedByFullName }</b></div>
+                        <div>${ rejectedBy.position.name + ', ' + rejectedBy.position.sub_department.name }</div>
+                    </div>
+                </div>
                 ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Full Date")) }
                 ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Time")) }
             `
@@ -97,7 +115,13 @@ const setManpowerRequestTimeline = (selector, data) => {
             dateTime: reviewedAt,
             timelineTitle: 'Approved',
             timelineBody: `
-                <div class="small mb-3">This request has been reviewed and approved by <b>${ reviewedByFullName }</b></div>
+                <div class="small mb-3">
+                    <div>This request has been reviewed and approved by:</div>
+                    <div class="ml-3">
+                        <div><b>${ reviewedByFullName }</b></div>
+                        <div>${ reviewedBy.position.name + ', ' + reviewedBy.position.sub_department.name }</div>
+                    </div>
+                </div>
                 ${ TEMPLATE.SUBTEXT(formatDateTime(reviewedAt, "Full Date")) }
                 ${ TEMPLATE.SUBTEXT(formatDateTime(reviewedAt, "Time")) }
             `
@@ -117,7 +141,13 @@ const setManpowerRequestTimeline = (selector, data) => {
             dateTime: rejectedAt,
             timelineTitle: 'Rejected',
             timelineBody: `
-                <div class="small mb-3">This request has been rejected for approval by <b>${ rejectedByFullName }</b></div>
+                <div class="small mb-3">
+                    <div>This request has been rejected for signing by:</div>
+                    <div class="ml-3">
+                        <div><b>${ rejectedByFullName }</b></div>
+                        <div>${ rejectedBy.position.name + ', ' + rejectedBy.position.sub_department.name }</div>
+                    </div>
+                </div>
                 ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Full Date")) }
                 ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Time")) }
             `
@@ -143,131 +173,6 @@ const setManpowerRequestTimeline = (selector, data) => {
     // Set Manpower Request Timeline
     setTimeline(selector, { title: "Manpower Request Timeline", timelineData: timelineData });
 }
-
-/** Set Applicant Timeline */
-const setApplicantTimeline = (selector, data) => {
-    let timelineData = [];
-
-    // Applied
-    const createdAt = data.created_at;
-    const applicantFullName = formatName('F M. L, S', {
-        firstName  : data.first_name,
-        middleName : data.middle_name,
-        lastName   : data.last_name,
-        suffixName : data.suffix_name,
-    });
-    timelineData.push({
-        icon: "file-export",
-        iconTheme: "primary",
-        dateTime: createdAt,
-        timelineTitle: 'Applied',
-        timelineBody: `
-            <div class="small mb-3">Application was submitted by <b>${ applicantFullName }</b></div>
-            ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Full Date")) }
-            ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Time")) }
-        `
-    });
-
-    // Evaluated
-    const evaluatedAt = data.evaluated_at, evaluatedBy = data.evaluation_done_by;
-    if(!isEmptyOrNull(evaluatedAt) && !isEmptyOrNull(evaluatedBy)) {
-        const evaluatedByFullName = formatName('F M. L, S', {
-            firstName: evaluatedBy.first_name,
-            middleName: evaluatedBy.middle_name,
-            lastName: evaluatedBy.last_name,
-            suffixName: evaluatedBy.suffix_name
-        });
-        timelineData.push({
-            icon: "check",
-            iconTheme: "success",
-            dateTime: evaluatedAt,
-            timelineTitle: 'Evaluated',
-            timelineBody: `
-                <div class="small mb-3">Evaluation was done by <b>${ evaluatedByFullName }</b></div>
-                ${ TEMPLATE.SUBTEXT(formatDateTime(evaluatedAt, "Full Date")) }
-                ${ TEMPLATE.SUBTEXT(formatDateTime(evaluatedAt, "Time")) }
-            `
-        });
-    }
-
-    // Screened
-    const screenedAt = data.screened_at, screenedBy = data.screening_done_by;
-    if(!isEmptyOrNull(screenedAt) && !isEmptyOrNull(screenedBy)) {
-        const screenedByFullName = formatName('F M. L, S', {
-            firstName  : screenedBy.first_name,
-            middleName : screenedBy.middle_name,
-            lastName   : screenedBy.last_name,
-            suffixName : screenedBy.suffix_name
-        });
-        timelineData.push({
-            icon: "check",
-            iconTheme: "warning",
-            dateTime: screenedAt,
-            timelineTitle: 'Screened',
-            timelineBody: `
-                <div class="small mb-3">Screening was done by <b>${ screenedByFullName }</b></div>
-                ${ TEMPLATE.SUBTEXT(formatDateTime(screenedAt, "Full Date")) }
-                ${ TEMPLATE.SUBTEXT(formatDateTime(screenedAt, "Time")) }
-            `
-        });
-    }
-
-    // Hired
-    const hiredAt = data.hired_at, hiredBy = data.hiring_done_by;
-    if(!isEmptyOrNull(hiredAt) && !isEmptyOrNull(hiredBy)) {
-        const hiredByFullName = formatName('F M. L, S', {
-            firstName  : hiredBy.first_name,
-            middleName : hiredBy.middle_name,
-            lastName   : hiredBy.last_name,
-            suffixName : hiredBy.suffix_name
-        });
-        timelineData.push({
-            icon: "handshake",
-            iconTheme: "success",
-            dateTime: hiredAt,
-            timelineTitle: 'Hired',
-            timelineBody: `
-                <div class="small mb-3">Hiring was done by <b>${ hiredByFullName }</b></div>
-                ${ TEMPLATE.SUBTEXT(formatDateTime(hiredAt, "Full Date")) }
-                ${ TEMPLATE.SUBTEXT(formatDateTime(hiredAt, "Time")) }
-            `
-        });
-    }
-
-    // Rejected
-    const status = data.status;
-    if(
-        status === "Rejected from evaluation" || 
-        status === "Rejected from screening"  || 
-        status === "Rejected from interview" 
-    ) {
-        const rejectedAt = data.rejected_at, rejectedBy = data.rejection_done_by;
-        if(!isEmptyOrNull(rejectedAt) && !isEmptyOrNull(rejectedBy)) {
-            const rejectedByFullName = formatName('F M. L, S', {
-                firstName  : rejectedBy.first_name,
-                middleName : rejectedBy.middle_name,
-                lastName   : rejectedBy.last_name,
-                suffixName : rejectedBy.suffix_name
-            });
-            timelineData.push({
-                icon: "times",
-                iconTheme: "danger",
-                dateTime: rejectedAt,
-                timelineTitle: status,
-                timelineBody: `
-                    <div class="small mb-1">Applicant was ${ status.toLowerCase() } by <b>${ rejectedByFullName }</b></div>
-                    <div class="small mb-3"><span class="text-danger font-weight-bold mr-1">Remarks:</span>${ data.remarks }</div>
-                    ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Full Date")) }
-                    ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Time")) }
-                `
-            });
-        }
-    }
-
-    // Set Applicant Timeline
-    setTimeline(selector, { title: "Applicant Timeline", timelineData: timelineData });
-}
-
 
 /** Set Job Post Timeline */
 const setJobPostTimeline = (selector, data) => {
@@ -315,6 +220,168 @@ const setJobPostTimeline = (selector, data) => {
     });
 }
 
+/** Set Applicant Timeline */
+const setApplicantTimeline = (selector, data) => {
+    let timelineData = [];
+
+    // Applied
+    const createdAt = data.created_at;
+    const applicantFullName = formatName('F M. L, S', {
+        firstName  : data.first_name,
+        middleName : data.middle_name,
+        lastName   : data.last_name,
+        suffixName : data.suffix_name,
+    });
+    timelineData.push({
+        icon: "file-export",
+        iconTheme: "primary",
+        dateTime: createdAt,
+        timelineTitle: 'Applied',
+        timelineBody: `
+            <div class="small mb-3">
+                <div>Application was submitted by:</div>
+                <div class="ml-3">
+                    <div><b>${ applicantFullName }</b></div>
+                    <div>Applicant/Candidate</div>
+                </div>
+            </div>
+            ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Full Date")) }
+            ${ TEMPLATE.SUBTEXT(formatDateTime(createdAt, "Time")) }
+        `
+    });
+
+    // Evaluated
+    const evaluatedAt = data.evaluated_at, evaluatedBy = data.applicant_evaluated_by;
+    if(!isEmptyOrNull(evaluatedAt) && !isEmptyOrNull(evaluatedBy)) {
+        const evaluatedByFullName = formatName('F M. L, S', {
+            firstName: evaluatedBy.first_name,
+            middleName: evaluatedBy.middle_name,
+            lastName: evaluatedBy.last_name,
+            suffixName: evaluatedBy.extension_name
+        });
+        timelineData.push({
+            icon: "check",
+            iconTheme: "success",
+            dateTime: evaluatedAt,
+            timelineTitle: 'Evaluated',
+            timelineBody: `
+                <div class="small mb-3">
+                    <div>Evaluation was done by:</div>
+                    <div class="ml-3">
+                        <div><b>${ evaluatedByFullName }</b></div>
+                        <div>${ evaluatedBy.position.name }</div>
+                        <div>${ evaluatedBy.position.sub_department.name }</div>
+                    </div>
+                </div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(evaluatedAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(evaluatedAt, "Time")) }
+            `
+        });
+    }
+
+    // Screened
+    const screenedAt = data.screened_at, screenedBy = data.applicant_screened_by;
+    if(!isEmptyOrNull(screenedAt) && !isEmptyOrNull(screenedBy)) {
+        const screenedByFullName = formatName('F M. L, S', {
+            firstName  : screenedBy.first_name,
+            middleName : screenedBy.middle_name,
+            lastName   : screenedBy.last_name,
+            suffixName : screenedBy.extension_name
+        });
+        timelineData.push({
+            icon: "check",
+            iconTheme: "warning",
+            dateTime: screenedAt,
+            timelineTitle: 'Screened',
+            timelineBody: `
+                <div class="small mb-3">
+                    <div>Screening was done by:</div>
+                    <div class="ml-3">
+                        <div><b>${ screenedByFullName }</b></div>
+                        <div>${ screenedBy.position.name }</div>
+                        <div>${ screenedBy.position.sub_department.name }</div>
+                    </div>
+                </div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(screenedAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(screenedAt, "Time")) }
+            `
+        });
+    }
+
+    // Hired
+    const hiredAt = data.hired_at, hiredBy = data.applicant_hired_by;
+    if(!isEmptyOrNull(hiredAt) && !isEmptyOrNull(hiredBy)) {
+        const hiredByFullName = formatName('F M. L, S', {
+            firstName  : hiredBy.first_name,
+            middleName : hiredBy.middle_name,
+            lastName   : hiredBy.last_name,
+            suffixName : hiredBy.extension_name
+        });
+        timelineData.push({
+            icon: "handshake",
+            iconTheme: "success",
+            dateTime: hiredAt,
+            timelineTitle: 'Hired',
+            timelineBody: `
+                <div class="small mb-3">
+                    <div>Hiring was done by:</div>
+                    <div class="ml-3">
+                        <div><b>${ hiredByFullName }</b></div>
+                        <div>${ hiredBy.position.name }</div>
+                        <div>${ hiredBy.position.sub_department.name }</div>
+                    </div>
+                </div>
+                ${ TEMPLATE.SUBTEXT(formatDateTime(hiredAt, "Full Date")) }
+                ${ TEMPLATE.SUBTEXT(formatDateTime(hiredAt, "Time")) }
+            `
+        });
+    }
+
+    // Rejected
+    const status = data.status;
+    if(
+        status === "Rejected from evaluation" || 
+        status === "Rejected from screening"  || 
+        status === "Rejected from interview" 
+    ) {
+        const rejectedAt = data.rejected_at, rejectedBy = data.applicant_rejected_by;
+        if(!isEmptyOrNull(rejectedAt) && !isEmptyOrNull(rejectedBy)) {
+            const rejectedByFullName = formatName('F M. L, S', {
+                firstName  : rejectedBy.first_name,
+                middleName : rejectedBy.middle_name,
+                lastName   : rejectedBy.last_name,
+                suffixName : rejectedBy.extension_name
+            });
+            timelineData.push({
+                icon: "times",
+                iconTheme: "danger",
+                dateTime: rejectedAt,
+                timelineTitle: status,
+                timelineBody: `
+                    <div class="small mb-3">
+                        <div>Hiring was done by:</div>
+                        <div class="ml-3">
+                            <div><b>${ rejectedByFullName }</b></div>
+                            <div>${ rejectedBy.position.name }</div>
+                            <div>${ rejectedBy.position.sub_department.name }</div>
+                        </div>
+                    </div>
+                    <div class="small mb-3">
+                        <div>Remarks:</div>
+                        <div class="ml-3">
+                            <div class="font-weight-bold text-danger">${data.remarks}</div>
+                        </div>
+                    </div>
+                    ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Full Date")) }
+                    ${ TEMPLATE.SUBTEXT(formatDateTime(rejectedAt, "Time")) }
+                `
+            });
+        }
+    }
+
+    // Set Applicant Timeline
+    setTimeline(selector, { title: "Applicant Timeline", timelineData: timelineData });
+}
 
 /** Set Onboarding Employee Task Timeline */
 const setOnboardingEmployeeTaskTimeline = (selector, data) => {

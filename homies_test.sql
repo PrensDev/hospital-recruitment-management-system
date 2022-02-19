@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 16, 2022 at 02:31 PM
+-- Generation Time: Feb 19, 2022 at 09:28 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -56,7 +56,10 @@ CREATE TABLE `applicants` (
 --
 
 INSERT INTO `applicants` (`applicant_id`, `job_post_id`, `first_name`, `middle_name`, `last_name`, `suffix_name`, `resume`, `contact_number`, `email`, `status`, `evaluated_by`, `evaluated_at`, `screened_by`, `screened_at`, `hired_by`, `hired_at`, `rejected_by`, `rejected_at`, `remarks`, `created_at`, `updated_at`) VALUES
-('1ee99481-8e25-11ec-ab27-6c626d3a5d34', '01ed5350-8d8f-11ec-a6db-6c626d3a5d34', 'Jam', '', 'Torres', '', '8e7578d5cc994c46b62cfa98da8239c6.pdf', '1234568790', 'jamtorres@email.com', 'Contract signed', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', '2022-02-15 14:06:36', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-15 14:56:40', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-15 16:13:09', NULL, NULL, NULL, '2022-02-15 14:04:22', '2022-02-16 13:23:21');
+('042e8280-913e-11ec-aea7-6c626d3a5d34', 'c5843f55-8d8e-11ec-a6db-6c626d3a5d34', 'Jim ', '', 'Vargas', '', 'd5daa56abacd4e9abc392954a7bbf242.pdf', '(521)-141-1459', 'jim.vargas@example.com', 'For interview', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', '2022-02-19 15:51:48', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-19 15:53:10', NULL, NULL, NULL, NULL, NULL, '2022-02-19 12:40:08', '2022-02-19 15:53:10'),
+('1ee99481-8e25-11ec-ab27-6c626d3a5d34', '01ed5350-8d8f-11ec-a6db-6c626d3a5d34', 'Jam', '', 'Torres', '', '8e7578d5cc994c46b62cfa98da8239c6.pdf', '1234568790', 'jamtorres@email.com', 'Contract signed', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', '2022-02-15 14:06:36', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-15 14:56:40', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-15 16:13:09', NULL, NULL, NULL, '2022-02-15 14:04:22', '2022-02-16 13:23:21'),
+('22cc0de9-913e-11ec-aea7-6c626d3a5d34', 'c5843f55-8d8e-11ec-a6db-6c626d3a5d34', 'Ana ', '', 'Ross', '', '05e9d996b5eb4d2880447fb4bc051bea.pdf', '(713)-536-5675', 'ana.ross@example.com', 'For interview', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', '2022-02-19 15:51:33', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-19 15:53:04', NULL, NULL, NULL, NULL, NULL, '2022-02-19 12:40:59', '2022-02-19 15:53:04'),
+('e9b7fb48-913d-11ec-aea7-6c626d3a5d34', 'c5843f55-8d8e-11ec-a6db-6c626d3a5d34', 'Dolores ', '', 'Gardner', '', '291ba38ef7454748ab6d24a4109de178.pdf', '(007)-272-6963', 'dolores.gardner@example.com', 'For evaluation', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-02-19 12:39:24', '2022-02-19 12:39:24');
 
 -- --------------------------------------------------------
 
@@ -164,6 +167,8 @@ CREATE TABLE `interviewees` (
 --
 
 INSERT INTO `interviewees` (`interviewee_id`, `applicant_id`, `interview_schedule_id`, `is_interviewed`, `interviewed_at`, `remarks`, `created_at`, `updated_at`) VALUES
+('20117533-9159-11ec-aea7-6c626d3a5d34', '042e8280-913e-11ec-aea7-6c626d3a5d34', '1ff9610d-9159-11ec-aea7-6c626d3a5d34', NULL, NULL, NULL, '2022-02-19 15:54:11', '2022-02-19 15:54:11'),
+('2036436e-9159-11ec-aea7-6c626d3a5d34', '22cc0de9-913e-11ec-aea7-6c626d3a5d34', '1ff9610d-9159-11ec-aea7-6c626d3a5d34', 1, '2022-02-19 16:16:35', NULL, '2022-02-19 15:54:12', '2022-02-19 16:16:35'),
 ('bd4b7a1a-8e30-11ec-ab27-6c626d3a5d34', '1ee99481-8e25-11ec-ab27-6c626d3a5d34', 'bd3c42ed-8e30-11ec-ab27-6c626d3a5d34', 1, '2022-02-15 16:07:00', NULL, '2022-02-15 15:27:32', '2022-02-15 16:07:00');
 
 -- --------------------------------------------------------
@@ -214,6 +219,7 @@ CREATE TABLE `interview_schedules` (
 --
 
 INSERT INTO `interview_schedules` (`interview_schedule_id`, `job_post_id`, `scheduled_date`, `start_session`, `end_session`, `set_by`, `created_at`, `updated_at`) VALUES
+('1ff9610d-9159-11ec-aea7-6c626d3a5d34', 'c5843f55-8d8e-11ec-a6db-6c626d3a5d34', '2022-02-20', '11:00:00', '13:00:00', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-19 15:54:11', '2022-02-19 15:54:11'),
 ('bd3c42ed-8e30-11ec-ab27-6c626d3a5d34', '01ed5350-8d8f-11ec-a6db-6c626d3a5d34', '2022-02-28', '15:30:00', '16:30:00', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-15 15:27:32', '2022-02-15 15:27:32');
 
 -- --------------------------------------------------------
@@ -240,7 +246,10 @@ INSERT INTO `interview_scores` (`interview_score_id`, `interviewee_id`, `intervi
 ('40568ce6-8e36-11ec-ab27-6c626d3a5d34', 'bd4b7a1a-8e30-11ec-ab27-6c626d3a5d34', '82ac0b04-8e2f-11ec-ab27-6c626d3a5d34', 95, 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-15 16:07:00', '2022-02-15 16:07:00'),
 ('405721fe-8e36-11ec-ab27-6c626d3a5d34', 'bd4b7a1a-8e30-11ec-ab27-6c626d3a5d34', 'b49e3260-8e2f-11ec-ab27-6c626d3a5d34', 100, 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-15 16:07:00', '2022-02-15 16:07:00'),
 ('40582065-8e36-11ec-ab27-6c626d3a5d34', 'bd4b7a1a-8e30-11ec-ab27-6c626d3a5d34', 'ac894026-8e2f-11ec-ab27-6c626d3a5d34', 100, 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-15 16:07:00', '2022-02-15 16:07:00'),
-('406ff8ab-8e36-11ec-ab27-6c626d3a5d34', 'bd4b7a1a-8e30-11ec-ab27-6c626d3a5d34', '4058113e-8e36-11ec-ab27-6c626d3a5d34', 99, 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-15 16:07:00', '2022-02-15 16:07:00');
+('406ff8ab-8e36-11ec-ab27-6c626d3a5d34', 'bd4b7a1a-8e30-11ec-ab27-6c626d3a5d34', '4058113e-8e36-11ec-ab27-6c626d3a5d34', 99, 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-15 16:07:00', '2022-02-15 16:07:00'),
+('41342715-915c-11ec-aea7-6c626d3a5d34', '2036436e-9159-11ec-aea7-6c626d3a5d34', '82ac0b04-8e2f-11ec-ab27-6c626d3a5d34', 98, 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-19 16:16:35', '2022-02-19 16:16:35'),
+('41359fd8-915c-11ec-aea7-6c626d3a5d34', '2036436e-9159-11ec-aea7-6c626d3a5d34', 'b49e3260-8e2f-11ec-ab27-6c626d3a5d34', 96, 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-19 16:16:35', '2022-02-19 16:16:35'),
+('413f0ea3-915c-11ec-aea7-6c626d3a5d34', '2036436e-9159-11ec-aea7-6c626d3a5d34', 'ac894026-8e2f-11ec-ab27-6c626d3a5d34', 95, 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-19 16:16:35', '2022-02-19 16:16:35');
 
 -- --------------------------------------------------------
 
@@ -263,9 +272,10 @@ CREATE TABLE `job_categories` (
 --
 
 INSERT INTO `job_categories` (`job_category_id`, `name`, `description`, `is_removed`, `created_by`, `created_at`, `updated_at`) VALUES
-('589b0110-8d8d-11ec-a6db-6c626d3a5d34', 'Recruitment', 'Recruitment', 0, '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', '2022-02-14 19:57:54', '2022-02-14 19:57:54'),
-('820081e6-8d8b-11ec-a6db-6c626d3a5d34', 'Information Technology', 'Information Technology', 0, '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', '2022-02-14 19:44:45', '2022-02-14 19:44:45'),
-('8d5efdc4-8d8b-11ec-a6db-6c626d3a5d34', 'Medical Nurses', 'Medical Nurses', 0, '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', '2022-02-14 19:45:04', '2022-02-14 19:45:19');
+('2d468441-914c-11ec-aea7-6c626d3a5d34', 'Medical Staff', 'This job category is all about recruitment', 0, '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', '2022-02-19 14:21:30', '2022-02-19 14:21:30'),
+('589b0110-8d8d-11ec-a6db-6c626d3a5d34', 'Recruitment', 'This job category is all about recruitment', 0, '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', '2022-02-14 19:57:54', '2022-02-19 11:47:21'),
+('820081e6-8d8b-11ec-a6db-6c626d3a5d34', 'Information Technology', 'This job category is all about information technology', 0, '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', '2022-02-14 19:44:45', '2022-02-19 11:47:37'),
+('8d5efdc4-8d8b-11ec-a6db-6c626d3a5d34', 'Medical Nurses', 'This job category is all about medical nurses', 0, '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', '2022-02-14 19:45:04', '2022-02-19 11:47:28');
 
 -- --------------------------------------------------------
 
@@ -291,15 +301,18 @@ CREATE TABLE `job_posts` (
 --
 
 INSERT INTO `job_posts` (`job_post_id`, `manpower_request_id`, `is_salary_visible`, `content`, `expiration_date`, `job_category_id`, `posted_by`, `views`, `created_at`, `updated_at`) VALUES
-('01ed5350-8d8f-11ec-a6db-6c626d3a5d34', 'd04b9bbd-8d48-11ec-a6db-6c626d3a5d34', 1, '<p>test</p>', NULL, '8d5efdc4-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 6, '2022-02-14 20:09:48', '2022-02-16 09:50:17'),
+('01ed5350-8d8f-11ec-a6db-6c626d3a5d34', 'd04b9bbd-8d48-11ec-a6db-6c626d3a5d34', 1, '<p>test</p>', NULL, '2d468441-914c-11ec-aea7-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 8, '2022-02-14 20:09:48', '2022-02-19 14:55:29'),
+('1e5d7fa2-914c-11ec-aea7-6c626d3a5d34', 'd03f1dd7-912b-11ec-aea7-6c626d3a5d34', 0, '<p>Test</p>', NULL, '2d468441-914c-11ec-aea7-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 1, '2022-02-19 14:21:05', '2022-02-19 15:56:50'),
 ('3978d129-8d8e-11ec-a6db-6c626d3a5d34', '30f2b2b9-8d46-11ec-a6db-6c626d3a5d34', 1, '<p>Information Technology</p>', NULL, '820081e6-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 0, '2022-02-14 20:04:12', '2022-02-14 20:04:12'),
-('9d01b6c0-8d8e-11ec-a6db-6c626d3a5d34', '50f0318f-8d46-11ec-a6db-6c626d3a5d34', 1, '<p>test</p>', '2022-04-30 20:06:00', '820081e6-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 0, '2022-02-14 20:06:59', '2022-02-14 20:06:59'),
+('9d01b6c0-8d8e-11ec-a6db-6c626d3a5d34', '50f0318f-8d46-11ec-a6db-6c626d3a5d34', 1, '<p>test</p>', '2022-04-30 20:06:00', '820081e6-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 0, '2022-02-14 20:06:59', '2022-02-19 14:56:12'),
 ('af3bed09-8d8e-11ec-a6db-6c626d3a5d34', 'bbb9a4bf-8d48-11ec-a6db-6c626d3a5d34', 1, '<p>Test</p>', NULL, '8d5efdc4-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 1, '2022-02-14 20:07:29', '2022-02-14 22:12:56'),
-('c5843f55-8d8e-11ec-a6db-6c626d3a5d34', '6a2a8d33-8d46-11ec-a6db-6c626d3a5d34', 1, '<p>Test</p>', NULL, '820081e6-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 0, '2022-02-14 20:08:07', '2022-02-14 20:08:07'),
-('ce15bf55-8d8e-11ec-a6db-6c626d3a5d34', 'd845b74a-8d51-11ec-a6db-6c626d3a5d34', 0, '<p>Test</p>', NULL, '589b0110-8d8d-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 1, '2022-02-14 20:08:21', '2022-02-14 22:07:43'),
-('e5cc53f7-8d8e-11ec-a6db-6c626d3a5d34', '429dd76f-8d4a-11ec-a6db-6c626d3a5d34', 0, '<p>Test</p>', NULL, '8d5efdc4-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 0, '2022-02-14 20:09:01', '2022-02-14 20:09:01'),
+('c5843f55-8d8e-11ec-a6db-6c626d3a5d34', '6a2a8d33-8d46-11ec-a6db-6c626d3a5d34', 1, '<p>Test</p>', NULL, '820081e6-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 1, '2022-02-14 20:08:07', '2022-02-19 14:56:01'),
+('cda092dc-913f-11ec-aea7-6c626d3a5d34', '382795a1-8d4a-11ec-a6db-6c626d3a5d34', 0, '<p>Test</p>', NULL, '8d5efdc4-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 0, '2022-02-19 12:52:56', '2022-02-19 12:52:56'),
+('ce15bf55-8d8e-11ec-a6db-6c626d3a5d34', 'd845b74a-8d51-11ec-a6db-6c626d3a5d34', 0, '<p>Test</p>', NULL, '589b0110-8d8d-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 1, '2022-02-14 20:08:21', '2022-02-19 14:55:45'),
+('dafa8c5a-913f-11ec-aea7-6c626d3a5d34', '2d86cf8a-8ef1-11ec-8742-6c626d3a5d34', 0, '<p>Test</p>', NULL, '2d468441-914c-11ec-aea7-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 0, '2022-02-19 12:53:18', '2022-02-19 14:55:21'),
+('e5cc53f7-8d8e-11ec-a6db-6c626d3a5d34', '429dd76f-8d4a-11ec-a6db-6c626d3a5d34', 0, '<p>Test</p>', NULL, '2d468441-914c-11ec-aea7-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 0, '2022-02-14 20:09:01', '2022-02-19 14:55:38'),
 ('ee234ec3-8d8e-11ec-a6db-6c626d3a5d34', '2f54740f-8d4a-11ec-a6db-6c626d3a5d34', 0, '<p>Test</p>', NULL, '8d5efdc4-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 2, '2022-02-14 20:09:15', '2022-02-15 13:59:50'),
-('f6c129ed-8d8e-11ec-a6db-6c626d3a5d34', '0f372972-8d4a-11ec-a6db-6c626d3a5d34', 1, '<p>Test</p>', NULL, '8d5efdc4-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 1, '2022-02-14 20:09:29', '2022-02-15 13:47:11');
+('f6c129ed-8d8e-11ec-a6db-6c626d3a5d34', '0f372972-8d4a-11ec-a6db-6c626d3a5d34', 1, '<p>Test</p>', NULL, '8d5efdc4-8d8b-11ec-a6db-6c626d3a5d34', '62ca1c7d-8d5d-11ec-a6db-6c626d3a5d34', 2, '2022-02-14 20:09:29', '2022-02-19 14:56:34');
 
 -- --------------------------------------------------------
 
@@ -338,15 +351,17 @@ CREATE TABLE `manpower_requests` (
 
 INSERT INTO `manpower_requests` (`manpower_request_id`, `requisition_no`, `requested_by`, `position_id`, `employment_type_id`, `request_nature`, `staffs_needed`, `min_monthly_salary`, `max_monthly_salary`, `content`, `request_status`, `deadline`, `signed_by`, `signed_at`, `reviewed_by`, `reviewed_at`, `completed_at`, `rejected_by`, `rejected_at`, `remarks`, `created_at`, `updated_at`) VALUES
 ('0f372972-8d4a-11ec-a6db-6c626d3a5d34', 'REQ-KZM5WKCL-UFBS7T', '974523b2-8d49-11ec-a6db-6c626d3a5d34', '0709ba31-8d49-11ec-a6db-6c626d3a5d34', 'b2ce077a-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 4, 28650, 45800, '<p>Test</p>', 'Approved', NULL, 'c80dbb20-8d4a-11ec-a6db-6c626d3a5d34', '2022-02-14 12:42:49', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-14 13:25:07', NULL, NULL, NULL, NULL, '2022-02-14 11:56:16', '2022-02-14 13:25:07'),
-('2d86cf8a-8ef1-11ec-8742-6c626d3a5d34', 'REQ-KZP669NF-Y7PS3A', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', '995f4383-8be7-11ec-88c9-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 2, NULL, NULL, '<p>Test</p>', 'For signature', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-02-16 14:25:04', '2022-02-16 14:25:04'),
+('2d86cf8a-8ef1-11ec-8742-6c626d3a5d34', 'REQ-KZP669NF-Y7PS3A', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', '995f4383-8be7-11ec-88c9-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 2, NULL, NULL, '<p>Test</p>', 'Approved', NULL, '92239c6c-8bed-11ec-88c9-6c626d3a5d34', '2022-02-19 12:49:18', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-19 12:50:00', NULL, NULL, NULL, NULL, '2022-02-16 14:25:04', '2022-02-19 12:50:00'),
 ('2f54740f-8d4a-11ec-a6db-6c626d3a5d34', 'REQ-KZM5ZM12-NLJZT2', '974523b2-8d49-11ec-a6db-6c626d3a5d34', '51d613bf-8d49-11ec-a6db-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 4, NULL, NULL, '<p>Test</p>', 'Approved', NULL, 'c80dbb20-8d4a-11ec-a6db-6c626d3a5d34', '2022-02-14 12:42:44', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-14 13:24:47', NULL, NULL, NULL, NULL, '2022-02-14 11:57:10', '2022-02-14 13:24:47'),
 ('30f2b2b9-8d46-11ec-a6db-6c626d3a5d34', 'REQ-KZM4ZCFT-KM22ZD', 'a61b1699-8cd5-11ec-8d3b-6c626d3a5d34', '8817f963-8be0-11ec-88c9-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 1, 25000, 58000, '<p>This is a test</p>', 'Approved', NULL, 'fade7092-8cd2-11ec-8d3b-6c626d3a5d34', '2022-02-14 13:14:49', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-14 13:26:45', NULL, NULL, NULL, NULL, '2022-02-14 11:28:35', '2022-02-14 13:26:45'),
-('382795a1-8d4a-11ec-a6db-6c626d3a5d34', 'REQ-KZM60RZP-28EJ9L', '974523b2-8d49-11ec-a6db-6c626d3a5d34', '63f8a921-8d49-11ec-a6db-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'Replacement', 1, NULL, NULL, '<p>Test</p>', 'For signature', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-02-14 11:57:25', '2022-02-14 11:57:25'),
+('382795a1-8d4a-11ec-a6db-6c626d3a5d34', 'REQ-KZM60RZP-28EJ9L', '974523b2-8d49-11ec-a6db-6c626d3a5d34', '63f8a921-8d49-11ec-a6db-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'Replacement', 1, NULL, NULL, '<p>Test</p>', 'Approved', NULL, '92239c6c-8bed-11ec-88c9-6c626d3a5d34', '2022-02-19 12:49:01', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-19 12:50:05', NULL, NULL, NULL, NULL, '2022-02-14 11:57:25', '2022-02-19 12:50:05'),
 ('429dd76f-8d4a-11ec-a6db-6c626d3a5d34', 'REQ-KZM612PD-8EHOQS', '974523b2-8d49-11ec-a6db-6c626d3a5d34', '2c7a275d-8d49-11ec-a6db-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 5, NULL, NULL, '<p>Test</p>', 'Approved', NULL, 'c80dbb20-8d4a-11ec-a6db-6c626d3a5d34', '2022-02-14 12:29:40', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-14 13:25:01', NULL, NULL, NULL, NULL, '2022-02-14 11:57:42', '2022-02-14 13:25:01'),
 ('50f0318f-8d46-11ec-a6db-6c626d3a5d34', 'REQ-KZM500NF-DY6M09', 'a61b1699-8cd5-11ec-8d3b-6c626d3a5d34', '3c8e1a7b-8be0-11ec-88c9-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 1, 26000, 85000, '<p>Test</p>', 'Approved', '2022-05-31 12:30:00', 'fade7092-8cd2-11ec-8d3b-6c626d3a5d34', '2022-02-14 13:14:44', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-14 13:26:40', NULL, NULL, NULL, NULL, '2022-02-14 11:29:28', '2022-02-14 13:26:40'),
 ('6a2a8d33-8d46-11ec-a6db-6c626d3a5d34', 'REQ-KZM51EPN-CUP8EN', 'a61b1699-8cd5-11ec-8d3b-6c626d3a5d34', '54f2385c-8be0-11ec-88c9-6c626d3a5d34', 'c8913b14-8be9-11ec-88c9-6c626d3a5d34', 'Replacement', 2, 12500, 20600, '<p>Test</p>', 'Approved', NULL, 'fade7092-8cd2-11ec-8d3b-6c626d3a5d34', '2022-02-14 13:14:40', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-14 13:26:36', NULL, NULL, NULL, NULL, '2022-02-14 11:30:11', '2022-02-14 13:26:36'),
 ('a0810804-8d47-11ec-a6db-6c626d3a5d34', 'REQ-KZM5CV90-HIPST8', 'a61b1699-8cd5-11ec-8d3b-6c626d3a5d34', '93d489e2-8be0-11ec-88c9-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'Replacement', 1, NULL, NULL, '<p>Test</p>', 'Rejected for approval', NULL, 'fade7092-8cd2-11ec-8d3b-6c626d3a5d34', '2022-02-14 13:14:35', NULL, NULL, NULL, 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-14 13:26:30', 'Department Manager cannot be requested', '2022-02-14 11:38:51', '2022-02-14 13:26:30'),
 ('bbb9a4bf-8d48-11ec-a6db-6c626d3a5d34', 'REQ-KZM5MF3M-JY07EP', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', '229c244f-8be7-11ec-88c9-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 5, 23600, 48560, '<p>Test</p>', 'Approved', '2022-03-31 00:00:00', 'c80dbb20-8d4a-11ec-a6db-6c626d3a5d34', '2022-02-14 12:42:58', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-14 13:26:11', NULL, NULL, NULL, NULL, '2022-02-14 11:46:46', '2022-02-14 13:26:11'),
+('c57904d9-912b-11ec-aea7-6c626d3a5d34', 'REQ-KZT82REG-BCWTRH', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', '1231b264-8be7-11ec-88c9-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 3, 15200, 35418, '<p>test</p>', 'For signature', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-02-19 10:29:32', '2022-02-19 10:29:32'),
+('d03f1dd7-912b-11ec-aea7-6c626d3a5d34', 'REQ-KZT83D2Q-JC0IYW', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', '7837cc9e-8be7-11ec-88c9-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 2, NULL, NULL, '<p>test</p>', 'Approved', NULL, '92239c6c-8bed-11ec-88c9-6c626d3a5d34', '2022-02-19 12:49:05', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-19 12:49:55', NULL, NULL, NULL, NULL, '2022-02-19 10:29:50', '2022-02-19 12:49:55'),
 ('d04b9bbd-8d48-11ec-a6db-6c626d3a5d34', 'REQ-KZM5NGX3-U25RPW', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', '710b702c-8be7-11ec-88c9-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 1, 26000, 36500, '<p>Test</p>', 'Approved', NULL, 'c80dbb20-8d4a-11ec-a6db-6c626d3a5d34', '2022-02-14 12:42:54', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-14 13:25:14', NULL, NULL, NULL, NULL, '2022-02-14 11:47:21', '2022-02-14 13:25:14'),
 ('d5bff2bf-8d4e-11ec-a6db-6c626d3a5d34', 'REQ-KZM77AOS-3RCRTE', '974523b2-8d49-11ec-a6db-6c626d3a5d34', 'e43b841d-8d48-11ec-a6db-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 1, NULL, NULL, '<p>Test</p>', 'Rejected for signing', NULL, NULL, NULL, NULL, NULL, NULL, 'c80dbb20-8d4a-11ec-a6db-6c626d3a5d34', '2022-02-14 12:31:20', 'Department Manager cannot be replaced', '2022-02-14 12:30:27', '2022-02-14 12:31:20'),
 ('d845b74a-8d51-11ec-a6db-6c626d3a5d34', 'REQ-KZM7YO06-WU9600', 'f5fbb7ed-8cd4-11ec-8d3b-6c626d3a5d34', 'bb021c23-8be7-11ec-88c9-6c626d3a5d34', 'ad44c6cd-8be9-11ec-88c9-6c626d3a5d34', 'New/Addition', 5, NULL, NULL, '<p>Test</p>', 'Approved', NULL, '3ffd2f46-8d52-11ec-a6db-6c626d3a5d34', '2022-02-14 12:56:40', 'a89cdb12-8d52-11ec-a6db-6c626d3a5d34', '2022-02-14 13:24:57', NULL, NULL, NULL, NULL, '2022-02-14 12:52:00', '2022-02-14 13:24:57');
@@ -410,7 +425,7 @@ INSERT INTO `onboarding_employee_task` (`onboarding_employee_task_id`, `onboardi
 ('db15e9e7-8eeb-11ec-8742-6c626d3a5d34', '8e30ebd6-8ee8-11ec-8742-6c626d3a5d34', '2c03ee83-8ee2-11ec-8742-6c626d3a5d34', '2022-02-17 13:46:00', '2022-02-18 13:46:00', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', 'On Going', NULL, NULL, '2022-02-16 13:46:58', '2022-02-16 14:17:46'),
 ('db16f79c-8eeb-11ec-8742-6c626d3a5d34', '8e30ebd6-8ee8-11ec-8742-6c626d3a5d34', '3edaa7cb-8ee2-11ec-8742-6c626d3a5d34', '2022-02-17 13:46:00', '2022-02-18 13:46:00', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', 'On Going', NULL, NULL, '2022-02-16 13:46:58', '2022-02-16 14:17:58'),
 ('db1866d0-8eeb-11ec-8742-6c626d3a5d34', '8e30ebd6-8ee8-11ec-8742-6c626d3a5d34', '5fd664e0-8ee2-11ec-8742-6c626d3a5d34', '2022-02-17 13:46:00', '2022-02-18 13:46:00', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', 'Completed', '2022-02-16 14:18:04', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', '2022-02-16 13:46:58', '2022-02-16 14:18:04'),
-('db18e2df-8eeb-11ec-8742-6c626d3a5d34', '8e30ebd6-8ee8-11ec-8742-6c626d3a5d34', '7d37f543-8ee2-11ec-8742-6c626d3a5d34', '2022-02-17 13:46:00', '2022-02-18 13:46:00', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', 'Pending', NULL, NULL, '2022-02-16 13:46:58', '2022-02-16 13:46:58'),
+('db18e2df-8eeb-11ec-8742-6c626d3a5d34', '8e30ebd6-8ee8-11ec-8742-6c626d3a5d34', '7d37f543-8ee2-11ec-8742-6c626d3a5d34', '2022-02-17 13:46:00', '2022-02-18 13:46:00', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', 'Pending', NULL, NULL, '2022-02-16 13:46:58', '2022-02-19 11:21:50'),
 ('db191603-8eeb-11ec-8742-6c626d3a5d34', '8e30ebd6-8ee8-11ec-8742-6c626d3a5d34', '4ebcc5d1-8ee2-11ec-8742-6c626d3a5d34', '2022-02-17 13:46:00', '2022-02-18 13:46:00', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', 'Pending', NULL, NULL, '2022-02-16 13:46:58', '2022-02-16 13:46:58'),
 ('db1992df-8eeb-11ec-8742-6c626d3a5d34', '8e30ebd6-8ee8-11ec-8742-6c626d3a5d34', '901d96f3-8ee2-11ec-8742-6c626d3a5d34', '2022-02-17 13:46:00', '2022-02-18 13:46:00', '7aaa5807-8d48-11ec-a6db-6c626d3a5d34', 'Pending', NULL, NULL, '2022-02-16 13:46:58', '2022-02-16 13:46:58');
 

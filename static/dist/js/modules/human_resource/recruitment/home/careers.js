@@ -22,24 +22,6 @@ let urlParamsObj = {
  * ==============================================================================
  */
 
-// Set URL Param String
-const getURLParamString = (urlParams = {}) => {
-    let urlParamStringHolder = [];
-
-    Object.entries(urlParams).forEach(([key, val]) => {
-        if(!isEmptyOrNull(val)) urlParamStringHolder.push(key + '=' + val)
-    });
-    
-    let urlParamString = '';
-
-    urlParamStringHolder.forEach((urlParam, index) => {
-        urlParamString += index === 0 ? '?' : '&';
-        urlParamString += urlParam;
-    });
-
-    return urlParamString;
-}
-
 
 // Set Search Form Values according to URL parameters
 const setSearchFormValues = () => {
@@ -78,7 +60,7 @@ const setSearchFormValues = () => {
 const redirectWithURLParams = () => {
 
     // Get URL Params string
-    const urlParamsString = getURLParamString(urlParamsObj);
+    const urlParamsString = getURLQueryString(urlParamsObj);
 
     // Redirect to correct link (with URL parameter if set)
     isEmptyOrNull(urlParamsString) 
@@ -187,7 +169,7 @@ ifSelectorExist('#availableJobList', () => {
     setSearchFormValues();
 
     // Get URL Param String
-    const urlParamsString = getURLParamString(urlParamsObj);
+    const urlParamsString = getURLQueryString(urlParamsObj);
 
     // Get all job post filtered by page
     $.ajax({
@@ -319,7 +301,6 @@ ifSelectorExist('#availableJobList', () => {
                 });
 
                 setPagination('#pagination', {
-                    query: `${ BASE_URL_WEB }careers?page=[page]`,
                     totalRows: total,
                     currentPage: currentPage
                 });
@@ -518,14 +499,16 @@ validateForm('#applicationForm', {
                 suffixName: formData.get('suffixName') 
             }),
             '#applicantContactNumber': formData.get('contactNumber'),
-            '#applicantEmail': formData.get('email')
+            '#applicantEmail': formData.get('email'),
+            '#submitApplicationMode': true
         });
 
         // Show Modal
-        showModal('#confirmApplicationModal');
+        $('#confirmApplicationModal').modal('show');
         return false;
     }
 });
+
 
 /** If Confirm Application Modal is going to be hidden */
 onHideModal('#confirmApplicationModal', () => {
@@ -534,7 +517,8 @@ onHideModal('#confirmApplicationModal', () => {
     setContent({
         '#applicantFullName': '',
         '#applicantContactNumber': '',
-        '#applicantEmail': ''
+        '#applicantEmail': '',
+        '#submitApplicationMode': false
     });
 });
 
@@ -668,6 +652,7 @@ validateForm('#searchJobForm', {
 
         // Change search query parameter with the form data
         urlParamsObj.searchQuery = searchQuery;
+        urlParamsObj.page = null;
 
         // Redirect with url parameter
         redirectWithURLParams();
@@ -688,6 +673,7 @@ validateForm('#searchJobForm', {
 $('#datePosted').on('select2:select', () => {
     urlParamsObj.searchQuery = $("#searchQuery").val();
     urlParamsObj.datePosted = $("#datePosted").val();
+    urlParamsObj.page = null;
     redirectWithURLParams();
 });
 
@@ -695,6 +681,7 @@ $('#datePosted').on('select2:select', () => {
 $('#jobCategory').on('select2:select', () => {
     urlParamsObj.searchQuery = $("#searchQuery").val();
     urlParamsObj.jobCategory = $("#jobCategory").val();
+    urlParamsObj.page = null;
     redirectWithURLParams();
 });
 
@@ -702,6 +689,7 @@ $('#jobCategory').on('select2:select', () => {
 $('#employmentType').on('select2:select', () => {
     urlParamsObj.searchQuery = $("#searchQuery").val();
     urlParamsObj.employmentType = $("#employmentType").val();
+    urlParamsObj.page = null;
     redirectWithURLParams();
 });
 
@@ -736,6 +724,7 @@ $('#resetFilters').on('click', () => {
         urlParamsObj.datePosted = null;
         urlParamsObj.jobCategory = null;
         urlParamsObj.employmentType = null;
+        urlParamsObj.page = null;
         
         // Show loading status
         setContent('#availableJobList', `
