@@ -847,13 +847,17 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
                 // Set Added By
                 setContent('#addedBy', () => {
                     const addedBy = result.onboarding_task_added_by;
-                    
-                    return formatName('F M. L, S', {
+                    const addedByFullName = formatName('F M. L, S', {
                         firstName  : addedBy.first_name,
                         middleName : addedBy.middle_name,
                         lastName   : addedBy.last_name,
                         suffixName : addedBy.suffix_name
                     });
+                    return `
+                        <div>${ addedByFullName }</div>
+                        ${ TEMPLATE.SUBTEXT(addedBy.position.name) }
+                        ${ TEMPLATE.SUBTEXT(addedBy.position.sub_department.name) }
+                    `
                 });
 
                 // Set Added At
@@ -873,12 +877,17 @@ const viewOnboardingTaskDetails = (onboardingTaskID) => {
                     if(isEmptyOrNull(updatedBy)) {
                         return `<div class="text-secondary font-italic">Not updated yet</div>`
                     } else {
-                        return formatName('F M. L, S', {
+                        const updatedByFullName = formatName('F M. L, S', {
                             firstName  : updatedBy.first_name,
                             middleName : updatedBy.middle_name,
                             lastName   : updatedBy.last_name,
                             suffixName : updatedBy.suffix_name
                         });
+                        return `
+                            <div>${ updatedByFullName }</div>
+                            ${ TEMPLATE.SUBTEXT(updatedBy.position.name) }
+                            ${ TEMPLATE.SUBTEXT(updatedBy.position.sub_department.name) }
+                        `
                     }
                 });
 
@@ -1158,13 +1167,15 @@ initDataTable('#onboardingEmployeeTasksDT', {
     ]
 });
 
-
 /** Initialize Onboarding Employee Tasks Doughnut Chart */
-const onboardingEmployeeTasksDoughnutChart = new Chart($('#onboardingEmployeeTasksDoughnutChart').get(0).getContext('2d'), {
-    type: 'doughnut',
-    data: CHART_CONFIG.NO_DATA,
-    options: CHART_CONFIG.PIE.OPTIONS,
-    plugins: CHART_CONFIG.PIE.PLUGINS
+let onboardingEmployeeTasksDoughnutChart;
+ifSelectorExist('#onboardingEmployeeTasksDoughnutChart', () => {
+    onboardingEmployeeTasksDoughnutChart = new Chart($('#onboardingEmployeeTasksDoughnutChart').get(0).getContext('2d'), {
+        type: 'doughnut',
+        data: CHART_CONFIG.NO_DATA,
+        options: CHART_CONFIG.PIE.OPTIONS,
+        plugins: CHART_CONFIG.PIE.PLUGINS
+    });
 });
 
 /** Get Onboarding Employee Details */
@@ -1174,28 +1185,54 @@ const getOnboardingEmployeeDetails = () => {
 
             // Get task Progress
             const getTaskProgress = () => {
-                let pending = 0, onGoing = 0, completed = 0;
-
-                result.onboarding_employee_tasks.forEach(t => { 
-                    switch(t.status) {
-                        case 'Pending': pending++; break;
-                        case 'On Going': onGoing++; break;
-                        case 'Completed': completed++; break;
-                    }
-                });
+                let pending = 0, onGoing = 0, completed = 0, sum = 0;
                 
+                const taskProgressIterator = {
+                    'Pending': () => pending++,
+                    'On Going': () => onGoing++,
+                    'Completed': () => completed++
+                }
+
+                result.onboarding_employee_tasks.forEach(t => {
+                    taskProgressIterator[t.status]();
+                    sum++;
+                });
+
                 // Configure Onboarding Employee Task Doughnut Chart
                 const chartConfig = onboardingEmployeeTasksDoughnutChart.config;
-                chartConfig.data.datasets[0].data = [pending, onGoing, completed];
+                chartConfig.data = {
+                    labels: ['Pending','On Going','Completed',],
+                    datasets: [{
+                        data: [pending, onGoing, completed],
+                        backgroundColor : [
+                            CHART_BG.WARNING,
+                            CHART_BG.INFO,
+                            CHART_BG.SUCCESS
+                        ],
+                        borderColor:  [
+                            CHART_BD.WARNING,
+                            CHART_BD.INFO,
+                            CHART_BD.SUCCESS
+                        ],
+                        borderWidth: 2
+                    }]
+                }
 
+                // Update chart
                 onboardingEmployeeTasksDoughnutChart.update();
+
+                // Task Progress
+                const taskProgress = ((completed/sum)*100).toFixed(2);
+                return taskProgress === 100 
+                    ? `All tasks are completed` 
+                    : `${ taskProgress }% tasks are completed`
             }
 
             const employeeFullName = formatName('F M. L, S', {
-                firstName  : result.first_name,
-                middleName : result.middle_name,
-                lastName   : result.last_name,
-                suffixName : result.suffix_name
+                firstName: result.first_name,
+                middleName: result.middle_name,
+                lastName: result.last_name,
+                suffixName: result.suffix_name
             })
 
             const employmentStartDate = formatDateTime(result.employment_start_date, 'Full Date');
@@ -1246,8 +1283,13 @@ const getOnboardingEmployeeDetails = () => {
                 '#employeePositionForDetails': result.onboarding_employee_position.name,
                 '#employeeContactNumberForDetails': result.contact_number,
                 '#employeeEmailForDetails': result.email,
-                '#employmentStartDetails': employmentStartDate
-            })
+                '#employmentStartDetails': `
+                    ${employmentStartDate}
+                    <div class="small">${ fromNow(result.employment_start_date) }</div>
+                `
+            });
+
+            $('#employmentContractBtn').attr('href', `${ EMPLOYMENT_CONTRACT_PATH }${ result.employment_contract }`);
 
             // Remove loader and show container
             $('#onboardingEmployeeDetailsLoader').remove();
@@ -1326,7 +1368,6 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
         success: result => {
 
             /** ONBOARDING EMPLOYEE TASK DETAILS */
-
             const onboardingTask = result.onboarding_task;
 
             // Get Task Status
@@ -1368,7 +1409,7 @@ const viewOnboardingEmployeeTaskDetails = (onboardingEmployeeTaskID) => {
             showElement('#onboardingEmployeeTaskTimeline');
         },
         error: () => toastr.error('There was an error in getting onboarding employee task details')
-    })
+    });
     showModal('#onboardingEmployeeTaskDetailsModal');
 }
 

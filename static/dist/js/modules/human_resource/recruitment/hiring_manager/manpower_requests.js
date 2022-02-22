@@ -8,7 +8,7 @@
 
 /** Manpower Request DataTable */
 initDataTable('#manpowerRequestDT', {
-    url: `${ ROUTE.API.H }requisitions`,
+    url: `${ ROUTE.API.H }manpower-requests`,
     enableButtons: true,
     columns: [
         
@@ -25,7 +25,7 @@ initDataTable('#manpowerRequestDT', {
                 const vacantPosition = data.vacant_position;
                 return `
                     <div>${ vacantPosition.name }</div>
-                    ${ TEMPLATE.SUBTEXT(vacantPosition.department.name) }
+                    ${ TEMPLATE.SUBTEXT(vacantPosition.sub_department.name) }
                 `
             }
         },
@@ -92,11 +92,11 @@ initDataTable('#manpowerRequestDT', {
         { 
             data: null,
             render: data => {
-                const requisitionID = data.requisition_id;
+                const manpowerRequestID = data.manpower_request_id;
                 return TEMPLATE.DT.OPTIONS(`
                     <a 
                         class="dropdown-item d-flex"
-                        href="${ ROUTE.WEB.H }manpower-requests/${ requisitionID }"
+                        href="${ ROUTE.WEB.H }manpower-requests/${ manpowerRequestID }"
                     >
                         <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
                         <div>
@@ -119,7 +119,7 @@ initDataTable('#manpowerRequestDT', {
 
 /** Manpower Requests Analytics */
 const manpowerRequestAnalytics = () => {
-    GET_ajax(`${ ROUTE.API.H }requisitions/analytics`, {
+    GET_ajax(`${ ROUTE.API.H }manpower-requests/analytics`, {
         success: result => {
             setContent({
                 '#totalManpowerRequestsCount':formatNumber(result.total),
@@ -150,7 +150,7 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics())
 /** View Manpower Request */
 ifSelectorExist('#manpowerRequestDocument', () => {
     const requisitionID = window.location.pathname.split('/')[3];
-    GET_ajax(`${ ROUTE.API.H }requisitions/${ requisitionID }`, {
+    GET_ajax(`${ ROUTE.API.H }manpower-requests/${ requisitionID }`, {
         success: result => {
 
             // Set Manpower Request Document
@@ -236,7 +236,7 @@ onHideModal('#rejectRequestModal', () => resetForm('#rejectRequestForm'));
 
 /** Update Request For approval */
 const requestApproval = (data) => {
-    const requisitionID = window.location.pathname.split('/')[3];
+    const manpowerRequestID = window.location.pathname.split('/')[3];
 
     const ifError = () => {
         if(data.request_status == "Approved") {
@@ -258,7 +258,7 @@ const requestApproval = (data) => {
         }
     }
 
-    PUT_ajax(`${ ROUTE.API.H }requisitions/${ requisitionID }`, data, {
+    PUT_ajax(`${ ROUTE.API.H }manpower-requests/${ manpowerRequestID }`, data, {
         success: result => {
             if(result) {
                 if(data.request_status == "Approved")

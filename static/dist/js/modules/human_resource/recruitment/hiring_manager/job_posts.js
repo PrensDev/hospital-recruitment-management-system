@@ -50,7 +50,14 @@ initDataTable('#jobPostsDT', {
         { data: 'manpower_request.requisition_no', class: 'text-nowrap' },
 
         // Vacant Position
-        { data: "manpower_request.vacant_position.name" },
+        { 
+            data: null,
+            render: data => {
+                return `
+                    <div>${ data.manpower_request.vacant_position.name }</div>
+                `
+            }
+        },
 
         // Applicants
         {
@@ -101,7 +108,7 @@ initDataTable('#jobPostsDT', {
             data: null,
             render: data => {
                 const jobPostID = data.job_post_id;
-                const requisitionID = data.manpower_request.requisition_id;
+                const requisitionID = data.manpower_request.manpower_request_id;
                 const applicants = data.applicants.length > 0
                     ? `
                         <a 

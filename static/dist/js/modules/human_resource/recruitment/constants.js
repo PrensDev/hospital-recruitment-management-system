@@ -7,8 +7,8 @@
  * */
 
 // Base URLs
-const BASE_URL_EXT = '';
-const BASE_URL_WEB = `http://127.0.0.1:8000/${ BASE_URL_EXT }`;
+const ORIGIN = window.location.origin;
+const BASE_URL_WEB = ORIGIN + '/';
 const BASE_URL_API = `${ BASE_URL_WEB }api/`;
 
 
@@ -178,17 +178,26 @@ const CHART_CONFIG = {
                             : 'rgba(255, 255, 255, 0.5)'
                     },
                     padding: {
-                        top: 5,
+                        top: 6,
                         bottom: 4,
-                        left: 5,
-                        right: 5,
+                        left: 6,
+                        right: 6,
                     },
+                    borderColor: (context) => {
+                        return context.chart.data.datasets[0].borderColor[context.dataIndex]
+                    },
+                    borderWidth: 2,     
                     borderRadius: 3,
                     formatter: (value, context) => {
                         if(value == -1)
                             return context.active ? "No data" : 0
-                        if(context.active)    
-                            return `${ context.chart.data.labels[context.dataIndex] }: ${value}`;
+                        if(context.active) {
+                            let sum = 0;
+                            let dataArr = context.chart.data.datasets[0].data;
+                            dataArr.map(data => sum += data);
+                            let percentage = (value*100 / sum).toFixed(2)+"%";
+                            return `${ context.chart.data.labels[context.dataIndex] }: ${value}\n${percentage}`;
+                        }
                         return value
                     },
                     display: (context) => {

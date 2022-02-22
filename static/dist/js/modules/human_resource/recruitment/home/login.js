@@ -24,7 +24,7 @@ validateForm("#loginForm", {
 })
 
 const loginAJAX = () => {
-    setContent('#loginBtn', `<div class="spinner-border spinner-border-sm"></div>`);
+    btnToLoadingState('#loginBtn');
     disableElement('#loginBtn');
 
     const formData = generateFormData('#loginForm');
@@ -43,22 +43,7 @@ const loginAJAX = () => {
         data: data,
         dataType: 'json',
         success: result => {
-            if(result.login_status === "Failed") {
-                toastr.options = {
-                    "preventDuplicates": true,
-                    "positionClass": "mt-3 toast-top-center",
-                    "showDuration": "3000"
-                }
-                toastr.warning(result.message);
-                setContent('#loginBtn', `
-                    <span>Log in</span>
-                    <i class="fas fa-sign-in-alt ml-1"></i>
-                `);
-                enableElement('#loginBtn');
-
-                enableElement('#email');
-                enableElement('#password');
-            } else {
+            if(result.authorized) {
                 localStorage.setItem("access_token", result.access_token);
 
                 toastr.options = {
@@ -69,6 +54,18 @@ const loginAJAX = () => {
                 toastr.success("Log in was successful!");
 
                 location.assign(`${ BASE_URL_WEB }redirect`);
+            } else {
+                toastr.options = {
+                    "preventDuplicates": true,
+                    "positionClass": "mt-3 toast-top-center",
+                    "showDuration": "3000"
+                }
+                toastr.warning(result.message);
+                setContent('#loginBtn', TEMPLATE.LABEL_ICON('Log in', 'sign-in-alt'));
+                enableElement('#loginBtn');
+
+                enableElement('#email');
+                enableElement('#password');
             }
         },
     }).fail(() => {

@@ -19,8 +19,9 @@ ifSelectorExist('#addManpowerRequestForm', () => {
     });
 
     /** Vacant Position For Add Select2 */
-    GET_ajax(`${ ROUTE.API.DM }department/positions`, {
+    GET_ajax(`${ ROUTE.API.DM }positions`, {
         success: result => {
+            console.log(result)
             if(result) {
                 let vacantPosition = $('#vacantPosition');
                 vacantPosition.empty();
@@ -210,7 +211,7 @@ onClick('#confirmAddManpowerRequestBtn', () => {
     }
 
     // Request create new manpower request
-    POST_ajax(`${ ROUTE.API.DM }requisitions`, data, {
+    POST_ajax(`${ ROUTE.API.DM }manpower-requests`, data, {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({
@@ -233,7 +234,8 @@ onClick('#confirmAddManpowerRequestBtn', () => {
 
 /** ManPower Requests DataTable */
 initDataTable('#manpowerRequestDT', {
-    url: `${ ROUTE.API.DM }requisitions`,
+    url: `${ ROUTE.API.DM }manpower-requests`,
+    // debugMode: true,
     enableButtons: true,
     columns: [
 
@@ -317,12 +319,12 @@ initDataTable('#manpowerRequestDT', {
         { 
             data: null,
             render: data => {
-                const requisitionID = data.requisition_id, requestStatus = data.request_status;
+                const manpowerRequestID = data.manpower_request_id, requestStatus = data.request_status;
 
                 const markAsCompletedBtn = `
                     <div 
                         class="dropdown-item d-flex"
-                        onclick="markAsCompleted('${ requisitionID }')"
+                        onclick="markAsCompleted('${ manpowerRequestID }')"
                     >
                         <div style="width: 2rem"><i class="fas fa-check mr-1"></i></div>
                         <span>Mark as Completed</span>
@@ -332,7 +334,7 @@ initDataTable('#manpowerRequestDT', {
                 const editBtn = `
                     <a 
                         class="dropdown-item d-flex"
-                        href="${ ROUTE.WEB.DM }edit-manpower-request/${ data.requisition_id }"
+                        href="${ ROUTE.WEB.DM }edit-manpower-request/${ manpowerRequestID }"
                     >
                         <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
                         <span>Edit</span>
@@ -343,7 +345,7 @@ initDataTable('#manpowerRequestDT', {
                     <div 
                         class="dropdown-item d-flex"
                         role="button"
-                        onclick="cancelManpowerRequest('${ requisitionID }')"
+                        onclick="cancelManpowerRequest('${ manpowerRequestID }')"
                     >
                         <div style="width: 2rem"><i class="fas fa-times-circle mr-1"></i></div>
                         <span>Cancel</span>
@@ -354,7 +356,7 @@ initDataTable('#manpowerRequestDT', {
                     <div 
                         class="dropdown-item d-flex"
                         role="button"
-                        onclick="deleteManpowerRequest('${ requisitionID }')"
+                        onclick="deleteManpowerRequest('${ manpowerRequestID }')"
                     >
                         <div style="width: 2rem"><i class="fas fa-trash-alt mr-1"></i></div>
                         <span>Delete</span>
@@ -378,7 +380,7 @@ initDataTable('#manpowerRequestDT', {
                 return TEMPLATE.DT.OPTIONS(`
                     <a 
                         class="dropdown-item d-flex"
-                        href="${ ROUTE.WEB.DM }manpower-requests/${ requisitionID }"
+                        href="${ ROUTE.WEB.DM }manpower-requests/${ manpowerRequestID }"
                     >
                         <div style="width: 2rem"><i class="fas fa-file-alt mr-1"></i></div>
                         <div>
@@ -402,7 +404,7 @@ initDataTable('#manpowerRequestDT', {
 
 /** Manpower Requests Analytics */
 const manpowerRequestAnalytics = () => 
-    GET_ajax(`${ ROUTE.API.DM }requisitions/analytics`, {
+    GET_ajax(`${ ROUTE.API.DM }manpower-requests/analytics`, {
         success: result => {
             if(result) {
                 setContent({
@@ -429,8 +431,8 @@ ifSelectorExist('#manpowerRequestAnalytics', () => manpowerRequestAnalytics());
 
 /** Get Manpower Request Details */
 const getManpowerRequestDetails = () => {
-    const requisitionID = window.location.pathname.split('/')[3];
-    GET_ajax(`${ ROUTE.API.DM }requisitions/${ requisitionID }`, {
+    const manpowerRequestID = window.location.pathname.split('/')[3];
+    GET_ajax(`${ ROUTE.API.DM }manpower-requests/${ manpowerRequestID }`, {
         success: result => {
 
             /** MANPOWER REQUEST DETAILS */
@@ -441,19 +443,19 @@ const getManpowerRequestDetails = () => {
             
             /** MANPOWER REQUEST OPTIONS */
             setContent('#manpowerRequestOptions', () => {
-                const requisitionID = result.requisition_id;
+                const manpowerRequestID = result.manpower_request_id;
 
                 switch(result.request_status) {
                     case "For signature":
                         return `
                             <a 
                                 class="btn btn-sm btn-info btn-block"
-                                href="${ ROUTE.WEB.DM }edit-manpower-request/${ requisitionID }"
+                                href="${ ROUTE.WEB.DM }edit-manpower-request/${ manpowerRequestID }"
                             >
                                 ${ TEMPLATE.ICON_LABEL("edit", "Edit Request") }
                             </a>
 
-                            <div class="btn btn-sm btn-warning btn-block" onclick="cancelManpowerRequest('${ requisitionID }')">
+                            <div class="btn btn-sm btn-warning btn-block" onclick="cancelManpowerRequest('${ manpowerRequestID }')">
                                 ${ TEMPLATE.ICON_LABEL("times-circle", "Cancel request") }
                             </div>
                             <hr>
@@ -464,7 +466,7 @@ const getManpowerRequestDetails = () => {
                     case "Approved":
                         $('#cancelManpowerRequestModal').remove();
                         return `
-                            <div class="btn btn-sm btn-success btn-block" onclick="markAsCompleted('${ requisitionID }')">
+                            <div class="btn btn-sm btn-success btn-block" onclick="markAsCompleted('${ manpowerRequestID }')">
                                 ${ TEMPLATE.ICON_LABEL("check-circle", "Mark as Completed") }
                             </div>
                             <hr>
@@ -479,7 +481,7 @@ const getManpowerRequestDetails = () => {
                             <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
                                 ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
                             </div>
-                            <a href="${ ROUTE.WEB.DM }manpower-requests/${ requisitionID }/report" class="btn btn-sm btn-info btn-block">
+                            <a href="${ ROUTE.WEB.DM }manpower-requests/${ manpowerRequestID }/report" class="btn btn-sm btn-info btn-block">
                                 ${ TEMPLATE.ICON_LABEL("file-alt", "Generate Report") }                            
                             </a>
                         `
@@ -523,7 +525,7 @@ const printManpowerRequest = () => printContent('Print Manpower Request Document
 ifSelectorExist('#editManpowerRequestForm', () => {
 
     /** Vacant Position For Add Select2 */
-    GET_ajax(`${ ROUTE.API.DM }department/positions`, {
+    GET_ajax(`${ ROUTE.API.DM }positions`, {
         success: result => {
             if(result) {
                 let vacantPosition = $('#vacantPosition');
@@ -579,15 +581,15 @@ ifSelectorExist('#editManpowerRequestForm', () => {
      */
 
     /** Get requisition ID from the URL */
-    const requisitionID = window.location.pathname.split('/')[3];
+    const manpowerRequestID = window.location.pathname.split('/')[3];
 
     /** Get Manpower Request Information */
-    GET_ajax(`${ ROUTE.API.DM }requisitions/${ requisitionID }`, {
+    GET_ajax(`${ ROUTE.API.DM }manpower-requests/${ manpowerRequestID }`, {
         success: result => {
             if(result) {
 
                 /** Set Requisition ID */
-                setValue('#requisitionID', result.requisition_id);
+                setValue('#manpowerRequestID', result.manpower_request_id);
 
                 /** Set Requisition No. */
                 setValue('#requisitionNo', result.requisition_no);
@@ -602,7 +604,7 @@ ifSelectorExist('#editManpowerRequestForm', () => {
                 setValue('#staffsNeeded', result.staffs_needed);
 
                 /** Set Employment Type */
-                $('#employmentType').val(result.manpower_request_employment_type.employment_type_id).trigger('change');
+                $('#employmentType').val(result.employment_type.employment_type_id).trigger('change');
 
                 /** Set Deadline */
                 const deadline = result.deadline;
@@ -666,7 +668,7 @@ ifSelectorExist('#editManpowerRequestForm', () => {
 /** Validate Edit Manpower Request Form */
 validateForm('#editManpowerRequestForm', {
     rules: {
-        requisitionID: {
+        manpowerRequestID: {
             required: true
         },
         vacantPosition: {
@@ -703,7 +705,7 @@ validateForm('#editManpowerRequestForm', {
         },
     },
     messages:{
-        requisitionID: {
+        manpowerRequestID: {
             required: 'This must have a value'
         },
         vacantPosition: {
@@ -747,9 +749,16 @@ validateForm('#editManpowerRequestForm', {
 
 /** Submit Manpower Request */
 onClick('#confirmEditManpowerRequestBtn', () => {
+    
+    // Set buttons to loading state]
+    btnToLoadingState('#confirmEditManpowerRequestBtn');
+    disableElement('#cancelEditManpowerRequestBtn');
+
+    // Generate Form Data
     const formData = generateFormData('#editManpowerRequestForm')
     const get = (name) => { return formData.get(name) }
     
+    // Set data
     const data = {
         position_id: get('vacantPosition'),
         employment_type_id: get("employmentType"),
@@ -761,7 +770,20 @@ onClick('#confirmEditManpowerRequestBtn', () => {
         deadline: isChecked('#setDeadlline') ? formatDateTime(get("deadline")) : null
     }
 
-    PUT_ajax(`${ ROUTE.API.DM }requisitions/${ get('requisitionID') }`, data, {
+    const ifError = () => {
+        
+        // Hide Modal
+        hideModal('#confirmEditManpowerRequestModal');
+
+        // Set buttons to unload state
+        btnToUnloadState('#confimEditManpowerRequestBtn', TEMPLATE.LABEL_ICON('Yes, update it', 'check'))
+        enableElement('#cancelEditManpowerRequestBtn');
+
+        // Show error alert
+        toastr.error("There was an error in creating manpower request");
+    }
+
+    PUT_ajax(`${ ROUTE.API.DM }manpower-requests/${ get('manpowerRequestID') }`, data, {
         success: result => {
             if(result) {
                 setSessionedAlertAndRedirect({
@@ -769,12 +791,9 @@ onClick('#confirmEditManpowerRequestBtn', () => {
                     message: 'A new request has been updated', 
                     redirectURL: `${ ROUTE.WEB.DM }manpower-requests`
                 });
-            }
+            } else ifError()
         },
-        error: () => {
-            hideModal('#confirmEditManpowerRequestModal');
-            toastr.error("There was an error in creating manpower request");
-        }
+        error: () => ifError()
     });
 });
 
@@ -786,22 +805,37 @@ onClick('#confirmEditManpowerRequestBtn', () => {
  */
 
 /** Cancel Manpower Request */
-const cancelManpowerRequest = (requisitionID) => {
-    setValue('#requisitionIDForCancel', requisitionID);
+const cancelManpowerRequest = (manpowerRequestID) => {
+    setValue('#manpowerRequestIDForCancel', manpowerRequestID);
     showModal('#cancelManpowerRequestModal');
 }
 
 /** On Cancel Manpower Request Modal is going to be hidden */
-onHideModal('#cancelManpowerRequestModal', () => resetForm('#cancelManpowerRequestForm'));
+onHideModal('#cancelManpowerRequestModal', () => {
+    
+    // Set buttons to unload state
+    btnToUnloadState('#cancelRequestManpowerRequestBtn', TEMPLATE.LABEL_ICON('Yes, cancel it', 'times-circle'));
+    enableElement('#cancelCancelRequestManpowerRequestBtn');
+    
+    // Reset form as the modal has been hidden
+    resetForm('#cancelManpowerRequestForm')
+});
 
 /** Validate Cancel Manpower Request Form */
 validateForm('#cancelManpowerRequestForm', {
-    rules: { requisitionID: { required: true }},
-    messages: { requisitionID: { required: 'Requisition ID should be here' }},
+    rules: { manpowerRequestID: { required: true }},
+    messages: { manpowerRequestID: { required: 'Manpower Request ID should be here' }},
     submitHandler: () => {
-        const requisitionID = generateFormData('#cancelManpowerRequestForm').get('requisitionID');
 
-        DELETE_ajax(`${ ROUTE.API.DM }requisitions/${ requisitionID }`, {
+        // Set buttons to loading state
+        btnToLoadingState('#cancelRequestManpowerRequestBtn')
+        disableElement('#cancelCancelRequestManpowerRequestBtn')
+
+        // Generate form data
+        const manpowerRequestID = generateFormData('#cancelManpowerRequestForm').get('manpowerRequestID');
+
+        // Cancel the request
+        DELETE_ajax(`${ ROUTE.API.DM }manpower-requests/${ manpowerRequestID }`, {
             success: result => {
                 if(result) {
                     if($('#manpowerRequestDocument').length) {

@@ -22,24 +22,6 @@ let urlParamsObj = {
  * ==============================================================================
  */
 
-// Set URL Param String
-const getURLParamString = (urlParams = {}) => {
-    let urlParamStringHolder = [];
-
-    Object.entries(urlParams).forEach(([key, val]) => {
-        if(!isEmptyOrNull(val)) urlParamStringHolder.push(key + '=' + val)
-    });
-    
-    let urlParamString = '';
-
-    urlParamStringHolder.forEach((urlParam, index) => {
-        urlParamString += index === 0 ? '?' : '&';
-        urlParamString += urlParam;
-    });
-
-    return urlParamString;
-}
-
 
 // Set Search Form Values according to URL parameters
 const setSearchFormValues = () => {
@@ -78,7 +60,7 @@ const setSearchFormValues = () => {
 const redirectWithURLParams = () => {
 
     // Get URL Params string
-    const urlParamsString = getURLParamString(urlParamsObj);
+    const urlParamsString = getURLQueryString(urlParamsObj);
 
     // Redirect to correct link (with URL parameter if set)
     isEmptyOrNull(urlParamsString) 
@@ -187,7 +169,7 @@ ifSelectorExist('#availableJobList', () => {
     setSearchFormValues();
 
     // Get URL Param String
-    const urlParamsString = getURLParamString(urlParamsObj);
+    const urlParamsString = getURLQueryString(urlParamsObj);
 
     // Get all job post filtered by page
     $.ajax({
@@ -201,7 +183,7 @@ ifSelectorExist('#availableJobList', () => {
                 const manpowerRequest = r.manpower_request;
 
                 const jobCategory = () => {
-                    const jobCategory = r.job_categorized_as;
+                    const jobCategory = r.job_category;
                     return `
                         <div>
                             <i style="width: 1.25rem" class="fas fa-th-list text-center text-secondary mr-1"></i>
@@ -210,7 +192,7 @@ ifSelectorExist('#availableJobList', () => {
                     `
                 }
 
-                const salaryRange = r.salary_is_visible 
+                const salaryRange = r.is_salary_visible 
                     ? `<div>
                             <i style="width: 1.25rem" class="fas fa-handshake text-center text-secondary mr-1"></i>
                             <span>${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }</span>
@@ -252,7 +234,7 @@ ifSelectorExist('#availableJobList', () => {
                                         ${ jobCategory() }
                                         <div>
                                             <i style="width: 1.25rem" class="fas fa-briefcase text-center text-secondary mr-1"></i>
-                                            <span>${ manpowerRequest.manpower_request_employment_type.name }</span>
+                                            <span>${ manpowerRequest.employment_type.name }</span>
                                         </div>
                                         ${ salaryRange }
                                         ${ expirationDate }
@@ -319,7 +301,6 @@ ifSelectorExist('#availableJobList', () => {
                 });
 
                 setPagination('#pagination', {
-                    query: `${ BASE_URL_WEB }careers?page=[page]`,
                     totalRows: total,
                     currentPage: currentPage
                 });
@@ -330,7 +311,7 @@ ifSelectorExist('#availableJobList', () => {
             // This function will be called if no result
             const noResult = () => {
                 setContent({
-                    '#pageDisplay': `No page was dislayed`,
+                    '#pageDisplay': `No page was displayed`,
                     '#totalResultDisplay': `0 results were found`
                 });
             }
@@ -382,12 +363,12 @@ ifSelectorExist('#availableJobDetails', () => {
                 },
                 '#datePostedHumanized': fromNow(datePosted),
                 '#jobDescription': result.content,
-                '#employmentType': manpowerRequest.manpower_request_employment_type.name,
-                '#jobCategory': result.job_categorized_as.name
+                '#employmentType': manpowerRequest.employment_type.name,
+                '#jobCategory': result.job_category.name
             });
 
             // Set Salary Range
-            result.salary_is_visible
+            result.is_salary_visible
                 ? setContent('#salaryRange', `${ formatCurrency(manpowerRequest.min_monthly_salary) } - ${ formatCurrency(manpowerRequest.max_monthly_salary) }`)
                 : hideElement('#salaryRangeDisplay')
 
@@ -518,14 +499,16 @@ validateForm('#applicationForm', {
                 suffixName: formData.get('suffixName') 
             }),
             '#applicantContactNumber': formData.get('contactNumber'),
-            '#applicantEmail': formData.get('email')
+            '#applicantEmail': formData.get('email'),
+            '#submitApplicationMode': true
         });
 
         // Show Modal
-        showModal('#confirmApplicationModal');
+        $('#confirmApplicationModal').modal('show');
         return false;
     }
 });
+
 
 /** If Confirm Application Modal is going to be hidden */
 onHideModal('#confirmApplicationModal', () => {
@@ -534,7 +517,8 @@ onHideModal('#confirmApplicationModal', () => {
     setContent({
         '#applicantFullName': '',
         '#applicantContactNumber': '',
-        '#applicantEmail': ''
+        '#applicantEmail': '',
+        '#submitApplicationMode': false
     });
 });
 
@@ -668,6 +652,7 @@ validateForm('#searchJobForm', {
 
         // Change search query parameter with the form data
         urlParamsObj.searchQuery = searchQuery;
+        urlParamsObj.page = null;
 
         // Redirect with url parameter
         redirectWithURLParams();
@@ -688,6 +673,7 @@ validateForm('#searchJobForm', {
 $('#datePosted').on('select2:select', () => {
     urlParamsObj.searchQuery = $("#searchQuery").val();
     urlParamsObj.datePosted = $("#datePosted").val();
+    urlParamsObj.page = null;
     redirectWithURLParams();
 });
 
@@ -695,6 +681,7 @@ $('#datePosted').on('select2:select', () => {
 $('#jobCategory').on('select2:select', () => {
     urlParamsObj.searchQuery = $("#searchQuery").val();
     urlParamsObj.jobCategory = $("#jobCategory").val();
+    urlParamsObj.page = null;
     redirectWithURLParams();
 });
 
@@ -702,6 +689,7 @@ $('#jobCategory').on('select2:select', () => {
 $('#employmentType').on('select2:select', () => {
     urlParamsObj.searchQuery = $("#searchQuery").val();
     urlParamsObj.employmentType = $("#employmentType").val();
+    urlParamsObj.page = null;
     redirectWithURLParams();
 });
 
@@ -732,9 +720,24 @@ $('#resetFilters').on('click', () => {
         !isEmptyOrNull(urlParamsObj.jobCategory) ||
         !isEmptyOrNull(urlParamsObj.employmentType)
     ) {
+        // Reset form
         urlParamsObj.datePosted = null;
         urlParamsObj.jobCategory = null;
         urlParamsObj.employmentType = null;
+        urlParamsObj.page = null;
+        
+        // Show loading status
+        setContent('#availableJobList', `
+            <div class="col-12">
+                <div class="text-center my-5 py-5 wait">
+                    <div class="spinner-border text-primary mb-2" style="width: 2.5rem; height: 2.5rem"></div>
+                    <div>Please wait while loading the list ...</div>
+                </div>
+            </div>
+        `);
+        hideElement('#pagination');
+        
+        // Redirect without URL Parameters
         redirectWithURLParams();
     }
 });
