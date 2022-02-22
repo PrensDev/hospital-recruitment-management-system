@@ -575,7 +575,7 @@ def evaluate_applicant(
                 # Rejected from Evaluation
                 elif req.status == "Rejected from evaluation":
                     applicant.update({
-                        "rejected_by": user_data.emplpyee_id,
+                        "rejected_by": user_data.employee_id,
                         "rejected_at": text('NOW()'),
                         "status": req.status,
                         "remarks": req.remarks
