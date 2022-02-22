@@ -191,8 +191,13 @@ const CHART_CONFIG = {
                     formatter: (value, context) => {
                         if(value == -1)
                             return context.active ? "No data" : 0
-                        if(context.active)    
-                            return `${ context.chart.data.labels[context.dataIndex] }: ${value}`;
+                        if(context.active) {
+                            let sum = 0;
+                            let dataArr = context.chart.data.datasets[0].data;
+                            dataArr.map(data => sum += data);
+                            let percentage = (value*100 / sum).toFixed(2)+"%";
+                            return `${ context.chart.data.labels[context.dataIndex] }: ${value}\n${percentage}`;
+                        }
                         return value
                     },
                     display: (context) => {
