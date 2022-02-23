@@ -481,10 +481,7 @@ const getManpowerRequestDetails = () => {
                             <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
                                 ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
                             </div>
-                            <a href="${ ROUTE.WEB.DM }manpower-requests/${ manpowerRequestID }/report" class="btn btn-sm btn-info btn-block">
-                                ${ TEMPLATE.ICON_LABEL("file-alt", "Generate Report") }                            
-                            </a>
-                        `
+                            `
                     default:
                         $('#cancelManpowerRequestModal').remove();
                         $('#markAsCompletedModal').remove();
@@ -868,8 +865,8 @@ validateForm('#cancelManpowerRequestForm', {
  */
 
 /** Delete Manpower Request */
-const deleteManpowerRequest = (requisitionID) => {
-    setValue('#requisitionIDForDelete', requisitionID);
+const deleteManpowerRequest = (manpowerRequestID) => {
+    setValue('#requisitionIDForDelete', manpowerRequestID);
     showModal('#deleteManpowerRequestModal');
 }
 
@@ -908,8 +905,8 @@ validateForm('#deleteManpowerRequestForm', {
  */
 
 /** Mark Manpower Request as Completed */
-const markAsCompleted = (requisitionID) => {
-    setValue('#requisitionIDForCompletion', requisitionID);
+const markAsCompleted = (manpowerRequestID) => {
+    setValue('#requisitionIDForCompletion', manpowerRequestID);
     showModal('#markAsCompletedModal');
 }
 
@@ -925,7 +922,7 @@ validateForm('#markAsCompletedForm', {
         disableElement('#cancelMarkAsCompletedBtn');
 
         // Get the requisition ID
-        const requisitionID = generateFormData('#markAsCompletedForm').get('requisitionID');
+        const manpowerRequestID = generateFormData('#markAsCompletedForm').get('requisitionID');
 
         // Call if error
         const ifError = () => {
@@ -934,7 +931,7 @@ validateForm('#markAsCompletedForm', {
         }
 
         // Update details
-        PUT_ajax(`${ ROUTE.API.DM }requisitions/${ requisitionID }/complete`, {}, {
+        PUT_ajax(`${ ROUTE.API.DM }manpower-requests/${ manpowerRequestID }/complete`, {}, {
             success: result => {
                 if(result) {
 
