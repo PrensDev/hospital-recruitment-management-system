@@ -9,12 +9,14 @@
 // Get URL Parameter Values
 const urlParams = new URLSearchParams(window.location.search);
 let urlParamsObj = {
-    searchQuery: urlParams.get('searchQuery'),
+    searchQuery: $.trim(urlParams.get('searchQuery')).replace(/\s\s+/g, ' '),
     datePosted: urlParams.get('datePosted'),
     jobCategory: urlParams.get('jobCategory'),
     employmentType: urlParams.get('employmentType'),
     page: urlParams.get('page'),
 }
+
+history.replaceState(null, null, getURLQueryString(urlParamsObj));
 
 /**
  * ==============================================================================
@@ -67,8 +69,6 @@ const redirectWithURLParams = () => {
         ? location.assign("/careers")
         : location.assign("/careers" + urlParamsString)
 }
-
-
 
 /**
  * ==============================================================================
@@ -291,12 +291,13 @@ ifSelectorExist('#availableJobList', () => {
         success: result => {
             const total = result.total;
             const currentPage = urlParamsObj.page ? urlParamsObj.page : 1;
+            const totalPage = Math.ceil(total/FETCH_ROWS)
 
             // This function will be called if has result
             const hasResult = () => {
 
                 setContent({
-                    '#pageDisplay': `Showing page ${ currentPage } out of ${ Math.ceil(total/FETCH_ROWS) }`,
+                    '#pageDisplay': `Showing page ${ currentPage } out of ${ totalPage }`,
                     '#totalResultDisplay': `${ total } ${ pluralize('result', total) } are found`
                 });
 
@@ -318,7 +319,7 @@ ifSelectorExist('#availableJobList', () => {
 
             // If search query is set then show the label
             if(!isEmptyOrNull(urlParamsObj.searchQuery)) {
-                if(total > 0)
+                if(total > 0 && currentPage <= totalPage)
                     setContent('#searchLabel', `Search result for <b>"${ urlParamsObj.searchQuery }"</b>`)
                 else
                     setContent('#searchLabel', `The search <b>"${ urlParamsObj.searchQuery }"</b> did not found any result`)
@@ -327,7 +328,7 @@ ifSelectorExist('#availableJobList', () => {
             }
 
             // Call function based on total number of results
-            total > 0 ? hasResult() : noResult();
+            total > 0 && currentPage <= totalPage ? hasResult() : noResult();
         }
     });
 });
@@ -651,7 +652,7 @@ validateForm('#searchJobForm', {
         }
 
         // Change search query parameter with the form data
-        urlParamsObj.searchQuery = searchQuery;
+        urlParamsObj.searchQuery = $.trim(searchQuery).replace(/\s\s+/g, ' ');
         urlParamsObj.page = null;
 
         // Redirect with url parameter
@@ -693,6 +694,7 @@ $('#employmentType').on('select2:select', () => {
     redirectWithURLParams();
 });
 
+
 // Change the content into loading if options is selected
 $('#datePosted, #jobCategory, #employmentType').on('select2:select', () => {
     setContent('#availableJobList', `
@@ -725,6 +727,10 @@ $('#resetFilters').on('click', () => {
         urlParamsObj.jobCategory = null;
         urlParamsObj.employmentType = null;
         urlParamsObj.page = null;
+
+        $("#datePosted").val('').trigger('change');
+        $("#jobCategory").val('').trigger('change');
+        $("#employmentType").val('').trigger('change');
         
         // Show loading status
         setContent('#availableJobList', `
