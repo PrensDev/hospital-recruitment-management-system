@@ -59,7 +59,7 @@ initDataTable('#onboardingEmployeesDT', {
             data: null,
             render: data => {
                 const tasksCount = data.onboarding_employee_tasks.length;
-                return `${ tasksCount } task${ tasksCount > 1 ? 's' : '' }`
+                return `${ tasksCount } ${ pluralize('task', tasksCount) }`
             }
         },
 
@@ -68,39 +68,46 @@ initDataTable('#onboardingEmployeesDT', {
             data: null,
             class: 'text-nowrap',
             render: data => {
-                let completed = 0;
-
                 const tasks = data.onboarding_employee_tasks;
-
-                tasks.forEach(t => { if(t.status == "Completed") completed++ });
-
-                var taskProgress = ((completed/tasks.length) * 100).toFixed(2);
-
-                var bgColor;
-                if(taskProgress <= 25) bgColor = 'danger';
-                else if(taskProgress <= 75) bgColor = 'warning';
-                else if(taskProgress < 100) bgColor = 'info';
-                else if(taskProgress == 100) bgColor = 'success';
-
-                var completeStatus = taskProgress == 100
-                    ? `<small>All tasks are completed</small>`
-                    : `<small>${ taskProgress }% complete</small>`
-
-                return `
-                    <div class="project_progress">
-                        <div class="progress progress-sm rounded">
-                            <div 
-                                class="progress-bar bg-${ bgColor }" 
-                                role="progressbar" 
-                                aria-valuenow="${ taskProgress }" 
-                                aria-valuemin="0" 
-                                aria-valuemax="100" 
-                                style="width: ${ taskProgress }%"
-                            ></div>
+                if(tasks.length > 0) {
+                    let completed = 0;
+                    tasks.forEach(t => { if(t.status == "Completed") completed++ });
+    
+                    var taskProgress = ((completed/tasks.length) * 100).toFixed(2);
+    
+                    var bgColor;
+                    if(taskProgress <= 25) bgColor = 'danger';
+                    else if(taskProgress <= 75) bgColor = 'warning';
+                    else if(taskProgress < 100) bgColor = 'info';
+                    else if(taskProgress == 100) bgColor = 'success';
+    
+                    var completeStatus = taskProgress == 100
+                        ? `
+                            <small>
+                                <i class="fas fa-check-circle text-success mr-1"></i>
+                                <span>Completed</span>
+                            </small>
+                        ` 
+                        : `<small>${ taskProgress }% complete</small>`
+    
+                    return `
+                        <div class="project_progress">
+                            <div class="progress progress-sm rounded">
+                                <div 
+                                    class="progress-bar bg-${ bgColor }" 
+                                    role="progressbar" 
+                                    aria-valuenow="${ taskProgress }" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100" 
+                                    style="width: ${ taskProgress }%"
+                                ></div>
+                            </div>
+                            ${ completeStatus }
                         </div>
-                        ${ completeStatus }
-                    </div>
-                `
+                    `
+                } else {
+                    return TEMPLATE.SUBTEXT(TEMPLATE.EMPTY('No tasks has been set'))
+                }
             }
         },
 
@@ -164,10 +171,11 @@ initDataTable('#onboardingEmployeeTasksDT', {
                         <div class="small text-secondary mb-3">${ task.description }</div>
                         <div class="small d-flex mb-2">
                             <div class="mr-1">
-                                <i class="fas fa-clock text-secondary"></i>
+                                <i class="fas fa-hourglass-half text-secondary"></i>
                             </div>
-                            <div>
-                                <span>${ formatDateTime(startAt, 'DateTime') } - ${ formatDateTime(deadline, 'DateTime') }</span>
+                            <div class="font-weight-bold">
+                                <div>Start: ${ formatDateTime(startAt, 'DateTime') }</div>
+                                <div>End: ${ formatDateTime(deadline, 'DateTime')  }</div>
                             </div>
                         </div>
                         <div>${ getOnboardingEmployeeTaskStatus(data.status, startAt, deadline, data.completed_at) }</div>
@@ -212,48 +220,60 @@ const getOnboardingEmployeeDetails = () => {
     GET_ajax(`${ ROUTE.API.DH }onboarding-employees/${ onboardingEmployeeID }`, {
         success: result => {
 
+            // Get task Progress
             const getTaskProgress = () => {
-                let pending = 0, onGoing = 0, completed = 0, sum = 0; 
-
-                const taskProgressIterator = {
-                    'Pending': () => pending++,
-                    'On Going': () => onGoing++,
-                    'Completed': () => completed++
-                }
-
-                result.onboarding_employee_tasks.forEach(t => {
-                    taskProgressIterator[t.status]();
-                    sum++;
-                });
-
-                // Configure Onboarding Employee Task Doughnut Chart
+                const onboardingEmployeeTasks = result.onboarding_employee_tasks;
                 const chartConfig = onboardingEmployeeTasksDoughnutChart.config;
-                chartConfig.data = {
-                    labels: ['Pending','On Going','Completed',],
-                    datasets: [{
-                        data: [pending, onGoing, completed],
-                        backgroundColor : [
-                            CHART_BG.WARNING,
-                            CHART_BG.INFO,
-                            CHART_BG.SUCCESS
-                        ],
-                        borderColor:  [
-                            CHART_BD.WARNING,
-                            CHART_BD.INFO,
-                            CHART_BD.SUCCESS
-                        ],
-                        borderWidth: 2
-                    }]
+                if(onboardingEmployeeTasks.length > 0) {
+                    let pending = 0, onGoing = 0, completed = 0, sum = 0;
+                    const taskProgressIterator = {
+                        'Pending': () => pending++,
+                        'On Going': () => onGoing++,
+                        'Completed': () => completed++
+                    }
+    
+                    onboardingEmployeeTasks.forEach(t => {
+                        taskProgressIterator[t.status]();
+                        sum++;
+                    });
+    
+                    // Configure Onboarding Employee Task Doughnut Chart
+                    chartConfig.data = {
+                        labels: ['Pending','On Going','Completed',],
+                        datasets: [{
+                            data: [pending, onGoing, completed],
+                            backgroundColor : [
+                                CHART_BG.WARNING,
+                                CHART_BG.INFO,
+                                CHART_BG.SUCCESS
+                            ],
+                            borderColor:  [
+                                CHART_BD.WARNING,
+                                CHART_BD.INFO,
+                                CHART_BD.SUCCESS
+                            ],
+                            borderWidth: 2
+                        }]
+                    }
+    
+                    // Update chart
+                    onboardingEmployeeTasksDoughnutChart.update();
+    
+                    // Task Progress
+                    const taskProgress = ((completed/sum)*100).toFixed(2);
+                    return taskProgress === 100 
+                        ? `All tasks are completed` 
+                        : `${ taskProgress }% tasks are completed`
+                } else {
+                    
+                    // Set empty data to chart
+                    chartConfig.data = CHART_CONFIG.NO_DATA
+
+                    // Update chart
+                    onboardingEmployeeTasksDoughnutChart.update();
+                    
+                    return TEMPLATE.EMPTY('No task has been set')
                 }
-
-                // Update Onboarding Employee Task Doughnut Chart
-                onboardingEmployeeTasksDoughnutChart.update();
-
-                // Task Progress
-                const taskProgress = ((completed/sum)*100).toFixed(2);
-                return taskProgress === 100 
-                    ? `All tasks are completed` 
-                    : `${ taskProgress }% tasks are completed`
             }
 
             setContent({

@@ -686,16 +686,25 @@ def get_all_hired_applicants(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            user_department = db.query(Department).join(Position).filter(Department.department_id == Position.department_id).join(User).filter(User.user_id == user_data.user_id, User.position_id == Position.position_id).first()
+            
+            # Get User Sub-department
+            user_sub_department = db.query(SubDepartment).join(Position).filter(
+                SubDepartment.sub_department_id == Position.sub_department_id
+            ).join(Employee).filter(
+                Position.position_id == Employee.position_id,
+                Employee.employee_id == user_data.employee_id
+            ).first()
+
             onboarding_employee = db.query(OnboardingEmployee).filter(
                 OnboardingEmployee.onboarding_employee_id == onboarding_employee_id,
                 OnboardingEmployee.status == "Pending"
             ).join(Position).filter(
                 OnboardingEmployee.position_id == Position.position_id
-            ).join(Department).filter(
-                Position.department_id == Department.department_id, 
-                Department.department_id ==  user_department.department_id
+            ).join(SubDepartment).filter(
+                Position.sub_department_id == SubDepartment.sub_department_id, 
+                SubDepartment.sub_department_id ==  user_sub_department.sub_department_id
             ).first()
+            
             if not onboarding_employee: 
                 raise HTTPException(status_code=404, detail=APPLICANT_NOT_FOUND_RESPONSE)
             else:

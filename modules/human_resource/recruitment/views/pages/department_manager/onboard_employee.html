@@ -65,44 +65,44 @@
                         {# Stepper Content #}
                         <div class="bs-stepper-content mt-3">
 
-                            {# Applicant Information #}
-                            <div id="applicantInformationPanel" class="content" role="tabpanel" aria-labelledby="applicantInformationPanelTrigger">
+                            {# Loader #}
+                            <div id="onboardingEmployeeFormLoader">
+                                <div class="skeleton-loader"></div>
+                                <div class="skeleton-loader w-25 my-3"></div>
 
-                                {# Loader #}
-                                <div id="onboardingEmployeeFormLoader">
-                                    <div class="skeleton-loader"></div>
-                                    <div class="skeleton-loader w-25 my-3"></div>
-
-                                    <div class="form-row mb-3">
-                                        {% for i in range(4) %}
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <div class="skeleton-loader w-25"></div>
-                                                    <div class="skeleton-loader" style="height: 35px"></div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="form-row mb-3">
-                                        {% for i in range(2) %}
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <div class="skeleton-loader w-25"></div>
-                                                    <div class="skeleton-loader" style="height: 35px"></div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="form-row mb-3">
+                                <div class="form-row mb-3">
+                                    {% for i in range(4) %}
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <div class="skeleton-loader w-25"></div>
                                                 <div class="skeleton-loader" style="height: 35px"></div>
                                             </div>
                                         </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="form-row mb-3">
+                                    {% for i in range(2) %}
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="skeleton-loader w-25"></div>
+                                                <div class="skeleton-loader" style="height: 35px"></div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="form-row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="skeleton-loader w-25"></div>
+                                            <div class="skeleton-loader" style="height: 35px"></div>
+                                        </div>
                                     </div>
                                 </div>
-                                
+                            </div>
+
+                            {# Applicant Information #}
+                            <div id="applicantInformationPanel" class="content" role="tabpanel" aria-labelledby="applicantInformationPanelTrigger">
+
                                 {# Information #}
                                 <div id="onboardingEmployeeForm" style="display: none">
                                     <p class="font-weight-bold">Please confirm and make sure the employee details are correct and updated.</p>
@@ -303,7 +303,7 @@
                                         </div>
                                         <div>
                                             <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addOnboardingTaskModal">
-                                                <span>Add</span>
+                                                <span>Add onboarding task</span>
                                                 <i class="fas fa-plus ml-1"></i>
                                             </button>
                                         </div>
@@ -328,7 +328,8 @@
                                                 <tr>
                                                     <td colspan="4">
                                                         <div class="py-5 text-center">
-                                                            <h3 class="text-secondary">No added tasks yet</h3>
+                                                            <h3>No added tasks yet</h3>
+                                                            <div class="text-secondary">You can add another onboarding task by clicking the button at the top-right.</div>
                                                         </div>
                                                     </td>
                                                 </tr>

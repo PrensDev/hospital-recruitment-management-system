@@ -207,7 +207,7 @@ ifSelectorExist('#jobPostDetails', () => {
             setContent('#manpowerRequestSummaryBtnContainer', `
                 <a 
                     class="btn btn-sm btn-secondary btn-block"
-                    href="${ ROUTE.WEB.H }manpower-requests/${ manpowerRequest.requisition_id }"
+                    href="${ ROUTE.WEB.H }manpower-requests/${ manpowerRequest.manpower_request_id }"
                 >View Full Details</button>
             `)
 

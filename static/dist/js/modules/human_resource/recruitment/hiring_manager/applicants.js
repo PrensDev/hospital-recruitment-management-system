@@ -46,7 +46,7 @@ ifSelectorExist('#jobPostSummary', () => {
             });
             
             // Set Employment Type
-            setContent('#employmentType', manpowerRequest.employment_type);
+            setContent('#employmentType', manpowerRequest.employment_type.name);
 
             // Set Deadline
             setContent('#deadline', () => {

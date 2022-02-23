@@ -13,7 +13,7 @@ initDataTable('#hiredApplicantsDT', {
     columns: [
         
         // Created at (for default sorting)
-        { data: 'created_at', visible: false },
+        { data: 'hired_at', visible: false },
 
         // Applicant
         {

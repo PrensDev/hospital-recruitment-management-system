@@ -25,7 +25,6 @@
         GET_ajax(`${ ROUTE.API.DM }info`, {
             success: result => {
                 if(result) {
-                    console.log(result);
                     sessionStorage.setItem('user_info', JSON.stringify({
                         "fullName": formatName("F M. L, S", {
                             firstName  : result.first_name,

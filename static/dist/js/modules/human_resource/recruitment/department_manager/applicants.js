@@ -113,7 +113,7 @@ initDataTable('#hiredApplicantsDT', {
 const viewApplicantDetails = (onboardingEmployeeID) => {
     GET_ajax(`${ ROUTE.API.DM }hired-applicants/${ onboardingEmployeeID }`, {
         success: result => {
-            
+
             /** APPLICANT DETAILS */
             
             // Set Applicant Full Name
@@ -122,7 +122,7 @@ const viewApplicantDetails = (onboardingEmployeeID) => {
                     firstName: result.first_name,
                     middleName: result.middle_name,
                     lastName: result.last_name,
-                    suffixName: result.suffixName
+                    suffixName: result.suffix_name
                 }),
                 "#applicantContactNumber": result.contact_number,
                 "#applicantEmail": result.email

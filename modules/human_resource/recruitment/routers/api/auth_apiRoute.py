@@ -10,10 +10,7 @@ from hashing import Hash
 from modules.human_resource.recruitment.models._base import *
 
 # Router Instance
-router = APIRouter(
-    prefix = "/api/auth",
-    tags = ["Authentication API"]
-)
+router = APIRouter(prefix = "/api/auth", tags = ["Authentication API"])
 
 # Login
 @router.post("/login")
@@ -23,10 +20,7 @@ def login(res: Response, req: OAuth2PasswordRequestForm = Depends(), db: Session
     user_credentials = db.query(User).filter(User.email == req.username).join(Employee).join(UserRole).join(Role).first()
 
     # For Inavlid Login Details
-    ACCESS_DENIED_MESSAGE = {
-        "authorized": False,
-        "message": "Incorrect credentials"
-    }
+    ACCESS_DENIED_MESSAGE = {"authorized": False, "message": "Incorrect credentials"}
 
     # Check if user is existing in database
     if not user_credentials:

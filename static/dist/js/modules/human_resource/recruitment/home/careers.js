@@ -152,7 +152,7 @@ ifSelectorExist('#searchJobForm', () => {
         
             employmentType.val(urlParamsObj.employmentType).trigger('change');
         }
-    })
+    });
 });
 
 

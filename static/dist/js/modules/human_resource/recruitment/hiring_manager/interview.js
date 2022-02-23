@@ -358,7 +358,7 @@ ifSelectorExist('#interviewScheduleDetails', () => {
             setContent('#staffsNeeded', `${ staffsNeeded } new staff${ staffsNeeded > 1 ? 's' : '' }`);
 
             // Set Employment Type
-            setContent('#employmentType', jobPost.manpower_request.employment_type);
+            setContent('#employmentType', jobPost.manpower_request.employment_type.name);
 
             // Set Deadline
             const deadline = jobPost.manpower_request.deadline;

@@ -204,6 +204,10 @@ ifSelectorExist('#addOnboardingEmployeeForm', () => {
                         <td colspan="4">
                             <div class="py-5 text-center">
                                 <h3>No general task yet</h3>
+                                <div class="text-secondary mb-3">We found out that you haven't setup general tasks yet. You can add general tasks by clicking the button below</div>
+                                <a href="${ ROUTE.WEB.DM }general-tasks" target="_blank" class="btn btn-sm btn-secondary">
+                                    ${ TEMPLATE.ICON_LABEL('plus', 'Add general onboarding tasks') }
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -250,7 +254,8 @@ validateForm('#confirmRemoveGeneralTaskForm', {
             <tr>
                 <td colspan="4">
                     <div class="py-5 text-center">
-                        <h3 class="text-secondary">No general task yet</h3>
+                        <h3>No general tasks</h3>
+                        <div class="text-secondary">All general onboarding tasks has been removed</div>
                     </div>
                 </td>
             </tr>
@@ -421,7 +426,7 @@ const editAddedTask = (id) => {
             '#addedTaskID': t.id,
             '#taskTitleForEdit': t.task_title,
             '#descriptionForEdit': t.description
-        })
+        });
     });
     showModal('#editAddedOnboardingTaskModal');
 }
@@ -477,7 +482,8 @@ validateForm('#confirmRemoveAddedTaskForm', {
             <tr>
                 <td colspan="4">
                     <div class="py-5 text-center">
-                        <h3 class="text-secondary">No added tasks yet</h3>
+                        <h3>No added tasks yet</h3>
+                        <div class="text-secondary">You can add another onboarding task by clicking the button at the top-right.</div>
                     </div>
                 </td>
             </tr>
@@ -536,68 +542,72 @@ onClick('#confirmOnboardingEmployeeBtn', () => {
             if(result) {
                 
                 // Add general tasks to employee
-                if(generalOnboardingTasks.length > 0) generalOnboardingTasks.forEach(t => {
-                    
-                    // Set General Task Data 
-                    const generalTasksData = {
-                        onboarding_employee_id: onboardingEmployeeID,
-                        onboarding_task_id: t.onboarding_task_id,
-                        start_at: get(`startAt${ t.id }`),
-                        end_at: get(`endAt${ t.id }`)
-                    }
-
-                    // Create onboarding employee task 
-                    POST_ajax(
-                        `${ ROUTE.API.DM }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, 
-                            generalTasksData, {
-                            success: () => {},
-                            error: () => {
-                                toastr.error('There was an error in creating onbaording tasks to onboarding employee')
-                            }
+                if(generalOnboardingTasks.length > 0) {
+                    generalOnboardingTasks.forEach(t => {
+                        
+                        // Set General Task Data 
+                        const generalTasksData = {
+                            onboarding_employee_id: onboardingEmployeeID,
+                            onboarding_task_id: t.onboarding_task_id,
+                            start_at: get(`startAt${ t.id }`),
+                            end_at: get(`endAt${ t.id }`)
                         }
-                    );
-                });
+
+                        // Create onboarding employee task 
+                        POST_ajax(
+                            `${ ROUTE.API.DM }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, 
+                                generalTasksData, {
+                                success: () => {},
+                                error: () => {
+                                    toastr.error('There was an error in creating onboarding tasks to onboarding employee')
+                                }
+                            }
+                        );
+                    });
+                }
 
                 // Create and add onboarding tasks to employee
-                if(addedOnboardingTasks.length > 0) addedOnboardingTasks.forEach(t => {
+                if(addedOnboardingTasks.length > 0) {
+                    addedOnboardingTasks.forEach(t => {
 
-                    // Set added task data
-                    const addedTasksData = {
-                        title: t.task_title,
-                        description: t.description,
-                        task_type: t.task_type,
-                        is_general: false
-                    }
-                    
-                    // Create added task
-                    POST_ajax(`${ ROUTE.API.DM }onboarding-tasks`, addedTasksData, {
-                        success: result2 => {
-
-                            // Set Added employee task data
-                            const addedEmployeeTaskData = {
-                                onboarding_employee_id: onboardingEmployeeID,
-                                onboarding_task_id: result2.data.onboarding_task_id,
-                                start_at: get(`startAt${ t.id }`),
-                                end_at: get(`endAt${ t.id }`)
-                            }
-
-                            // Create added employee task
-                            POST_ajax(
-                                `${ ROUTE.API.DM }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, 
-                                addedEmployeeTaskData, 
-                                {
-                                    success: () => {},
-                                    error: () => {
-                                        toastr.error('There was an error in creating onbaording tasks to onboarding employee')
-                                    }
-                                }
-                            );
-                        },
-                        error: () => {
-                            toastr.error('There was an error in adding onboarding task');
+                        // Set added task data
+                        const addedTasksData = {
+                            title: t.task_title,
+                            description: t.description,
+                            task_type: t.task_type,
+                            is_general: false
                         }
+                        
+                        // Create added task
+                        POST_ajax(`${ ROUTE.API.DM }onboarding-tasks`, addedTasksData, {
+                            success: result2 => {
+
+                                // Set Added employee task data
+                                const addedEmployeeTaskData = {
+                                    onboarding_employee_id: onboardingEmployeeID,
+                                    onboarding_task_id: result2.data.onboarding_task_id,
+                                    start_at: get(`startAt${ t.id }`),
+                                    end_at: get(`endAt${ t.id }`)
+                                }
+
+                                // Create added employee task
+                                POST_ajax(
+                                    `${ ROUTE.API.DM }onboarding-employees/${ onboardingEmployeeID }/onboarding-tasks`, 
+                                    addedEmployeeTaskData, 
+                                    {
+                                        success: () => {},
+                                        error: () => {
+                                            toastr.error('There was an error in creating onbaording tasks to onboarding employee')
+                                        }
+                                    }
+                                );
+                            },
+                            error: () => {
+                                toastr.error('There was an error in adding onboarding task');
+                            }
+                        });
                     });
-                });
+                }
 
                 // Set sessioned alert and redirect
                 setSessionedAlertAndRedirect({
@@ -990,7 +1000,7 @@ initDataTable('#onboardingEmployeesDT', {
             data: null,
             render: data => {
                 const tasksCount = data.onboarding_employee_tasks.length;
-                return `${ tasksCount } task${ tasksCount > 1 ? 's' : '' }`
+                return `${ tasksCount } ${ pluralize('task', tasksCount) }`
             }
         },
 
@@ -999,39 +1009,46 @@ initDataTable('#onboardingEmployeesDT', {
             data: null,
             class: 'text-nowrap',
             render: data => {
-                let completed = 0;
-
                 const tasks = data.onboarding_employee_tasks;
-
-                tasks.forEach(t => { if(t.status == "Completed") completed++ });
-
-                var taskProgress = ((completed/tasks.length) * 100).toFixed(2);
-
-                var bgColor;
-                if(taskProgress <= 25) bgColor = 'danger';
-                else if(taskProgress <= 75) bgColor = 'warning';
-                else if(taskProgress < 100) bgColor = 'info';
-                else if(taskProgress == 100) bgColor = 'success';
-
-                var completeStatus = taskProgress == 100
-                    ? `<small>All tasks are completed</small>`
-                    : `<small>${ taskProgress }% complete</small>`
-
-                return `
-                    <div class="project_progress">
-                        <div class="progress progress-sm rounded">
-                            <div 
-                                class="progress-bar bg-${ bgColor }" 
-                                role="progressbar" 
-                                aria-valuenow="${ taskProgress }" 
-                                aria-valuemin="0" 
-                                aria-valuemax="100" 
-                                style="width: ${ taskProgress }%"
-                            ></div>
+                if(tasks.length > 0) {
+                    let completed = 0;
+                    tasks.forEach(t => { if(t.status == "Completed") completed++ });
+    
+                    var taskProgress = ((completed/tasks.length) * 100).toFixed(2);
+    
+                    var bgColor;
+                    if(taskProgress <= 25) bgColor = 'danger';
+                    else if(taskProgress <= 75) bgColor = 'warning';
+                    else if(taskProgress < 100) bgColor = 'info';
+                    else if(taskProgress == 100) bgColor = 'success';
+    
+                    var completeStatus = taskProgress == 100
+                        ? `
+                            <small>
+                                <i class="fas fa-check-circle text-success mr-1"></i>
+                                <span>Completed</span>
+                            </small>
+                        ` 
+                        : `<small>${ taskProgress }% complete</small>`
+    
+                    return `
+                        <div class="project_progress">
+                            <div class="progress progress-sm rounded">
+                                <div 
+                                    class="progress-bar bg-${ bgColor }" 
+                                    role="progressbar" 
+                                    aria-valuenow="${ taskProgress }" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100" 
+                                    style="width: ${ taskProgress }%"
+                                ></div>
+                            </div>
+                            ${ completeStatus }
                         </div>
-                        ${ completeStatus }
-                    </div>
-                `
+                    `
+                } else {
+                    return TEMPLATE.SUBTEXT(TEMPLATE.EMPTY('No tasks has been set'))
+                }
             }
         },
 
@@ -1101,10 +1118,11 @@ initDataTable('#onboardingEmployeeTasksDT', {
                         <div class="small text-secondary mb-3">${ task.description }</div>
                         <div class="small d-flex mb-2">
                             <div class="mr-1">
-                                <i class="fas fa-clock text-secondary"></i>
+                                <i class="fas fa-hourglass-half text-secondary"></i>
                             </div>
-                            <div>
-                                <span>${ formatDateTime(startAt, 'DateTime') } - ${ formatDateTime(deadline, 'DateTime') }</span>
+                            <div class="font-weight-bold">
+                                <div>Start: ${ formatDateTime(startAt, 'DateTime') }</div>
+                                <div>End: ${ formatDateTime(deadline, 'DateTime')  }</div>
                             </div>
                         </div>
                         <div>${ getOnboardingEmployeeTaskStatus(data.status, startAt, deadline, data.completed_at) }</div>
@@ -1185,47 +1203,58 @@ const getOnboardingEmployeeDetails = () => {
 
             // Get task Progress
             const getTaskProgress = () => {
-                let pending = 0, onGoing = 0, completed = 0, sum = 0;
-                
-                const taskProgressIterator = {
-                    'Pending': () => pending++,
-                    'On Going': () => onGoing++,
-                    'Completed': () => completed++
-                }
-
-                result.onboarding_employee_tasks.forEach(t => {
-                    taskProgressIterator[t.status]();
-                    sum++;
-                });
-
-                // Configure Onboarding Employee Task Doughnut Chart
+                const onboardingEmployeeTasks = result.onboarding_employee_tasks;
                 const chartConfig = onboardingEmployeeTasksDoughnutChart.config;
-                chartConfig.data = {
-                    labels: ['Pending','On Going','Completed',],
-                    datasets: [{
-                        data: [pending, onGoing, completed],
-                        backgroundColor : [
-                            CHART_BG.WARNING,
-                            CHART_BG.INFO,
-                            CHART_BG.SUCCESS
-                        ],
-                        borderColor:  [
-                            CHART_BD.WARNING,
-                            CHART_BD.INFO,
-                            CHART_BD.SUCCESS
-                        ],
-                        borderWidth: 2
-                    }]
+                if(onboardingEmployeeTasks.length > 0) {
+                    let pending = 0, onGoing = 0, completed = 0, sum = 0;
+                    const taskProgressIterator = {
+                        'Pending': () => pending++,
+                        'On Going': () => onGoing++,
+                        'Completed': () => completed++
+                    }
+    
+                    onboardingEmployeeTasks.forEach(t => {
+                        taskProgressIterator[t.status]();
+                        sum++;
+                    });
+    
+                    // Configure Onboarding Employee Task Doughnut Chart
+                    chartConfig.data = {
+                        labels: ['Pending','On Going','Completed',],
+                        datasets: [{
+                            data: [pending, onGoing, completed],
+                            backgroundColor : [
+                                CHART_BG.WARNING,
+                                CHART_BG.INFO,
+                                CHART_BG.SUCCESS
+                            ],
+                            borderColor:  [
+                                CHART_BD.WARNING,
+                                CHART_BD.INFO,
+                                CHART_BD.SUCCESS
+                            ],
+                            borderWidth: 2
+                        }]
+                    }
+    
+                    // Update chart
+                    onboardingEmployeeTasksDoughnutChart.update();
+    
+                    // Task Progress
+                    const taskProgress = ((completed/sum)*100).toFixed(2);
+                    return taskProgress == 100 
+                        ? `All tasks are completed` 
+                        : `${ taskProgress }% tasks are completed`
+                } else {
+                    
+                    // Set empty data to chart
+                    chartConfig.data = CHART_CONFIG.NO_DATA
+
+                    // Update chart
+                    onboardingEmployeeTasksDoughnutChart.update();
+                    
+                    return TEMPLATE.EMPTY('No task has been set')
                 }
-
-                // Update chart
-                onboardingEmployeeTasksDoughnutChart.update();
-
-                // Task Progress
-                const taskProgress = ((completed/sum)*100).toFixed(2);
-                return taskProgress === 100 
-                    ? `All tasks are completed` 
-                    : `${ taskProgress }% tasks are completed`
             }
 
             const employeeFullName = formatName('F M. L, S', {
@@ -1343,7 +1372,7 @@ validateForm('#updateTaskStatusForm', {
                     reloadDataTable('#onboardingEmployeeTasksDT');
 
                     // Reload Onboarding Employee Details
-                    getOnboardingEmployeeDetails()
+                    getOnboardingEmployeeDetails();
 
                     // Hide Modal
                     hideModal('#changeTaskStatusModal');
@@ -1541,11 +1570,10 @@ validateForm('#addOnboardingEmployeeTaskForm', {
         POST_ajax(`${ ROUTE.API.DM }onboarding-tasks`, newOnboardingTaskData, {
             success: result => {
                 if(result) {
-                    const onboardingTaskID = result.data.onboarding_task_id;
 
                     // Set Data
                     const newOnboardingEmployeeTaskData = {
-                        onboarding_task_id: onboardingTaskID,
+                        onboarding_task_id: result.data.onboarding_task_id,
                         start_at: get('startAt'),
                         end_at: get('deadline')
                     }
