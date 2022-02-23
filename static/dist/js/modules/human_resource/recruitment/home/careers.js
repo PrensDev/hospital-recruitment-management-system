@@ -731,6 +731,7 @@ $('#resetFilters').on('click', () => {
         $("#datePosted").val('').trigger('change');
         $("#jobCategory").val('').trigger('change');
         $("#employmentType").val('').trigger('change');
+
         
         // Show loading status
         setContent('#availableJobList', `
