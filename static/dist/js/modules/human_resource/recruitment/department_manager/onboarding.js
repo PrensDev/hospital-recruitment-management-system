@@ -346,14 +346,14 @@ validateForm('#addOnboardingTaskForm', {
                 <td>
                     ${
                         TEMPLATE.DT.OPTIONS(`
-                            <div 
+                            <!-- div 
                                 class="dropdown-item d-flex"
                                 role="button"
                                 onclick="editAddedTask('${ uniqueSuffix }')"
                             >
                                 <div style="width: 2rem"><i class="fas fa-edit mr-1"></i></div>
                                 <span>Edit task</span>
-                            </div>
+                            -->
                             <div 
                                 class="dropdown-item d-flex"
                                 role="button"
