@@ -1312,3 +1312,16 @@ initDataTable('#rejectedApplicantsDT', {
         }
     ]
 });
+
+
+/**
+ * ==============================================================================
+ * REPLACE URL LINKS
+ * ==============================================================================
+*/
+
+$('#forScreeningLink').on('click', () => location.replace(`${ ROUTE.WEB.H }job-posts/${ jobPostID }/applicants/for-screening`))
+$('#forInterviewLink').on('click', () => location.replace(`${ ROUTE.WEB.H }job-posts/${ jobPostID }/applicants/for-interview`))
+$('#interviewedLink').on('click', () => location.replace(`${ ROUTE.WEB.H }job-posts/${ jobPostID }/applicants/interviewed`))
+$('#hiredLink').on('click', () => location.replace(`${ ROUTE.WEB.H }job-posts/${ jobPostID }/applicants/hired`))
+$('#rejectedLink').on('click', () => location.replace(`${ ROUTE.WEB.H }job-posts/${ jobPostID }/applicants/rejected`))

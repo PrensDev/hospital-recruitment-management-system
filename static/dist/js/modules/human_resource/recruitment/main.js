@@ -656,7 +656,12 @@ const setJobPostDetails = (data) => {
         '#jobPostViews': formatNumber(data.views) + pluralize(' view', data.views),
         '#vacantPosition': manpowerRequest.vacant_position.name,
         '#employmentTypeForJobPost': manpowerRequest.employment_type,
-        '#jobCategory': data.job_category.name,
+        '#jobCategory': data.job_category.is_removed 
+            ? `
+                <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
+                <span class="font-italic text-secondary">Category is not set or removed</span>
+            ` 
+            : data.job_category.name,
     });
 
     // Set Salary Range
@@ -726,7 +731,11 @@ const getOnboardingEmployeeTaskStatus = (status, startAt, deadline, completedAt)
 
 
 
-
+/** 
+ * ===================================================================================
+ * APPLICANT SCORESHEET
+ * ===================================================================================
+ */
 
 /** Applicant Scoresheet */
 const setIntervieweeScoreSheet = (selector, scores) => {

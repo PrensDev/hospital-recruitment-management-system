@@ -312,7 +312,7 @@ def render(
 # General Tasks
 @router.get("/general-tasks", response_class=HTMLResponse)
 def render(req: Request, menu: Optional[str] = None, user_data: dict = Depends(get_token)):
-        
+
     # Check if user is not authorized
     if AUTHORIZED_USER not in user_data['roles']:
         return errTemplate.page_not_found(req)

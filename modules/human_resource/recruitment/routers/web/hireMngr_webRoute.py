@@ -1,4 +1,5 @@
 # Import Packages
+from typing import Optional
 from database import get_db
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -191,7 +192,6 @@ def render(
     if not db.query(JobPost).filter(JobPost.job_post_id == job_post_id).first():
         return errTemplate.page_not_found(req)
 
-    # if no error, redirect for default page
     return RedirectResponse(f"/h/job-posts/{job_post_id}/applicants/for-screening")
 
 
