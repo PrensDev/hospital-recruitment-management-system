@@ -369,9 +369,9 @@ initDataTable('#manpowerRequestDT', {
                     case "For signature":
                         additionalOptions = editBtn + cancelBtn;
                         break;
-                    case "Approved":
-                        additionalOptions = markAsCompletedBtn;
-                        break;
+                    // case "Approved":
+                    //     additionalOptions = markAsCompletedBtn;
+                    //     break;
                     case "Rejected for approval":
                     case "Rejected for signing":
                         additionalOptions = deleteBtn;
@@ -434,70 +434,68 @@ const getManpowerRequestDetails = () => {
     const manpowerRequestID = window.location.pathname.split('/')[3];
     GET_ajax(`${ ROUTE.API.DM }manpower-requests/${ manpowerRequestID }`, {
         success: result => {
+            if(result) {
 
-            /** MANPOWER REQUEST DETAILS */
-            setManpowerRequestDocument(result);
-            
-            /** MANPOWER REQUEST TIMELINE */
-            setManpowerRequestTimeline('#manpowerRequestTimeline', result);
-            
-            /** MANPOWER REQUEST OPTIONS */
-            setContent('#manpowerRequestOptions', () => {
-                const manpowerRequestID = result.manpower_request_id;
+                /** MANPOWER REQUEST DETAILS */
+                setManpowerRequestDocument(result);
+                
+                /** MANPOWER REQUEST TIMELINE */
+                setManpowerRequestTimeline('#manpowerRequestTimeline', result);
+                
+                /** MANPOWER REQUEST OPTIONS */
+                setContent('#manpowerRequestOptions', () => {
+                    const manpowerRequestID = result.manpower_request_id;
 
-                switch(result.request_status) {
-                    case "For signature":
-                        return `
-                            <a 
-                                class="btn btn-sm btn-info btn-block"
-                                href="${ ROUTE.WEB.DM }edit-manpower-request/${ manpowerRequestID }"
-                            >
-                                ${ TEMPLATE.ICON_LABEL("edit", "Edit Request") }
-                            </a>
+                    switch(result.request_status) {
+                        case "For signature":
+                            return `
+                                <a 
+                                    class="btn btn-sm btn-info btn-block"
+                                    href="${ ROUTE.WEB.DM }edit-manpower-request/${ manpowerRequestID }"
+                                >
+                                    ${ TEMPLATE.ICON_LABEL("edit", "Edit Request") }
+                                </a>
 
-                            <div class="btn btn-sm btn-warning btn-block" onclick="cancelManpowerRequest('${ manpowerRequestID }')">
-                                ${ TEMPLATE.ICON_LABEL("times-circle", "Cancel request") }
-                            </div>
-                            <hr>
-                            <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                                ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
-                            </div>
-                        `
-                    case "Approved":
-                        $('#cancelManpowerRequestModal').remove();
-                        return `
-                            <div class="btn btn-sm btn-success btn-block" onclick="markAsCompleted('${ manpowerRequestID }')">
-                                ${ TEMPLATE.ICON_LABEL("check-circle", "Mark as Completed") }
-                            </div>
-                            <hr>
-                            <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                                ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
-                            </div>
-                        `
-                    case "Completed":
-                        $('#cancelManpowerRequestModal').remove();
-                        $('#markAsCompletedModal').remove();
-                        return `
-                            <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                                ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
-                            </div>
+                                <div class="btn btn-sm btn-warning btn-block" onclick="cancelManpowerRequest('${ manpowerRequestID }')">
+                                    ${ TEMPLATE.ICON_LABEL("times-circle", "Cancel request") }
+                                </div>
+                                <hr>
+                                <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                                    ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
+                                </div>
                             `
-                    default:
-                        $('#cancelManpowerRequestModal').remove();
-                        $('#markAsCompletedModal').remove();
-                        return `
-                            <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
-                                ${ TEMPLATE.LABEL_ICON("Print Manpower Request Form", "print") }
-                            </div>
-                        `
-                }
-            });
-            $('#optionsLoader').remove();
-            showElement('#optionsContainer');
-
-            /** MANPOWER REQUEST */
-            $('#manpowerRequestTimelineLoader').remove();
-            showElement('#manpowerRequestTimeline');
+                        case "Approved":
+                            $('#cancelManpowerRequestModal').remove();
+                            return `
+                                <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                                    ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
+                                </div>
+                            `
+                        case "Completed":
+                            $('#cancelManpowerRequestModal').remove();
+                            $('#markAsCompletedModal').remove();
+                            return `
+                                <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                                    ${ TEMPLATE.ICON_LABEL("print", "Print Manpower Request Form") }
+                                </div>
+                                `
+                        default:
+                            $('#cancelManpowerRequestModal').remove();
+                            $('#markAsCompletedModal').remove();
+                            return `
+                                <div class="btn btn-sm btn-secondary btn-block" onclick="printManpowerRequest()">
+                                    ${ TEMPLATE.LABEL_ICON("Print Manpower Request Form", "print") }
+                                </div>
+                            `
+                    }
+                });
+                $('#optionsLoader').remove();
+                showElement('#optionsContainer');
+    
+                /** MANPOWER REQUEST */
+                $('#manpowerRequestTimelineLoader').remove();
+                showElement('#manpowerRequestTimeline');
+            } else toastr.error('Sorry, there was an error while getting requisition details')
         },
         error: () => toastr.error('Sorry, there was an error while getting requisition details')
     });

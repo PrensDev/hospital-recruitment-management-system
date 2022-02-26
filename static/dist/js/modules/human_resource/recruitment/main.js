@@ -723,3 +723,44 @@ const getOnboardingEmployeeTaskStatus = (status, startAt, deadline, completedAt)
             return TEMPLATE.BADGE('light', 'Invalid data')
     }
 }
+
+
+
+
+
+/** Applicant Scoresheet */
+const setIntervieweeScoreSheet = (selector, scores) => {
+    
+    // Set ScoreSheet
+    setContent(selector, '');
+    let sum = 0;
+
+    const interviewQuestionTypeBadge = {
+        "General": `<span class="badge border border-primary text-primary">General</span>`,
+        "Added": `<span class="badge border border-secondary text-secondary">Added</span>`
+    };
+
+    scores.forEach((s, i) => {
+        const score = s.score;
+        sum+=score;
+
+        $(selector).append(`
+            <tr>
+                <td class="text-right">${ i+1 }</td>
+                <td width="100%">
+                    <div>${ s.interview_question.question }</div>
+                    <div>${ interviewQuestionTypeBadge[s.interview_question.type] }</div>
+                </td>
+                <td class="text-right">${ formatNumber(score) }%</td>
+            </tr>
+        `);
+    });
+
+    $(selector).append(`
+        <tr>
+            <td colspan="2" class="text-right font-weight-bold">Average</td>
+            <td class="text-right font-weight-bold">${ formatNumber(sum/scores.length) }%</td>
+        </tr>
+    `);
+
+}

@@ -586,7 +586,10 @@ def evaluated_applicants(
             return db.query(Applicant).filter(
                 Applicant.job_post_id == job_post_id,
                 Applicant.status == 'For interview'
-            ).outerjoin(Interviewee).filter(Interviewee.is_interviewed == None).all()
+            ).join(Interviewee).filter(
+                Interviewee.applicant_id == Applicant.applicant_id,
+                Interviewee.is_interviewed == None
+            ).all()
     except Exception as e:
         print(e)
 
@@ -603,7 +606,10 @@ def evaluated_applicants(
             return db.query(Applicant).filter(
                 Applicant.job_post_id == job_post_id,
                 Applicant.status == 'For interview'
-            ).join(Interviewee).filter(Interviewee.is_interviewed == True).all()
+            ).join(Interviewee).filter(
+                Interviewee.applicant_id == Applicant.applicant_id,
+                Interviewee.is_interviewed == True
+            ).all()
     except Exception as e:
         print(e)
 
@@ -1023,6 +1029,20 @@ def create_interview_schedule(
         print(e)
 
 
+# Get Interview Schedules and Applicants
+@router.get("/interview-schedules", response_model=List[hireMngr.ShowInterviewScheduleInfo])
+def interview_schedules_and_applicants(
+    db: Session = Depends(get_db),
+    user_data: user.UserData = Depends(get_user)
+):
+    try:
+        if(authorized(user_data, AUTHORIZED_USER)):
+            return db.query(InterviewSchedule).filter(
+                InterviewSchedule.set_by == user_data.employee_id
+            ).all()
+    except Exception as e:
+        print(e)
+
 # Get Interview Schedule and Applicants
 @router.get("/interview-schedules/{interview_schedule_id}", response_model=hireMngr.ShowInterviewScheduleInfo)
 def interview_schedules_and_applicants(
@@ -1032,7 +1052,11 @@ def interview_schedules_and_applicants(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
+            
+            interview_schedule = db.query(InterviewSchedule).filter(
+                InterviewSchedule.interview_schedule_id == interview_schedule_id
+            ).first()
+
             if not interview_schedule:
                 raise HTTPException(status_code=404, detail=INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE)
             else:
@@ -1050,10 +1074,12 @@ def interviewees_per_schedule(
 ):
     try:
         if(authorized(user_data, AUTHORIZED_USER)):
-            interview_schedule = db.query(InterviewSchedule).filter(InterviewSchedule.interview_schedule_id == interview_schedule_id).first()
             if not interview_schedule_id:
                 raise HTTPException(status_code=404, detail=INTERVIEW_SCHEDULE_NOT_FOUND_RESPONSE)
             else:
+                interview_schedule = db.query(InterviewSchedule).filter(
+                    InterviewSchedule.interview_schedule_id == interview_schedule_id
+                ).first()
                 return interview_schedule.interviewees
     except Exception as e:
         print(e)

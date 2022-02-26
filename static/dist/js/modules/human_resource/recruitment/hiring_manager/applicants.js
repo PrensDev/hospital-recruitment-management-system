@@ -299,7 +299,7 @@ const setApplicantDetailsAndTimeline = (result) => {
             firstName  : result.first_name,
             middleName : result.middle_name,
             lastName   : result.last_name,
-            suffixName : result.suffixName
+            suffixName : result.suffix_name
         }),
         "#applicantContactNumber": result.contact_number,
         "#applicantEmail": result.email,

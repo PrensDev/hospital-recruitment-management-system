@@ -282,7 +282,119 @@ validateForm('#editGeneralInterviewQuestionForm', {
         });
         return false;
     }
-})
+});
+
+
+/**
+ * ==============================================================================
+ * INTERVIEW SCHEDULES
+ * ==============================================================================
+ */
+
+initDataTable('#interviewSchedulesDT', {
+    url: `${ ROUTE.API.H }interview-schedules`,
+    // debugMode: true,
+    columns: [
+
+        // Set At
+        {
+            data: null,
+            visible: false,
+            render: data => {
+                return moment(`${ data.scheduled_date } ${ data.start_session }`).format();
+            }
+        }, 
+
+        // Schedule
+        {
+            data: null, 
+            render: data => {
+                const scheduledDate = data.scheduled_date;
+                const startSession = moment(`${ scheduledDate } ${ data.start_session }`);
+                const endSession = moment(`${ scheduledDate } ${ data.end_session }`);
+
+                return `
+                    <div>${ formatDateTime(scheduledDate, 'Full Date') }</div>
+                    <div>${ formatDateTime(startSession, 'Time') } - ${ formatDateTime(endSession, 'Time') }</div>
+                `
+            }
+        },
+
+        // For Job Post/Position
+        { data: 'schedule_for.manpower_request.vacant_position.name' },
+
+        // Number of Interviewees
+        {
+            data: null,
+            render: data => {
+                const interviewees = data.interviewees.length;
+                return `${ interviewees } ${ pluralize('interviewee', interviewees) }`
+            }
+        },
+
+        // Status
+        {
+            data: null,
+            render: data => {
+
+                const scheduledDate = data.scheduled_date;
+                const startSession = moment(`${ scheduledDate } ${ data.start_session }`);
+                const endSession = moment(`${ scheduledDate } ${ data.end_session }`);
+
+                if(moment().isSame(scheduledDate, 'date')) {
+                    if(isAfterToday(startSession) && isAfterToday(endSession)) {
+                        return `
+                            ${ TEMPLATE.DT.BADGE('warning', 'Will happen soon', 'mr-2') }
+                            ${ TEMPLATE.SUBTEXT(`Started ${ fromNow(startSession) }`) }
+                        `
+                    } else if(isBeforeToday(startSession) && isAfterToday(endSession)) {
+                        return `
+                            ${ TEMPLATE.DT.BADGE('info', 'On going', 'mr-2') }
+                            ${ TEMPLATE.SUBTEXT(`Started ${ fromNow(startSession) }`) }
+                        `
+                    } else {
+                        return `
+                            ${ TEMPLATE.DT.BADGE('danger', 'Ended today', 'mr-2') }
+                            ${ TEMPLATE.SUBTEXT(fromNow(endSession)) }
+                        `
+                    }
+                } else if(isAfterToday(startSession)) {
+                    return `
+                        ${ TEMPLATE.DT.BADGE('secondary', 'Soon', 'mr-2') }
+                        ${ TEMPLATE.SUBTEXT(fromNow(startSession)) }
+                    `
+                } else {
+                    return `
+                        ${ TEMPLATE.DT.BADGE('danger', 'Ended', 'mr-2') }
+                        ${ TEMPLATE.SUBTEXT(fromNow(endSession)) }
+                    `
+                }
+            }
+        },
+
+        // Options
+        {
+            data: null,
+            render: data => {
+                return TEMPLATE.DT.OPTIONS(`
+                    <a 
+                        class="dropdown-item d-flex"
+                        role="button"
+                        href="${ ROUTE.WEB.H }interview-schedules/${ data.interview_schedule_id }"                  
+                    >
+                        <div style="width: 2rem"><i class="fas fa-calendar-alt mr-1"></i></div>
+                        <div>
+                            <div>View Details</div>
+                            ${ TEMPLATE.SUBTEXT('View the details of this schedule') }
+                        </div>
+                    </a>
+                `)
+            }
+        }
+    ]
+});
+
+
 
 /**
  * ==============================================================================
@@ -423,8 +535,13 @@ initDataTable('#intervieweesDT', {
                 const isInterviewed = data.is_interviewed;
                 if(isEmptyOrNull(isInterviewed))
                     return TEMPLATE.DT.BADGE('warning', TEMPLATE.ICON_LABEL('question', "Not interviewed yet"))
-                else if(isInterviewed)
-                    return TEMPLATE.DT.BADGE('success', TEMPLATE.ICON_LABEL('check', "Interviewed"))
+                else if(isInterviewed) {
+                    const applicant_status = data.applicant_info.status;
+                    if(applicant_status === "Hired" || applicant_status === "Contract signed")
+                        return TEMPLATE.DT.BADGE('success', TEMPLATE.ICON_LABEL('handshake', "Hired"))
+                    else
+                        return TEMPLATE.DT.BADGE('success', TEMPLATE.ICON_LABEL('check', "Interviewed"))
+                }
                 else
                     return TEMPLATE.DT.BADGE('danger', TEMPLATE.ICON_LABEL('times', "Not Interviewed"))
             }
@@ -435,14 +552,36 @@ initDataTable('#intervieweesDT', {
             data: null,
             render: data => {
                 const intervieweeID = data.interviewee_id
+
+                const viewIntervieweeDetails = () => {
+                    return `
+                        <div 
+                            class="dropdown-item d-flex"
+                            role="button"
+                            onclick="viewIntervieweeDetails('${ intervieweeID }')"                  
+                        >
+                            <div style="width: 2rem"><i class="fas fa-user-tie mr-1"></i></div>
+                            <div>
+                                <div>View Interviewee Details</div>
+                                ${ TEMPLATE.SUBTEXT('View the details of this interviewee') }
+                            </div>
+                        </div>
+                    `
+                }
+
                 if(isEmptyOrNull(data.is_interviewed)) {
                     return TEMPLATE.DT.OPTIONS(`
+                        ${ viewIntervieweeDetails() }
+                        <div class="dropdown-divider"></div>
                         <a 
                             class="dropdown-item d-flex"
                             href="${ ROUTE.WEB.H }interview/${ intervieweeID }"                                  
                         >
                             <div style="width: 2rem"><i class="fas fa-tasks mr-1"></i></div>
-                            <div>Interview this applicant</div>
+                            <div>
+                                <div>Interview this applicant</div>
+                                ${ TEMPLATE.SUBTEXT('Set the questions and scores for interview') }
+                            </div>
                         <a>
                         <div 
                             class="dropdown-item d-flex"
@@ -455,14 +594,7 @@ initDataTable('#intervieweesDT', {
                     `)
                 } else {
                     return TEMPLATE.DT.OPTIONS(`
-                        <div 
-                            class="dropdown-item d-flex"
-                            role="button"
-                            onclick="viewIntervieweeDetails('${ intervieweeID }')"                  
-                        >
-                            <div style="width: 2rem"><i class="fas fa-list mr-1"></i></div>
-                            <div>View Details</div>
-                        <div>
+                        ${ viewIntervieweeDetails() }
                     `)
                 }
             }
@@ -470,9 +602,287 @@ initDataTable('#intervieweesDT', {
     ]
 });
 
-
+/** View Interviewee Details */
 const viewIntervieweeDetails = (intervieweeID) => {
-    alert(intervieweeID)
+    GET_ajax( `${ ROUTE.API.H }interviewee/${ intervieweeID }`, {
+        success: result => {
+            console.log(result);
+            const applicant = result.applicant_info;
+            const applicant_status = applicant.status;
+            
+            /**
+             * Load Interviewee Details
+             * Not yet interviewed
+             */
+            const loadIntervieweeDetails = () => {
+
+                // Set Applicant Details
+                setContent({
+                    '#intervieweeFullName': formatName('F M. L, S', {
+                        firstName  : applicant.first_name,
+                        middleName : applicant.middle_name,
+                        lastName   : applicant.last_name,
+                        suffixName : applicant.suffix_name
+                    }),
+                    '#intervieweeContactNumber': applicant.contact_number,
+                    '#intervieweeEmail': applicant.email
+                });
+
+                // Set Resume
+                $('#viewIntervieweeResumeBtn').attr('href', `${ URL_RESUME_FILES }${ applicant.resume }`);
+
+                // Set Interview Now Button
+                $('#interviewNowBtn').attr('href', `${ ROUTE.WEB.H }interview/${ result.interviewee_id }`)
+
+                // Set Applicant Timeline
+                setApplicantTimeline('#intervieweeTimeline', applicant);
+                
+                // Remove Applicant Timeline Loader
+                hideElement('#intervieweeTimelineLoader');
+                showElement('#intervieweeTimeline');
+
+                // Show Modal
+                showModal('#intervieweeDetailsModal');
+            }
+
+            /**
+             * Load Interviewed Details
+             * Interviewed Applicant
+             */
+            const loadInterviewedDetails = () => {
+                
+                // Set Applicant ID (For Hiring Or Reject)
+                setValue('#interviewedApplicantID', applicant.applicant_id);
+
+                // Set Applicant Details
+                setContent({
+                    '#interviewedFullName': formatName('F M. L, S', {
+                        firstName  : applicant.first_name,
+                        middleName : applicant.middle_name,
+                        lastName   : applicant.last_name,
+                        suffixName : applicant.suffix_name
+                    }),
+                    '#interviewedContactNumber': applicant.contact_number,
+                    '#interviewedEmail': applicant.email
+                });
+
+                // Set Resume
+                $('#viewApplicantResumeBtn').attr('href', `${ URL_RESUME_FILES }${ applicant.resume }`);
+
+                // Set Applicant Timeline
+                setApplicantTimeline('#interviewedTimeline', applicant);
+
+                // Set Score Sheet
+                setIntervieweeScoreSheet('#interviewedScoreSheet', result.interview_scores);
+                
+                // Remove Applicant Timeline Loader
+                hideElement('#interviewedTimelineLoader');
+                showElement('#interviewedTimeline');
+
+                // Show Modal
+                showModal('#interviewedDetailsModal');
+            }
+
+            /** 
+             * Load Applicant Details 
+             * Either Hired or Rejected
+             */
+            const loadApplicantDetails = () => {
+                
+                // Set Applicant Details
+                setContent({
+                    '#applicantFullName': formatName('F M. L, S', {
+                        firstName  : applicant.first_name,
+                        middleName : applicant.middle_name,
+                        lastName   : applicant.last_name,
+                        suffixName : applicant.suffix_name
+                    }),
+                    '#applicantContactNumber': applicant.contact_number,
+                    '#applicantEmail': applicant.email
+                });
+
+                // Set Resume
+                $('#viewApplicantResumeBtn').attr('href', `${ URL_RESUME_FILES }${ applicant.resume }`);
+
+                // Set Applicant Timeline
+                setApplicantTimeline('#applicantTimeline', applicant);
+
+                // Set Score Sheet
+                setIntervieweeScoreSheet('#applicantScoreSheet', result.interview_scores);
+                
+                // Remove Applicant Timeline Loader
+                hideElement('#applicantTimelineLoader');
+                showElement('#applicantTimeline');
+
+                showModal('#applicantDetailsModal');
+            }
+
+            const isInterviewed = result.is_interviewed;
+                if(isEmptyOrNull(isInterviewed))
+                    loadIntervieweeDetails()
+                else if(
+                    isInterviewed && (
+                        applicant_status === "Hired" || 
+                        applicant_status === "Contract signed"
+                    )
+                )
+                    loadApplicantDetails();
+                else
+                    loadInterviewedDetails();
+        },
+        error: () => toastr.error('There was an error in getting interviewee details')
+    })
+}
+
+/** On Interviewee Details Modal has been hidden */
+onHideModal('#intervieweeDetailsModal', () => {
+    $('#intervieweeDetailsTab').tab('show');
+
+    // Remove Applicant Timeline Loader
+    showElement('#intervieweeTimelineLoader');
+    hideElement('#intervieweeTimeline');
+});
+
+
+/** On Interviewed Details Modal has been hidden */
+onHideModal('#interviewedDetailsModal', () => {
+    $('#intervieweeDetailsTab').tab('show');
+
+    // Reset Form
+    resetForm('#interviewedApplicantHiringForm');
+
+    // Set Score Sheet to Loading State
+    setContent('#interviewedScoreSheet', `
+        <tr>
+            <td colspan="3">
+                <div class="py-5 text-center">
+                    <div class="spinner-border text-primary my-3">
+                        <div class="sr-only">Loading ...</div>
+                    </div>
+                    <div class="text-secondary">Loading ...</div>
+                </div>
+            </td>
+        </tr>
+    `);
+
+    // Remove Applicant Timeline Loader
+    showElement('#interviewedTimelineLoader');
+    hideElement('#interviewedTimeline');
+});
+
+
+/** On Interviewee Details Modal has been hidden */
+onHideModal('#applicantDetailsModal', () => {
+    $('#applicantDetailsTab').tab('show');
+
+    // Set Score Sheet to Loading State
+    setContent('#applicantScoreSheet', `
+        <tr>
+            <td colspan="3">
+                <div class="py-5 text-center">
+                    <div class="spinner-border text-primary my-3">
+                        <div class="sr-only">Loading ...</div>
+                    </div>
+                    <div class="text-secondary">Loading ...</div>
+                </div>
+            </td>
+        </tr>
+    `);
+
+    // Remove Applicant Timeline Loader
+    showElement('#applicantTimelineLoader');
+    hideElement('#applicantTimeline');
+});
+
+
+/** If reject interview or hide applicant has been selected */
+$('#rejectFromInterview, #hiredApplicant').on('change', () => {
+    const requestStatus = $(`input[name="applicantStatus"]:checked`).val();
+    if(requestStatus == "Hired") hideElement("#remarksField");
+    if(requestStatus == "Rejected from interview") showElement("#remarksField");
+    ifSelectorExist('#submitBtn', () => enableElement('#submitBtn'));
+});
+
+/** On Applicant Details Modal has been hidden */
+onHideModal('#applicantDetailsModal', () => {
+    resetForm('#applicantHiringForm');
+    hideElement('#remarksField');
+    disableElement('#submitBtn');
+});
+
+/** Validate Appicant Hiring Form */
+validateForm('#interviewedApplicantHiringForm', {
+    rules: {
+        applicantStatus: { required: true },
+        remarks: { required: true }
+    },
+    messages: {
+        applicantStatus: { required: 'Please select a status' },
+        remarks: { required: 'Please insert remarks for rejecting this applicant' }
+    },
+    submitHandler: () => {
+        hireOrRejectApplicant();
+        return false;
+    }
+});
+
+/** Hire or reject applicant */
+const hireOrRejectApplicant = () => {
+
+    // Set buttons to loading state
+    btnToLoadingState('#submitBtn');
+    disableElement('#cancelApplicantHiringBtn');
+
+    // Get form data
+    const formData = generateFormData('#interviewedApplicantHiringForm');
+    const get = (n) => { return formData.get(n) }
+
+    // Get applicant data
+    const applicantStatus = get('applicantStatus');
+    const isRejected = applicantStatus === 'Rejected from interview';
+
+    const rejectedAt = isRejected ? formatDateTime(moment()) : null;
+    const remarks = isRejected ? get('remarks') : null;
+
+    const data = {
+        status: applicantStatus,
+        rejected_at: rejectedAt,
+        remarks: remarks
+    }
+    
+    PUT_ajax(`${ ROUTE.API.H }applicants/${ get('applicantID') }/hire`, data, {
+        success: result => {
+            if(result) {
+
+                //  Hide Applicant Details Modal
+                hideModal('#interviewedDetailsModal');
+
+                // Reload DataTable
+                reloadDataTable('#intervieweesDT');
+                
+                // Set buttons to unload state
+                btnToUnloadState('#submitBtn', TEMPLATE.LABEL_ICON('Submit', 'check'));
+                enableElement('#cancelApplicantHiringBtn');
+
+                // Show alert
+                isRejected 
+                    ? toastr.info('An applicant has been rejected from interview')
+                    : toastr.success('An applicant is successfully hired')
+            }
+        },
+        error: () => {
+            
+            //  Hide Applicant Details Modal
+            hideModal('#applicantDetailsModal');
+
+            // Set buttons to unload state
+            btnToUnloadState('#submitBtn', TEMPLATE.LABEL_ICON('Submit', 'check'));
+            enableElement('#cancelApplicantHiringBtn');
+
+            // Show error alert
+            toastr.error('There was an error in updating applicant status')
+        }
+    });
 }
 
 

@@ -385,8 +385,27 @@ def render(
 # INTERVIEW SCHEDULES
 # ===========================================================
 
-
 # Interview Schedules
+@router.get("/interview-schedules", response_class=HTMLResponse)
+def render(
+    req: Request,
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_token)
+):
+    # Check if user is not authorized
+    if AUTHORIZED_USER not in user_data['roles']:
+        return errTemplate.page_not_found(req)
+
+    # If no error, return template response
+    return templates.TemplateResponse(TEMPLATES_PATH + "interview_schedules.html", {
+        "request": req,
+        "page_title": "Interview Schedules",
+        "sub_title": "Manage interview schedules here",
+        "active_navlink": "Interview Schedules"
+    })
+
+
+# Interview Schedule
 @router.get("/interview-schedules/{interview_schedule_id}", response_class=HTMLResponse)
 def render(
     interview_schedule_id: str,
@@ -406,8 +425,8 @@ def render(
     return templates.TemplateResponse(TEMPLATES_PATH + "schedule_details.html", {
         "request": req,
         "page_title": "Interview Schedule Details",
-        "sub_title": "Lorem ipsum dolor sit amet",
-        "active_navlink": "Applicants"
+        "sub_title": "Manage interviewees per setted schedule here",
+        "active_navlink": "Interview Schedules"
     })
 
 
