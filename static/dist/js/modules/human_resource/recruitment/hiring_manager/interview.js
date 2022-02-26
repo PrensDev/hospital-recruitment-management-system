@@ -606,10 +606,11 @@ initDataTable('#intervieweesDT', {
 const viewIntervieweeDetails = (intervieweeID) => {
     GET_ajax( `${ ROUTE.API.H }interviewee/${ intervieweeID }`, {
         success: result => {
-            console.log(result);
             const applicant = result.applicant_info;
             const applicant_status = applicant.status;
             
+            console.log(result)
+
             /**
              * Load Interviewee Details
              * Not yet interviewed
@@ -886,10 +887,30 @@ const hireOrRejectApplicant = () => {
 }
 
 
+/** Mark as Not Interviewed */
 const markAsNotInterviewed = (intervieweeID) => {
-    alert(intervieweeID)
+    showModal('#markAsNotInterviewedModal');
 }
 
+
+/** Validate Mark as not interviewed form */
+validateForm('#markAsNotInterviewedForm', {
+    rules: { remarks: { required: true }},
+    messages: {
+        remarks: {
+            required: 'Please insert remarks about why this interviewee marked as not interviewed'
+        }
+    },
+    submitHandler: () => {
+        return false
+    }
+});
+
+
+/** When validate mark as not interviewed modal has been hidden */
+onHideModal('#markAsNotInterviewedModal', () => {
+    resetForm('#markAsNotInterviewedForm');
+});
 
 /**
  * ==============================================================================
@@ -1152,7 +1173,7 @@ onClick('#saveScoresheetBtn', () => {
                 toastr.error('There was an error in updating interviewee record')
             }
         }
-    )
+    );
 });
 
 /** Remove General Question */
@@ -1196,7 +1217,7 @@ validateForm('#confirmRemoveAddedQuestionForm', {
                         </div>
                     </td>
                 </tr>
-            `)
+            `);
         }
 
         // Hide Confirm Remove Added Question Modal

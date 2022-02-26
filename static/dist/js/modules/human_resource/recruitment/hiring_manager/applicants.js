@@ -907,7 +907,8 @@ validateForm('#confirmRemoveApplicantForm', {
                 <tr>
                     <td colspan="3">
                         <div class="py-5 text-center">
-                            <h5 class="text-secondary my-3">Added applicants will be display here</h5>
+                            <h3>No applicants has been added</h3>
+                            <div class="text-secondary">Applicants that you are going to add will display here</div>
                         </div>
                     </td>
                 </tr>

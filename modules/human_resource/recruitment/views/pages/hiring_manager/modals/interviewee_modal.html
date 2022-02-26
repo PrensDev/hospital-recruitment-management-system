@@ -529,3 +529,42 @@
         </div>
     </div>
 </div>
+
+
+
+{# Mark As Not Innterviewed Modal #}
+<div class="modal" id="markAsNotInterviewedModal" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" id="markAsNotInterviewedForm">
+
+            <div class="modal-header">
+                <h4 class="modal-title text-secondary">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <span>Mark as not interviewed</span>
+                </h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="remarks">Please insert remarks for rejecting this request</label>
+                    <input type="hidden" id="intervieweeID" name="intervieweeID">
+                    <textarea 
+                        name="remarks" 
+                        id="remarks" 
+                        rows="5" 
+                        class="form-control"
+                        placeholder="Please type the remarks here..."
+                    ></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelRejectRequestBtn">Cancel</button>
+                <button type="submit" class="btn btn-danger" id="submitRejectRequestBtn">
+                    <span>Submit</span>
+                    <i class="fas fa-check ml-1"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

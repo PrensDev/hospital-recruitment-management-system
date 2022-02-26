@@ -586,8 +586,8 @@ def evaluated_applicants(
             return db.query(Applicant).filter(
                 Applicant.job_post_id == job_post_id,
                 Applicant.status == 'For interview'
-            ).join(Interviewee).filter(
-                Interviewee.applicant_id == Applicant.applicant_id,
+            ).outerjoin(Interviewee).filter(
+                # Interviewee.applicant_id == Applicant.applicant_id,
                 Interviewee.is_interviewed == None
             ).all()
     except Exception as e:

@@ -313,7 +313,7 @@ def render(
         "request": req,
         "page_title": "Create Interview Schedule",
         "sub_title": "Create interview schedule here for applicants f",
-        "active_navlink": "Applicants",
+        "active_navlink": "Interview Schedules",
         "job_post_id": f"{job_post_id}"
     })
 
