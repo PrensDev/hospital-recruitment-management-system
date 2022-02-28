@@ -14,58 +14,77 @@ router = APIRouter(prefix = "/api/auth", tags = ["Authentication API"])
 
 # Login
 @router.post("/login")
-def login(res: Response, req: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    
-    # Get user information
-    user_credentials = db.query(User).filter(User.email == req.username).join(Employee).join(UserRole).join(Role).first()
+def login(
+    remember: bool,
+    res: Response, 
+    req: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+
+    # Get user credentials
+    user_credentials = db.query(InternalUser).filter(
+        InternalUser.email == req.username
+    ).join(Employee).join(UserRole).filter(
+        UserRole.user_id == InternalUser.id
+    ).join(Role).filter(
+        UserRole.role_id == Role.id
+    ).first()
 
     # For Inavlid Login Details
     ACCESS_DENIED_MESSAGE = {"authorized": False, "message": "Incorrect credentials"}
 
     # Check if user is existing in database
     if not user_credentials:
+        print("Denied (1)")
         return ACCESS_DENIED_MESSAGE
 
     # Check is user password is matched in database
-    matched = Hash.verify(req.password, user_credentials.password)
-    if not matched:
+    if not Hash.verify(req.password, user_credentials.password):
+        print("Denied (2)")
         return ACCESS_DENIED_MESSAGE
 
     # If no error, setup cookies and access tokens for giving user previledge
     
-    # Get roles
-    user_roles = user_credentials.user_roles
-    roles = []
-    for role in user_roles:
-        roles.append(role.role_info.name)
+    # Format
+    # roles = {
+    #     "Subsystem1": "role1",
+    #     "Subsystem2": "role1",
+    #     "SubsystemN": "role1"
+    # }
+    
+    # Get Roles
+    roles = {}
+    for user_role in user_credentials.roles:
+        key = user_role.role.subsystem
+        val = user_role.role.name
 
-    # Get Employee Info
-    employee_info = user_credentials.employee_info
+        roles[key] = val
 
     # Setup token data
     token_data = { 
-        "user_id": user_credentials.user_id, 
-        "employee_id": employee_info.employee_id,
+        "user_id": user_credentials.id, 
+        "employee_id": user_credentials.employee_info.employee_id, 
         "roles": roles
     }
-    
+
     # Setup access token
-    access_token = generate_token(data = token_data)
+    access_token = generate_token(data = token_data, expires_delta=remember)
+
+    # Set Cookies
     res.set_cookie(
         key = "access_token", 
         value = access_token, 
-        httponly = True
+        httponly = True, 
+        max_age = 31536000 if remember else None
     )
-    res.set_cookie(
-        key = "roles", 
-        value = roles, 
-        httponly = True
-    )
+    res.set_cookie(key = "roles", value = roles, httponly = True)
+    
     return { 
         "authorized": True, 
         "access_token": access_token, 
         "token_type": "bearer" 
     }
+
 
 
 # Logout

@@ -5,7 +5,7 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy import text, and_, cast, func, Date
 from sqlalchemy.orm import Session
 from database import get_db
-from oauth2 import get_user, authorized
+from oauth2 import get_user, isAuthorized
 from dotenv import dotenv_values
 from datetime import datetime
 from sqlalchemy import or_

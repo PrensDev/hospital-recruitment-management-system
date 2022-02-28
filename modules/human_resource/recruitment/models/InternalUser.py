@@ -6,14 +6,14 @@ from sqlalchemy.sql.sqltypes import String, Integer, DateTime, Float, Text, Bool
 from sqlalchemy.orm import relationship
 
 # User Model
-class User(Base):
-    __tablename__ = "users"
+class InternalUser(Base):
+    __tablename__ = "internal_users"
 
     # ==================================================================================
     # Columns
     # ==================================================================================
 
-    user_id = Column(
+    id = Column(
         String(36),
         primary_key = True, 
         default = text('UUID()'),
@@ -58,8 +58,8 @@ class User(Base):
     # ==================================================================================
 
     # To UserRole
-    user_roles = relationship(
+    roles = relationship(
         "UserRole", 
-        back_populates = "account_info",
+        back_populates = "user",
     )
 

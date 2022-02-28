@@ -1,7 +1,7 @@
 # Import Packages
 from fastapi import Cookie, HTTPException
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import Dict, Optional
 from jose import JWTError, jwt
 from pydantic import BaseModel
 
@@ -10,7 +10,7 @@ from pydantic import BaseModel
 class TokenData(BaseModel):
     user_id: str
     employee_id: str
-    roles: List[str]
+    roles: Dict[str, str]
 
 
 # Constants
@@ -42,7 +42,7 @@ def verify_token(token: str):
         user_id: str = payload.get("user_id")
         employee_id: str = payload.get("employee_id")
         roles: str = payload.get("roles")
-        if not user_id or not employee_id or not roles:
+        if not user_id or not roles:
             raise credentials_exception
         return TokenData(
             user_id = user_id,
@@ -64,4 +64,3 @@ def get_token(access_token: str = Cookie('access_token')):
             raise HTTPException(status_code = 401, detail = "Invalid token")
     except JWTError:
         raise HTTPException(status_code = 401, detail = "Please login first")
-        

@@ -5,6 +5,7 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 from jwt_token import get_token
+from oauth2 import hasAccess
 
 # Import Models
 from modules.human_resource.recruitment.models._base import *
@@ -25,8 +26,11 @@ router = APIRouter(
 TEMPLATES_PATH = "/pages/hiring_manager/"
 
 
-# Authorized User
-AUTHORIZED_USER = "Hiring Manager"
+
+# Authorization
+AUTHORIZED_SUBSYSTEM = "Recruitment"
+AUTHORIZED_ROLE = "Hiring Manager"
+
 
 
 # ===========================================================
@@ -37,7 +41,7 @@ AUTHORIZED_USER = "Hiring Manager"
 # Department Head Dashboard
 @router.get("", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
     return templates.TemplateResponse(TEMPLATES_PATH + "index.html", {
         "request": req,
@@ -50,7 +54,7 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 # Department Head Dashboard
 @router.get("/dashboard", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
     return templates.TemplateResponse(TEMPLATES_PATH + "dashboard.html", {
         "request": req,
@@ -68,7 +72,7 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 # Manpower Requests
 @router.get("/manpower-requests", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
     return templates.TemplateResponse(TEMPLATES_PATH + "manpower_requests.html", {
         "request": req,
@@ -87,7 +91,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
     
     manpower_request = db.query(ManpowerRequest).filter(ManpowerRequest.manpower_request_id == manpower_request_id).first()
@@ -113,7 +117,7 @@ def render(
 def render(req: Request, user_data: dict = Depends(get_token)):
     
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
     
     # If error, return template response
@@ -134,7 +138,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized 
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
     
     # Check if job post is not existing in database
@@ -160,7 +164,7 @@ def render(
 def render(req: Request, user_data: dict = Depends(get_token)):
 
     # Check if user is authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # If no error, return template response
@@ -181,7 +185,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # Check if job_post_id is not declared
@@ -204,7 +208,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # Check if job_post_id is not declared
@@ -235,7 +239,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if the user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
     
     # Check if job_post_id is not declared
@@ -266,7 +270,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # Check if job_post_id is not declared
@@ -297,7 +301,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Chech if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # Check if job_post_id is declared
@@ -328,7 +332,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # Check if job_post_id is declared
@@ -359,7 +363,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # Check if job_post_id is declared
@@ -393,7 +397,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # If no error, return template response
@@ -414,7 +418,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # Check if interview schedule is in database
@@ -444,7 +448,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # Check if interviewee is not existing in database
@@ -475,7 +479,7 @@ def render(
 def render(req: Request, user_data: dict = Depends(get_token)):
     
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # If no error, return template response

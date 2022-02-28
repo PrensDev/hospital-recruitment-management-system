@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-from oauth2 import authorized, get_user
+from oauth2 import isAuthorized, get_user
 
 # Import Models and Schemas
 from modules.human_resource.recruitment.models._base import *

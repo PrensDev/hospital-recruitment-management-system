@@ -4,6 +4,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from jwt_token import get_token
 from sqlalchemy.orm import Session
 from database import get_db
+from oauth2 import hasAccess
 
 # Import Submodule files
 from modules.human_resource.recruitment.models._base import *
@@ -23,8 +24,9 @@ router = APIRouter(
 TEMPLATES_PATH = "/pages/department_head/"
 
 
-# Authorized User
-AUTHORIZED_USER = "Department Head"
+# Authorization
+AUTHORIZED_SUBSYSTEM = "Recruitment"
+AUTHORIZED_ROLE = "Department Head"
 
 
 # ===========================================================
@@ -37,7 +39,7 @@ AUTHORIZED_USER = "Department Head"
 def render(req: Request, user_data: dict = Depends(get_token)):
 
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
     
     # If authorized, return template response
@@ -54,7 +56,7 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 def render(req: Request, user_data: dict = Depends(get_token)):
 
     # Check if user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
     
     # If authorized, return template response
@@ -76,7 +78,7 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 def render(req: Request, user_data: dict = Depends(get_token)):
 
     # If user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     # If authorized, return template response
@@ -97,7 +99,7 @@ def render(
     user_data: dict = Depends(get_token)
 ):
     # If user is not authorized
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
     
     # If manpower request not exist in database
@@ -122,8 +124,9 @@ def render(
 # Hired Applicants
 @router.get("/hired-applicants", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
+
     return templates.TemplateResponse(TEMPLATES_PATH  + "hired_applicants.html", {
         "request": req,
         "page_title": "Hired Applicants",
@@ -140,8 +143,9 @@ def render(req: Request, user_data: dict = Depends(get_token)):
 # Onboarding Employees
 @router.get("/onboarding-employees", response_class=HTMLResponse)
 def render(req: Request, user_data: dict = Depends(get_token)):
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
+    
     return templates.TemplateResponse(TEMPLATES_PATH + "onboarding_employees.html", {
         "request": req,
         "page_title": "Onboarding Employees",
@@ -163,7 +167,7 @@ def render(
     db: Session = Depends(get_db), 
     user_data: dict = Depends(get_token)
 ):
-    if AUTHORIZED_USER not in user_data['roles']:
+    if not hasAccess(user_data, AUTHORIZED_SUBSYSTEM, AUTHORIZED_ROLE):
         return errTemplate.page_not_found(req)
 
     user_department = db.query(Department).join(SubDepartment).filter(

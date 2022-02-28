@@ -8,36 +8,26 @@ from sqlalchemy.orm import relationship
 
 # User Role Model
 class UserRole(Base):
-    __tablename__ = "user_role"
+    __tablename__ = "user_roles"
     
     # ==================================================================================
     # Relationship (From other tables/models)
     # ==================================================================================
 
-    user_role_id = Column(
+    id = Column(
         String(36),
         primary_key = True,
         default = text('UUID()')
     )
     user_id = Column(
         String(36),
-        ForeignKey("users.user_id"),
+        ForeignKey("internal_users.id"),
         nullable = False
     )
     role_id = Column(
         String(36),
-        ForeignKey("roles.role_id"),
+        ForeignKey("roles.id"),
         nullable = False
-    )
-    created_at = Column(
-        DateTime,
-        default = text('NOW()'),
-        nullable = False
-    )
-    updated_at = Column(
-        DateTime,
-        default = text('NOW()'),
-        onupdate = text('NOW()')
     )
 
 
@@ -46,13 +36,13 @@ class UserRole(Base):
     # ==================================================================================
     
     # From User
-    account_info = relationship(
-        "User",
-        back_populates = "user_roles"
+    user = relationship(
+        "InternalUser",
+        back_populates = "roles"
     )
 
     # From Role
-    role_info = relationship(
+    role = relationship(
         "Role",
-        back_populates = "user_roles"
+        back_populates = "users"
     )

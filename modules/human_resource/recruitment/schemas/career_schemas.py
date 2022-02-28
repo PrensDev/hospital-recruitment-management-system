@@ -3,7 +3,8 @@ from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
 from modules.human_resource.recruitment.schemas.recruiter_schemas import ShowJobCategory
-from modules.human_resource.recruitment.schemas.deptMngr_schemas import ShowEmploymentType, ShowPositionForManpowerRequest
+from modules.human_resource.recruitment.schemas.deptMngr_schemas \
+    import ShowEmploymentType, ShowPositionForManpowerRequest
 
 
 # Manpower Request

@@ -88,7 +88,7 @@ class Employee(Base):
     
     # To User
     user_credentials = relationship(
-        "User",
+        "InternalUser",
         back_populates = "employee_info"
     )
     

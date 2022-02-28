@@ -1,6 +1,5 @@
 # Import Package
 from datetime import datetime
-from re import S
 from typing import List, Optional
 from pydantic import BaseModel
 
@@ -117,7 +116,7 @@ class User(BaseModel):
 
 
 class ShowUser(BaseModel):
-    user_id: str
+    id: str
     email: str
     employee_info: ShowEmployee
     created_at: datetime
@@ -128,7 +127,7 @@ class ShowUser(BaseModel):
 
 
 class ShowUserRole(BaseModel):
-    user_role_id: str
+    id: str
     user_id: str
     role_id: str
     account_info: ShowUser
@@ -141,7 +140,7 @@ class ShowUserRole(BaseModel):
 
 
 class UserCredentials(BaseModel):
-    user_id: str
+    id: str
     employee_info: ShowEmployee
     user_roles: List[ShowUserRole]
 

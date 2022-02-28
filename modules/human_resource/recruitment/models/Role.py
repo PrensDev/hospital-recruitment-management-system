@@ -13,24 +13,23 @@ class Role(Base):
     # Columns
     # ==================================================================================
 
-    role_id = Column(
-        String(36),
-        primary_key = True,
-        default = text('UUID()')
+    
+    id = Column(
+        String(36), 
+        primary_key=True, 
+        default=text('UUID()')
+    )
+    subsystem = Column(
+        String(255), 
+        nullable=False
     )
     name = Column(
-        String(36),
-        nullable = False
+        String(255), 
+        nullable=False
     )
-    created_at = Column(
-        DateTime,
-        default = text('NOW()'),
-        nullable = False
-    )
-    updated_at = Column(
-        DateTime,
-        default = text('NOW()'),
-        onupdate = text('NOW()')
+    redirect_url = Column(
+        String(255), 
+        nullable=False
     )
 
     # ==================================================================================
@@ -38,7 +37,7 @@ class Role(Base):
     # ==================================================================================
 
     # To UserRole
-    user_roles = relationship(
+    users = relationship(
         "UserRole",
-        back_populates = "role_info"
+        back_populates = "role"
     )
